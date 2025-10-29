@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 const authMiddleware = NextAuth(authConfig).auth;
 
-export async function middleware(req: any) {
+export async function proxy(req: any) {
   const { pathname } = req.nextUrl;
 
   // Get the current locale from the URL if it exists
