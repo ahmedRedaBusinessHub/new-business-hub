@@ -21,25 +21,40 @@ export const authConfig = {
       }
       return session;
     },
-    authorized({ auth, request: { nextUrl, cookies } }) {
+    authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const { pathname } = nextUrl;
-      // Check if the pathname already contains a locale
+
+      // Extract locale from pathname
       const currentLocale = pathname.split("/")[1];
-      const isOnApp =
-        nextUrl.pathname.startsWith(`/${currentLocale}/admin`) ||
-        nextUrl.pathname.startsWith(`/${currentLocale}/client`) ||
-        nextUrl.pathname.startsWith(`/${currentLocale}/store`) ||
-        nextUrl.pathname.startsWith(`/${currentLocale}/data-entry`);
+
+      // Define protected paths
+      const protectedPaths = ["admin", "client", "store", "data-entry"];
+      const isOnProtectedPath = protectedPaths.some((path) =>
+        nextUrl.pathname.startsWith(`/${currentLocale}/${path}`)
+      );
       const isOnLogin = nextUrl.pathname.startsWith(`/${currentLocale}/login`);
 
-      if (isOnApp) {
-        if (isLoggedIn) return true;
-        return false; // Redirect to login
-      } else if (isLoggedIn && isOnLogin) {
-        // Redirect authenticated users away from login
-        return Response.redirect(new URL("/admin", nextUrl));
+      if (isOnProtectedPath) {
+        if (!isLoggedIn) {
+          // Redirect to login with callbackUrl
+          const callbackUrl = encodeURIComponent(nextUrl.pathname);
+          return Response.redirect(
+            new URL(
+              `/${currentLocale}/login?callbackUrl=${callbackUrl}`,
+              nextUrl
+            )
+          );
+        }
+        // Check role-based access here if needed
+        return true;
       }
+
+      if (isLoggedIn && isOnLogin) {
+        // Redirect authenticated users to dashboard based on role
+        return Response.redirect(new URL(`/${currentLocale}/admin`, nextUrl));
+      }
+
       return true;
     },
   },

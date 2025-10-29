@@ -19,7 +19,8 @@ export function Header() {
     const currentPath = pathname || "/";
     const segments = currentPath.split("/");
     // segments[0] is empty string because path starts with '/'
-    if (locales.includes(segments[1])) {
+    const segment = segments[1] as (typeof locales)[number] | undefined;
+    if (segment && locales.includes(segment)) {
       segments.splice(1, 1);
     }
     const base = segments.join("/") || "/";
@@ -40,7 +41,8 @@ export function Header() {
           <select
             value={
               /* derive current locale from pathname or default to first locale */
-              (pathname || "").split("/")[1] || locales[0]
+              ((pathname || "").split("/")[1] as (typeof locales)[number]) ||
+              locales[0]
             }
             onChange={(e) => {
               const lang = e.target.value;

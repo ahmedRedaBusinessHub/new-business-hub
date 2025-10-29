@@ -16,7 +16,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-100px)] p-4">
       <div className="text-center space-y-6 mb-8">
-        <h1 className="text-4xl font-bold text-[var(--color-foreground)]">
+        <h1 className="text-4xl font-bold text-(--color-foreground)">
           Next.js Enterprise Application
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto px-4">
