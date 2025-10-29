@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "home": {
+      "title": "Enterprise App - Modern Business Solutions",
+      "description": "Powerful enterprise management platform with advanced features",
+      "keywords": "enterprise, business, management, software"
+    },
+    "about": {
+      "title": "About Us - Enterprise App",
+      "description": "Learn more about our mission and values"
+    }
+  },
+  "common": {
+    "welcome": "Welcome",
+    "login": "Login",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "settings": "Settings"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "username": "Username",
+    "password": "Password",
+    "invalidCredentials": "Invalid credentials"
+  }
+}

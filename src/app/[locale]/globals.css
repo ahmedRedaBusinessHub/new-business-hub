@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+:root {
+  --color-primary: rgb(59, 130, 246);
+  --color-secondary: rgb(139, 92, 246);
+  --color-background: rgb(255, 255, 255);
+  --color-foreground: rgb(31, 41, 55);
+}
+
+/* * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+} */
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
