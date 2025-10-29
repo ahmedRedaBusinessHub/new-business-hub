@@ -1,5 +1,5 @@
-export const locales = ["en", "ar", "es"];
-export const defaultLocale = "ar";
+export const locales = `${process.env.NEXT_PUBLIC_LOCALES}`.split(",");
+export const defaultLocale = process.env.NEXT_PUBLIC_DEFAULT_LOCALE;
 
 type Lang = (typeof locales)[number];
 

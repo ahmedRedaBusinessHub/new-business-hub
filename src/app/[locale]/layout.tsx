@@ -27,17 +27,17 @@ export async function generateMetadata({
     description: t?.metadata?.home?.description,
     keywords: t?.metadata?.home?.keywords,
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_BASE_URL}/${locale}`,
+      canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${locale}`,
       languages: {
-        en: `${process.env.NEXT_PUBLIC_BASE_URL}/en`,
-        ar: `${process.env.NEXT_PUBLIC_BASE_URL}/ar`,
-        "x-default": `${process.env.NEXT_PUBLIC_BASE_URL}/ar`,
+        en: `${process.env.NEXT_PUBLIC_DOMAIN}/en`,
+        ar: `${process.env.NEXT_PUBLIC_DOMAIN}/ar`,
+        "x-default": `${process.env.NEXT_PUBLIC_DOMAIN}/ar`,
       },
     },
     authors: [{ name: t?.metadata?.home?.authors }],
     creator: t?.metadata?.home?.authors,
     publisher: t?.metadata?.home?.authors,
-    metadataBase: new URL(`${process.env.NEXT_PUBLIC_BASE_URL}`),
+    metadataBase: new URL(`${process.env.NEXT_PUBLIC_DOMAIN}`),
     robots: {
       index: true,
       follow: true,
