@@ -20,28 +20,16 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: [
-          "bg-[var(--color-primary)]",
-          "text-white",
-          "hover:opacity-90",
-        ],
-        secondary: [
-          "bg-[var(--color-secondary)]",
-          "text-white",
-          "hover:opacity-90",
-        ],
+        default: ["bg-primary", "text-white", "hover:opacity-90"],
+        secondary: ["bg-secondary", "text-white", "hover:opacity-90"],
         outline: [
           "border-2",
-          "border-[var(--color-primary)]",
-          "text-[var(--color-primary)]",
-          "hover:bg-[var(--color-primary)]",
+          "border-primary",
+          "text-primary",
+          "hover:bg-primary",
           "hover:text-white",
         ],
-        ghost: [
-          "hover:bg-[var(--color-primary)]",
-          "hover:bg-opacity-10",
-          "text-[var(--color-foreground)]",
-        ],
+        ghost: ["hover:bg-primary", "hover:bg-opacity-10", "text-foreground"],
       },
       size: {
         sm: ["h-9", "px-3", "text-xs"],

@@ -1,11 +1,15 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
+import { Suspense } from "react";
 import { LayoutProps } from "@/types/locales";
 import "./globals.css";
 import { Metadata } from "next";
 import { getGeoData, middleEastConfig } from "@/lib/geo";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
-
+import { somar } from "@/assets/fonts"; // Adjust the import path as needed
+import { SessionProvider } from "next-auth/react";
+import { auth } from "@/auth";
+import { AuthSession } from "@/types/auth";
 export async function generateMetadata({
   params,
 }: LayoutProps): Promise<Metadata> {
@@ -74,16 +78,32 @@ export async function generateMetadata({
     },
   };
 }
+// Define the locales you support
+const locales = ["en", "ar"];
 
-export default async function RootLayout({ children, params }: LayoutProps) {
+// This function tells Next.js which locales to statically generate
+export async function generateStaticParams() {
+  return locales.map((locale) => ({
+    locale: locale,
+  }));
+}
+
+// A simple loading component to use as a fallback
+function LoadingFallback() {
+  return <div>Loading...</div>;
+}
+export default async function RootLayout({ children, params }: any) {
+  const session: AuthSession | any = await auth();
+  // Validate that the incoming `locale` parameter is valid
   const { locale } = await params;
-  const messages = await getMessages({ locale });
-
-  // Detect RTL
-  const direction = locale === "ar" ? "rtl" : "ltr";
+  // const messages = await getMessages({ locale });
 
   return (
-    <html lang={locale} dir={direction}>
+    <html
+      lang={locale}
+      dir={locale === "ar" ? "rtl" : "ltr"}
+      className={somar.variable}
+    >
       <body>
         {/* <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
           <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
@@ -129,9 +149,20 @@ export default async function RootLayout({ children, params }: LayoutProps) {
             </div>
           </main>
         </div> */}
-        <NextIntlClientProvider messages={messages} locale={locale}>
-          <ThemeProvider>{children}</ThemeProvider>
-        </NextIntlClientProvider>
+        <SessionProvider basePath={"/auth"} session={session}>
+          <NextIntlClientProvider
+            // messages={messages}
+            locale={locale}
+          >
+            <ThemeProvider
+              attribute="class"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Suspense fallback={<LoadingFallback />}>{children}</Suspense>
+            </ThemeProvider>
+          </NextIntlClientProvider>
+        </SessionProvider>
       </body>
     </html>
   );
