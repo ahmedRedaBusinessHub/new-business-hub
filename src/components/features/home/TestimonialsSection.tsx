@@ -89,7 +89,7 @@ export default function TestimonialsSection() {
     <div id="testimonials">
       {/* Section Header */}
       <div className="text-center mb-16">
-        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+        <h2 className="text-4xl md:text-5xl leading-20 font-bold text-gray-900 mb-4">
           What Our Customers Say
         </h2>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">

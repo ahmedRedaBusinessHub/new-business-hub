@@ -1,133 +1,116 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import * as React from "react";
 
-interface TableProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-export const Table: React.FC<TableProps> = ({ children, className = '' }) => (
-  <div className={`w-full overflow-auto ${className}`}>
-    <table className="w-full border-collapse border border-gray-200 dark:border-gray-700">
-      {children}
-    </table>
-  </div>
-);
-
-interface TableHeaderProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-export const TableHeader: React.FC<TableHeaderProps> = ({ children, className = '' }) => (
-  <thead className={`bg-gray-100 dark:bg-gray-800 ${className}`}>{children}</thead>
-);
-
-interface TableBodyProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-export const TableBody: React.FC<TableBodyProps> = ({ children, className = '' }) => (
-  <tbody className={className}>{children}</tbody>
-);
-
-interface TableRowProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  className?: string;
-}
-
-export const TableRow: React.FC<TableRowProps> = ({ children, onClick, className = '' }) => (
-  <tr
-    onClick={onClick}
-    className={`border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
-      onClick ? 'cursor-pointer' : ''
-    } ${className}`}
-  >
-    {children}
-  </tr>
-);
-
-interface TableCellProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-export const TableCell: React.FC<TableCellProps> = ({ children, className = '' }) => (
-  <td className={`px-4 py-3 text-sm ${className}`}>{children}</td>
-);
-
-interface TableHeadProps {
-  children: React.ReactNode;
-  className?: string;
-  onClick?: () => void;
-  sortable?: boolean;
-}
-
-export const TableHead: React.FC<TableHeadProps> = ({
-  children,
-  className = '',
-  onClick,
-  sortable = false,
-}) => (
-  <th
-    onClick={onClick}
-    className={`px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300 ${
-      sortable ? 'cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700' : ''
-    } ${className}`}
-  >
-    {children}
-  </th>
-);
-
-interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  className?: string;
-}
-
-export const Pagination: React.FC<PaginationProps> = ({
-  currentPage,
-  totalPages,
-  onPageChange,
-  className = '',
-}) => {
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-
+import { cn } from "./utils";
+export const Pagination = () => {};
+function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
-    <div className={`flex items-center justify-center gap-2 mt-4 ${className}`}>
-      <button
-        onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-        disabled={currentPage === 1}
-        className="px-3 py-2 rounded-md border border-gray-200 dark:border-gray-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-      >
-        Previous
-      </button>
-
-      {pages.map((page) => (
-        <button
-          key={page}
-          onClick={() => onPageChange(page)}
-          className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-            currentPage === page
-              ? 'bg-blue-600 text-white'
-              : 'border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800'
-          }`}
-        >
-          {page}
-        </button>
-      ))}
-
-      <button
-        onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-        disabled={currentPage === totalPages}
-        className="px-3 py-2 rounded-md border border-gray-200 dark:border-gray-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-      >
-        Next
-      </button>
+    <div
+      data-slot="table-container"
+      className="relative w-full overflow-x-auto"
+    >
+      <table
+        data-slot="table"
+        className={cn("w-full caption-bottom text-sm", className)}
+        {...props}
+      />
     </div>
   );
+}
+
+function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
+  return (
+    <thead
+      data-slot="table-header"
+      className={cn("[&_tr]:border-b", className)}
+      {...props}
+    />
+  );
+}
+
+function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
+  return (
+    <tbody
+      data-slot="table-body"
+      className={cn("[&_tr:last-child]:border-0", className)}
+      {...props}
+    />
+  );
+}
+
+function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
+  return (
+    <tfoot
+      data-slot="table-footer"
+      className={cn(
+        "bg-muted/50 border-t font-medium [&>tr]:last:border-b-0",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
+  return (
+    <tr
+      data-slot="table-row"
+      className={cn(
+        "hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+function TableHead({ className, ...props }: React.ComponentProps<"th">) {
+  return (
+    <th
+      data-slot="table-head"
+      className={cn(
+        "text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+function TableCell({ className, ...props }: React.ComponentProps<"td">) {
+  return (
+    <td
+      data-slot="table-cell"
+      className={cn(
+        "p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+function TableCaption({
+  className,
+  ...props
+}: React.ComponentProps<"caption">) {
+  return (
+    <caption
+      data-slot="table-caption"
+      className={cn("text-muted-foreground mt-4 text-sm", className)}
+      {...props}
+    />
+  );
+}
+
+export {
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableCaption,
 };

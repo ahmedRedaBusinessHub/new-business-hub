@@ -78,7 +78,7 @@ export default function FeaturedSpaces() {
     <div>
       {/* Section Header */}
       <div className="mb-12">
-        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+        <h2 className="text-4xl md:text-5xl leading-20 font-bold text-gray-900 mb-4">
           Featured Spaces
         </h2>
         <p className="text-xl text-gray-600">
@@ -115,7 +115,7 @@ export default function FeaturedSpaces() {
                   <div className="h-4 bg-gray-200 rounded w-2/3" />
                 </div>
               ))
-          : filteredSpaces.map((space) => (
+          : filteredSpaces.map((space: any) => (
               <div
                 key={space.id}
                 className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition transform hover:-translate-y-1"
@@ -177,7 +177,7 @@ export default function FeaturedSpaces() {
                     <div className="flex flex-wrap gap-2">
                       {space.features.amenities
                         .slice(0, 3)
-                        .map((amenity, idx) => (
+                        .map((amenity: any, idx: any) => (
                           <span
                             key={idx}
                             className="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full"

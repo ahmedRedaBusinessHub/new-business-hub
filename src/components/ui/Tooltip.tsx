@@ -1,78 +1,61 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useState } from 'react';
+import * as React from "react";
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 
-interface TooltipContextType {
-  isVisible: boolean;
-  setIsVisible: (visible: boolean) => void;
-}
+import { cn } from "./utils";
 
-const TooltipContext = createContext<TooltipContextType | undefined>(undefined);
-
-interface TooltipProps {
-  children: React.ReactNode;
-}
-
-export const Tooltip: React.FC<TooltipProps> = ({ children }) => {
-  const [isVisible, setIsVisible] = useState(false);
-
+function TooltipProvider({
+  delayDuration = 0,
+  ...props
+}: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
   return (
-    <TooltipContext.Provider value={{ isVisible, setIsVisible }}>
-      <div className="relative inline-block">{children}</div>
-    </TooltipContext.Provider>
+    <TooltipPrimitive.Provider
+      data-slot="tooltip-provider"
+      delayDuration={delayDuration}
+      {...props}
+    />
   );
-};
-
-interface TooltipTriggerProps {
-  children: React.ReactNode;
-  className?: string;
 }
 
-export const TooltipTrigger: React.FC<TooltipTriggerProps> = ({ children, className = '' }) => {
-  const context = useContext(TooltipContext);
-  if (!context) throw new Error('TooltipTrigger must be used within Tooltip');
-
+function Tooltip({
+  ...props
+}: React.ComponentProps<typeof TooltipPrimitive.Root>) {
   return (
-    <div
-      onMouseEnter={() => context.setIsVisible(true)}
-      onMouseLeave={() => context.setIsVisible(false)}
-      onFocus={() => context.setIsVisible(true)}
-      onBlur={() => context.setIsVisible(false)}
-      className={`cursor-help inline-block ${className}`}
-    >
-      {children}
-    </div>
+    <TooltipProvider>
+      <TooltipPrimitive.Root data-slot="tooltip" {...props} />
+    </TooltipProvider>
   );
-};
-
-interface TooltipContentProps {
-  children: React.ReactNode;
-  side?: 'top' | 'right' | 'bottom' | 'left';
-  className?: string;
 }
 
-export const TooltipContent: React.FC<TooltipContentProps> = ({
+function TooltipTrigger({
+  ...props
+}: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
+  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
+}
+
+function TooltipContent({
+  className,
+  sideOffset = 0,
   children,
-  side = 'top',
-  className = '',
-}) => {
-  const context = useContext(TooltipContext);
-  if (!context) throw new Error('TooltipContent must be used within Tooltip');
-
-  if (!context.isVisible) return null;
-
-  const positionClasses = {
-    top: 'bottom-full mb-2 left-1/2 -translate-x-1/2',
-    right: 'left-full ml-2 top-1/2 -translate-y-1/2',
-    bottom: 'top-full mt-2 left-1/2 -translate-x-1/2',
-    left: 'right-full mr-2 top-1/2 -translate-y-1/2',
-  };
-
+  ...props
+}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
   return (
-    <div
-      className={`absolute z-50 px-3 py-2 text-sm font-medium text-white bg-gray-900 dark:bg-gray-800 rounded-md shadow-lg whitespace-nowrap pointer-events-none ${positionClasses[side]} ${className}`}
-    >
-      {children}
-    </div>
+    <TooltipPrimitive.Portal>
+      <TooltipPrimitive.Content
+        data-slot="tooltip-content"
+        sideOffset={sideOffset}
+        className={cn(
+          "bg-primary text-primary-foreground animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md px-3 py-1.5 text-xs text-balance",
+          className
+        )}
+        {...props}
+      >
+        {children}
+        <TooltipPrimitive.Arrow className="bg-primary fill-primary z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]" />
+      </TooltipPrimitive.Content>
+    </TooltipPrimitive.Portal>
   );
-};
+}
+
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };

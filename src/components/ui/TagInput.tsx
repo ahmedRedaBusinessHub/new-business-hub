@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 
 interface TagInputProps {
   value?: string[];
@@ -14,13 +14,13 @@ interface TagInputProps {
 export const TagInput: React.FC<TagInputProps> = ({
   value = [],
   onChange,
-  placeholder = 'Type and press Enter to add tags...',
-  className = '',
+  placeholder = "Type and press Enter to add tags...",
+  className = "",
   maxTags,
-  delimiter = ',',
+  delimiter = ",",
 }) => {
   const [tags, setTags] = useState<string[]>(value);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -38,7 +38,7 @@ export const TagInput: React.FC<TagInputProps> = ({
       const newTags = [...tags, trimmedTag];
       setTags(newTags);
       onChange?.(newTags);
-      setInputValue('');
+      setInputValue("");
     }
   };
 
@@ -49,19 +49,19 @@ export const TagInput: React.FC<TagInputProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' || e.key === delimiter) {
+    if (e.key === "Enter" || e.key === delimiter) {
       e.preventDefault();
       addTag(inputValue);
-    } else if (e.key === 'Backspace' && inputValue === '' && tags.length > 0) {
+    } else if (e.key === "Backspace" && inputValue === "" && tags.length > 0) {
       removeTag(tags.length - 1);
     }
   };
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const pastedText = e.clipboardData.getData('text');
+    const pastedText = e.clipboardData.getData("text");
     const newTags = pastedText.split(delimiter).map((tag) => tag.trim());
-    
+
     newTags.forEach((tag) => {
       if (tag && !tags.includes(tag) && (!maxTags || tags.length < maxTags)) {
         const updated = [...tags, tag];
@@ -69,13 +69,13 @@ export const TagInput: React.FC<TagInputProps> = ({
         onChange?.(updated);
       }
     });
-    setInputValue('');
+    setInputValue("");
   };
 
   return (
     <div
       className={`w-full border border-gray-200 dark:border-gray-700 rounded-lg p-2 ${
-        isFocused ? 'ring-2 ring-blue-500' : ''
+        isFocused ? "ring-2 ring-blue-500" : ""
       } ${className}`}
     >
       <div className="flex flex-wrap gap-2 mb-2">
@@ -100,7 +100,7 @@ export const TagInput: React.FC<TagInputProps> = ({
         ref={inputRef}
         type="text"
         value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
+        onChange={(e: any) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
         onPaste={handlePaste}
         onFocus={() => setIsFocused(true)}

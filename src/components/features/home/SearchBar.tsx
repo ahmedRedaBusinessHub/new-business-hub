@@ -46,7 +46,9 @@ export default function SearchBar() {
             type="text"
             placeholder="e.g., Private Office, Coworking"
             value={filters.query}
-            onChange={(e) => setFilters({ ...filters, query: e.target.value })}
+            onChange={(e: any) =>
+              setFilters({ ...filters, query: e.target.value })
+            }
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -58,7 +60,7 @@ export default function SearchBar() {
           </label>
           <select
             value={filters.category}
-            onChange={(e) =>
+            onChange={(e: any) =>
               setFilters({ ...filters, category: e.target.value })
             }
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -81,7 +83,7 @@ export default function SearchBar() {
             type="text"
             placeholder="City or area"
             value={filters.location}
-            onChange={(e) =>
+            onChange={(e: any) =>
               setFilters({ ...filters, location: e.target.value })
             }
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -1,89 +1,33 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useState } from 'react';
+import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
 
-interface CollapsibleContextType {
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
+function Collapsible({
+  ...props
+}: React.ComponentProps<typeof CollapsiblePrimitive.Root>) {
+  return <CollapsiblePrimitive.Root data-slot="collapsible" {...props} />;
 }
 
-const CollapsibleContext = createContext<CollapsibleContextType | undefined>(undefined);
-
-interface CollapsibleProps {
-  children: React.ReactNode;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  className?: string;
-}
-
-export const Collapsible: React.FC<CollapsibleProps> = ({
-  children,
-  open = false,
-  onOpenChange,
-  className = '',
-}) => {
-  const [isOpen, setIsOpen] = useState(open);
-
-  const handleSetIsOpen = (newOpen: boolean) => {
-    setIsOpen(newOpen);
-    onOpenChange?.(newOpen);
-  };
-
+function CollapsibleTrigger({
+  ...props
+}: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleTrigger>) {
   return (
-    <CollapsibleContext.Provider value={{ isOpen, setIsOpen: handleSetIsOpen }}>
-      <div className={className}>{children}</div>
-    </CollapsibleContext.Provider>
+    <CollapsiblePrimitive.CollapsibleTrigger
+      data-slot="collapsible-trigger"
+      {...props}
+    />
   );
-};
-
-interface CollapsibleTriggerProps {
-  children: React.ReactNode;
-  className?: string;
 }
 
-export const CollapsibleTrigger: React.FC<CollapsibleTriggerProps> = ({
-  children,
-  className = '',
-}) => {
-  const context = useContext(CollapsibleContext);
-  if (!context) throw new Error('CollapsibleTrigger must be used within Collapsible');
-
+function CollapsibleContent({
+  ...props
+}: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleContent>) {
   return (
-    <button
-      onClick={() => context.setIsOpen(!context.isOpen)}
-      className={`flex items-center justify-between w-full font-semibold transition-colors hover:text-gray-700 dark:hover:text-gray-300 ${className}`}
-    >
-      <span>{children}</span>
-      <span
-        className={`transition-transform duration-300 ${
-          context.isOpen ? 'rotate-180' : ''
-        }`}
-      >
-        ▼
-      </span>
-    </button>
+    <CollapsiblePrimitive.CollapsibleContent
+      data-slot="collapsible-content"
+      {...props}
+    />
   );
-};
-
-interface CollapsibleContentProps {
-  children: React.ReactNode;
-  className?: string;
 }
 
-export const CollapsibleContent: React.FC<CollapsibleContentProps> = ({
-  children,
-  className = '',
-}) => {
-  const context = useContext(CollapsibleContext);
-  if (!context) throw new Error('CollapsibleContent must be used within Collapsible');
-
-  if (!context.isOpen) return null;
-
-  return (
-    <div
-      className={`overflow-hidden transition-all duration-300 ${className}`}
-    >
-      {children}
-    </div>
-  );
-};
+export { Collapsible, CollapsibleTrigger, CollapsibleContent };

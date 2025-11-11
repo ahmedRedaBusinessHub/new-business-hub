@@ -13,14 +13,15 @@ import {
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { signOut, useSession } from "next-auth/react";
 import { AuthSession } from "@/types/auth";
-import { useTheme } from "next-themes";
+// import { useTheme } from "next-themes";
 import { locales } from "@/types/locales";
-
+import { useTheme } from "@/contexts/ThemeProvider";
+import { useI18n } from "@/hooks/useI18n";
+import { useUser } from "@/hooks/useUser";
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { setTheme, theme } = useTheme();
-  const { data: session, status } = useSession();
-  const user = session?.user as AuthSession | undefined | any;
+  const { setTheme, theme }: any = useTheme();
+  const { user, status } = useUser();
   let isLoading = status === "loading";
   if (status === "loading") {
     return <p>Loading...</p>;
@@ -29,7 +30,7 @@ export default function Header() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const { locale } = useParams();
+  const { language } = useI18n();
   // Toggle dark mode
   const onClick_theme = () => {
     const root = document.documentElement;
@@ -103,12 +104,12 @@ export default function Header() {
           <div className="hidden md:flex items-center gap-4">
             <button
               onClick={() => {
-                router.push(getTargetPath(locale == "ar" ? "en" : "ar"));
+                router.push(getTargetPath(language == "ar" ? "en" : "ar"));
               }}
               className="p-2 px-4 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-colors duration-200"
               aria-label="Toggle dark mode"
             >
-              {locale == "ar" ? "EN" : "ع"}
+              {language == "ar" ? "EN" : "ع"}
             </button>
 
             <button
@@ -179,12 +180,12 @@ export default function Header() {
         <div className="md:hidden flex flex-row items-center gap-4">
           <button
             onClick={() => {
-              router.push(getTargetPath(locale == "ar" ? "en" : "ar"));
+              router.push(getTargetPath(language == "ar" ? "en" : "ar"));
             }}
             className="p-2 px-4 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-colors duration-200"
             aria-label="Toggle dark mode"
           >
-            {locale == "ar" ? "EN" : "ع"}
+            {language == "ar" ? "EN" : "ع"}
           </button>
 
           <button

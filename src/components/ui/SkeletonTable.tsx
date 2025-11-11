@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Skeleton } from './Skeleton';
+import React from "react";
+import { Skeleton } from "./Skeleton";
 
 interface SkeletonTableProps {
   rows?: number;
@@ -12,7 +12,7 @@ interface SkeletonTableProps {
 export const SkeletonTable: React.FC<SkeletonTableProps> = ({
   rows = 5,
   columns = 4,
-  className = '',
+  className = "",
 }) => {
   const rowsArray = Array.from({ length: rows });
   const columnsArray = Array.from({ length: columns });
@@ -24,17 +24,20 @@ export const SkeletonTable: React.FC<SkeletonTableProps> = ({
           <tr>
             {columnsArray.map((_, colIndex) => (
               <th key={colIndex} className="px-4 py-3">
-                <Skeleton width="100%" height="20px" />
+                <Skeleton className="w-[100%] h-20" />
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {rowsArray.map((_, rowIndex) => (
-            <tr key={rowIndex} className="border-b border-gray-200 dark:border-gray-700">
+            <tr
+              key={rowIndex}
+              className="border-b border-gray-200 dark:border-gray-700"
+            >
               {columnsArray.map((_, colIndex) => (
                 <td key={colIndex} className="px-4 py-3">
-                  <Skeleton width="100%" height="20px" />
+                  <Skeleton className="w-[100%] h-20" />
                 </td>
               ))}
             </tr>

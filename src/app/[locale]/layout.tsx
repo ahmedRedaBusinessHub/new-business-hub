@@ -1,85 +1,17 @@
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+
 import { Suspense } from "react";
-import { LayoutProps } from "@/types/locales";
+import { locales } from "@/types/locales";
 import "./globals.css";
-import { Metadata } from "next";
-import { getGeoData, middleEastConfig } from "@/lib/geo";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
 import { somar } from "@/assets/fonts"; // Adjust the import path as needed
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import { AuthSession } from "@/types/auth";
-export async function generateMetadata({
-  params,
-}: LayoutProps): Promise<Metadata> {
-  const { locale }: any = await params;
-  const messages = await getMessages({ locale });
-  const geo = await getGeoData();
-  const isRTL = middleEastConfig.isRTLLanguage(geo.country);
-  const t = messages;
-  return {
-    icons: {
-      icon: "/images/logo.svg",
-      shortcut: "/images/logo.svg",
-      apple: "/images/logo.svg",
-    },
-    title: {
-      default: t?.metadata?.home?.title,
-      template: "%s | " + t?.metadata?.home?.title,
-    },
-    description: t?.metadata?.home?.description,
-    keywords: t?.metadata?.home?.keywords,
-    alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${locale}`,
-      languages: {
-        en: `${process.env.NEXT_PUBLIC_DOMAIN}/en`,
-        ar: `${process.env.NEXT_PUBLIC_DOMAIN}/ar`,
-        "x-default": `${process.env.NEXT_PUBLIC_DOMAIN}/ar`,
-      },
-    },
-    authors: [{ name: t?.metadata?.home?.authors }],
-    creator: t?.metadata?.home?.authors,
-    publisher: t?.metadata?.home?.authors,
-    metadataBase: new URL(`${process.env.NEXT_PUBLIC_DOMAIN}`),
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-      },
-    },
+import { getMessages } from "next-intl/server";
+import { createGenerateMetadata } from "@/lib/geo";
 
-    // GEO Tags for Saudi Arabia
-    other: {
-      "geo.region": geo.country,
-      "geo.position": "24.7136;46.6753", // Riyadh coordinates
-      ICBM: "24.7136, 46.6753",
-
-      // Local Business Schema for Saudi Arabia
-      "business:contact_data:country_name": isRTL
-        ? "المملكة العربية السعودية"
-        : "Saudi Arabia",
-      "business:contact_data:region":
-        geo.region || (isRTL ? "الرياض" : "Riyadh"),
-      "business:contact_data:locality":
-        geo.city || (isRTL ? "الرياض" : "Riyadh"),
-
-      // Arabic language support
-      ...(isRTL && {
-        "content-language": "ar",
-        "content-script-type": "text/javascript",
-        "content-style-type": "text/css",
-      }),
-    },
-  };
-}
-// Define the locales you support
-const locales = ["en", "ar"];
+export const generateMetadata = createGenerateMetadata("home");
 
 // This function tells Next.js which locales to statically generate
 export async function generateStaticParams() {
@@ -96,7 +28,7 @@ export default async function RootLayout({ children, params }: any) {
   const session: AuthSession | any = await auth();
   // Validate that the incoming `locale` parameter is valid
   const { locale } = await params;
-  // const messages = await getMessages({ locale });
+  const messages = await getMessages({ locale });
 
   return (
     <html
@@ -104,8 +36,16 @@ export default async function RootLayout({ children, params }: any) {
       dir={locale === "ar" ? "rtl" : "ltr"}
       className={somar.variable}
     >
+      <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </head>
       <body>
-        {/* <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+        <div
+          className="min-h-screen transition-colors duration-300"
+          style={{ backgroundColor: "var(--theme-bg-primary)" }}
+        >
+          {/* <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
           <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
             <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
               <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
@@ -149,20 +89,18 @@ export default async function RootLayout({ children, params }: any) {
             </div>
           </main>
         </div> */}
-        <SessionProvider basePath={"/auth"} session={session}>
-          <NextIntlClientProvider
-            // messages={messages}
-            locale={locale}
-          >
-            <ThemeProvider
-              attribute="class"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <Suspense fallback={<LoadingFallback />}>{children}</Suspense>
-            </ThemeProvider>
+          <NextIntlClientProvider messages={messages} locale={locale}>
+            <SessionProvider session={session}>
+              <ThemeProvider
+              // attribute="class"
+              // enableSystem
+              // disableTransitionOnChange
+              >
+                <Suspense fallback={<LoadingFallback />}>{children}</Suspense>
+              </ThemeProvider>
+            </SessionProvider>
           </NextIntlClientProvider>
-        </SessionProvider>
+        </div>
       </body>
     </html>
   );

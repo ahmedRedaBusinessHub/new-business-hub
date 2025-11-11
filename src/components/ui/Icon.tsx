@@ -61,7 +61,18 @@ interface HeroIconProps extends BaseIconProps {
 }
 
 // Lucide specific props
-interface LucideIconProps extends BaseIconProps, Omit<LucideProps, "ref"> {
+// Omit props from LucideProps that are already defined in BaseIconProps (or otherwise conflict)
+interface LucideIconProps
+  extends BaseIconProps,
+    Omit<
+      LucideProps,
+      | "ref"
+      | "className"
+      | "strokeWidth"
+      | "aria-hidden"
+      | "aria-label"
+      | "size"
+    > {
   library: "lucide";
   name: LucideIcon;
 }
@@ -121,7 +132,7 @@ export const Icon = React.forwardRef<SVGSVGElement, IconProps>((props, ref) => {
       style = "outline",
       strokeWidth = 1.5,
       ...heroProps
-    } = restProps;
+    }: any = restProps;
     const HeroComponent = getHeroIcon(name as string, style);
 
     if (!HeroComponent) {
@@ -141,9 +152,12 @@ export const Icon = React.forwardRef<SVGSVGElement, IconProps>((props, ref) => {
 
   if (isLucideIcon(props)) {
     const { name, strokeWidth = 2, ...lucideProps } = restProps;
-    const LucideComponent = LucideIcons[name];
+    // Lucide exports may not align perfectly with the union type at runtime, so do a safe lookup
+    const LucideComponent = (
+      LucideIcons as unknown as Record<string, React.ComponentType<any>>
+    )[name as string];
 
-    if (!LucideComponent || typeof LucideComponent !== "function") {
+    if (!LucideComponent) {
       console.warn(`Icon "${name}" not found in Lucide`);
       return null;
     }
@@ -153,7 +167,7 @@ export const Icon = React.forwardRef<SVGSVGElement, IconProps>((props, ref) => {
         ref={ref}
         className={iconClasses}
         strokeWidth={strokeWidth}
-        {...lucideProps}
+        {...(lucideProps as any)}
       />
     );
   }

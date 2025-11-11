@@ -622,7 +622,7 @@ const DataTable = () => {
             <input
               type="text"
               value={globalFilter ?? ""}
-              onChange={(e) => setGlobalFilter(e.target.value)}
+              onChange={(e: any) => setGlobalFilter(e.target.value)}
               placeholder="Search all columns..."
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               aria-label="Global search"
@@ -676,7 +676,7 @@ const DataTable = () => {
             </div>
             <select
               value={table.getState().pagination.pageSize}
-              onChange={(e) => table.setPageSize(Number(e.target.value))}
+              onChange={(e: any) => table.setPageSize(Number(e.target.value))}
               className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               aria-label="Rows per page"
             >
@@ -808,38 +808,35 @@ const DataTable = () => {
                           )}
                           {header.column.getCanSort() && (
                             <span className="text-gray-400">
-                              {{
-                                asc: (
-                                  <svg
-                                    className="w-4 h-4 text-primary-600"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={2}
-                                      d="M5 15l7-7 7 7"
-                                    />
-                                  </svg>
-                                ),
-                                desc: (
-                                  <svg
-                                    className="w-4 h-4 text-primary-600"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={2}
-                                      d="M19 9l-7 7-7-7"
-                                    />
-                                  </svg>
-                                ),
-                              }[header.column.getIsSorted()] ?? (
+                              {header.column.getIsSorted() === "asc" ? (
+                                <svg
+                                  className="w-4 h-4 text-primary-600"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M5 15l7-7 7 7"
+                                  />
+                                </svg>
+                              ) : header.column.getIsSorted() === "desc" ? (
+                                <svg
+                                  className="w-4 h-4 text-primary-600"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M19 9l-7 7-7-7"
+                                  />
+                                </svg>
+                              ) : (
                                 <svg
                                   className="w-4 h-4"
                                   fill="none"
@@ -1023,7 +1020,7 @@ const DataTable = () => {
               min="1"
               max={table.getPageCount()}
               value={table.getState().pagination.pageIndex + 1}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 const page = e.target.value ? Number(e.target.value) - 1 : 0;
                 table.setPageIndex(page);
               }}

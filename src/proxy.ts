@@ -41,7 +41,7 @@ export async function proxy(req: any) {
           statusText: res.statusText,
           headers: newHeaders,
         });
-      } catch (e) {
+      } catch (e: any) {
         console.log("Could not append Set-Cookie header to authResponse:", e);
       }
 
@@ -70,5 +70,7 @@ export async function proxy(req: any) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|images|fonts).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|api|auth|favicon.ico|images|videos|fonts).*)",
+  ],
 };

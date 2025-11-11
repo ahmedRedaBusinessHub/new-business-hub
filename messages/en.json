@@ -1,26 +1,1413 @@
 {
   "metadata": {
     "home": {
-      "title": "Enterprise App - Modern Business Solutions",
-      "description": "Powerful enterprise management platform with advanced features",
-      "keywords": "enterprise, business, management, software"
+      "title": "Business Hub - Empowering Entrepreneurs & Innovative Projects in Saudi Arabia",
+      "description": "Discover Business Hub, your partner in transforming ideas into successful businesses. Explore our incubators, accelerators, and integrated support for entrepreneurs in Saudi Arabia.",
+      "keywords": "entrepreneurship, business hub, startup support, incubator, accelerator, business development, Saudi Arabia",
+      "authors": "Yousef Ouda Al-Baladi"
     },
     "about": {
-      "title": "About Us - Enterprise App",
-      "description": "Learn more about our mission and values"
+      "title": "About Us | Business Hub – Vision, Mission & Team",
+      "description": "Learn about Business Hub’s story, vision, mission, values, and team driving innovation and entrepreneur success across Saudi Arabia.",
+      "keywords": "about business hub, company vision, mission, team, entrepreneurship, Saudi Arabia",
+      "authors": "Yousef Ouda Al-Baladi"
+    },
+    "bookingISO": {
+      "title": "Get ISO Certification – Book a Consultation | Business Hub",
+      "description": "Start your ISO certification journey! Book a consultation with experts at Business Hub and enhance your organization’s quality and global competitiveness.",
+      "keywords": "ISO certification, book ISO, ISO consultation, quality management, ISO experts, Saudi Arabia",
+      "authors": "Yousef Ouda Al-Baladi"
+    },
+    "bookingAccelerator": {
+      "title": "Book Accelerator Program | Fast-Track Your Startup Growth",
+      "description": "Secure your spot in our accelerator programs and boost your business growth with intensive mentoring and resources from Business Hub.",
+      "keywords": "accelerator program, book accelerator, startup growth, business mentoring, entrepreneurship, Saudi Arabia",
+      "authors": "Yousef Ouda Al-Baladi"
+    },
+    "bookingIncubation": {
+      "title": "Book Business Incubation | Nurture Your Idea to Success",
+      "description": "Apply for business incubation at Business Hub. Get a supportive environment to turn your innovative idea into a thriving startup.",
+      "keywords": "business incubation, incubator, book incubation, startup idea, entrepreneurship, Saudi Arabia",
+      "authors": "Yousef Ouda Al-Baladi"
+    },
+    "contactUs": {
+      "title": "Contact Us | Business Hub – Support for Entrepreneurs & Startups",
+      "description": "Reach out to Business Hub for inquiries, support, or partnership opportunities. We’re here to help your entrepreneurial journey.",
+      "keywords": "contact business hub, entrepreneur support, startup help, business inquiry, Saudi Arabia",
+      "authors": "Yousef Ouda Al-Baladi"
+    },
+    "followUs": {
+      "title": "Follow Business Hub – Stay Updated with News & Success Stories",
+      "description": "Connect with Business Hub on social media and stay updated on news, events, and inspiring success stories.",
+      "keywords": "follow business hub, news, events, social media, entrepreneur community, Saudi Arabia",
+      "authors": "Yousef Ouda Al-Baladi"
+    },
+    "gallery": {
+      "title": "Gallery | Business Hub – Exhibiting Achievements & Events",
+      "description": "Explore photos and highlights from Business Hub events, achieved milestones, and entrepreneurial success stories.",
+      "keywords": "business hub gallery, event photos, success stories, entrepreneurship, achievements",
+      "authors": "Yousef Ouda Al-Baladi"
+    },
+    "projects": {
+      "title": "Projects | Successful Ventures Supported by Business Hub",
+      "description": "Discover projects and startups accelerated by Business Hub, showcasing innovation and successful business launches.",
+      "keywords": "business hub projects, successful startups, business ventures, entrepreneurship, Saudi Arabia",
+      "authors": "Yousef Ouda Al-Baladi"
+    },
+    "teams": {
+      "title": "Our Team | Meet the Experts at Business Hub",
+      "description": "Get to know the talented and experienced team members who drive Business Hub’s mission to empower entrepreneurs.",
+      "keywords": "business hub team, experts, entrepreneurship, business consultants, Saudi Arabia",
+      "authors": "Yousef Ouda Al-Baladi"
+    },
+    "workspaces": {
+      "title": "Workspaces | Flexible & Professional Office Solutions – Business Hub",
+      "description": "Choose the ideal workspace for your business at Business Hub. Flexible packages, premium services, and a collaborative environment await you.",
+      "keywords": "business workspaces, office solutions, co-working, shared office, business hub, Saudi Arabia",
+      "authors": "Yousef Ouda Al-Baladi"
+    },
+    "privacy": {
+      "title": "Privacy Policy | Business Hub",
+      "description": "Read Business Hub’s privacy policy to learn how we protect your data and respect your confidentiality.",
+      "keywords": "privacy policy, data protection, user confidentiality, business hub",
+      "authors": "Yousef Ouda Al-Baladi"
+    },
+    "refund": {
+      "title": "Refund Policy | Business Hub",
+      "description": "View Business Hub’s refund policy for information on payment returns, cancellations, and service terms.",
+      "keywords": "refund policy, payment returns, cancellation, business hub",
+      "authors": "Yousef Ouda Al-Baladi"
+    },
+    "terms": {
+      "title": "Terms & Conditions | Business Hub",
+      "description": "Familiarize yourself with Business Hub’s terms & conditions for using our services and website.",
+      "keywords": "terms and conditions, service policy, legal, business hub",
+      "authors": "Yousef Ouda Al-Baladi"
+    },
+    "login": {
+      "title": "Login | Business Hub – Secure Access to Your Account",
+      "description": "Sign in securely to your Business Hub account to manage your services, bookings, and entrepreneurship resources. Fast and safe access for partners and clients.",
+      "keywords": "login, sign in, business hub account, secure access, client login, partner login, business management",
+      "authors": "Yousef Ouda Al-Baladi"
     }
   },
-  "common": {
-    "welcome": "Welcome",
-    "login": "Login",
-    "logout": "Logout",
-    "dashboard": "Dashboard",
-    "settings": "Settings"
+  "nav_home": "Home",
+  "nav_services": "Services",
+  "nav_about": "About Us",
+  "nav_workspaces": "Workspaces",
+  "nav_getISO": "Get ISO",
+  "nav_follow": "Follow Us",
+  "nav_contact": "Contact Us",
+  "hero_cta_discover": "Discover More",
+  "partners_title": "Our Partners",
+  "values_badge": "Our Values",
+  "values_title": "Business Hub Values",
+  "values_subtitle": "We believe in a set of core values that guide our work and reflect our commitment to our clients",
+  "stats_projects": "Successful Project",
+  "services_badge": "Our Services",
+  "companies_badge": "Success Stories",
+  "companies_title": "Companies We Helped",
+  "companies_subtitle": "Proud of our partners’ achievements",
+  "about_badge": "About Us",
+  "about_title": "Business Hub - Your Success Partner",
+  "about_description": "Business Hub is a leading center for business incubation and acceleration in Saudi Arabia. We provide a supportive and comprehensive environment for entrepreneurs and startups, helping them turn ideas into successful and sustainable projects.",
+  "about_feature1_title": "Extensive Experience",
+  "about_feature1_desc": "Over 10 years supporting entrepreneurs",
+  "about_feature2_title": "Professional Team",
+  "about_feature2_desc": "Elite group of experts and consultants",
+  "about_feature3_title": "Wide Network",
+  "about_feature3_desc": "Strategic partnerships with major companies",
+  "about_feature4_title": "Comprehensive Support",
+  "about_feature4_desc": "From idea to success and expansion",
+  "mission_badge": "Our Mission",
+  "mission_title": "Mission & Goals",
+  "mission_missionTitle": "Our Mission",
+  "mission_missionText": "Empowering entrepreneurs and startups to turn their ideas into successful, sustainable projects by providing a comprehensive, incubating environment that combines expertise, innovation, and continuous support.",
+  "mission_visionTitle": "Our Vision",
+  "mission_visionText": "To be the number one platform for business incubation and acceleration in Saudi Arabia and the region, contributing to a prosperous economy based on innovation and entrepreneurship.",
+  "mission_objective1": "Support 500+ startups by 2030",
+  "mission_objective2": "Create 5000+ new job opportunities",
+  "mission_objective3": "Achieve a market value exceeding 2 billion SAR",
+  "mission_objective4": "Build a network of 100+ strategic partners",
+  "seo_badge": "Keywords",
+  "seo_title": "SEO",
+  "seo_subtitle": "We help you appear in search results",
+  "seo_keyword1": "Business Incubation",
+  "seo_keyword2": "Business Acceleration",
+  "seo_keyword3": "Entrepreneurship",
+  "seo_keyword4": "Startups",
+  "seo_keyword5": "ISO Certificates",
+  "seo_keyword6": "Business Consultancy",
+  "seo_keyword7": "Business Development",
+  "seo_keyword8": "Innovation",
+  "reviews_badge": "Client Reviews",
+  "reviews_title": "What Our Clients Say",
+  "reviews_subtitle": "Real stories from entrepreneurs who succeeded with us",
+  "news_badge": "Latest News",
+  "news_title": "Latest News & Events",
+  "news_subtitle": "Follow the latest updates and events at Business Hub",
+  "news_readMore": "Read More",
+  "footer_contact": "Contact Us",
+  "iso_hero_badge": "ISO Certificates",
+  "iso_hero_title": "Get Your Organization ISO Certified",
+  "iso_hero_subtitle": "We help you achieve global ISO certifications to boost your business quality and efficiency",
+  "iso_what_badge": "What is ISO?",
+  "iso_what_title": "Understanding ISO and Its Importance",
+  "iso_what_desc": "ISO (International Organization for Standardization) sets international standards for quality, safety, and efficiency across sectors. ISO certificates help organizations improve processes, increase trust, and compete globally.",
+  "iso_importance_badge": "Importance",
+  "iso_importance_title": "Why ISO Certification?",
+  "iso_importance_companies_title": "For Companies",
+  "iso_importance_companies_desc": "Enhance operational efficiency, customer satisfaction, and gain a competitive edge",
+  "iso_importance_institutions_title": "For Institutions",
+  "iso_importance_institutions_desc": "Boost credibility, improve management, and comply with international standards",
+  "iso_importance_individuals_title": "For Individuals",
+  "iso_importance_individuals_desc": "Develop professional skills, improve job prospects, and career growth",
+  "iso_importance_market_title": "For the Market",
+  "iso_importance_market_desc": "Raise quality standards, enhance trust, and drive innovation",
+  "iso_types_badge": "Type of Certificates",
+  "iso_types_title": "Available ISO Certificates",
+  "iso_types_9001_title": "ISO 9001",
+  "iso_types_9001_desc": "Quality Management",
+  "iso_types_14001_title": "ISO 14001",
+  "iso_types_14001_desc": "Environmental Management",
+  "iso_types_45001_title": "ISO 45001",
+  "iso_types_45001_desc": "Occupational Health and Safety",
+  "iso_types_27001_title": "ISO 27001",
+  "iso_types_27001_desc": "Information Security",
+  "iso_types_22000_title": "ISO 22000",
+  "iso_types_22000_desc": "Food Safety",
+  "iso_types_50001_title": "ISO 50001",
+  "iso_types_50001_desc": "Energy Management",
+  "iso_benefits_1": "Improve product and service quality",
+  "iso_benefits_2": "Raise customer satisfaction and retention",
+  "iso_benefits_3": "Lower costs and increase efficiency",
+  "iso_benefits_4": "Enhance company reputation and credibility",
+  "iso_benefits_5": "Open new markets locally and globally",
+  "iso_benefits_6": "Meet legal and regulatory requirements",
+  "iso_process_badge": "Process",
+  "iso_process_title": "ISO Certification Steps",
+  "iso_process_step1_title": "Initial Assessment",
+  "iso_process_step1_desc": "Assess current status and identify requirements",
+  "iso_process_step2_title": "Planning",
+  "iso_process_step2_desc": "Set an action plan and goals",
+  "iso_process_step3_title": "Implementation",
+  "iso_process_step3_desc": "Apply required standards and procedures",
+  "iso_process_step4_title": "Internal Review",
+  "iso_process_step4_desc": "Check compliance and find improvement areas",
+  "iso_process_step5_title": "Certification",
+  "iso_process_step5_desc": "External audit and certificate issue",
+  "iso_booking_badge": "Book a Consultation",
+  "iso_booking_title": "Start Your ISO Certification Journey",
+  "iso_booking_subtitle": "Fill out the form – our consultants will contact you",
+  "iso_booking_company": "Company / Organization Name",
+  "iso_booking_name": "Responsible Person Name",
+  "iso_booking_position": "Position",
+  "iso_booking_email": "Email",
+  "iso_booking_phone": "Phone Number",
+  "iso_booking_isoType": "Desired ISO Certificate Type",
+  "iso_booking_employees": "Number of Employees",
+  "iso_booking_industry": "Industry",
+  "iso_booking_message": "Additional Notes",
+  "iso_booking_submit": "Submit Request",
+  "iso_booking_success": "Your request was sent successfully! We will contact you soon.",
+  "follow_hero_badge": "Stay Connected",
+  "follow_hero_title": "Follow Us on Social Media",
+  "follow_hero_subtitle": "Stay up to date with news, events, and our partners’ success stories",
+  "follow_social_badge": "Social Media",
+  "follow_social_title": "Contact Us",
+  "follow_social_subtitle": "Join our community on all platforms",
+  "follow_social_followers": "Follower",
+  "follow_social_follow": "Follow Us Now",
+  "follow_profile_badge": "Company Profile",
+  "follow_profile_title": "Download Company Profile",
+  "follow_profile_subtitle": "Learn more about our services and achievements",
+  "follow_profile_arabic": "Download in Arabic",
+  "follow_profile_english": "Download in English",
+  "follow_profile_both": "Download Both",
+  "follow_profile_size": "PDF File",
+  "follow_newsletter_badge": "Newsletter",
+  "follow_newsletter_title": "Subscribe to Our Newsletter",
+  "follow_newsletter_subtitle": "Get the latest updates, exclusive tips, and content straight to your inbox",
+  "follow_newsletter_email": "Email",
+  "follow_newsletter_subscribe": "Subscribe Now",
+  "follow_newsletter_success": "Subscribed successfully to the newsletter!",
+  "follow_contact_badge": "Contact Us",
+  "follow_contact_title": "Questions?",
+  "follow_contact_subtitle": "Our team is here to help you",
+  "follow_contact_button": "Contact Us Now",
+  "workspaces_hero_badge": "Workspaces",
+  "workspaces_hero_title": "Workspaces Designed for Success",
+  "workspaces_hero_subtitle": "Choose the ideal workspace for your business, with complete services and a professional environment",
+  "workspaces_services_badge": "Our Services",
+  "workspaces_services_title": "Workspace Solutions",
+  "workspaces_services_subtitle": "We offer a variety of workspace options to suit your needs",
+  "workspaces_service1_name": "Shared Space",
+  "workspaces_service1_subtitle": "Flexible Package",
+  "workspaces_service1_desc": "A flexible shared workspace, ideal for entrepreneurs and small teams seeking a collaborative and dynamic working environment",
+  "workspaces_service1_ideal": "Perfect for freelancers and small teams",
+  "workspaces_service2_name": "Virtual Office",
+  "workspaces_service2_subtitle": "Professional Presence",
+  "workspaces_service2_desc": "A professional business address and office services without the need for a physical space, ideal for startups and remote workers",
+  "workspaces_service2_ideal": "Ideal for remote work",
+  "workspaces_service3_name": "Small Company Office",
+  "workspaces_service3_subtitle": "Private Space",
+  "workspaces_service3_desc": "A fully equipped private office for small teams and startups needing privacy and independent identity",
+  "workspaces_service3_ideal": "Perfect for teams of 3-8 people",
+  "workspaces_service4_name": "Large Company Office",
+  "workspaces_service4_subtitle": "Advanced Solutions",
+  "workspaces_service4_desc": "Spacious offices equipped with the latest technology for medium and large-sized companies needing a comprehensive professional working environment",
+  "workspaces_service4_ideal": "Perfect for teams of 10+ people",
+  "workspaces_features_badge": "Features",
+  "workspaces_features_title": "Additional Services and Features",
+  "workspaces_features_subtitle": "We provide everything you need for a comfortable and productive work experience",
+  "workspaces_feature1_name": "Secure Locker",
+  "workspaces_feature1_desc": "Personal locker for your documents and valuables with complete security",
+  "workspaces_feature2_name": "Water & Hospitality",
+  "workspaces_feature2_desc": "Complete hospitality services – water, coffee, and drinks all day",
+  "workspaces_feature3_name": "24/7 Access",
+  "workspaces_feature3_desc": "Access your office anytime, 24 hours a day, 7 days a week",
+  "workspaces_feature4_name": "High-Speed Internet",
+  "workspaces_feature4_desc": "Ultra-fast fiber optic internet connections",
+  "workspaces_feature5_name": "Office Services",
+  "workspaces_feature5_desc": "Printing, copying, scanning, and professional secretarial services",
+  "workspaces_feature6_name": "Storage Drawers",
+  "workspaces_feature6_desc": "Large and medium storage drawers to organize your files and supplies",
+  "workspaces_feature7_name": "Outdoor Sign",
+  "workspaces_feature7_desc": "External sign printing with your company name and logo in a professional design",
+  "workspaces_feature8_name": "Fingerprint Access",
+  "workspaces_feature8_desc": "Option to add fingerprint access for non-subscribers of 24/7 access service",
+  "workspaces_pricing_badge": "Pricing",
+  "workspaces_pricing_title": "Choose the Right Package",
+  "workspaces_pricing_subtitle": "Flexible plans for all your needs and budget",
+  "workspaces_pricing_monthly": "Monthly",
+  "workspaces_pricing_popular": "Most Popular",
+  "workspaces_pricing_cta": "Book Now",
+  "workspaces_pricing_contact": "Contact for Price",
+  "workspaces_comparison_badge": "Comparison",
+  "workspaces_comparison_title": "Compare Packages",
+  "workspaces_comparison_subtitle": "See differences between workspace options",
+  "workspaces_cta_badge": "Get Started",
+  "workspaces_cta_title": "Ready to Start Your Journey?",
+  "workspaces_cta_subtitle": "Join hundreds of successful companies who chose Business Hub",
+  "workspaces_cta_button": "Book a Free Tour",
+  "workspaces_cta_call": "Or call us",
+  "ceo": {
+    "name": "Yousef Al-Baladi",
+    "title": "Company CEO",
+    "quote": "Welcome to the Business Hub, where we believe in the power of individuals, ideas, and institutions to lead with innovation, excellence, and purpose. Our mission is simple yet profound – transforming potential into progress. From startups to established companies, we connect ambition with opportunity through mentorship, incubation, acceleration, and empowerment. We pride ourselves on building ecosystems that enable growth and collaboration at every stage of the entrepreneurial journey. Our work extends to co-working spaces, training programs, and national initiatives that translate vision into measurable impact. We firmly believe in the leadership potential of Saudi Arabia and are committed to shaping an economy that not only competes globally but also leads. Yousef Albaladi, CEO, Business Hub",
+    "bio": "A visionary leader with over 15 years’ experience supporting and empowering startups. Under his leadership, Business Hub helped more than 500 projects to grow and thrive.",
+    "experience": "Years of Experience",
+    "successful_projects": "Successful Projects",
+    "strategic_partners": "Strategic Partners"
   },
-  "auth": {
-    "signIn": "Sign In",
-    "username": "Username",
-    "password": "Password",
-    "invalidCredentials": "Invalid credentials"
+  "linkedin": "LinkedIn",
+  "twitter": "Twitter",
+  "email": "Email",
+  "leadership": "Leadership",
+  "CEO_message": "CEO's Message",
+  "contact_us": "Contact Us",
+  "Pleasefillallfields": "Please fill in all fields",
+  "Invalidemailaddress": "Invalid email address",
+  "Invalidmobilenumber": "Invalid mobile number",
+  "Yourmessagehasbeensentsuccessfully": "Your message has been sent successfully!",
+  "WereHeretoHelp": "We’re here to help",
+  "Enteryourfullname": "Enter your full name",
+  "MobileNumber": "Mobile Number",
+  "InquiryType": "Inquiry Type",
+  "FullName": "Full Name",
+  "Join Our Team": "Join Our Team",
+  "Our Team": "Our Team",
+  "Contact": "Contact",
+  "Sending": "Sending...",
+  "We are always looking for exceptional talent to join our growing team": "We are always looking for exceptional talent to join our growing team",
+  "Browse Open Positions": "Browse Open Positions",
+  "SendMessage": "Send Message",
+  "CallUs": "Call Us",
+  "VisitUs": "Visit Us",
+  "Madinah": "Madinah",
+  "Closed": "Closed",
+  "Weekly Updates": "Weekly Updates",
+  "Exclusive Tips": "Exclusive Tips",
+  "Premium Content": "Premium Content",
+  "Subscribing": "Subscribing...",
+  "Invalid email address": "Invalid email address",
+  "Please enter your email": "Please enter your email",
+  "Watch short content on TikTok": "Watch short content on TikTok",
+  "Join our channel on Telegram": "Join our channel on Telegram",
+  "Chat with us directly on WhatsApp": "Chat with us directly on WhatsApp",
+  "Watch educational videos on YouTube": "Watch educational videos on YouTube",
+  "Connect with us professionally on LinkedIn": "Connect with us professionally on LinkedIn",
+  "See our success stories on Instagram": "See our success stories on Instagram",
+  "Join our conversations on Twitter": "Join our conversations on Twitter",
+  "Follow us on Facebook for latest news and updates": "Follow us on Facebook for latest news and updates",
+  "FridaySaturday": "Friday - Saturday",
+  "SundayThursday": "Sunday - Thursday",
+  "WorkingHours": "Working Hours",
+  "SaudiArabia": "Saudi Arabia",
+  "Wereplywithin24hours": "We reply to messages within 24 hours",
+  "EmailUs": "Email Us",
+  "workTime": "Sunday - Thursday, 9 a.m. - 6 p.m.",
+  "RequestDetails": "Request Details",
+  "Writeyourinquirydetailshere": "Write your inquiry details here...",
+  "Selectinquirytype": "Select inquiry type",
+  "HavequestioninquiryContactandwillhappyhelpyou": "Have a question or inquiry? Contact us and we’ll be happy to help",
+  "Innovation & Entrepreneurship Hub": "Innovation & Entrepreneurship Hub",
+  "They Trust Us": "They Trust Us",
+  "Our Partners": "Our Partners",
+  "Collaboration and Adaptation": "Collaboration and Adaptation",
+  "Collaboration and Adaptation doc": "We work together to achieve your goals",
+  "Reliability": "Reliability",
+  "Reliability doc": "A trusted partner on your success journey",
+  "Capability and Excellence": "Capability and Excellence",
+  "Capability and Excellence doc": "We offer innovative and exceptional solutions",
+  "Sustainable Growth": "Sustainable Growth",
+  "Sustainable Growth doc": "We help you achieve continuous growth",
+  "Responsiveness and Availability": "Responsiveness and Availability",
+  "Responsiveness and Availability doc": "Always available to serve you",
+  "Venture Market Capitalization": "Venture Market Capitalization",
+  "Subscriber": "Subscriber",
+  "Investment Value": "Investment Value",
+  "Advisor": "Advisor",
+  "Our Achievements": "Our Achievements",
+  "withnumbers": "Business Hub in Numbers",
+  "withnumbersdoc": "Numbers reflecting our success and achievements in supporting entrepreneurs",
+  "Business Accelerators": "Business Accelerators",
+  "Intensive programs to accelerate your projects growth and professional development": "Intensive programs to accelerate your project’s growth and professional development",
+  "Business Incubation": "Business Incubation",
+  "We provide a supportive environment to incubate your project from idea to implementation": "We provide a supportive environment to incubate your project from idea to implementation",
+  "ISO Certifications": "ISO Certifications",
+  "We help you obtain internationally recognized ISO certifications": "We help you obtain internationally recognized ISO certifications",
+  "Workspaces": "Workspaces",
+  "Shared workspaces equipped with the latest technologies and facilities": "Shared workspaces equipped with the latest technologies and facilities",
+  "companyService": "Business Hub Services",
+  "companyServiceDoc": "We offer an integrated set of services to support entrepreneurs on their journey",
+  "Saudi National": "Saudi National",
+  "+18 Suitable Age for Application": "+18 Suitable Age for Application",
+  "From Medina": "From Madinah",
+  "Has an Idea to Implement": "Has an Idea to Implement",
+  "Requirements": "Requirements",
+  "What you should know before applying to the program": "What you should know before applying to the program",
+  "Make sure you meet these requirements before applying to our programs": "Make sure you meet these requirements before applying to our programs",
+  "Submission and Screening": "Submission and Screening",
+  "Submitting applications and reviewing proposed ideas": "Submitting applications and reviewing proposed ideas",
+  "Evaluation and Selection": "Evaluation and Selection",
+  "Evaluating ideas and selecting the most suitable for the program": "Evaluating ideas and selecting the most suitable for the program",
+  "Training and Development": "Training and Development",
+  "Intensive training programs to develop skills": "Intensive training programs to develop skills",
+  "Implementation and Follow-up": "Implementation and Follow-up",
+  "Project implementation with continuous follow-up": "Project implementation with continuous follow-up",
+  "Launch and Growth": "Launch and Growth",
+  "Project Launch and Supporting Sustainable Growth": "Project Launch and Supporting Sustainable Growth",
+  "Stages": "Stages",
+  "Stages of turning an idea into a project": "Stages of turning an idea into a project",
+  "We accompany you every step of the way in your journey to transforming your idea into a successful project": "We accompany you every step of the way on your journey to turning your idea into a successful project",
+  "E-Learning Platform": "E-Learning Platform",
+  "An integrated educational platform offering courses in various fields": "An integrated educational platform offering courses in various fields",
+  "Education": "Education",
+  "Technology": "Technology",
+  "Application Express Delivery": "Express Delivery Application",
+  "An express delivery app that connects customers with service providers": "An express delivery app that connects customers with service providers",
+  "Services": "Services",
+  "Apps": "Apps",
+  "Inventory Management System": "Inventory Management System",
+  "An intelligent inventory and sales management system for small businesses": "An intelligent inventory and sales management system for small businesses",
+  "Management": "Management",
+  "Software": "Software",
+  "Smart Booking Platform": "Smart Booking Platform",
+  "A platform for easily booking appointments and services": "A platform for booking appointments and services with ease",
+  "Booking": "Booking",
+  "Health and Fitness App": "Health and Fitness App",
+  "A comprehensive app for tracking health and fitness": "A comprehensive app for tracking health and fitness",
+  "Health": "Health",
+  "Applications": "Applications",
+  "Electronic Payment System": "Electronic Payment System",
+  "Secure and easy-to-use electronic payment solutions": "Secure and easy-to-use electronic payment solutions",
+  "Finance": "Finance",
+  "Our Work": "Our Work",
+  "Our Projects": "Our Projects",
+  "A collection of successful projects that we helped develop and launch": "A collection of successful projects we helped develop and launch",
+  "Team": "Team",
+  "Successful Partnerships": "Successful Partnerships",
+  "The building": "The Building",
+  "Growth and Development": "Growth and Development",
+  "Entrepreneurs": "Entrepreneurs",
+  "Our Gallery": "Our Gallery",
+  "The Exhibition": "The Exhibition",
+  "Highlights of our journey and achievements with our partners": "Highlights of our journey and achievements with our partners",
+  "accelerator": {
+    "badge": "Business Accelerator",
+    "hero": {
+      "title": "Business Acceleration Program",
+      "description": "Intensive program to accelerate your startup growth through expert mentorship, funding, and training",
+      "applyButton": "Apply Now",
+      "downloadGuide": "Download Program Guide"
+    },
+    "stats": {
+      "companiesAccelerated": "Companies Accelerated",
+      "marketValue": "Market Value (SAR)",
+      "successRate": "Success Rate",
+      "expertMentors": "Expert Mentors"
+    },
+    "benefits": {
+      "title": "Program Benefits",
+      "items": {
+        "growth": {
+          "title": "Accelerate Growth",
+          "description": "3-6 month intensive program to accelerate your project growth"
+        },
+        "mentorship": {
+          "title": "Expert Mentorship",
+          "description": "Guidance from industry experts and successful entrepreneurs"
+        },
+        "funding": {
+          "title": "Funding Opportunities",
+          "description": "Access to investor network and seed funding"
+        },
+        "training": {
+          "title": "Intensive Training",
+          "description": "Specialized workshops and training courses"
+        }
+      }
+    },
+    "timeline": {
+      "title": "Program Phases",
+      "phases": {
+        "phase1": {
+          "label": "Phase 1",
+          "title": "Assessment & Admission",
+          "duration": "2 Weeks",
+          "activities": {
+            "application": "Application",
+            "review": "Business Review",
+            "interviews": "Interviews",
+            "acceptance": "Acceptance"
+          }
+        },
+        "phase2": {
+          "label": "Phase 2",
+          "title": "Development & Training",
+          "duration": "8-12 Weeks",
+          "activities": {
+            "workshops": "Workshops",
+            "mentoring": "Mentoring Sessions",
+            "development": "Product Development",
+            "teamBuilding": "Team Building"
+          }
+        },
+        "phase3": {
+          "label": "Phase 3",
+          "title": "Scaling & Funding",
+          "duration": "4-8 Weeks",
+          "activities": {
+            "scaling": "Scaling Strategy",
+            "pitch": "Investor Pitch",
+            "funding": "Funding Round",
+            "launch": "Launch"
+          }
+        }
+      }
+    },
+    "requirements": {
+      "title": "Admission Requirements",
+      "items": {
+        "businessModel": {
+          "title": "Clear Business Model",
+          "description": "Must have a defined and scalable business model"
+        },
+        "team": {
+          "title": "Committed Team",
+          "description": "Full-time founding team committed to the program"
+        },
+        "mvp": {
+          "title": "MVP Product",
+          "description": "Minimum viable product or demonstrable prototype"
+        },
+        "growth": {
+          "title": "Growth Potential",
+          "description": "High growth potential and market scalability"
+        }
+      }
+    },
+    "cta": {
+      "title": "Ready to Accelerate Your Growth?",
+      "description": "Join the next cohort of our acceleration program and start your journey to success",
+      "button": "Apply Now"
+    }
+  },
+  "companies": {
+    "badge": "Our Companies",
+    "title": "Companies in Our Network",
+    "subtitle": "Discover innovative companies that have grown through our programs and partnerships",
+    "items": [
+      {
+        "name": "Tech Innovation Co.",
+        "category": "Technology",
+        "description": "Specialized company in developing innovative technical solutions"
+      },
+      {
+        "name": "E-Commerce Foundation",
+        "category": "Commerce",
+        "description": "Advanced e-commerce platform serving the local market"
+      },
+      {
+        "name": "Smart Solutions Co.",
+        "category": "Consulting",
+        "description": "Management consulting and smart solutions for startups"
+      },
+      {
+        "name": "Digital Creativity Group",
+        "category": "Marketing",
+        "description": "Integrated digital marketing agency for brands"
+      }
+    ],
+    "viewMore": "Discover All Projects"
+  },
+  "contact": {
+    "badge": "Contact Us",
+    "title": "We're Here to Help",
+    "subtitle": "Have a question or inquiry? Contact us and we'll be happy to help you",
+    "form": {
+      "labels": {
+        "fullName": "Full Name",
+        "mobileNumber": "Mobile Number",
+        "email": "Email Address",
+        "inquiryType": "Inquiry Type",
+        "requestDetails": "Request Details"
+      },
+      "placeholders": {
+        "fullName": "Enter your full name",
+        "mobileNumber": "05xxxxxxxx",
+        "email": "example@email.com",
+        "inquiryType": "Select inquiry type",
+        "requestDetails": "Write your inquiry details here"
+      },
+      "validation": {
+        "allFieldsRequired": "Please fill all fields",
+        "invalidEmail": "Invalid email address",
+        "invalidMobile": "Invalid mobile number (must be Saudi format: 05xxxxxxxx)"
+      },
+      "buttons": {
+        "send": "Send Message",
+        "sending": "Sending..."
+      },
+      "success": "Your message has been sent successfully"
+    },
+    "inquiryTypes": [
+      {
+        "value": "business-incubation",
+        "label": "Business Incubation"
+      },
+      {
+        "value": "business-acceleration",
+        "label": "Business Acceleration"
+      },
+      {
+        "value": "iso-certification",
+        "label": "ISO Certification"
+      },
+      {
+        "value": "consulting",
+        "label": "Consulting"
+      },
+      {
+        "value": "workspace",
+        "label": "Workspace"
+      },
+      {
+        "value": "other",
+        "label": "Other"
+      }
+    ],
+    "info": {
+      "phone": {
+        "title": "Call Us",
+        "hours": "Sunday - Thursday, 9:00 AM - 6:00 PM"
+      },
+      "email": {
+        "title": "Email Us",
+        "response": "We reply within 24 hours"
+      },
+      "location": {
+        "title": "Visit Us",
+        "city": "Madinah",
+        "country": "Saudi Arabia"
+      },
+      "workingHours": {
+        "title": "Working Hours",
+        "weekdays": "Sunday - Thursday",
+        "weekdaysTime": "9:00 AM - 6:00 PM",
+        "weekend": "Friday - Saturday",
+        "closed": "Closed"
+      }
+    }
+  },
+  "footer": {
+    "brand": {
+      "name": "Business Hub",
+      "nameAr": "بيزنس هب",
+      "tagline": "We start with you from idea to success. Your partner in transforming ideas into successful and innovative projects."
+    },
+    "newsletter": {
+      "title": "Subscribe to Newsletter",
+      "placeholder": "Your email"
+    },
+    "sections": {
+      "services": {
+        "title": "Services",
+        "links": [
+          {
+            "text": "Business Accelerators",
+            "href": "/accelerator"
+          },
+          {
+            "text": "Business Incubation",
+            "href": "/incubation"
+          },
+          {
+            "text": "ISO Certifications",
+            "href": "/iso"
+          },
+          {
+            "text": "Workspaces",
+            "href": "/workspaces"
+          }
+        ]
+      },
+      "company": {
+        "title": "Company",
+        "links": [
+          {
+            "text": "About Us",
+            "href": "/about-us"
+          },
+          {
+            "text": "Our Work",
+            "href": "/projects"
+          },
+          {
+            "text": "Gallery",
+            "href": "/gallery"
+          },
+          {
+            "text": "Follow Us",
+            "href": "/follow-us"
+          },
+          {
+            "text": "Contact Us",
+            "href": "/contact-us"
+          }
+        ]
+      },
+      "legal": {
+        "title": "Legal",
+        "links": [
+          {
+            "text": "Terms & Conditions",
+            "href": "/terms"
+          },
+          {
+            "text": "Privacy Policy",
+            "href": "/privacy"
+          },
+          {
+            "text": "Refund Policy",
+            "href": "/refund"
+          }
+        ]
+      },
+      "contact": {
+        "title": "Contact Us",
+        "address": "Madinah, Saudi Arabia"
+      }
+    },
+    "copyright": "© 2025 Business Hub. All rights reserved."
+  },
+  "gallery": {
+    "badge": "Gallery",
+    "title": "Photo Gallery",
+    "subtitle": "Explore our spaces and events through our photo gallery"
+  },
+  "incubation": {
+    "badge": "Business Incubation",
+    "hero": {
+      "title": "Business Incubation Program",
+      "description": "Supportive environment to transform your idea into a successful project through resources, mentorship, and training",
+      "ctaButton": "Start Your Journey"
+    },
+    "features": {
+      "title": "What We Offer",
+      "items": [
+        {
+          "title": "Equipped Workspaces",
+          "description": "Fully equipped offices and coworking spaces"
+        },
+        {
+          "title": "Continuous Mentorship",
+          "description": "Continuous support and mentorship from industry experts"
+        },
+        {
+          "title": "Specialized Training",
+          "description": "Specialized training programs and workshops"
+        },
+        {
+          "title": "Funding Support",
+          "description": "Help accessing funding and investors"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Join Our Business Incubator",
+      "description": "Start your entrepreneurial journey with us and get all the support you need",
+      "button": "Contact Us"
+    }
+  },
+  "login": {
+    "backToHome": "Back to Home",
+    "brand": {
+      "name": "Business Hub",
+      "nameAr": "بيزنس هب",
+      "tagline": "From Idea to Success"
+    },
+    "features": [
+      {
+        "title": "Full Access",
+        "description": "Complete access to all resources and programs"
+      },
+      {
+        "title": "Track Progress",
+        "description": "Easily track your project progress"
+      },
+      {
+        "title": "Direct Support",
+        "description": "Direct communication with support team"
+      }
+    ],
+    "stats": [
+      {
+        "value": "500+",
+        "label": "Projects"
+      },
+      {
+        "value": "1000+",
+        "label": "Clients"
+      },
+      {
+        "value": "95%",
+        "label": "Satisfaction"
+      }
+    ],
+    "header": {
+      "badge": "Login",
+      "title": "Welcome Back",
+      "subtitle": "Sign in to access your account"
+    },
+    "social": {
+      "google": "Continue with Google",
+      "facebook": "Facebook",
+      "linkedin": "LinkedIn",
+      "divider": "OR"
+    },
+    "form": {
+      "email": {
+        "label": "Email Address",
+        "placeholder": "name@example.com"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "••••••••"
+      },
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign In",
+      "submitting": "Logging in..."
+    },
+    "signup": {
+      "text": "Don't have an account?",
+      "link": "Sign up"
+    },
+    "validation": {
+      "allFieldsRequired": "Please fill in all required fields",
+      "invalidEmail": "Please enter a valid email address"
+    },
+    "messages": {
+      "loginSuccess": "Login successful!",
+      "loginFailed": "Sign in failed",
+      "socialLogin": "Logging in with {provider}..."
+    }
+  },
+  "ourWork": {
+    "badge": "Our Work",
+    "title": "Our Work & Achievements",
+    "subtitle": "Discover the projects and companies we helped achieve success"
+  },
+  "privacy": {
+    "badge": "Privacy Policy",
+    "title": "Privacy Policy",
+    "subtitle": "We are committed to protecting your privacy and the security of your personal information",
+    "lastUpdated": "Last updated: November 2025",
+    "sections": [
+      {
+        "title": "Information Collection",
+        "content": "We collect information that you provide directly to us when registering or using our services, including name, email, phone number, and information related to your project. We also automatically collect information about your use of the site such as IP address, browser type, and browsing history to improve your experience."
+      },
+      {
+        "title": "Use of Information",
+        "content": "We use the collected information to provide and improve our services, communicate with you about our programs and events, process your requests and transactions, and personalize your experience on our platform. We may also use the information for analytical purposes and developing new services that meet your needs."
+      },
+      {
+        "title": "Information Protection",
+        "content": "We take strict security measures to protect your personal information from unauthorized access or misuse. We use advanced encryption technologies, firewalls, and continuous monitoring systems. Your data is stored on secure servers and accessed only by authorized personnel."
+      },
+      {
+        "title": "Information Sharing",
+        "content": "We do not sell or rent your personal information to third parties. We may share your information with trusted partners who help us provide our services, or when legally required. All third parties are obligated to protect your information and maintain its confidentiality according to the highest standards."
+      },
+      {
+        "title": "Your Rights",
+        "content": "You have the right to access your personal information, request its correction or deletion, object to its processing, and request data portability. You can also withdraw your consent to data processing at any time. To exercise any of these rights, please contact us through available communication channels."
+      },
+      {
+        "title": "Cookies",
+        "content": "We use cookies to enhance your experience on our site, remember your preferences, and analyze site usage. You can control cookie settings through your browser, but disabling them may affect some site functionalities."
+      }
+    ],
+    "dataTypes": {
+      "title": "Types of Data Collected",
+      "categories": [
+        {
+          "title": "Personal Identification Information",
+          "items": [
+            "Full Name",
+            "Email Address",
+            "Phone Number",
+            "Address"
+          ]
+        },
+        {
+          "title": "Project Information",
+          "items": [
+            "Project Name",
+            "Business Field",
+            "Project Stage",
+            "Funding Requirements"
+          ]
+        },
+        {
+          "title": "Usage Data",
+          "items": [
+            "IP Address",
+            "Browser Type",
+            "Browsing History",
+            "Pages Visited"
+          ]
+        }
+      ]
+    },
+    "cta": {
+      "title": "Have Privacy Questions?",
+      "description": "We are here to answer all your questions about how we protect your data",
+      "button": "Contact Us"
+    }
+  },
+  "refund": {
+    "badge": "Refund Policy",
+    "title": "Refund & Return Policy",
+    "subtitle": "Terms and procedures for payment refunds and cancellations",
+    "lastUpdated": "Last updated: November 2025",
+    "conditions": {
+      "eligible": {
+        "title": "Refund Eligible Cases",
+        "items": [
+          "Service cancellation at least 7 days before start",
+          "Failure to deliver the agreed service",
+          "Technical issues from our side preventing service use",
+          "Billing error or duplicate payment"
+        ]
+      },
+      "nonEligible": {
+        "title": "Non-Refundable Cases",
+        "items": [
+          "Cancellation after service commencement",
+          "Non-compliance with service terms and conditions",
+          "Customized services that have been completed",
+          "Cancellation within 48 hours of service start"
+        ]
+      }
+    },
+    "process": {
+      "title": "Refund Process Steps",
+      "steps": [
+        {
+          "step": "01",
+          "title": "Submit Request",
+          "description": "Submit refund request via contact form or email with transaction number"
+        },
+        {
+          "step": "02",
+          "title": "Review",
+          "description": "Your request will be reviewed within 3-5 business days and verified against conditions"
+        },
+        {
+          "step": "03",
+          "title": "Approval",
+          "description": "You will be notified of approval or rejection with reasons provided"
+        },
+        {
+          "step": "04",
+          "title": "Refund",
+          "description": "Amount will be refunded within 7-14 business days to original payment method"
+        }
+      ]
+    },
+    "partialRefunds": {
+      "title": "Partial Refund Rates",
+      "subtitle": "Refund percentage depends on timing of cancellation request",
+      "rates": [
+        {
+          "percentage": "100%",
+          "condition": "Cancellation 7+ days before start"
+        },
+        {
+          "percentage": "50%",
+          "condition": "Cancellation 3-6 days before start"
+        },
+        {
+          "percentage": "25%",
+          "condition": "Cancellation 1-2 days before start"
+        },
+        {
+          "percentage": "0%",
+          "condition": "Cancellation after start or same day"
+        }
+      ]
+    },
+    "notes": {
+      "title": "Important Notes",
+      "items": [
+        "Refund will be issued to the same payment method used for original payment",
+        "Refund process may take 7-14 business days depending on bank",
+        "Bank transaction fees are non-refundable",
+        "For partial refunds, a 5% administrative fee will be deducted",
+        "For full refund, request must be made at least 7 days before service start"
+      ]
+    },
+    "cta": {
+      "title": "Need Help?",
+      "description": "Our customer service team is ready to help you with the refund process",
+      "button": "Contact Us"
+    }
+  },
+  "team": {
+    "badge": "Our Team",
+    "title": "Meet Our Team",
+    "subtitle": "A team of experts and specialists committed to supporting entrepreneurs and turning ideas into reality",
+    "stats": [
+      {
+        "value": "50+",
+        "label": "Dedicated Employees"
+      },
+      {
+        "value": "15+",
+        "label": "Years Experience"
+      },
+      {
+        "value": "500+",
+        "label": "Successful Projects"
+      },
+      {
+        "value": "10+",
+        "label": "Specialized Departments"
+      }
+    ],
+    "executive": {
+      "title": "Executive Team",
+      "subtitle": "Visionary leaders driving the organization towards excellence and innovation",
+      "members": [
+        {
+          "name": "Ahmed Mohammed Al-Ali",
+          "position": "Chief Executive Officer (CEO)",
+          "bio": "Visionary leader with over 20 years of experience in entrepreneurship and innovation",
+          "email": "ahmed.ali@businesshub.sa",
+          "phone": "+966 50 123 4567",
+          "specialties": [
+            "Strategic Leadership",
+            "Entrepreneurship",
+            "Innovation"
+          ]
+        },
+        {
+          "name": "Fatima Ahmed Al-Saeed",
+          "position": "Chief Financial Officer (CFO)",
+          "bio": "Expert in financial management and investment with a proven track record in project growth",
+          "email": "fatima.saeed@businesshub.sa",
+          "phone": "+966 50 234 5678",
+          "specialties": [
+            "Financial Management",
+            "Investment",
+            "Financial Planning"
+          ]
+        },
+        {
+          "name": "Khaled Abdullah Al-Harthi",
+          "position": "Chief Operating Officer (COO)",
+          "bio": "Specialist in operations development and improving organizational efficiency",
+          "email": "khaled.harthi@businesshub.sa",
+          "phone": "+966 50 345 6789",
+          "specialties": [
+            "Operations Management",
+            "Efficiency Improvement",
+            "Quality"
+          ]
+        }
+      ]
+    },
+    "management": {
+      "title": "Management Team",
+      "subtitle": "Specialized managers running daily operations efficiently and effectively",
+      "members": [
+        {
+          "name": "Noura Saeed Al-Qahtani",
+          "position": "HR Manager",
+          "department": "Human Resources",
+          "email": "noura.qahtani@businesshub.sa",
+          "specialties": [
+            "Recruitment",
+            "Professional Development",
+            "Corporate Culture"
+          ]
+        },
+        {
+          "name": "Mohammed Ali Al-Shamri",
+          "position": "Marketing Manager",
+          "department": "Marketing",
+          "email": "mohammed.shamri@businesshub.sa",
+          "specialties": [
+            "Digital Marketing",
+            "Branding",
+            "Social Media"
+          ]
+        },
+        {
+          "name": "Sarah Abdulrahman Al-Otaibi",
+          "position": "Programs Manager",
+          "department": "Programs & Training",
+          "email": "sarah.otaibi@businesshub.sa",
+          "specialties": [
+            "Program Management",
+            "Training",
+            "Development"
+          ]
+        },
+        {
+          "name": "Abdulaziz Fahad Al-Dosari",
+          "position": "Technology Manager",
+          "department": "Technology & Innovation",
+          "email": "abdulaziz.dosari@businesshub.sa",
+          "specialties": [
+            "Digital Transformation",
+            "Cybersecurity",
+            "Infrastructure"
+          ]
+        }
+      ]
+    },
+    "departmentHeads": {
+      "title": "Department Heads",
+      "subtitle": "Leaders of specialized departments ensuring excellence in every field",
+      "members": [
+        {
+          "name": "Reem Khaled Al-Mutairi",
+          "position": "Head of Consulting",
+          "department": "Consulting",
+          "email": "reem.mutairi@businesshub.sa"
+        },
+        {
+          "name": "Yasser Mohammed Al-Zahrani",
+          "position": "Head of Funding",
+          "department": "Funding",
+          "email": "yasser.zahrani@businesshub.sa"
+        },
+        {
+          "name": "Amal Sulaiman Al-Omari",
+          "position": "Head of Relations",
+          "department": "Public Relations",
+          "email": "amal.omari@businesshub.sa"
+        },
+        {
+          "name": "Talal Ahmed Al-Ghamdi",
+          "position": "Head of Quality",
+          "department": "Quality & Excellence",
+          "email": "talal.ghamdi@businesshub.sa"
+        },
+        {
+          "name": "Mona Abdullah Al-Shehri",
+          "position": "Head of Partnerships",
+          "department": "Strategic Partnerships",
+          "email": "mona.shehri@businesshub.sa"
+        },
+        {
+          "name": "Omar Faisal Al-Anzi",
+          "position": "Head of Workspaces",
+          "department": "Shared Workspaces",
+          "email": "omar.anzi@businesshub.sa"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Join Our Team",
+      "subtitle": "We are always looking for exceptional talent to join our growing team",
+      "button": "Browse Open Positions"
+    },
+    "contact": "Contact"
+  },
+  "terms": {
+    "badge": "Terms & Conditions",
+    "title": "Terms & Conditions",
+    "subtitle": "Please read these terms and conditions carefully before using our services",
+    "lastUpdated": "Last updated: November 2025",
+    "sections": [
+      {
+        "title": "General Terms",
+        "content": "Welcome to Business Hub. By using our services, you agree to comply with these terms and conditions. Please read them carefully before using any of our services. We reserve the right to modify these terms at any time, and you will be notified of any material changes."
+      },
+      {
+        "title": "User Rights and Obligations",
+        "content": "As a user of our services, you have the right to access all available resources and programs. You must provide accurate and complete information when registering and maintain the confidentiality of your account data. Using our services for any illegal or unethical purposes is prohibited. We reserve the right to suspend or cancel your account in case of violation of these terms."
+      },
+      {
+        "title": "Intellectual Property",
+        "content": "All content and materials available on our platform, including texts, images, logos, and software, are protected under intellectual property laws. No content may be copied, distributed, or modified without prior written permission from Business Hub. Business Hub retains all intellectual property rights to the provided content."
+      },
+      {
+        "title": "Disclaimer",
+        "content": "Our services are provided \"as is\" without any express or implied warranties. Business Hub is not responsible for any direct or indirect damages that may result from the use or inability to use our services. We make every effort to ensure the accuracy of the information provided, but we do not guarantee that it is error-free. The user bears full responsibility for decisions made based on the information provided."
+      }
+    ],
+    "additionalTerms": {
+      "title": "Additional Terms",
+      "categories": [
+        {
+          "title": "Fees and Payment",
+          "points": [
+            "All fees are stated in Saudi Riyals and include VAT",
+            "Payment is required in advance before service commencement",
+            "Fees are non-refundable except in exceptional cases according to the refund policy",
+            "We reserve the right to modify prices with prior notice"
+          ]
+        },
+        {
+          "title": "Service Termination",
+          "points": [
+            "Either party may terminate the service with 30 days prior notice",
+            "We reserve the right to terminate the service immediately in case of violation of terms",
+            "Upon service termination, all financial obligations must be settled",
+            "Data is retained for 90 days after service termination"
+          ]
+        },
+        {
+          "title": "Governing Law",
+          "points": [
+            "These terms are governed by the laws of Saudi Arabia",
+            "Any disputes are resolved through competent courts in Madinah",
+            "Arabic is the official language for contracts and agreements",
+            "In case of conflict between Arabic and English versions, the Arabic version prevails"
+          ]
+        }
+      ]
+    },
+    "cta": {
+      "title": "Have Questions?",
+      "description": "Our team is ready to answer all your questions",
+      "button": "Contact Us"
+    }
+  },
+  "workspaces": {
+    "hero": {
+      "badge": "Workspaces",
+      "title": "Professional Workspaces",
+      "subtitle": "Flexible office spaces designed for productivity and success"
+    },
+    "stats": [
+      {
+        "value": "500+",
+        "label": "Offices"
+      },
+      {
+        "value": "1000+",
+        "label": "Clients"
+      },
+      {
+        "value": "95%",
+        "label": "Satisfaction"
+      }
+    ],
+    "services": {
+      "badge": "Our Services",
+      "title": "Choose Your Workspace",
+      "subtitle": "Flexible solutions that fit your needs",
+      "pricing": {
+        "monthly": "/month",
+        "contact": "Contact Us",
+        "popular": "Popular",
+        "cta": "Book Now"
+      },
+      "items": [
+        {
+          "name": "Shared Workspace",
+          "subtitle": "For Individuals & Freelancers",
+          "description": "A shared workspace with all basic facilities for individuals looking for a professional work environment",
+          "ideal": "Ideal for: Freelancers and individuals",
+          "price": "SAR 500"
+        },
+        {
+          "name": "Meeting Room",
+          "subtitle": "Per Hour",
+          "description": "Fully equipped meeting rooms available for rent by the hour for your meetings and training sessions",
+          "ideal": "Ideal for: Meetings and training",
+          "price": "SAR 300"
+        },
+        {
+          "name": "Private Office",
+          "subtitle": "For Teams",
+          "description": "A private office with all facilities and services for small and medium teams",
+          "ideal": "Ideal for: Small and medium teams",
+          "price": "SAR 1,500"
+        },
+        {
+          "name": "Complete Floor",
+          "subtitle": "For Large Companies",
+          "description": "A complete floor fully customized according to your company's needs with all facilities",
+          "ideal": "Ideal for: Large companies",
+          "price": "Contact Us"
+        }
+      ]
+    },
+    "features": {
+      "badge": "Premium Features",
+      "title": "Everything You Need",
+      "subtitle": "World-class facilities and services for your comfort",
+      "items": [
+        {
+          "name": "24/7 Security",
+          "description": "Advanced security systems with round-the-clock surveillance"
+        },
+        {
+          "name": "Coffee & Tea",
+          "description": "Free unlimited coffee and tea throughout the day"
+        },
+        {
+          "name": "24/7 Access",
+          "description": "Access your workspace anytime, any day"
+        },
+        {
+          "name": "High-Speed Internet",
+          "description": "Super-fast internet connection up to 1 Gbps"
+        },
+        {
+          "name": "Printing Services",
+          "description": "Printing, scanning, and copying services"
+        },
+        {
+          "name": "Storage Space",
+          "description": "Secure storage space for your files and equipment"
+        },
+        {
+          "name": "Reception Services",
+          "description": "Professional reception to receive your guests"
+        },
+        {
+          "name": "Smart Access",
+          "description": "Electronic access system via fingerprint or card"
+        }
+      ]
+    },
+    "comparison": {
+      "badge": "Compare Services",
+      "title": "Service Comparison",
+      "subtitle": "Find the perfect workspace for your needs",
+      "tableHeaders": {
+        "feature": "Feature"
+      }
+    },
+    "cta": {
+      "badge": "Ready to Start?",
+      "title": "Start Your Journey Today",
+      "subtitle": "Book a free tour to visit our workspaces and choose what suits you",
+      "button": "Book Free Tour",
+      "call": "Or call us:",
+      "location": "Riyadh, Saudi Arabia"
+    },
+    "details": {
+      "show": "View Details",
+      "hide": "Hide Details",
+      "included": "Included Features:"
+    }
+  },
+  "reviews": {
+    "badge": "Client Reviews",
+    "title": "What Our Clients Say",
+    "subtitle": "Success stories from entrepreneurs and companies we supported in their journey",
+    "items": [
+      {
+        "name": "Fatima Ali",
+        "position": "Startup Project Manager",
+        "review": "Very professional and supportive team. I got everything I needed to successfully launch my project. Highly recommend them to every entrepreneur.",
+        "avatar": "https://i.pravatar.cc/150?img=45",
+        "rating": 5
+      },
+      {
+        "name": "Khaled Al-Saeed",
+        "position": "Entrepreneur",
+        "review": "Amazing experience! The incubator environment and technical and advisory support helped me overcome challenges and achieve my goals.",
+        "avatar": "https://i.pravatar.cc/150?img=33",
+        "rating": 5
+      },
+      {
+        "name": "Sarah Abdullah",
+        "position": "Marketing Company Founder",
+        "review": "Thanks to Business Hub for the continuous support. I obtained the ISO certificate thanks to their excellent and professional assistance.",
+        "avatar": "https://i.pravatar.cc/150?img=25",
+        "rating": 5
+      },
+      {
+        "name": "Mohammed Al-Harthi",
+        "position": "Startup Founder",
+        "review": "The services provided by Business Hub are excellent and professional. They helped me build a strong business plan and secure the necessary funding.",
+        "avatar": "https://i.pravatar.cc/150?img=68",
+        "rating": 5
+      }
+    ]
+  },
+  "news": {
+    "badge": "Latest News",
+    "title": "News & Updates",
+    "subtitle": "Stay updated with the latest news and developments in the entrepreneurship world",
+    "readMore": "Read More",
+    "items": [
+      {
+        "title": "Launch of New Startup Support Program",
+        "excerpt": "Business Hub announced a new program to support 100 startups over the next year with funding up to 50 million SAR.",
+        "date": "January 15, 2025",
+        "readTime": "5 min read",
+        "category": "Programs",
+        "image": "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80"
+      },
+      {
+        "title": "Workshop on Digital Entrepreneurship",
+        "excerpt": "Business Hub organizes a free workshop on digital entrepreneurship and digital transformation for SMEs.",
+        "date": "January 10, 2025",
+        "readTime": "3 min read",
+        "category": "Events",
+        "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80"
+      },
+      {
+        "title": "Signing Strategic Partnership Agreement",
+        "excerpt": "Business Hub signed a strategic partnership agreement with major investment companies to support entrepreneurs with innovative solutions.",
+        "date": "January 5, 2025",
+        "readTime": "4 min read",
+        "category": "Partnerships",
+        "image": "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80"
+      }
+    ]
   }
 }

@@ -2,6 +2,10 @@
 import { headers } from "next/headers";
 import { GeoMetadata } from "@/types/locales";
 
+import { getTranslations } from "next-intl/server";
+import { LayoutProps } from "@/types/locales";
+
+import { Metadata } from "next";
 export async function getGeoData(): Promise<GeoMetadata> {
   try {
     const headersList = await headers();
@@ -132,3 +136,74 @@ export const middleEastConfig = {
   isRTLLanguage: (country: string) =>
     ["SA", "AE", "QA", "KW", "BH", "OM"].includes(country),
 };
+
+export const createGenerateMetadata =
+  (pagename: string) =>
+  async ({ params }: LayoutProps): Promise<Metadata> => {
+    const { locale }: any = await params;
+    const t = await getTranslations({
+      locale,
+      namespace: `metadata.${pagename}`,
+    });
+    const geo = await getGeoData();
+    const isRTL = middleEastConfig.isRTLLanguage(geo.country);
+    return {
+      icons: {
+        icon: "/images/logo.svg",
+        shortcut: "/images/logo.svg",
+        apple: "/images/logo.svg",
+      },
+      title: {
+        default: t("title"),
+        template: "%s | " + t("title"),
+      },
+      description: t("description"),
+      keywords: t("keywords"),
+      alternates: {
+        canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${locale}`,
+        languages: {
+          en: `${process.env.NEXT_PUBLIC_DOMAIN}/en`,
+          ar: `${process.env.NEXT_PUBLIC_DOMAIN}/ar`,
+          "x-default": `${process.env.NEXT_PUBLIC_DOMAIN}/ar`,
+        },
+      },
+      authors: [{ name: t("authors") }],
+      creator: t("authors"),
+      publisher: t("authors"),
+      metadataBase: new URL(`${process.env.NEXT_PUBLIC_DOMAIN}`),
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          "max-video-preview": -1,
+          "max-image-preview": "large",
+          "max-snippet": -1,
+        },
+      },
+
+      // GEO Tags for Saudi Arabia
+      other: {
+        "geo.region": geo.country,
+        "geo.position": "24.7136;46.6753", // Riyadh coordinates
+        ICBM: "24.7136, 46.6753",
+
+        // Local Business Schema for Saudi Arabia
+        "business:contact_data:country_name": isRTL
+          ? "المملكة العربية السعودية"
+          : "Saudi Arabia",
+        "business:contact_data:region":
+          geo.region || (isRTL ? "الرياض" : "Riyadh"),
+        "business:contact_data:locality":
+          geo.city || (isRTL ? "الرياض" : "Riyadh"),
+
+        // Arabic language support
+        ...(isRTL && {
+          "content-language": "ar",
+          "content-script-type": "text/javascript",
+          "content-style-type": "text/css",
+        }),
+      },
+    };
+  };

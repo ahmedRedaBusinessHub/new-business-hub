@@ -7,15 +7,16 @@ import {
   RegistrationFormPage,
 } from "@/components/features/TestForm";
 import DataTable from "@/components/shared/DataTable";
-
-export default function HomePage() {
+import HomePage from "@/components/features/HomePage";
+export default function Home() {
+  return <HomePage />;
   return (
     <div>
       {/* Hero Section */}
       <section className="relative h-[600px] flex items-center justify-center bg-gradient-to-r from-blue-600 to-blue-800">
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative z-10 text-center text-white space-y-6 px-4">
-          <h1 className="text-5xl md:text-6xl font-bold">
+          <h1 className="text-5xl leading-20 md:text-6xl font-bold">
             Empowering Saudi Entrepreneurs
           </h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto">

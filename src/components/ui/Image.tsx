@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import placeholderImg from "@/assets/images/logo.svg"; // your fallback image
+import placeholderImg from "/images/logo.svg"; // your fallback image
 
 export default function AppImage({
   src,

@@ -61,7 +61,7 @@ export default function CTASection() {
       <div className="max-w-4xl mx-auto">
         {/* Main CTA */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+          <h2 className="text-4xl md:text-5xl leading-20 font-bold mb-6">
             Ready to Find Your Perfect Workspace?
           </h2>
           <p className="text-xl text-blue-100 mb-10">
@@ -134,7 +134,8 @@ export default function CTASection() {
         {/* Bottom Message */}
         <div className="text-center mt-12">
           <p className="text-blue-100 mb-4">
-            Need help? Contact our support team at support@businesshub.com
+            Need help? Contact our support team at{" "}
+            {process.env.NEXT_PUBLIC_EMAIL}
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 text-sm">
             <Link

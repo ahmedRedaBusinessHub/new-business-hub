@@ -1,23 +1,1413 @@
 {
   "metadata": {
     "home": {
-      "title": "مجموعة روابي أحد للمقاولات العامة",
-      "description": "روابي أحد شركة متخصصة في المقاولات والبنية التحتية - مشاريع طرق، جسور، ومنشآت حكومية وتجارية",
-      "keywords": "مقاولات, بنية تحتية, مشاريع إنشائية, طرق, جسور, روابي",
-      "authors": "محمد عودة البلادي"
+      "title": "بيزنس هب - تمكين رواد الأعمال والمشاريع المبتكرة في السعودية",
+      "description": "اكتشف بيزنس هب، شريكك في تحويل الأفكار إلى شركات ناجحة. تعرف على خدمات الاحتضان، المسرعات، والدعم المتكامل لرواد الأعمال في المملكة العربية السعودية.",
+      "keywords": "ريادة الأعمال, بيزنس هب, دعم الشركات الناشئة, احتضان, مسرعات, تطوير الأعمال, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "about": {
+      "title": "من نحن | بيزنس هب – الرؤية، الرسالة والفريق",
+      "description": "تعرف على قصة بيزنس هب، رؤيتنا، رسالتنا، قيمنا وفريقنا الذي يقود الابتكار ونجاح رواد الأعمال في السعودية.",
+      "keywords": "عن بيزنس هب, رؤية الشركة, الرسالة, الفريق, ريادة الأعمال, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "bookingISO": {
+      "title": "احصل على شهادة الأيزو – احجز استشارتك | بيزنس هب",
+      "description": "ابدأ رحلتك نحو شهادة الأيزو! احجز استشارة مع خبراء بيزنس هب وارتق بجودة منشأتك ومكانتها العالمية.",
+      "keywords": "شهادة الأيزو, حجز أيزو, استشارات الأيزو, إدارة الجودة, خبراء الأيزو, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "bookingAccelerator": {
+      "title": "احجز برنامج المسرعات | انطلق بنمو شركتك",
+      "description": "احجز مكانك في برامج المسرعات لدينا وعزز نمو مشروعك عبر التوجيه المكثف والموارد من بيزنس هب.",
+      "keywords": "برنامج المسرعات, حجز مسرع أعمال, نمو المشاريع, الإرشاد, ريادة الأعمال, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "bookingIncubation": {
+      "title": "احجز احتضان الأعمال | حوّل فكرتك إلى نجاح",
+      "description": "تقدم للاحتضان في بيزنس هب، واحصل على بيئة داعمة لتحويل فكرتك المبتكرة إلى شركة ناجحة.",
+      "keywords": "احتضان الأعمال, حاضنة أعمال, حجز احتضان, فكرة ناشئة, ريادة الأعمال, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "contactUs": {
+      "title": "اتصل بنا | بيزنس هب – دعم لرواد الأعمال والشركات الناشئة",
+      "description": "تواصل مع بيزنس هب للاستفسارات والدعم أو فرص الشراكة. نحن هنا لدعم رحلتك الريادية.",
+      "keywords": "اتصل بيزنس هب, دعم رواد الأعمال, مساعدة الشركات الناشئة, استفسار الأعمال, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "followUs": {
+      "title": "تابع بيزنس هب – آخر الأخبار وقصص النجاح",
+      "description": "انضم لبيزنس هب على وسائل التواصل واكتشف آخر الأخبار والفعاليات وقصص النجاح الملهمة.",
+      "keywords": "تابع بيزنس هب, أخبار, فعاليات, التواصل الاجتماعي, مجتمع الريادة, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "gallery": {
+      "title": "المعرض | بيزنس هب – إنجازات وفعاليات",
+      "description": "استعرض صور وملامح فعاليات وإنجازات بيزنس هب وقصص نجاح رواد الأعمال.",
+      "keywords": "معرض بيزنس هب, صور الفعاليات, قصص النجاح, ريادة الأعمال, إنجازات",
+      "authors": "يوسف عودة البلادي"
+    },
+    "projects": {
+      "title": "المشاريع | نجاحات مدعومة من بيزنس هب",
+      "description": "تعرف على المشاريع والشركات الناشئة التي ساهم بيزنس هب في انطلاقها، وشاهد الابتكار والنجاح.",
+      "keywords": "مشاريع بيزنس هب, شركات ناجحة, ابتكار الأعمال, ريادة الأعمال, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "teams": {
+      "title": "فريق العمل | تعرّف على خبراء بيزنس هب",
+      "description": "تعرف على نخبة الخبراء وأعضاء الفريق الذين يقودون بيزنس هب لتحقيق نجاح رواد الأعمال.",
+      "keywords": "فريق بيزنس هب, خبراء الأعمال, ريادة أعمال, مستشارون, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "workspaces": {
+      "title": "مساحات العمل | حلول مكتبية مرنة واحترافية – بيزنس هب",
+      "description": "اختر مساحة العمل المثالية لشركتك في بيزنس هب، بخطط مرنة وخدمات مميزة وبيئة تعاونية.",
+      "keywords": "مساحات عمل بيزنس هب, مكاتب مشتركة, حلول مكتبية, بيئة عمل, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "privacy": {
+      "title": "سياسة الخصوصية | بيزنس هب",
+      "description": "اطلع على سياسة الخصوصية الخاصة ببيزنس هب وكيفية حماية بياناتك واحترام خصوصيتك.",
+      "keywords": "سياسة الخصوصية, حماية البيانات, خصوصية المستخدم, بيزنس هب",
+      "authors": "يوسف عودة البلادي"
+    },
+    "refund": {
+      "title": "سياسة الاسترجاع | بيزنس هب",
+      "description": "تعرّف على سياسة الاسترجاع لدى بيزنس هب لمعلومات حول إعادة الدفعات والإلغاء وشروط الخدمة.",
+      "keywords": "سياسة الاسترجاع, إعادة الدفعات, الإلغاء, بيزنس هب",
+      "authors": "يوسف عودة البلادي"
+    },
+    "terms": {
+      "title": "الشروط والأحكام | بيزنس هب",
+      "description": "تعرف على الشروط والأحكام لاستخدام خدمات وموقع بيزنس هب.",
+      "keywords": "الشروط والأحكام, سياسة الخدمة, بيزنس هب, قانوني",
+      "authors": "يوسف عودة البلادي"
+    },
+    "login": {
+      "title": "تسجيل الدخول | بيزنس هب – دخول آمن لحسابك",
+      "description": "سجّل الدخول بأمان إلى حسابك في بيزنس هب لإدارة خدماتك وحجوزاتك وموارد ريادة الأعمال. وصول سريع وآمن للشركاء والعملاء.",
+      "keywords": "تسجيل الدخول, دخول العملاء, دخول الحساب, بيزنس هب, دخول آمن, إدارة الأعمال, الشركاء",
+      "authors": "يوسف عودة البلادي"
     }
   },
-  "common": {
-    "welcome": "مرحبا",
-    "login": "تسجيل الدخول",
-    "logout": "تسجيل الخروج",
-    "dashboard": "لوحة التحكم",
-    "settings": "الإعدادات"
+  "nav_home": "الرئيسية",
+  "nav_services": "الخدمات",
+  "nav_about": "من نحن",
+  "nav_workspaces": "مساحات العمل",
+  "nav_getISO": "احصل على الأيزو",
+  "nav_follow": "تابعنا",
+  "nav_contact": "اتصل بنا",
+  "hero_cta_discover": "اكتشف المزيد",
+  "partners_title": "شركاؤنا",
+  "values_badge": "قيمنا",
+  "values_title": "قيم بيزنس هب",
+  "values_subtitle": "نؤمن بمجموعة من القيم الأساسية التي توجه عملنا وتعكس التزامنا تجاه عملائنا",
+  "stats_projects": "مشروع ناجح",
+  "services_badge": "خدماتنا",
+  "companies_badge": "قصص النجاح",
+  "companies_title": "الشركات التي ساعدناها",
+  "companies_subtitle": "فخورون بإنجازات شركائنا",
+  "about_badge": "من نحن",
+  "about_title": "بيزنس هب - شريكك في النجاح",
+  "about_description": "بيزنس هب هو مركز رائد في مجال احتضان وتسريع الأعمال في المملكة العربية السعودية_ نوفر بيئة داعمة ومتكاملة لرواد الأعمال وأصحاب المشاريع الناشئة، حيث نساعدهم على تحويل أفكارهم إلى مشاريع ناجحة ومستدامة_",
+  "about_feature1_title": "خبرة واسعة",
+  "about_feature1_desc": "أكثر من 10 سنوات في دعم رواد الأعمال",
+  "about_feature2_title": "فريق محترف",
+  "about_feature2_desc": "نخبة من الخبراء والمستشارين",
+  "about_feature3_title": "شبكة واسعة",
+  "about_feature3_desc": "شراكات استراتيجية مع كبرى الشركات",
+  "about_feature4_title": "دعم متكامل",
+  "about_feature4_desc": "من الفكرة إلى النجاح والتوسع",
+  "mission_badge": "رسالتنا",
+  "mission_title": "الرسالة والأهداف",
+  "mission_missionTitle": "رسالتنا",
+  "mission_missionText": "تمكين رواد الأعمال وأصحاب المشاريع الناشئة من تحويل أفكارهم إلى مشاريع ناجحة ومستدامة، من خلال توفير بيئة حاضنة متكاملة تجمع بين الخبرة والابتكار والدعم المستمر_",
+  "mission_visionTitle": "رؤيتنا",
+  "mission_visionText": "أن نكون المنصة الأولى لاحتضان وتسريع الأعمال في المملكة العربية السعودية والمنطقة، ونساهم في بناء اقتصاد مزدهر قائم على الابتكار وريادة الأعمال_",
+  "mission_objective1": "دعم 500+ مشروع ناشئ بحلول 2030",
+  "mission_objective2": "خلق 5000+ فرصة عمل جديدة",
+  "mission_objective3": "تحقيق قيمة سوقية تتجاوز 2 مليار ريال",
+  "mission_objective4": "بناء شبكة من 100+ شريك استراتيجي",
+  "seo_badge": "كلمات مفتاحية",
+  "seo_title": "تحسين محركات البحث",
+  "seo_subtitle": "نساعدك على الظهور في نتائج البحث",
+  "seo_keyword1": "احتضان الأعمال",
+  "seo_keyword2": "تسريع الأعمال",
+  "seo_keyword3": "ريادة الأعمال",
+  "seo_keyword4": "المشاريع الناشئة",
+  "seo_keyword5": "شهادات الأيزو",
+  "seo_keyword6": "استشارات الأعمال",
+  "seo_keyword7": "تطوير الأعمال",
+  "seo_keyword8": "الابتكار",
+  "reviews_badge": "آراء العملاء",
+  "reviews_title": "ماذا يقول عملاؤنا",
+  "reviews_subtitle": "تجارب حقيقية من رواد الأعمال الذين نجحوا معنا",
+  "news_badge": "آخر الأخبار",
+  "news_title": "أحدث الأخبار والفعاليات",
+  "news_subtitle": "تابع آخر المستجدات والفعاليات في بيزنس هب",
+  "news_readMore": "اقرأ المزيد",
+  "footer_contact": "تواصل معنا",
+  "iso_hero_badge": "شهادات الأيزو",
+  "iso_hero_title": "احصل على شهادة الأيزو لمؤسستك",
+  "iso_hero_subtitle": "نساعدك في الحصول على شهادات الأيزو العالمية لتعزيز جودة وكفاءة أعمالك",
+  "iso_what_badge": "ما هو الأيزو؟",
+  "iso_what_title": "فهم الأيزو وأهميته",
+  "iso_what_desc": "الأيزو (ISO) هي المنظمة الدولية للمعايير التي تضع معايير عالمية لضمان الجودة والسلامة والكفاءة في مختلف المجالات_ تساعد شهادات الأيزو المؤسسات على تحسين عملياتها وزيادة ثقة العملاء والمنافسة في الأسواق العالمية_",
+  "iso_importance_badge": "الأهمية",
+  "iso_importance_title": "لماذا تحتاج شهادة الأيزو؟",
+  "iso_importance_companies_title": "للشركات",
+  "iso_importance_companies_desc": "تحسين الكفاءة التشغيلية، زيادة رضا العملاء، والحصول على ميزة تنافسية في السوق",
+  "iso_importance_institutions_title": "للمؤسسات",
+  "iso_importance_institutions_desc": "تعزيز المصداقية، تحسين الإدارة، والامتثال للمعايير الدولية",
+  "iso_importance_individuals_title": "للأفراد",
+  "iso_importance_individuals_desc": "تطوير المهارات المهنية، زيادة فرص التوظيف، والنمو الوظيفي",
+  "iso_importance_market_title": "للسوق التجاري",
+  "iso_importance_market_desc": "رفع مستوى الجودة، تعزيز الثقة، وتحفيز الابتكار والتطوير",
+  "iso_types_badge": "أنواع الشهادات",
+  "iso_types_title": "شهادات الأيزو المتاحة",
+  "iso_types_9001_title": "ISO 9001",
+  "iso_types_9001_desc": "إدارة الجودة",
+  "iso_types_14001_title": "ISO 14001",
+  "iso_types_14001_desc": "الإدارة البيئية",
+  "iso_types_45001_title": "ISO 45001",
+  "iso_types_45001_desc": "الصحة والسلامة المهنية",
+  "iso_types_27001_title": "ISO 27001",
+  "iso_types_27001_desc": "أمن المعلومات",
+  "iso_types_22000_title": "ISO 22000",
+  "iso_types_22000_desc": "سلامة الغذاء",
+  "iso_types_50001_title": "ISO 50001",
+  "iso_types_50001_desc": "إدارة الطاقة",
+  "iso_benefits_1": "تحسين جودة المنتجات والخدمات",
+  "iso_benefits_2": "زيادة رضا العملاء والاحتفاظ بهم",
+  "iso_benefits_3": "تقليل التكاليف وزيادة الكفاءة",
+  "iso_benefits_4": "تعزيز سمعة الشركة ومصداقيتها",
+  "iso_benefits_5": "فتح أسواق جديدة محلياً ودولياً",
+  "iso_benefits_6": "الامتثال للمتطلبات القانونية والتنظيمية",
+  "iso_process_badge": "العملية",
+  "iso_process_title": "خطوات الحصول على شهادة الأيزو",
+  "iso_process_step1_title": "التقييم الأولي",
+  "iso_process_step1_desc": "تقييم الوضع الحالي وتحديد المتطلبات",
+  "iso_process_step2_title": "التخطيط",
+  "iso_process_step2_desc": "وضع خطة عمل وتحديد الأهداف",
+  "iso_process_step3_title": "التنفيذ",
+  "iso_process_step3_desc": "تطبيق المعايير والإجراءات المطلوبة",
+  "iso_process_step4_title": "المراجعة الداخلية",
+  "iso_process_step4_desc": "فحص الامتثال وتحديد نقاط التحسين",
+  "iso_process_step5_title": "الشهادة",
+  "iso_process_step5_desc": "التدقيق الخارجي والحصول على الشهادة",
+  "iso_booking_badge": "احجز استشارة",
+  "iso_booking_title": "ابدأ رحلتك للحصول على شهادة الأيزو",
+  "iso_booking_subtitle": "املأ النموذج وسيتواصل معك أحد مستشارينا",
+  "iso_booking_company": "اسم الشركة / المؤسسة",
+  "iso_booking_name": "اسم المسؤول",
+  "iso_booking_position": "المنصب",
+  "iso_booking_email": "البريد الإلكتروني",
+  "iso_booking_phone": "رقم الهاتف",
+  "iso_booking_isoType": "نوع شهادة الأيزو المطلوبة",
+  "iso_booking_employees": "عدد الموظفين",
+  "iso_booking_industry": "القطاع",
+  "iso_booking_message": "ملاحظات إضافية",
+  "iso_booking_submit": "إرسال الطلب",
+  "iso_booking_success": "تم إرسال طلبك بنجاح! سنتواصل معك قريباً",
+  "follow_hero_badge": "ابقَ على تواصل",
+  "follow_hero_title": "تابعنا على وسائل التواصل",
+  "follow_hero_subtitle": "ابقَ على اطلاع دائم بآخر الأخبار والفعاليات وقصص النجاح من بيزنس هب",
+  "follow_social_badge": "وسائل التواصل",
+  "follow_social_title": "تواصل معنا",
+  "follow_social_subtitle": "انضم إلى مجتمعنا عبر جميع المنصات",
+  "follow_social_followers": "متابع",
+  "follow_social_follow": "تابعنا الآن",
+  "follow_profile_badge": "الملف التعريفي",
+  "follow_profile_title": "تحميل الملف التعريفي للشركة",
+  "follow_profile_subtitle": "احصل على معلومات تفصيلية عن خدماتنا وإنجازاتنا",
+  "follow_profile_arabic": "تحميل الملف بالعربية",
+  "follow_profile_english": "تحميل الملف بالإنجليزية",
+  "follow_profile_both": "تحميل النسختين",
+  "follow_profile_size": "ملف PDF",
+  "follow_newsletter_badge": "النشرة الإخبارية",
+  "follow_newsletter_title": "اشترك في نشرتنا الإخبارية",
+  "follow_newsletter_subtitle": "احصل على آخر التحديثات والنصائح والمحتوى الحصري مباشرة إلى بريدك",
+  "follow_newsletter_email": "البريد الإلكتروني",
+  "follow_newsletter_subscribe": "اشترك الآن",
+  "follow_newsletter_success": "تم الاشتراك في النشرة الإخبارية بنجاح!",
+  "follow_contact_badge": "تواصل معنا",
+  "follow_contact_title": "لديك استفسارات؟",
+  "follow_contact_subtitle": "فريقنا جاهز لمساعدتك",
+  "follow_contact_button": "اتصل بنا الآن",
+  "workspaces_hero_badge": "مساحات العمل",
+  "workspaces_hero_title": "مساحات عمل مصممة للنجاح",
+  "workspaces_hero_subtitle": "اختر مساحة العمل المثالية لعملك مع خدمات متكاملة وبيئة احترافية",
+  "workspaces_services_badge": "خدماتنا",
+  "workspaces_services_title": "حلول مساحات العمل",
+  "workspaces_services_subtitle": "نقدم مجموعة متنوعة من خيارات مساحات العمل لتناسب احتياجاتك",
+  "workspaces_service1_name": "المساحة المشتركة",
+  "workspaces_service1_subtitle": "باقة مرنة",
+  "workspaces_service1_desc": "مساحة عمل مشتركة مرنة مثالية لرواد الأعمال والفرق الصغيرة الذين يبحثون عن بيئة عمل تعاونية وديناميكية",
+  "workspaces_service1_ideal": "مثالي للمستقلين والفرق الصغيرة",
+  "workspaces_service2_name": "المكتب الافتراضي",
+  "workspaces_service2_subtitle": "حضور احترافي",
+  "workspaces_service2_desc": "عنوان تجاري محترف وخدمات مكتبية بدون الحاجة لمساحة فعلية، مثالي للشركات الناشئة والعاملين عن بُعد",
+  "workspaces_service2_ideal": "مثالي للعمل عن بُعد",
+  "workspaces_service3_name": "مكتب شركات صغير",
+  "workspaces_service3_subtitle": "مساحة خاصة",
+  "workspaces_service3_desc": "مكتب خاص مجهز بالكامل للفرق الصغيرة والشركات الناشئة التي تحتاج إلى خصوصية وهوية مستقلة",
+  "workspaces_service3_ideal": "مثالي للفرق 3-8 أشخاص",
+  "workspaces_service4_name": "مكتب شركات كبير",
+  "workspaces_service4_subtitle": "حلول متقدمة",
+  "workspaces_service4_desc": "مساحات واسعة ومجهزة بأحدث التقنيات للشركات المتوسطة والكبيرة التي تحتاج إلى بيئة عمل احترافية متكاملة",
+  "workspaces_service4_ideal": "مثالي للفرق 10+ أشخاص",
+  "workspaces_features_badge": "المميزات",
+  "workspaces_features_title": "خدمات ومميزات إضافية",
+  "workspaces_features_subtitle": "نوفر كل ما تحتاجه لتجربة عمل مريحة ومنتجة",
+  "workspaces_feature1_name": "خزنة آمنة",
+  "workspaces_feature1_desc": "خزنة شخصية لحفظ مستنداتك وأغراضك الثمينة بأمان تام",
+  "workspaces_feature2_name": "مياه وضيافة",
+  "workspaces_feature2_desc": "خدمات ضيافة متكاملة من مياه وقهوة ومشروبات طوال اليوم",
+  "workspaces_feature3_name": "وصول 24 ساعة",
+  "workspaces_feature3_desc": "إمكانية الوصول لمكتبك في أي وقت على مدار الساعة طوال أيام الأسبوع",
+  "workspaces_feature4_name": "إنترنت فائق السرعة",
+  "workspaces_feature4_desc": "اتصال إنترنت بتقنية الألياف الضوئية بسرعات عالية جداً",
+  "workspaces_feature5_name": "خدمات مكتبية",
+  "workspaces_feature5_desc": "طباعة، نسخ، مسح ضوئي، وخدمات سكرتارية احترافية",
+  "workspaces_feature6_name": "أدراج تخزين",
+  "workspaces_feature6_desc": "أدراج تخزين كبيرة ومتوسطة الحجم لتنظيم ملفاتك ومستلزماتك",
+  "workspaces_feature7_name": "لافتة خارجية",
+  "workspaces_feature7_desc": "طباعة لافتة خارجية تحمل اسم وشعار شركتك بتصميم احترافي",
+  "workspaces_feature8_name": "بصمة الأصابع",
+  "workspaces_feature8_desc": "إمكانية إضافة نظام بصمة للعملاء غير المشتركين في خدمة الوصول 24 ساعة",
+  "workspaces_pricing_badge": "الأسعار",
+  "workspaces_pricing_title": "اختر الباقة المناسبة",
+  "workspaces_pricing_subtitle": "خطط مرنة تناسب جميع احتياجاتك وميزانيتك",
+  "workspaces_pricing_monthly": "شهرياً",
+  "workspaces_pricing_popular": "الأكثر شيوعاً",
+  "workspaces_pricing_cta": "احجز الآن",
+  "workspaces_pricing_contact": "اتصل للسعر",
+  "workspaces_comparison_badge": "المقارنة",
+  "workspaces_comparison_title": "قارن بين الباقات",
+  "workspaces_comparison_subtitle": "اكتشف الفروقات بين خيارات مساحات العمل المختلفة",
+  "workspaces_cta_badge": "ابدأ الآن",
+  "workspaces_cta_title": "جاهز لبدء رحلتك؟",
+  "workspaces_cta_subtitle": "انضم إلى مئات الشركات الناجحة التي اختارت بيزنس هب",
+  "workspaces_cta_button": "احجز جولة مجانية",
+  "workspaces_cta_call": "أو اتصل بنا",
+  "ceo": {
+    "name": "يوسف البلادي",
+    "title": "الرئيس التنفيذي للشركة",
+    "quote": "مرحبًا بكم في مركز الأعمال، حيث نؤمن بقوة الأفراد والأفكار والمؤسسات في الريادة بالابتكار والتميز والهدف. مهمتنا بسيطة لكنها عميقة - تحويل الإمكانات إلى تقدم. من الشركات الناشئة إلى الشركات القائمة، نربط الطموح بالفرصة من خلال الاستشارات والحضانة والتسريع والتمكين. نفخر ببناء أنظمة بيئية تُمكّن النمو والتعاون في كل مرحلة من مراحل رحلة ريادة الأعمال. يمتد عملنا إلى مساحات العمل المشتركة وبرامج التدريب والمبادرات على المستوى الوطني التي تترجم الرؤية إلى تأثير قابل للقياس. نؤمن إيمانًا راسخًا بإمكانيات القيادة في المملكة العربية السعودية، ونحن ملتزمون بتشكيل اقتصاد لا ينافس عالميًا فحسب: بل يقود أيضًا. يوسف البلادي الرئيس التنفيذي، بيزنس هب",
+    "bio": "قائد رؤيوي مع أكثر من 15 عاماً من الخبرة في دعم وتمكين المشاريع الناشئة. تحت قيادته، ساعد بيزنس هب أكثر من 500 مشروع على النمو والازدهار.",
+    "experience": "سنة خبرة",
+    "successful_projects": "مشروع ناجح",
+    "strategic_partners": "شريك استراتيجي"
   },
-  "auth": {
-    "signIn": "تسجيل الدخول",
-    "username": "اسم المستخدم",
-    "password": "كلمة المرور",
-    "invalidCredentials": "بيانات اعتماد غير صالحة"
+  "linkedin": "لنكدان",
+  "twitter": "تويتير",
+  "email": "البريد الالكتروني",
+  "leadership": "القيادة",
+  "CEO_message": "كلمة الرئيس التنفيذي ",
+  "contact_us": "تواصل معنا",
+  "Pleasefillallfields": "الرجاء ملء جميع الحقول",
+  "Invalidemailaddress": "البريد الإلكتروني غير صحيح",
+  "Invalidmobilenumber": "رقم الجوال غير صحيح",
+  "Yourmessagehasbeensentsuccessfully": "تم إرسال رسالتك بنجاح!",
+  "WereHeretoHelp": "نحن هنا لمساعدتك",
+  "Enteryourfullname": "أدخل اسمك الكامل",
+  "MobileNumber": "رقم الجوال",
+  "InquiryType": "نوع الاستفسار",
+  "FullName": "الاسم الكامل",
+  "Join Our Team": "انضم إلى فريقنا",
+  "Our Team": "فريق العمل",
+  "Contact": "تواصل",
+  "Sending": "جارٍ الإرسا,ل...",
+  "We are always looking for exceptional talent to join our growing team": "نحن دائماً نبحث عن المواهب المتميزة للانضمام إلى فريقنا المتنامي",
+  "Browse Open Positions": "تصفح الوظائف المتاحة",
+  "SendMessage": "إرسال الرسالة",
+  "CallUs": "اتصل بنا",
+  "VisitUs": "زورنا",
+  "Madinah": "المدينة المنورة",
+  "Closed": "مغلق",
+  "Weekly Updates": "تحديثات أسبوعية",
+  "Exclusive Tips": "نصائح حصرية",
+  "Premium Content": "محتوى مميز",
+  "Subscribing": "جارٍ الاشتراك...",
+  "Invalid email address": "البريد الإلكتروني غير صحيح",
+  "Please enter your email": "الرجاء إدخال البريد الإلكتروني",
+  "Watch short content on TikTok": "شاهد المحتوى القصير على تيك توك",
+  "Join our channel on Telegram": "انضم إلى قناتنا على تيليجرام",
+  "Chat with us directly on WhatsApp": "تواصل معنا مباشرة عبر واتساب",
+  "Watch educational videos on YouTube": "شاهد الفيديوهات التعليمية على يوتيوب",
+  "Connect with us professionally on LinkedIn": "تواصل معنا مهنياً على لينكد إن",
+  "See our success stories on Instagram": "شاهد قصص نجاحنا على إنستجرام",
+  "Join our conversations on Twitter": "انضم إلى محادثاتنا على تويتر",
+  "Follow us on Facebook for latest news and updates": "تابعنا على فيسبوك لآخر الأخبار والتحديثات",
+  "FridaySaturday": "الجمعة - السبت",
+  "SundayThursday": "الأحد - الخميس",
+  "WorkingHours": "ساعات العمل",
+  "SaudiArabia": "المملكة العربية السعودية",
+  "Wereplywithin24hours": "نرد على الرسائل خلال 24 ساعة",
+  "EmailUs": "راسلنا",
+  "workTime": "الأحد - الخميس، 9 صباحاً - 6 مساءً",
+  "RequestDetails": "تفاصيل الطلب",
+  "Writeyourinquirydetailshere": "اكتب تفاصيل استفسارك هنا...",
+  "Selectinquirytype": "اختر نوع الاستفسار",
+  "HavequestioninquiryContactandwillhappyhelpyou": "لديك سؤال أو استفسار؟ تواصل معنا وسنكون سعداء بمساعدتك",
+  "Innovation & Entrepreneurship Hub": "مركز الابتكار وريادة الأعمال",
+  "They Trust Us": "يثقون بنا",
+  "Our Partners": "شركاؤنا",
+  "Collaboration and Adaptation": "التعاون والتكيف",
+  "Collaboration and Adaptation doc": "نعمل معًا لتحقيق أهدافكم",
+  "Reliability": "الموثوقية",
+  "Reliability doc": "شريك موثوق في رحلة نجاحك",
+  "Capability and Excellence": "القدرة والتميز",
+  "Capability and Excellence doc": "نقدم حلولاً مبتكرة ومتميزة",
+  "Sustainable Growth": "النمو المستدام",
+  "Sustainable Growth doc": "نساعدك على النمو المستمر",
+  "Responsiveness and Availability": "الاستجابة والإتاحة",
+  "Responsiveness and Availability doc": "دائمًا متاحون لخدمتك",
+  "Venture Market Capitalization": "القيمة السوقية للمشاريع",
+  "Subscriber": "مشترك",
+  "Investment Value": "قيمة الاستثمارات",
+  "Advisor": "مستشار ومرشد",
+  "Our Achievements": "إنجازاتنا",
+  "withnumbers": "بيزنس هب بالأرقام",
+  "withnumbersdoc": "أرقام تعكس نجاحنا وإنجازاتنا في دعم رواد الأعمال",
+  "Business Accelerators": "مسرعات الأعمال",
+  "Intensive programs to accelerate your projects growth and professional development": "برامج مكثفة لتسريع نمو مشروعك وتطويره بشكل احترافي",
+  "Business Incubation": "احتضان الأعمال",
+  "We provide a supportive environment to incubate your project from idea to implementation": "نوفر بيئة داعمة لاحتضان مشروعك من الفكرة حتى التنفيذ",
+  "ISO Certifications": "شهادات الأيزو",
+  "We help you obtain internationally recognized ISO certifications": "نساعدك في الحصول على شهادات الأيزو المعترف بها دوليًا",
+  "Workspaces": "مساحات العمل",
+  "Shared workspaces equipped with the latest technologies and facilities": "مساحات عمل مشتركة مجهزة بأحدث التقنيات والمرافق",
+  "companyService": "  خدمات بيزنس هب",
+  "companyServiceDoc": " نقدم مجموعة متكاملة من الخدمات لدعم رواد الأعمال في رحلتهم",
+  "Saudi National": "سعودي الجنسية",
+  "+18 Suitable Age for Application": "+18 السن المناسب للتقديم",
+  "From Medina": "من المدينة المنورة",
+  "Has an Idea to Implement": "لديه فكرة للتنفيذ",
+  "Requirements": "المتطلبات",
+  "What you should know before applying to the program": "ما يجب أن تعرفه قبل التقديم على البرنامج",
+  "Make sure you meet these requirements before applying to our programs": "            تأكد من استيفاء هذه المتطلبات قبل التقديم على برامجنا",
+  "Submission and Screening": "التقديم والفرز",
+  "Submitting applications and reviewing proposed ideas": "تقديم الطلب ومراجعة الأفكار المقترحة",
+  "Evaluation and Selection": "التقييم والاختيار",
+  "Evaluating ideas and selecting the most suitable for the program": "تقييم الأفكار واختيار الأنسب للبرنامج",
+  "Training and Development": "التدريب والتطوير",
+  "Intensive training programs to develop skills": "برامج تدريبية مكثفة لتطوير المهارات",
+  "Implementation and Follow-up": "التنفيذ والمتابعة",
+  "Project implementation with continuous follow-up": "تنفيذ المشروع مع متابعة مستمرة",
+  "Launch and Growth": "الإطلاق والنمو",
+  "Project Launch and Supporting Sustainable Growth": "إطلاق المشروع ودعم النمو المستدام",
+  "Stages": "المراحل",
+  "Stages of turning an idea into a project": "مراحل تنفيذ الفكرة إلى مشروع",
+  "We accompany you every step of the way in your journey to transforming your idea into a successful project": "نرافقك في كل خطوة من رحلة تحويل فكرتك إلى مشروع ناجح",
+  "E-Learning Platform": "منصة التعليم الإلكتروني",
+  "An integrated educational platform offering courses in various fields": "منصة تعليمية متكاملة تقدم دورات في مختلف المجالات",
+  "Education": "تعليم",
+  "Technology": "تكنولوجيا",
+  "Application Express Delivery": "تطبيق التوصيل السريع",
+  "An express delivery app that connects customers with service providers": "تطبيق توصيل سريع يربط العملاء بمقدمي الخدمات",
+  "Services": "خدمات",
+  "Apps": "تطبيقات",
+  "Inventory Management System": "نظام إدارة المخزون",
+  "An intelligent inventory and sales management system for small businesses": "نظام ذكي لإدارة المخزون والمبيعات للشركات الصغيرة",
+  "Management": "إدارة",
+  "Software": "برمجيات",
+  "Smart Booking Platform": "منصة الحجز الذكية",
+  "A platform for easily booking appointments and services": "منصة لحجز المواعيد والخدمات بكل سهولة",
+  "Booking": "حجز",
+  "Health and Fitness App": "تطبيق الصحة واللياقة",
+  "A comprehensive app for tracking health and fitness": "تطبيق شامل لمتابعة الصحة واللياقة البدنية",
+  "Health": "صحة",
+  "Applications": "تطبيقات",
+  "Electronic Payment System": "نظام الدفع الإلكتروني",
+  "Secure and easy-to-use electronic payment solutions": "حلول دفع إلكترونية آمنة وسهلة الاستخدام",
+  "Finance": "مالية",
+  "Our Work": "أعمالنا",
+  "Our Projects": "مشاريعنا",
+  "A collection of successful projects that we helped develop and launch": " مجموعة من المشاريع الناجحة التي ساعدنا في تطويرها وإطلاقها",
+  "Team": "فريق العمل",
+  "Successful Partnerships": "شراكات ناجحة",
+  "The building": "المبنى",
+  "Growth and Development": "النمو والتطور",
+  "Entrepreneurs": "رواد أعمال",
+  "Our Gallery": "معرضنا",
+  "The Exhibition": "المعرض",
+  "Highlights of our journey and achievements with our partners": "لمحات من رحلتنا وإنجازاتنا مع شركائنا",
+  "accelerator": {
+    "badge": "مسرع الأعمال",
+    "hero": {
+      "title": "برنامج تسريع الأعمال",
+      "description": "برنامج مكثف لتسريع نمو شركتك الناشئة من خلال الإرشاد المتخصص والتمويل والتدريب",
+      "applyButton": "قدم طلبك الآن",
+      "downloadGuide": "تحميل دليل البرنامج"
+    },
+    "stats": {
+      "companiesAccelerated": "شركة تم تسريعها",
+      "marketValue": "قيمة سوقية",
+      "successRate": "معدل النجاح",
+      "expertMentors": "مرشد خبير"
+    },
+    "benefits": {
+      "title": "مزايا البرنامج",
+      "items": {
+        "growth": {
+          "title": "تسريع النمو",
+          "description": "برنامج مكثف لمدة 3-6 أشهر لتسريع نمو مشروعك"
+        },
+        "mentorship": {
+          "title": "إرشاد متخصص",
+          "description": "توجيه من خبراء الصناعة ورواد الأعمال الناجحين"
+        },
+        "funding": {
+          "title": "فرص التمويل",
+          "description": "الوصول إلى شبكة من المستثمرين والتمويل الأولي"
+        },
+        "training": {
+          "title": "تدريب مكثف",
+          "description": "ورش عمل ودورات تدريبية متخصصة"
+        }
+      }
+    },
+    "timeline": {
+      "title": "مراحل البرنامج",
+      "phases": {
+        "phase1": {
+          "label": "المرحلة الأولى",
+          "title": "التقييم والقبول",
+          "duration": "أسبوعان",
+          "activities": {
+            "application": "تقديم الطلب",
+            "review": "مراجعة الأعمال",
+            "interviews": "المقابلات",
+            "acceptance": "القبول"
+          }
+        },
+        "phase2": {
+          "label": "المرحلة الثانية",
+          "title": "التطوير والتدريب",
+          "duration": "8-12 أسبوع",
+          "activities": {
+            "workshops": "ورش عمل",
+            "mentoring": "جلسات إرشاد",
+            "development": "تطوير المنتج",
+            "teamBuilding": "بناء الفريق"
+          }
+        },
+        "phase3": {
+          "label": "المرحلة الثالثة",
+          "title": "التوسع والتمويل",
+          "duration": "4-8 أسابيع",
+          "activities": {
+            "scaling": "استراتيجية التوسع",
+            "pitch": "عرض المستثمرين",
+            "funding": "جولة التمويل",
+            "launch": "الإطلاق"
+          }
+        }
+      }
+    },
+    "requirements": {
+      "title": "شروط القبول",
+      "items": {
+        "businessModel": {
+          "title": "نموذج عمل واضح",
+          "description": "يجب أن يكون لديك نموذج عمل محدد وقابل للتوسع"
+        },
+        "team": {
+          "title": "فريق ملتزم",
+          "description": "فريق مؤسسين متفرغين وملتزمين بالبرنامج"
+        },
+        "mvp": {
+          "title": "منتج أولي",
+          "description": "منتج أولي أو نموذج قابل للعرض والاختبار"
+        },
+        "growth": {
+          "title": "إمكانية النمو",
+          "description": "إمكانية نمو سريع وقابلية للتوسع في السوق"
+        }
+      }
+    },
+    "cta": {
+      "title": "جاهز لتسريع نمو شركتك؟",
+      "description": "انضم إلى الدفعة القادمة من برنامج التسريع وابدأ رحلتك نحو النجاح",
+      "button": "قدم الآن"
+    }
+  },
+  "companies": {
+    "badge": "شركاتنا",
+    "title": "الشركات في شبكتنا",
+    "subtitle": "اكتشف الشركات المبتكرة التي نمت من خلال برامجنا وشراكاتنا",
+    "items": [
+      {
+        "name": "شركة الابتكار التقني",
+        "category": "تكنولوجيا",
+        "description": "شركة متخصصة في تطوير الحلول التقنية المبتكرة"
+      },
+      {
+        "name": "مؤسسة التجارة الإلكترونية",
+        "category": "تجارة",
+        "description": "منصة تجارة إلكترونية متطورة تخدم السوق المحلي"
+      },
+      {
+        "name": "شركة الحلول الذكية",
+        "category": "استشارات",
+        "description": "استشارات إدارية وحلول ذكية للشركات الناشئة"
+      },
+      {
+        "name": "مجموعة الإبداع الرقمي",
+        "category": "تسويق",
+        "description": "وكالة تسويق رقمي متكاملة للعلامات التجارية"
+      }
+    ],
+    "viewMore": "اكتشف جميع المشاريع"
+  },
+  "contact": {
+    "badge": "اتصل بنا",
+    "title": "نحن هنا للمساعدة",
+    "subtitle": "هل لديك سؤال أو استفسار؟ اتصل بنا وسنكون سعداء بمساعدتك",
+    "form": {
+      "labels": {
+        "fullName": "الاسم الكامل",
+        "mobileNumber": "رقم الجوال",
+        "email": "البريد الإلكتروني",
+        "inquiryType": "نوع الاستفسار",
+        "requestDetails": "تفاصيل الطلب"
+      },
+      "placeholders": {
+        "fullName": "أدخل اسمك الكامل",
+        "mobileNumber": "05xxxxxxxx",
+        "email": "example@email.com",
+        "inquiryType": "اختر نوع الاستفسار",
+        "requestDetails": "اكتب تفاصيل استفسارك هنا"
+      },
+      "validation": {
+        "allFieldsRequired": "يرجى ملء جميع الحقول",
+        "invalidEmail": "عنوان البريد الإلكتروني غير صحيح",
+        "invalidMobile": "رقم الجوال غير صحيح (يجب أن يكون بالصيغة السعودية: 05xxxxxxxx)"
+      },
+      "buttons": {
+        "send": "إرسال الرسالة",
+        "sending": "جارٍ الإرسال..."
+      },
+      "success": "تم إرسال رسالتك بنجاح"
+    },
+    "inquiryTypes": [
+      {
+        "value": "business-incubation",
+        "label": "احتضان الأعمال"
+      },
+      {
+        "value": "business-acceleration",
+        "label": "تسريع الأعمال"
+      },
+      {
+        "value": "iso-certification",
+        "label": "شهادات الأيزو"
+      },
+      {
+        "value": "consulting",
+        "label": "الاستشارات"
+      },
+      {
+        "value": "workspace",
+        "label": "مساحات العمل"
+      },
+      {
+        "value": "other",
+        "label": "أخرى"
+      }
+    ],
+    "info": {
+      "phone": {
+        "title": "اتصل بنا",
+        "hours": "الأحد - الخميس، 9:00 صباحاً - 6:00 مساءً"
+      },
+      "email": {
+        "title": "راسلنا",
+        "response": "نرد خلال 24 ساعة"
+      },
+      "location": {
+        "title": "زُرنا",
+        "city": "المدينة المنورة",
+        "country": "المملكة العربية السعودية"
+      },
+      "workingHours": {
+        "title": "ساعات العمل",
+        "weekdays": "الأحد - الخميس",
+        "weekdaysTime": "9:00 صباحاً - 6:00 مساءً",
+        "weekend": "الجمعة - السبت",
+        "closed": "مغلق"
+      }
+    }
+  },
+  "footer": {
+    "brand": {
+      "name": "Business Hub",
+      "nameAr": "بيزنس هب",
+      "tagline": "نبدأ معك من الفكرة إلى النجاح. شريكك في تحويل الأفكار إلى مشاريع ناجحة ومبتكرة."
+    },
+    "newsletter": {
+      "title": "اشترك في النشرة الإخبارية",
+      "placeholder": "بريدك الإلكتروني"
+    },
+    "sections": {
+      "services": {
+        "title": "الخدمات",
+        "links": [
+          {
+            "text": "مسرعات الأعمال",
+            "href": "/accelerator"
+          },
+          {
+            "text": "احتضان الأعمال",
+            "href": "/incubation"
+          },
+          {
+            "text": "شهادات الأيزو",
+            "href": "/iso"
+          },
+          {
+            "text": "مساحات العمل",
+            "href": "/workspaces"
+          }
+        ]
+      },
+      "company": {
+        "title": "الشركة",
+        "links": [
+          {
+            "text": "من نحن",
+            "href": "/about-us"
+          },
+          {
+            "text": "أعمالنا",
+            "href": "/projects"
+          },
+          {
+            "text": "المعرض",
+            "href": "/gallery"
+          },
+          {
+            "text": "تابعنا",
+            "href": "/follow-us"
+          },
+          {
+            "text": "اتصل بنا",
+            "href": "/contact-us"
+          }
+        ]
+      },
+      "legal": {
+        "title": "قانوني",
+        "links": [
+          {
+            "text": "الشروط والأحكام",
+            "href": "/terms"
+          },
+          {
+            "text": "سياسة الخصوصية",
+            "href": "/privacy"
+          },
+          {
+            "text": "سياسة الاسترجاع",
+            "href": "/refund"
+          }
+        ]
+      },
+      "contact": {
+        "title": "تواصل معنا",
+        "address": "المدينة المنورة، المملكة العربية السعودية"
+      }
+    },
+    "copyright": "© 2025 بيزنس هب. جميع الحقوق محفوظة."
+  },
+  "gallery": {
+    "badge": "المعرض",
+    "title": "معرض الصور",
+    "subtitle": "استكشف مساحاتنا وفعالياتنا من خلال معرض الصور"
+  },
+  "incubation": {
+    "badge": "احتضان الأعمال",
+    "hero": {
+      "title": "برنامج احتضان الأعمال",
+      "description": "بيئة داعمة لتحويل فكرتك إلى مشروع ناجح من خلال الموارد والإرشاد والتدريب",
+      "ctaButton": "ابدأ رحلتك"
+    },
+    "features": {
+      "title": "ما نقدمه لك",
+      "items": [
+        {
+          "title": "مساحات عمل مجهزة",
+          "description": "مكاتب ومساحات عمل مشتركة مجهزة بالكامل"
+        },
+        {
+          "title": "إرشاد مستمر",
+          "description": "دعم وإرشاد مستمر من خبراء الصناعة"
+        },
+        {
+          "title": "تدريب متخصص",
+          "description": "برامج تدريبية وورش عمل متخصصة"
+        },
+        {
+          "title": "دعم التمويل",
+          "description": "مساعدة في الوصول للتمويل والمستثمرين"
+        }
+      ]
+    },
+    "cta": {
+      "title": "انضم إلى حاضنة الأعمال",
+      "description": "ابدأ رحلتك الريادية معنا واحصل على كل الدعم الذي تحتاجه",
+      "button": "تواصل معنا"
+    }
+  },
+  "login": {
+    "backToHome": "العودة للرئيسية",
+    "brand": {
+      "name": "Business Hub",
+      "nameAr": "بيزنس هب",
+      "tagline": "نبدأ معك من الفكرة إلى النجاح"
+    },
+    "features": [
+      {
+        "title": "الوصول الكامل",
+        "description": "وصول كامل لجميع الموارد والبرامج"
+      },
+      {
+        "title": "تتبع التقدم",
+        "description": "تابع تقدم مشروعك بسهولة"
+      },
+      {
+        "title": "دعم مباشر",
+        "description": "تواصل مباشر مع فريق الدعم"
+      }
+    ],
+    "stats": [
+      {
+        "value": "500+",
+        "label": "مشروع"
+      },
+      {
+        "value": "1000+",
+        "label": "عميل"
+      },
+      {
+        "value": "95%",
+        "label": "رضا"
+      }
+    ],
+    "header": {
+      "badge": "تسجيل الدخول",
+      "title": "مرحباً بعودتك",
+      "subtitle": "سجل دخولك للوصول إلى حسابك"
+    },
+    "social": {
+      "google": "متابعة بواسطة Google",
+      "facebook": "Facebook",
+      "linkedin": "LinkedIn",
+      "divider": "أو"
+    },
+    "form": {
+      "email": {
+        "label": "البريد الإلكتروني",
+        "placeholder": "name@example.com"
+      },
+      "password": {
+        "label": "كلمة المرور",
+        "placeholder": "••••••••"
+      },
+      "rememberMe": "تذكرني",
+      "forgotPassword": "نسيت كلمة المرور؟",
+      "submit": "تسجيل الدخول",
+      "submitting": "جاري تسجيل الدخول..."
+    },
+    "signup": {
+      "text": "ليس لديك حساب؟",
+      "link": "سجل الآن"
+    },
+    "validation": {
+      "allFieldsRequired": "يرجى ملء جميع الحقول المطلوبة",
+      "invalidEmail": "يرجى إدخال بريد إلكتروني صحيح"
+    },
+    "messages": {
+      "loginSuccess": "تم تسجيل الدخول بنجاح!",
+      "loginFailed": "تسجيل دخول خطا",
+      "socialLogin": "جاري تسجيل الدخول عبر {provider}..."
+    }
+  },
+  "ourWork": {
+    "badge": "أعمالنا",
+    "title": "أعمالنا وإنجازاتنا",
+    "subtitle": "تعرف على المشاريع والشركات التي ساعدناها على تحقيق النجاح"
+  },
+  "privacy": {
+    "badge": "سياسة الخصوصية",
+    "title": "سياسة الخصوصية",
+    "subtitle": "نحن ملتزمون بحماية خصوصيتك وأمان معلوماتك الشخصية",
+    "lastUpdated": "آخر تحديث: نوفمبر 2025",
+    "sections": [
+      {
+        "title": "جمع المعلومات",
+        "content": "نقوم بجمع المعلومات التي تقدمها لنا مباشرة عند التسجيل أو استخدام خدماتنا، بما في ذلك الاسم، البريد الإلكتروني، رقم الهاتف، والمعلومات المتعلقة بمشروعك. كما نجمع معلومات تلقائياً عن استخدامك للموقع مثل عنوان IP، نوع المتصفح، وسجل التصفح لتحسين تجربتك."
+      },
+      {
+        "title": "استخدام المعلومات",
+        "content": "نستخدم المعلومات المجمعة لتقديم وتحسين خدماتنا، التواصل معك بشأن برامجنا وفعالياتنا، معالجة طلباتك ومعاملاتك، وتخصيص تجربتك على منصتنا. كما قد نستخدم المعلومات لأغراض تحليلية وتطوير خدمات جديدة تلبي احتياجاتك."
+      },
+      {
+        "title": "حماية المعلومات",
+        "content": "نتخذ إجراءات أمنية صارمة لحماية معلوماتك الشخصية من الوصول غير المصرح به أو الاستخدام غير السليم. نستخدم تقنيات التشفير المتقدمة، جدران الحماية، وأنظمة المراقبة المستمرة. يتم تخزين بياناتك على خوادم آمنة ويتم الوصول إليها فقط من قبل موظفين مصرح لهم."
+      },
+      {
+        "title": "مشاركة المعلومات",
+        "content": "لا نقومببيع أو تأجير معلوماتك الشخصية لأطراف ثالثة. قد نشارك معلوماتك مع شركاء موثوقين يساعدوننا في تقديم خدماتنا، أو عندما يكون ذلك مطلوباً قانونياً. جميع الأطراف الثالثة ملزمة بحماية معلوماتك والحفاظ على سريتها وفقاً لأعلى المعايير."
+      },
+      {
+        "title": "حقوقك",
+        "content": "لديك الحق في الوصول إلى معلوماتك الشخصية، طلب تصحيحها أو حذفها، الاعتراض على معالجتها، وطلب نقل بياناتك. يمكنك أيضاً سحب موافقتك على معالجة بياناتك في أي وقت. للممارسة أي من هذه الحقوق، يرجى التواصل معنا عبر قنوات الاتصال المتاحة."
+      },
+      {
+        "title": "ملفات تعريف الارتباط",
+        "content": "نستخدم ملفات تعريف الارتباط (Cookies) لتحسين تجربتك على موقعنا، تذكر تفضيلاتك، وتحليل استخدام الموقع. يمكنك التحكم في إعدادات ملفات تعريف الارتباط من خلال متصفحك، لكن تعطيلها قد يؤثر على بعض وظائف الموقع."
+      }
+    ],
+    "dataTypes": {
+      "title": "أنواع البيانات المجمعة",
+      "categories": [
+        {
+          "title": "معلومات التعريف الشخصية",
+          "items": [
+            "الاسم الكامل",
+            "البريد الإلكتروني",
+            "رقم الهاتف",
+            "العنوان"
+          ]
+        },
+        {
+          "title": "معلومات المشروع",
+          "items": [
+            "اسم المشروع",
+            "مجال العمل",
+            "مرحلة المشروع",
+            "متطلبات التمويل"
+          ]
+        },
+        {
+          "title": "بيانات الاستخدام",
+          "items": [
+            "عنوان IP",
+            "نوع المتصفح",
+            "سجل التصفح",
+            "الصفحات المزارة"
+          ]
+        }
+      ]
+    },
+    "cta": {
+      "title": "هل لديك استفسارات حول الخصوصية؟",
+      "description": "نحن هنا للإجابة على جميع أسئلتك حول كيفية حماية بياناتك",
+      "button": "تواصل معنا"
+    }
+  },
+  "refund": {
+    "badge": "سياسة الاسترجاع",
+    "title": "سياسة الاسترجاع والاستبدال",
+    "subtitle": "شروط وإجراءات استرجاع المدفوعات والإلغاء",
+    "lastUpdated": "آخر تحديث: نوفمبر 2025",
+    "conditions": {
+      "eligible": {
+        "title": "حالات قبول الاسترجاع",
+        "items": [
+          "إلغاء الخدمة قبل بدئها بـ 7 أيام على الأقل",
+          "عدم تقديم الخدمة المتفق عليها",
+          "مشاكل تقنية من طرفنا تمنع استخدام الخدمة",
+          "خطأ في الفوترة أو الدفع المزدوج"
+        ]
+      },
+      "nonEligible": {
+        "title": "حالات رفض الاسترجاع",
+        "items": [
+          "الإلغاء بعد بدء تقديم الخدمة",
+          "عدم الالتزام بشروط وأحكام الخدمة",
+          "الخدمات المخصصة التي تم إنجازها بالفعل",
+          "الإلغاء خلال 48 ساعة من بدء الخدمة"
+        ]
+      }
+    },
+    "process": {
+      "title": "خطوات عملية الاسترجاع",
+      "steps": [
+        {
+          "step": "01",
+          "title": "تقديم الطلب",
+          "description": "قدم طلب الاسترجاع عبر نموذج التواصل أو البريد الإلكتروني مع ذكر رقم المعاملة"
+        },
+        {
+          "step": "02",
+          "title": "المراجعة",
+          "description": "يتم مراجعة طلبك خلال 3-5 أيام عمل والتحقق من استيفاء الشروط"
+        },
+        {
+          "step": "03",
+          "title": "الموافقة",
+          "description": "سيتم إخطارك بقرار الموافقة أو الرفض مع توضيح الأسباب"
+        },
+        {
+          "step": "04",
+          "title": "الاسترجاع",
+          "description": "يتم إرجاع المبلغ خلال 7-14 يوم عمل إلى نفس طريقة الدفع الأصلية"
+        }
+      ]
+    },
+    "partialRefunds": {
+      "title": "نسب الاسترجاع الجزئي",
+      "subtitle": "تعتمد نسبة الاسترجاع على وقت تقديم طلب الإلغاء",
+      "rates": [
+        {
+          "percentage": "100%",
+          "condition": "الإلغاء قبل 7 أيام من البدء"
+        },
+        {
+          "percentage": "50%",
+          "condition": "الإلغاء قبل 3-6 أيام من البدء"
+        },
+        {
+          "percentage": "25%",
+          "condition": "الإلغاء قبل 1-2 يوم من البدء"
+        },
+        {
+          "percentage": "0%",
+          "condition": "الإلغاء بعد البدء أو في نفس اليوم"
+        }
+      ]
+    },
+    "notes": {
+      "title": "ملاحظات هامة",
+      "items": [
+        "يتم الاسترجاع إلى نفس طريقة الدفع المستخدمة في الدفع الأصلي",
+        "قد تستغرق عملية الاسترجاع من 7 إلى 14 يوم عمل حسب البنك",
+        "رسوم المعاملات البنكية غير قابلة للاسترجاع",
+        "في حالة الاسترجاع الجزئي، يتم خصم رسوم إدارية بنسبة 5%",
+        "للحصول على استرجاع كامل، يجب أن يكون الطلب قبل بدء الخدمة بـ 7 أيام على الأقل"
+      ]
+    },
+    "cta": {
+      "title": "بحاجة للمساعدة؟",
+      "description": "فريق خدمة العملاء جاهز لمساعدتك في عملية الاسترجاع",
+      "button": "تواصل معنا"
+    }
+  },
+  "team": {
+    "badge": "فريقنا",
+    "title": "تعرف على فريقنا",
+    "subtitle": "فريق من الخبراء والمتخصصين ملتزمون بدعم رواد الأعمال وتحويل الأفكار إلى واقع",
+    "stats": [
+      {
+        "value": "50+",
+        "label": "موظف متفاني"
+      },
+      {
+        "value": "15+",
+        "label": "عام خبرة"
+      },
+      {
+        "value": "500+",
+        "label": "مشروع ناجح"
+      },
+      {
+        "value": "10+",
+        "label": "قسم متخصص"
+      }
+    ],
+    "executive": {
+      "title": "الإدارة التنفيذية",
+      "subtitle": "قادة رؤيويون يقودون المؤسسة نحو التميز والابتكار",
+      "members": [
+        {
+          "name": "أحمد محمد العلي",
+          "position": "الرئيس التنفيذي",
+          "bio": "قائد رؤيوي مع أكثر من 20 عاماً من الخبرة في مجال ريادة الأعمال والابتكار",
+          "email": "ahmed.ali@businesshub.sa",
+          "phone": "+966 50 123 4567",
+          "specialties": [
+            "القيادة الاستراتيجية",
+            "ريادة الأعمال",
+            "الابتكار"
+          ]
+        },
+        {
+          "name": "فاطمة أحمد السعيد",
+          "position": "المدير المالي",
+          "bio": "خبيرة في الإدارة المالية والاستثمار مع سجل حافل في تنمية المشاريع",
+          "email": "fatima.saeed@businesshub.sa",
+          "phone": "+966 50 234 5678",
+          "specialties": [
+            "الإدارة المالية",
+            "الاستثمار",
+            "التخطيط المالي"
+          ]
+        },
+        {
+          "name": "خالد عبدالله الحارثي",
+          "position": "المدير التنفيذي للعمليات",
+          "bio": "متخصص في تطوير العمليات وتحسين الكفاءة التشغيلية للمؤسسات",
+          "email": "khaled.harthi@businesshub.sa",
+          "phone": "+966 50 345 6789",
+          "specialties": [
+            "إدارة العمليات",
+            "تحسين الكفاءة",
+            "الجودة"
+          ]
+        }
+      ]
+    },
+    "management": {
+      "title": "فريق الإدارة",
+      "subtitle": "مديرون متخصصون يديرون العمليات اليومية بكفاءة وفعالية",
+      "members": [
+        {
+          "name": "نورة سعيد القحطاني",
+          "position": "مدير الموارد البشرية",
+          "department": "الموارد البشرية",
+          "email": "noura.qahtani@businesshub.sa",
+          "specialties": [
+            "التوظيف",
+            "التطوير المهني",
+            "ثقافة المؤسسة"
+          ]
+        },
+        {
+          "name": "محمد علي الشمري",
+          "position": "مدير التسويق",
+          "department": "التسويق",
+          "email": "mohammed.shamri@businesshub.sa",
+          "specialties": [
+            "التسويق الرقمي",
+            "العلامة التجارية",
+            "وسائل التواصل"
+          ]
+        },
+        {
+          "name": "سارة عبدالرحمن العتيبي",
+          "position": "مدير البرامج",
+          "department": "البرامج والتدريب",
+          "email": "sarah.otaibi@businesshub.sa",
+          "specialties": [
+            "إدارة البرامج",
+            "التدريب",
+            "التطوير"
+          ]
+        },
+        {
+          "name": "عبدالعزيز فهد الدوسري",
+          "position": "مدير التقنية",
+          "department": "التقنية والابتكار",
+          "email": "abdulaziz.dosari@businesshub.sa",
+          "specialties": [
+            "التحول الرقمي",
+            "الأمن السيبراني",
+            "البنية التحتية"
+          ]
+        }
+      ]
+    },
+    "departmentHeads": {
+      "title": "رؤساء الأقسام",
+      "subtitle": "قادة الأقسام المتخصصة الذين يضمنون التميز في كل مجال",
+      "members": [
+        {
+          "name": "ريم خالد المطيري",
+          "position": "رئيس قسم الاستشارات",
+          "department": "الاستشارات",
+          "email": "reem.mutairi@businesshub.sa"
+        },
+        {
+          "name": "ياسر محمد الزهراني",
+          "position": "رئيس قسم التمويل",
+          "department": "التمويل",
+          "email": "yasser.zahrani@businesshub.sa"
+        },
+        {
+          "name": "أمل سليمان العمري",
+          "position": "رئيس قسم العلاقات",
+          "department": "العلاقات العامة",
+          "email": "amal.omari@businesshub.sa"
+        },
+        {
+          "name": "طلال أحمد الغامدي",
+          "position": "رئيس قسم الجودة",
+          "department": "الجودة والتميز",
+          "email": "talal.ghamdi@businesshub.sa"
+        },
+        {
+          "name": "منى عبدالله الشهري",
+          "position": "رئيس قسم الشراكات",
+          "department": "الشراكات الاستراتيجية",
+          "email": "mona.shehri@businesshub.sa"
+        },
+        {
+          "name": "عمر فيصل العنزي",
+          "position": "رئيس قسم المساحات",
+          "department": "المساحات المشتركة",
+          "email": "omar.anzi@businesshub.sa"
+        }
+      ]
+    },
+    "cta": {
+      "title": "انضم إلى فريقنا",
+      "subtitle": "نحن دائماً نبحث عن مواهب استثنائية للانضمام إلى فريقنا المتنامي",
+      "button": "تصفح الوظائف المتاحة"
+    },
+    "contact": "تواصل"
+  },
+  "terms": {
+    "badge": "الشروط والأحكام",
+    "title": "الشروط والأحكام",
+    "subtitle": "يرجى قراءة هذه الشروط والأحكام بعناية قبل استخدام خدماتنا",
+    "lastUpdated": "آخر تحديث: نوفمبر 2025",
+    "sections": [
+      {
+        "title": "الشروط العامة",
+        "content": "مرحباً بك في بيزنس هب. باستخدامك لخدماتنا، فإنك توافق على الالتزام بهذه الشروط والأحكام. يرجى قراءتها بعناية قبل استخدام أي من خدماتنا. نحتفظ بالحق في تعديل هذه الشروط في أي وقت، وسيتم إخطارك بأي تغييرات جوهرية."
+      },
+      {
+        "title": "حقوق والتزامات المستخدم",
+        "content": "كمستخدم لخدماتنا، لديك الحق في الوصول إلى جميع الموارد والبرامج المتاحة. يجب عليك تقديم معلومات دقيقة وكاملة عند التسجيل، والحفاظ على سرية بيانات حسابك. يُمنع استخدام خدماتنا لأي أغراض غير قانونية أو غير أخلاقية. نحتفظ بالحق في إيقاف أو إلغاء حسابك في حالة انتهاك هذه الشروط."
+      },
+      {
+        "title": "الملكية الفكرية",
+        "content": "جميع المحتويات والمواد المتاحة على منصتنا، بما في ذلك النصوص والصور والشعارات والبرامج، محمية بموجب قوانين الملكية الفكرية. لا يجوز نسخ أو توزيع أو تعديل أي محتوى دون الحصول على إذن كتابي مسبق من بيزنس هب. يحتفظ بيزنس هب بجميع حقوق الملكية الفكرية للمحتوى المقدم."
+      },
+      {
+        "title": "إخلاء المسؤولية",
+        "content": "يتم توفير خدماتنا \"كما هي\" دون أي ضمانات صريحة أو ضمنية. بيزنس هب غير مسؤول عن أي أضرار مباشرة أو غير مباشرة قد تنتج عن استخدام أو عدم القدرة على استخدام خدماتنا. نبذل قصارى جهدنا لضمان دقة المعلومات المقدمة، لكننا لا نضمن خلوها من الأخطاء. يتحمل المستخدم المسؤولية الكاملة عن القرارات المتخذة بناءً على المعلومات المقدمة."
+      }
+    ],
+    "additionalTerms": {
+      "title": "شروط إضافية",
+      "categories": [
+        {
+          "title": "الرسوم والدفع",
+          "points": [
+            "جميع الرسوم المذكورة بالريال السعودي وتشمل ضريبة القيمة المضافة",
+            "الدفع مطلوب مقدماً قبل بدء الخدمة",
+            "لا يتم رد الرسوم إلا في حالات استثنائية وفقاً لسياسة الاسترجاع",
+            "نحتفظ بالحق في تعديل الأسعار مع إشعار مسبق"
+          ]
+        },
+        {
+          "title": "إنهاء الخدمة",
+          "points": [
+            "يمكن لأي من الطرفين إنهاء الخدمة بإشعار مسبق 30 يوماً",
+            "نحتفظ بالحق في إنهاء الخدمة فوراً في حالة انتهاك الشروط",
+            "عند إنهاء الخدمة، يجب تسوية جميع المستحقات المالية",
+            "يتم الاحتفاظ بالبيانات لمدة 90 يوماً بعد إنهاء الخدمة"
+          ]
+        },
+        {
+          "title": "القانون الحاكم",
+          "points": [
+            "تخضع هذه الشروط لقوانين المملكة العربية السعودية",
+            "يتم حل أي نزاعات من خلال المحاكم المختصة في المدينة المنورة",
+            "اللغة العربية هي اللغة الرسمية للعقود والاتفاقيات",
+            "في حالة التعارض بين النسخة العربية والإنجليزية، تسود النسخة العربية"
+          ]
+        }
+      ]
+    },
+    "cta": {
+      "title": "هل لديك أسئلة؟",
+      "description": "فريقنا جاهز للإجابة على جميع استفساراتك",
+      "button": "تواصل معنا"
+    }
+  },
+  "workspaces": {
+    "hero": {
+      "badge": "مساحات العمل",
+      "title": "مساحات عمل احترافية",
+      "subtitle": "مساحات مكتبية مرنة مصممة للإنتاجية والنجاح"
+    },
+    "stats": [
+      {
+        "value": "500+",
+        "label": "مكتب"
+      },
+      {
+        "value": "1000+",
+        "label": "عميل"
+      },
+      {
+        "value": "95%",
+        "label": "رضا العملاء"
+      }
+    ],
+    "services": {
+      "badge": "خدماتنا",
+      "title": "اختر مساحة عملك",
+      "subtitle": "حلول مرنة تناسب احتياجاتك",
+      "pricing": {
+        "monthly": "/شهرياً",
+        "contact": "تواصل معنا",
+        "popular": "الأكثر طلباً",
+        "cta": "احجز الآن"
+      },
+      "items": [
+        {
+          "name": "مساحة عمل مشتركة",
+          "subtitle": "للأفراد والعاملين المستقلين",
+          "description": "مساحة عمل مشتركة مع جميع التسهيلات الأساسية للأفراد الباحثين عن بيئة عمل احترافية",
+          "ideal": "مثالي لـ: العاملين المستقلين والأفراد",
+          "price": "500 ريال"
+        },
+        {
+          "name": "قاعة اجتماعات",
+          "subtitle": "بالساعة",
+          "description": "قاعات اجتماعات مجهزة بالكامل متاحة للإيجار بالساعة لاجتماعاتك وتدريباتك",
+          "ideal": "مثالي لـ: الاجتماعات والتدريب",
+          "price": "300 ريال"
+        },
+        {
+          "name": "مكتب خاص",
+          "subtitle": "للفرق",
+          "description": "مكتب خاص مع جميع التسهيلات والخدمات للفرق الصغيرة والمتوسطة",
+          "ideal": "مثالي لـ: الفرق الصغيرة والمتوسطة",
+          "price": "1,500 ريال"
+        },
+        {
+          "name": "طابق كامل",
+          "subtitle": "للشركات الكبيرة",
+          "description": "طابق كامل مخصص بالكامل حسب احتياجات شركتك مع جميع التسهيلات",
+          "ideal": "مثالي لـ: الشركات الكبيرة",
+          "price": "تواصل معنا"
+        }
+      ]
+    },
+    "features": {
+      "badge": "مميزات مميزة",
+      "title": "كل ما تحتاجه",
+      "subtitle": "مرافق وخدمات عالمية لراحتك",
+      "items": [
+        {
+          "name": "أمن على مدار الساعة",
+          "description": "أنظمة أمنية متقدمة مع مراقبة على مدار الساعة"
+        },
+        {
+          "name": "قهوة وشاي",
+          "description": "قهوة وشاي مجانية غير محدودة طوال اليوم"
+        },
+        {
+          "name": "دخول على مدار الساعة",
+          "description": "الوصول إلى مساحة عملك في أي وقت، أي يوم"
+        },
+        {
+          "name": "إنترنت فائق السرعة",
+          "description": "اتصال إنترنت فائق السرعة حتى 1 جيجابت في الثانية"
+        },
+        {
+          "name": "خدمات الطباعة",
+          "description": "خدمات الطباعة والمسح الضوئي والنسخ"
+        },
+        {
+          "name": "مساحة تخزين",
+          "description": "مساحة تخزين آمنة لملفاتك ومعداتك"
+        },
+        {
+          "name": "خدمات الاستقبال",
+          "description": "استقبال احترافي لاستقبال ضيوفك"
+        },
+        {
+          "name": "دخول ذكي",
+          "description": "نظام دخول إلكتروني عبر البصمة أو البطاقة"
+        }
+      ]
+    },
+    "comparison": {
+      "badge": "قارن الخدمات",
+      "title": "مقارنة الخدمات",
+      "subtitle": "اعثر على مساحة العمل المثالية لاحتياجاتك",
+      "tableHeaders": {
+        "feature": "الميزة"
+      }
+    },
+    "cta": {
+      "badge": "جاهز للبدء؟",
+      "title": "ابدأ رحلتك اليوم",
+      "subtitle": "احجز جولة مجانية لزيارة مساحات عملنا واختيار ما يناسبك",
+      "button": "احجز جولة مجانية",
+      "call": "أو اتصل بنا:",
+      "location": "الرياض، المملكة العربية السعودية"
+    },
+    "details": {
+      "show": "عرض التفاصيل",
+      "hide": "إخفاء التفاصيل",
+      "included": "المميزات المتضمنة:"
+    }
+  },
+  "reviews": {
+    "badge": "آراء العملاء",
+    "title": "ماذا يقول عملاؤنا",
+    "subtitle": "قصص نجاح من رواد الأعمال والشركات التي دعمناها في رحلتهم",
+    "items": [
+      {
+        "name": "فاطمة علي",
+        "position": "مديرة مشروع ناشئ",
+        "review": "فريق محترف وداعم جداً. حصلت على كل ما احتاجه لإطلاق مشروعي بنجاح. أنصح بهم بشدة لكل رائد أعمال.",
+        "avatar": "https://i.pravatar.cc/150?img=45",
+        "rating": 5
+      },
+      {
+        "name": "خالد السعيد",
+        "position": "رائد أعمال",
+        "review": "تجربة رائعة! البيئة الحاضنة والدعم الفني والاستشاري ساعدني على تجاوز التحديات وتحقيق أهدافي.",
+        "avatar": "https://i.pravatar.cc/150?img=33",
+        "rating": 5
+      },
+      {
+        "name": "سارة عبدالله",
+        "position": "مؤسسة شركة تسويق",
+        "review": "شكراً لبيزنس هب على الدعم المتواصل. حصلت على شهادة الأيزو بفضل مساعدتهم المتميزة والاحترافية.",
+        "avatar": "https://i.pravatar.cc/150?img=25",
+        "rating": 5
+      },
+      {
+        "name": "محمد الحارثي",
+        "position": "مؤسس شركة ناشئة",
+        "review": "الخدمات المقدمة من بيزنس هب متميزة ومهنية. ساعدوني في بناء خطة عمل قوية وتأمين التمويل اللازم.",
+        "avatar": "https://i.pravatar.cc/150?img=68",
+        "rating": 5
+      }
+    ]
+  },
+  "news": {
+    "badge": "آخر الأخبار",
+    "title": "الأخبار والتحديثات",
+    "subtitle": "ابق على اطلاع بآخر الأخبار والتطورات في عالم ريادة الأعمال",
+    "readMore": "اقرأ المزيد",
+    "items": [
+      {
+        "title": "إطلاق برنامج جديد لدعم المشاريع الناشئة",
+        "excerpt": "أعلن بيزنس هب عن إطلاق برنامج جديد لدعم 100 مشروع ناشئ خلال العام القادم بتمويل يصل إلى 50 مليون ريال.",
+        "date": "15 يناير 2025",
+        "readTime": "5 دقائق",
+        "category": "برامج",
+        "image": "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80"
+      },
+      {
+        "title": "ورشة عمل حول ريادة الأعمال الرقمية",
+        "excerpt": "ينظم بيزنس هب ورشة عمل مجانية حول ريادة الأعمال الرقمية والتحول الرقمي للمشاريع الصغيرة والمتوسطة.",
+        "date": "10 يناير 2025",
+        "readTime": "3 دقائق",
+        "category": "فعاليات",
+        "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80"
+      },
+      {
+        "title": "توقيع اتفاقية شراكة استراتيجية",
+        "excerpt": "وقع بيزنس هب اتفاقية شراكة استراتيجية مع أكبر شركات الاستثمار لدعم رواد الأعمال بحلول مبتكرة.",
+        "date": "5 يناير 2025",
+        "readTime": "4 دقائق",
+        "category": "شراكات",
+        "image": "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80"
+      }
+    ]
   }
 }

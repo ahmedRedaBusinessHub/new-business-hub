@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from "react";
 
 interface VideoUploaderProps {
   accept?: string;
@@ -12,12 +12,12 @@ interface VideoUploaderProps {
 }
 
 export const VideoUploader: React.FC<VideoUploaderProps> = ({
-  accept = 'video/*',
+  accept = "video/*",
   multiple = false,
   maxSize = 100 * 1024 * 1024,
   onChange,
   onError,
-  className = '',
+  className = "",
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [videos, setVideos] = useState<{ file: File; duration: string }[]>([]);
@@ -25,11 +25,13 @@ export const VideoUploader: React.FC<VideoUploaderProps> = ({
 
   const validateVideo = (file: File) => {
     if (maxSize && file.size > maxSize) {
-      onError?.(`Video size exceeds ${maxSize / (1024 * 1024 / 1024)}GB limit`);
+      onError?.(
+        `Video size exceeds ${maxSize / ((1024 * 1024) / 1024)}GB limit`
+      );
       return false;
     }
-    if (!file.type.startsWith('video/')) {
-      onError?.('Please upload a valid video file');
+    if (!file.type.startsWith("video/")) {
+      onError?.("Please upload a valid video file");
       return false;
     }
     return true;
@@ -37,14 +39,14 @@ export const VideoUploader: React.FC<VideoUploaderProps> = ({
 
   const getVideoDuration = (file: File): Promise<string> => {
     return new Promise((resolve) => {
-      const video = document.createElement('video');
+      const video = document.createElement("video");
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = (e: any) => {
         video.src = e.target?.result as string;
         video.onloadedmetadata = () => {
           const minutes = Math.floor(video.duration / 60);
           const seconds = Math.floor(video.duration % 60);
-          resolve(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+          resolve(`${minutes}:${seconds.toString().padStart(2, "0")}`);
         };
       };
       reader.readAsDataURL(file);
@@ -57,10 +59,14 @@ export const VideoUploader: React.FC<VideoUploaderProps> = ({
 
     for (const file of validFiles) {
       const duration = await getVideoDuration(file);
-      setVideos((prev) => (multiple ? [...prev, { file, duration }] : [{ file, duration }]));
+      setVideos((prev) =>
+        multiple ? [...prev, { file, duration }] : [{ file, duration }]
+      );
     }
 
-    onChange?.(multiple ? [...videos.map((v) => v.file), ...validFiles] : validFiles);
+    onChange?.(
+      multiple ? [...videos.map((v) => v.file), ...validFiles] : validFiles
+    );
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -81,10 +87,14 @@ export const VideoUploader: React.FC<VideoUploaderProps> = ({
 
     for (const file of validFiles) {
       const duration = await getVideoDuration(file);
-      setVideos((prev) => (multiple ? [...prev, { file, duration }] : [{ file, duration }]));
+      setVideos((prev) =>
+        multiple ? [...prev, { file, duration }] : [{ file, duration }]
+      );
     }
 
-    onChange?.(multiple ? [...videos.map((v) => v.file), ...validFiles] : validFiles);
+    onChange?.(
+      multiple ? [...videos.map((v) => v.file), ...validFiles] : validFiles
+    );
   };
 
   const removeVideo = (index: number) => {
@@ -102,8 +112,8 @@ export const VideoUploader: React.FC<VideoUploaderProps> = ({
         onClick={() => inputRef.current?.click()}
         className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
           isDragging
-            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-            : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500'
+            ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+            : "border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500"
         }`}
       >
         <input
@@ -139,7 +149,8 @@ export const VideoUploader: React.FC<VideoUploaderProps> = ({
                     {video.file.name}
                   </p>
                   <p className="text-xs text-gray-500">
-                    {video.duration} · {(video.file.size / (1024 * 1024)).toFixed(2)} MB
+                    {video.duration} ·{" "}
+                    {(video.file.size / (1024 * 1024)).toFixed(2)} MB
                   </p>
                 </div>
               </div>

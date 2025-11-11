@@ -76,7 +76,7 @@ export default function PricingCards() {
     <div id="pricing">
       {/* Section Header */}
       <div className="text-center mb-16">
-        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+        <h2 className="text-4xl md:text-5xl leading-20 font-bold text-gray-900 mb-4">
           Transparent Pricing
         </h2>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -118,7 +118,9 @@ export default function PricingCards() {
               {/* Price */}
               <div className="mb-8">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-bold">{tier.price}</span>
+                  <span className="text-5xl leading-20 font-bold">
+                    {tier.price}
+                  </span>
                   <span
                     className={
                       tier.highlighted ? "text-blue-100" : "text-gray-600"
