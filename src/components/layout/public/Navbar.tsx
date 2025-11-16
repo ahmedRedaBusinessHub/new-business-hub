@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/Button";
 import { Globe, Menu, X, ChevronDown, Phone, Mail } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
-import Logo from "./Logo";
+import Logo from "../../features/Logo";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import {

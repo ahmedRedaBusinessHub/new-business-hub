@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/Separator";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { motion } from "motion/react";
-import Logo from "./Logo";
+import Logo from "../../features/Logo";
 import Link from "next/link";
 import { useI18n } from "@/hooks/useI18n";
 
