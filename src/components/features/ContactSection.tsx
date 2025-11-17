@@ -234,7 +234,7 @@ export default function ContactSection() {
                     <span className="text-red-500 ltr:ml-1 rtl:mr-1">*</span>
                   </Label>
                   <div className="relative">
-                    <Mail className="absolute top-1/2 -translate-y-1/2 ltr:left-3 rtl:right-3 w-5 h-5 text-gray-400" />
+                    <Mail className="absolute top-1/2 -translate-y-1/2 ltr:left-3 rtl:right-3 w-5 h-5 text-gray" />
                     <Input
                       id="email"
                       type="email"
@@ -258,7 +258,7 @@ export default function ContactSection() {
                     {t("form.labels.inquiryType")}
                     <span className="text-red-500 ltr:ml-1 rtl:mr-1">*</span>
                   </Label>
-                  <Select
+                  {/* <Select
                     value={formData.inquiryType}
                     onValueChange={(value: any) =>
                       setFormData({ ...formData, inquiryType: value })
@@ -282,7 +282,7 @@ export default function ContactSection() {
                         </SelectItem>
                       ))}
                     </SelectContent>
-                  </Select>
+                  </Select> */}
                 </div>
 
                 {/* Request Details Field */}

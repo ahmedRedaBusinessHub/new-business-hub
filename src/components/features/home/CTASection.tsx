@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { EnvelopeIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
 
 const newsletterSchema = z.object({

@@ -1,31 +1,21 @@
 "use client";
 
 import * as React from "react";
-import * as SwitchPrimitive from "@radix-ui/react-switch";
 
 import { cn } from "./utils";
 
-function Switch({
-  className,
-  ...props
-}: React.ComponentProps<typeof SwitchPrimitive.Root>) {
-  return (
-    <SwitchPrimitive.Root
-      data-slot="switch"
-      className={cn(
-        "peer data-[state=checked]:bg-primary data-[state=unchecked]:bg-switch-background focus-visible:border-ring focus-visible:ring-ring/50 dark:data-[state=unchecked]:bg-input/80 inline-flex h-[1.15rem] w-8 shrink-0 items-center rounded-full border border-transparent transition-all outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
-        className
-      )}
-      {...props}
-    >
-      <SwitchPrimitive.Thumb
-        data-slot="switch-thumb"
-        className={cn(
-          "bg-card dark:data-[state=unchecked]:bg-card-foreground dark:data-[state=checked]:bg-primary-foreground pointer-events-none block size-4 rounded-full ring-0 transition-transform data-[state=checked]:translate-x-[calc(100%-2px)] data-[state=unchecked]:translate-x-0"
-        )}
-      />
-    </SwitchPrimitive.Root>
-  );
-}
-
-export { Switch };
+export const Switch = React.forwardRef<HTMLInputElement, any>(
+  ({ label, error, helperText, ...props }, ref) => (
+    <div className="flex items-center space-x-2">
+      <label className="flex items-center cursor-pointer">
+        <input type="checkbox" ref={ref} {...props} className="sr-only peer" />
+        <span className="w-11 h-6 bg-gray-200 rounded-full relative peer-checked:bg-blue-600 transition">
+          <span className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></span>
+        </span>
+      </label>
+      {label && <span className="ml-2">{label}</span>}
+      {helperText && <span className="ml-2 text-gray-400">{helperText}</span>}
+      {error && <span className="text-red-500">{error.message}</span>}
+    </div>
+  )
+);

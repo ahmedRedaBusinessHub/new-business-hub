@@ -8,7 +8,9 @@ import {
 } from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "react-hot-toast";
+
+import { Toaster } from "sonner";
+
 import ThemeSelector from "@/components/features/ThemeSelector";
 import CustomCursor from "@/components/features/CustomCursor";
 
@@ -61,18 +63,7 @@ export function ThemeProvider({ children, ...props }: { children: ReactNode }) {
           {children}
           <CustomCursor />
           <ThemeSelector />
-          <Toaster
-            position="top-right"
-            reverseOrder={false}
-            gutter={8}
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: "#363636",
-                color: "#fff",
-              },
-            }}
-          />
+          <Toaster />
         </ThemeContext.Provider>
       </NextThemesProvider>
     </QueryClientProvider>

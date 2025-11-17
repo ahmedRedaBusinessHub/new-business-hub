@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
-import { useForm } from "react-hook-form";
+import React, { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
+import { motion } from "motion/react";
 import {
   Button,
   Checkbox,
@@ -16,23 +17,57 @@ import {
   Color,
   File,
   Range,
+  Switch,
+  TagInput,
+  Calendar,
+  RichTextEditor,
+  FileUploader,
+  ImageUploader,
+  Map,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  Alert,
+  Progress,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  Label,
 } from "../ui";
+import { Send, Info } from "lucide-react";
+import { useI18n } from "@/hooks/useI18n";
+import { TooltipProvider } from "../ui/Tooltip";
+import { Toggle } from "../ui/Toggle";
+import { Slider } from "../ui/Slider";
+import { Rating } from "../ui/Rating";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/Accordion";
 
 /**
- * Type definition for form field configuration
- * This defines the shape of each field object passed to the DynamicForm component
+ * Enhanced FormField type with support for all UI components
  */
 export type FormField = {
+  // Layout configuration
   colSize?: {
-    desktop?: number; // 1–12, e.g. 3 for 3/12
-    tablet?: number; // 1–12, e.g. 6 for 6/12
-    mobile?: number; // 1–12, e.g. 12 for full width
+    desktop?: number; // 1–12
+    tablet?: number; // 1–12
+    mobile?: number; // 1–12
   };
-  /** Unique identifier for the form field (maps to form data key) */
+
+  // Field identification
   name: string;
-  /** Display label for the field */
   label: string;
-  /** HTML input type determining the UI element rendered */
+
+  // Extended type support for all UI components
   type:
     | "text"
     | "email"
@@ -40,71 +75,95 @@ export type FormField = {
     | "number"
     | "date"
     | "datetime-local"
-    | "select"
-    | "textarea"
-    | "checkbox"
-    | "radio"
     | "time"
     | "week"
     | "month"
-    | "color"
-    | "file"
-    | "range"
     | "url"
     | "tel"
-    | "search";
-  /** Placeholder text for input fields */
+    | "search"
+    | "textarea"
+    | "select"
+    | "checkbox"
+    | "radio"
+    | "switch"
+    | "toggle"
+    | "slider"
+    | "range"
+    | "color"
+    | "file"
+    | "fileuploader"
+    | "imageuploader"
+    | "tags"
+    | "calendar"
+    | "richtext"
+    | "map"
+    | "rating"
+    | "section" // For grouping fields
+    | "hidden";
+
+  // Field configuration
   placeholder?: string;
-  /** Options for select and radio button fields */
   options?: Array<{ value: string; label: string }>;
-  /** Zod validation schema for this field */
   validation: z.ZodTypeAny;
-  /** Optional: show asterisk for required fields */
   required?: boolean;
-  /** Optional: helper text displayed below the field */
   helperText?: string;
-  /** Optional: disable the field */
   disabled?: boolean;
 
-  sizes?: {
-    desktop: number;
-    tablet: number;
-    mobile: number;
-  };
+  // File upload specific
+  multiple?: boolean;
+  accept?: string;
+  maxSize?: number;
+  showPreview?: boolean;
+
+  // Slider/Range specific
+  min?: number;
+  max?: number;
+  step?: number;
+
+  // Rating specific
+  maxRating?: number;
+
+  // Section specific (for grouping)
+  fields?: FormField[];
+  collapsible?: boolean;
+  defaultOpen?: boolean;
+
+  // Conditional rendering
+  dependsOn?: string;
+  showWhen?: (value: any) => boolean;
+
+  // Advanced
+  tooltip?: string;
+  icon?: React.ReactNode;
 };
 
 /**
- * Props interface for the DynamicForm component
+ * Enhanced DynamicForm Props
  */
 export interface DynamicFormProps {
-  /** Array of form field configurations */
   config: FormField[];
-  /** Async function to handle form submission */
   onSubmit: (data: Record<string, any>) => Promise<void>;
-  /** Text displayed on the submit button */
   submitText?: string;
-  /** Callback fired on successful submission */
   onSuccess?: () => void;
-  /** Additional CSS classes to apply to the form */
   className?: string;
   defaultValues?: Record<string, any>;
+  layout?: "single" | "tabs" | "accordion" | "wizard";
+  showProgress?: boolean;
 }
 
 /**
- * DynamicForm Component
+ * Enhanced DynamicForm Component
  *
- * A flexible, reusable form component that generates form fields from JSON configuration.
- * Integrates with react-hook-form, Zod validation, Tailwind CSS v4, TanStack React Query,
- * and react-hot-toast for a complete form solution.
- *
- * Features:
- * - Dynamic field generation from JSON config
- * - Real-time validation with Zod schemas
- * - Server-side mutation handling via TanStack Query
- * - User feedback via toast notifications
- * - Type-safe form handling with TypeScript
- * - Responsive design with Tailwind CSS v4
- * - Accessible form elements with proper labels and error messages
+ * Supports all UI components with advanced features:
+ * - All input types from basic to complex
+ * - Conditional field rendering
+ * - Section/grouping with accordion/tabs
+ * - File uploads with preview
+ * - Rich text editing
+ * - Maps and location
+ * - Rating systems
+ * - Progress indicators
+ * - Tooltips and helpers
  */
 export const DynamicForm: React.FC<DynamicFormProps> = ({
   config,
@@ -113,266 +172,671 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
   onSuccess,
   className = "",
   defaultValues = {},
+  layout = "single",
+  showProgress = false,
 }) => {
+  const { t } = useI18n();
+  const [currentStep, setCurrentStep] = useState(0);
+
   // ============================================================================
   // Schema Generation
   // ============================================================================
-  // Dynamically construct a Zod schema object from the config array.
-  // Each field's validation rule is extracted and combined into a single schema.
+  const buildSchema = (fields: FormField[]): Record<string, z.ZodTypeAny> => {
+    const schema: Record<string, z.ZodTypeAny> = {};
 
-  const schemaObject: Record<string, z.ZodTypeAny> = config.reduce(
-    (schema, field) => {
-      schema[field.name] = field.validation;
-      return schema;
-    },
-    {} as Record<string, z.ZodTypeAny>
-  );
+    fields.forEach((field) => {
+      if (field.type === "section" && field.fields) {
+        Object.assign(schema, buildSchema(field.fields));
+      } else if (field.type !== "hidden") {
+        schema[field.name] = field.validation;
+      }
+    });
 
+    return schema;
+  };
+
+  const schemaObject = buildSchema(config);
   const validationSchema = z.object(schemaObject);
   type FormData = z.infer<typeof validationSchema>;
 
   // ============================================================================
   // React Hook Form Setup
   // ============================================================================
-  // Initialize the form with zodResolver to integrate Zod validation.
-  // This provides form state management, field registration, and validation.
-
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isValid },
     watch,
     reset,
+    setValue,
   } = useForm<FormData>({
     defaultValues,
     resolver: zodResolver(validationSchema),
-    mode: "onChange", // Validate on every change for instant feedback
+    mode: "onChange",
   });
 
-  // ============================================================================
-  // TanStack React Query Mutation
-  // ============================================================================
-  // Use useMutation to handle the async form submission.
-  // The mutation manages loading, success, and error states automatically.
+  const watchedValues = watch();
 
+  // ============================================================================
+  // Mutation
+  // ============================================================================
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
-      // Call the provided onSubmit handler with validated data
       await onSubmit(data);
     },
     onSuccess: () => {
-      // Show success toast notification
-      toast.success("Form submitted successfully!", {
+      toast.success(t("Form submitted successfully!"), {
         position: "top-right",
         duration: 4000,
       });
-
-      // Reset the form to initial state
       reset();
-
-      // Call the optional onSuccess callback if provided
-      if (onSuccess) {
-        onSuccess();
-      }
+      if (onSuccess) onSuccess();
     },
     onError: (error: Error) => {
-      // Show error toast notification with error message
-      toast.error(error.message || "Something went wrong. Please try again.", {
-        position: "top-right",
-        duration: 4000,
-      });
+      toast.error(
+        error.message || t("Something went wrong. Please try again."),
+        {
+          position: "top-right",
+          duration: 4000,
+        }
+      );
     },
   });
-
-  // ============================================================================
-  // Form Submission Handler
-  // ============================================================================
-  // This wraps react-hook-form's handleSubmit with the mutation's mutateAsync.
-  // This ensures the loading state is properly managed by react-hook-form.
 
   const onFormSubmit = handleSubmit((data) => mutation.mutateAsync(data));
 
   // ============================================================================
-  // Component Rendering
+  // Field Renderer
   // ============================================================================
-  // This section maps over the config array and renders appropriate input
-  // components based on the 'type' field. Error messages are displayed inline.
+  const renderField = (field: FormField) => {
+    // Check conditional rendering
+    if (field.dependsOn && field.showWhen) {
+      const dependentValue = watchedValues[field.dependsOn];
+      if (!field.showWhen(dependentValue)) {
+        return null;
+      }
+    }
 
-  return (
-    <form
-      onSubmit={onFormSubmit}
-      className={`w-full grid grid-cols-12 gap-6
-         rounded-lg bg-white p-6 shadow-md  ${className} `}
-      noValidate
-    >
-      {/* Map over config array and render each field */}
-      {config.map((field) => (
-        <div
-          key={field.name}
-          className={`
-    col-span-${field?.colSize?.mobile || 12}
-    md:col-span-${field?.colSize?.tablet || 12}
-    lg:col-span-${field?.colSize?.desktop || 12}
-    
-  `}
-        >
-          {/* Switch Statement for Different Input Types */}
-          {/* Text-Based Inputs */}
-          {(field.type === "text" ||
-            field.type === "email" ||
-            field.type === "password" ||
-            field.type === "number" ||
-            field.type === "date" ||
-            field.type === "datetime-local" ||
-            field.type === "time" ||
-            field.type === "week" ||
-            field.type === "month" ||
-            field.type === "url" ||
-            field.type === "tel" ||
-            field.type === "search") && (
+    const fieldError = errors[field.name];
+    const errorMessage = fieldError?.message as string;
+
+    // Wrapper for field with label and error
+    const FieldWrapper = ({ children }: { children: React.ReactNode }) => (
+      <div className="space-y-2">
+        {field.label && (
+          <div className="flex items-center gap-2">
+            <Label htmlFor={field.name}>
+              {field.label}
+              {field.required && <span className="text-red-500 ml-1">*</span>}
+            </Label>
+            {field.tooltip && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{field.tooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+          </div>
+        )}
+        {children}
+        {field.helperText && !errorMessage && (
+          <p className="text-sm text-muted-foreground">{field.helperText}</p>
+        )}
+        {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
+      </div>
+    );
+
+    // Render based on type
+    switch (field.type) {
+      // ========== Text-based inputs ==========
+      case "text":
+      case "email":
+      case "password":
+      case "number":
+      case "date":
+      case "datetime-local":
+      case "time":
+      case "week":
+      case "month":
+      case "url":
+      case "tel":
+      case "search":
+        return (
+          <FieldWrapper>
             <Input
-              helperText={field.helperText}
-              label={field.label}
-              required={field.required}
               id={field.name}
               type={field.type}
               placeholder={field.placeholder}
-              disabled={field.disabled || mutation.isPending}
+              disabled={field.disabled}
+              error={fieldError}
               {...register(field.name)}
-              error={errors[field.name]}
             />
-          )}
+          </FieldWrapper>
+        );
 
-          {/* Textarea Input */}
-          {field.type === "textarea" && (
+      // ========== Textarea ==========
+      case "textarea":
+        return (
+          <FieldWrapper>
             <Textarea
-              helperText={field.helperText}
-              label={field.label}
-              required={field.required}
               id={field.name}
               placeholder={field.placeholder}
-              disabled={field.disabled || mutation.isPending}
+              disabled={field.disabled}
+              error={fieldError}
               {...register(field.name)}
-              error={errors[field.name]}
-              rows={4}
             />
-          )}
+          </FieldWrapper>
+        );
 
-          {/* Select Dropdown */}
-          {field.type === "select" && (
+      // ========== Select ==========
+      case "select":
+        return (
+          <FieldWrapper>
             <Select
-              label={field.label}
-              required={field.required}
-              id={field.name}
-              disabled={field.disabled || mutation.isPending}
-              helperText={field.helperText}
+              disabled={field.disabled}
+              error={fieldError}
               {...register(field.name)}
-              error={errors[field.name]}
-              options={field.options}
-            />
-          )}
+            >
+              <option value="">
+                {field.placeholder || "Select an option"}
+              </option>
+              {field.options?.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </Select>
+          </FieldWrapper>
+        );
 
-          {/* Color Picker Input */}
-          {field.type === "color" && (
+      // ========== Checkbox ==========
+      case "checkbox":
+        return (
+          <FieldWrapper>
+            <Checkbox
+              id={field.name}
+              disabled={field.disabled}
+              {...register(field.name)}
+            />
+          </FieldWrapper>
+        );
+
+      // ========== Radio ==========
+      case "radio":
+        return (
+          <FieldWrapper>
+            <div className="space-y-2">
+              {field.options?.map((option) => (
+                <div key={option.value} className="flex items-center gap-2">
+                  <Radio
+                    id={`${field.name}-${option.value}`}
+                    value={option.value}
+                    disabled={field.disabled}
+                    {...register(field.name)}
+                  />
+                  <Label htmlFor={`${field.name}-${option.value}`}>
+                    {option.label}
+                  </Label>
+                </div>
+              ))}
+            </div>
+          </FieldWrapper>
+        );
+
+      // ========== Switch ==========
+      case "switch":
+        return (
+          <FieldWrapper>
+            <Controller
+              name={field.name}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Switch
+                  checked={value}
+                  onCheckedChange={onChange}
+                  disabled={field.disabled}
+                />
+              )}
+            />
+          </FieldWrapper>
+        );
+
+      // ========== Toggle ==========
+      case "toggle":
+        return (
+          <FieldWrapper>
+            <Controller
+              name={field.name}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Toggle
+                  pressed={value}
+                  onPressedChange={onChange}
+                  disabled={field.disabled}
+                >
+                  {field.placeholder || "Toggle"}
+                </Toggle>
+              )}
+            />
+          </FieldWrapper>
+        );
+
+      // ========== Slider ==========
+      case "slider":
+        return (
+          <FieldWrapper>
+            <Controller
+              name={field.name}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Slider
+                  min={field.min ?? 0}
+                  max={field.max ?? 100}
+                  step={field.step ?? 1}
+                  value={[value || field.min || 0]}
+                  onValueChange={(vals) => onChange(vals[0])}
+                  disabled={field.disabled}
+                />
+              )}
+            />
+          </FieldWrapper>
+        );
+
+      // ========== Range ==========
+      case "range":
+        return (
+          <FieldWrapper>
+            <Range
+              min={field.min ?? 0}
+              max={field.max ?? 100}
+              step={field.step ?? 1}
+              disabled={field.disabled}
+              {...register(field.name)}
+            />
+          </FieldWrapper>
+        );
+
+      // ========== Color ==========
+      case "color":
+        return (
+          <FieldWrapper>
             <Color
-              label={field.label}
-              required={field.required}
-              error={errors[field.name]}
-              id={field.name}
-              helperText={field.helperText}
-              disabled={field.disabled || mutation.isPending}
+              disabled={field.disabled}
+              error={fieldError}
               {...register(field.name)}
             />
-          )}
+          </FieldWrapper>
+        );
 
-          {/* File Input */}
-          {field.type === "file" && (
+      // ========== File ==========
+      case "file":
+        return (
+          <FieldWrapper>
             <File
               label={field.label}
-              required={field.required}
-              error={errors[field.name]}
-              id={field.name}
+              multiple={field.multiple}
+              accept={field.accept}
+              showPreview={field.showPreview}
+              maxSize={field.maxSize}
+              disabled={field.disabled}
+              error={fieldError}
               helperText={field.helperText}
-              disabled={field.disabled || mutation.isPending}
               {...register(field.name)}
             />
-          )}
+          </FieldWrapper>
+        );
 
-          {/* Checkbox Input */}
-          {field.type === "checkbox" && (
-            <Checkbox
-              label={field.label}
-              helperText={field.helperText}
-              disabled={field.disabled || mutation.isPending}
-              {...register(field.name)}
-              error={errors[field.name]}
+      // ========== File Uploader ==========
+      case "fileuploader":
+        return (
+          <FieldWrapper>
+            <Controller
+              name={field.name}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <FileUploader
+                  value={value}
+                  onChange={onChange}
+                  accept={field.accept}
+                  multiple={field.multiple}
+                  disabled={field.disabled}
+                />
+              )}
             />
-          )}
+          </FieldWrapper>
+        );
 
-          {/* Radio Button Input */}
-          {field.type === "radio" && (
-            <Radio
-              id={field.name}
-              label={field.label}
-              options={field.options}
-              required={field.required}
-              error={errors[field.name]}
-              helperText={field.helperText}
-              disabled={field.disabled || mutation.isPending}
-              {...register(field.name)}
+      // ========== Image Uploader ==========
+      case "imageuploader":
+        return (
+          <FieldWrapper>
+            <Controller
+              name={field.name}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <ImageUploader
+                  value={value}
+                  onChange={onChange}
+                  disabled={field.disabled}
+                />
+              )}
             />
-          )}
-          {/* Range Slider Input */}
-          {field.type === "range" && (
-            <Range
-              label={field.label}
-              required={field.required}
-              error={errors[field.name]}
-              id={field.name}
-              helperText={field.helperText}
-              disabled={field.disabled || mutation.isPending}
-              value={watch(field.name as keyof FormData)}
-              {...register(field.name)}
+          </FieldWrapper>
+        );
+
+      // ========== Tag Input ==========
+      case "tags":
+        return (
+          <FieldWrapper>
+            <Controller
+              name={field.name}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <TagInput
+                  value={value || []}
+                  onChange={onChange}
+                  placeholder={field.placeholder}
+                  disabled={field.disabled}
+                />
+              )}
             />
-          )}
-        </div>
-      ))}
+          </FieldWrapper>
+        );
+
+      // ========== Calendar ==========
+      case "calendar":
+        return (
+          <FieldWrapper>
+            <Controller
+              name={field.name}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Calendar
+                  mode="single"
+                  selected={value}
+                  onSelect={onChange}
+                  disabled={field.disabled}
+                />
+              )}
+            />
+          </FieldWrapper>
+        );
+
+      // ========== Rich Text Editor ==========
+      case "richtext":
+        return (
+          <FieldWrapper>
+            <Controller
+              name={field.name}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <RichTextEditor
+                  value={value}
+                  onChange={onChange}
+                  placeholder={field.placeholder}
+                  disabled={field.disabled}
+                />
+              )}
+            />
+          </FieldWrapper>
+        );
+
+      // ========== Map ==========
+      case "map":
+        return (
+          <FieldWrapper>
+            <Controller
+              name={field.name}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Map
+                  value={value}
+                  onChange={onChange}
+                  disabled={field.disabled}
+                />
+              )}
+            />
+          </FieldWrapper>
+        );
+
+      // ========== Rating ==========
+      case "rating":
+        return (
+          <FieldWrapper>
+            <Controller
+              name={field.name}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Rating
+                  value={value}
+                  onChange={onChange}
+                  max={field.maxRating ?? 5}
+                  disabled={field.disabled}
+                />
+              )}
+            />
+          </FieldWrapper>
+        );
+
+      // ========== Section (Grouping) ==========
+      case "section":
+        if (field.collapsible) {
+          return (
+            <Accordion
+              type="single"
+              collapsible
+              defaultValue={field.defaultOpen ? field.name : undefined}
+            >
+              <AccordionItem value={field.name}>
+                <AccordionTrigger>{field.label}</AccordionTrigger>
+                <AccordionContent>
+                  <div className="grid grid-cols-12 gap-4">
+                    {field.fields?.map((subField) => (
+                      <div
+                        key={subField.name}
+                        className={getColSpanClass(subField.colSize)}
+                      >
+                        {renderField(subField)}
+                      </div>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          );
+        } else {
+          return (
+            <Card>
+              <CardHeader>
+                <CardTitle>{field.label}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-12 gap-4">
+                  {field.fields?.map((subField) => (
+                    <div
+                      key={subField.name}
+                      className={getColSpanClass(subField.colSize)}
+                    >
+                      {renderField(subField)}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          );
+        }
+
+      case "hidden":
+        return <input type="hidden" {...register(field.name)} />;
+
+      default:
+        return null;
+    }
+  };
+
+  // ============================================================================
+  // Utility Functions
+  // ============================================================================
+  const getColSpanClass = (colSize?: {
+    desktop?: number;
+    tablet?: number;
+    mobile?: number;
+  }) => {
+    const desktop = colSize?.desktop || 12;
+    const tablet = colSize?.tablet || 12;
+    const mobile = colSize?.mobile || 12;
+
+    return `col-span-${mobile} md:col-span-${tablet} lg:col-span-${desktop}`;
+  };
+
+  // ============================================================================
+  // Layout Rendering
+  // ============================================================================
+  const renderLayout = () => {
+    switch (layout) {
+      case "tabs":
+        // Group fields by sections for tabs
+        const sections = config.filter((f) => f.type === "section");
+        return (
+          <Tabs defaultValue={sections[0]?.name}>
+            <TabsList>
+              {sections.map((section) => (
+                <TabsTrigger key={section.name} value={section.name}>
+                  {section.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {sections.map((section) => (
+              <TabsContent key={section.name} value={section.name}>
+                <div className="grid grid-cols-12 gap-4">
+                  {section.fields?.map((field) => (
+                    <div
+                      key={field.name}
+                      className={getColSpanClass(field.colSize)}
+                    >
+                      {renderField(field)}
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
+            ))}
+          </Tabs>
+        );
+
+      case "accordion":
+        return (
+          <Accordion type="single" collapsible>
+            {config.map((field) => (
+              <div key={field.name} className={getColSpanClass(field.colSize)}>
+                {renderField(field)}
+              </div>
+            ))}
+          </Accordion>
+        );
+
+      case "wizard":
+        // Multi-step wizard
+        const steps = config.filter((f) => f.type === "section");
+        const currentStepData = steps[currentStep];
+
+        return (
+          <div className="space-y-6">
+            {showProgress && (
+              <Progress value={((currentStep + 1) / steps.length) * 100} />
+            )}
+            <div className="grid grid-cols-12 gap-4">
+              {currentStepData?.fields?.map((field) => (
+                <div
+                  key={field.name}
+                  className={getColSpanClass(field.colSize)}
+                >
+                  {renderField(field)}
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-between">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
+                disabled={currentStep === 0}
+              >
+                Previous
+              </Button>
+              {currentStep < steps.length - 1 ? (
+                <Button
+                  type="button"
+                  onClick={() =>
+                    setCurrentStep((prev) =>
+                      Math.min(steps.length - 1, prev + 1)
+                    )
+                  }
+                >
+                  Next
+                </Button>
+              ) : null}
+            </div>
+          </div>
+        );
+
+      case "single":
+      default:
+        return (
+          <div className="grid grid-cols-12 gap-4">
+            {config.map((field) => (
+              <div key={field.name} className={getColSpanClass(field.colSize)}>
+                {renderField(field)}
+              </div>
+            ))}
+          </div>
+        );
+    }
+  };
+
+  // ============================================================================
+  // Main Render
+  // ============================================================================
+  return (
+    <motion.form
+      onSubmit={onFormSubmit}
+      className={`space-y-6 ${className}`}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {renderLayout()}
 
       {/* Submit Button */}
-      <Button
-        type="submit"
-        disabled={!isValid || mutation.isPending}
-        className="w-full rounded-md bg-blue-600 py-2 px-4 font-semibold text-white transition-all duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
-      >
-        {mutation.isPending ? (
-          <span className="flex items-center justify-center space-x-2">
-            <svg
-              className="h-5 w-5 animate-spin"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
+      <div className="flex justify-end pt-4">
+        <Button
+          type="submit"
+          disabled={!isValid || mutation.isPending}
+          className="min-w-[120px]"
+        >
+          {mutation.isPending ? (
+            <>
+              <motion.div
+                className="mr-2 h-4 w-4 rounded-full border-2 border-white border-t-transparent"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
               />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-            <span>Submitting...</span>
-          </span>
-        ) : (
-          submitText
-        )}
-      </Button>
-    </form>
+              {t("Sending")}...
+            </>
+          ) : (
+            <>
+              {submitText}
+              <Send className="ml-2 h-4 w-4" />
+            </>
+          )}
+        </Button>
+      </div>
+    </motion.form>
   );
 };
 

@@ -32,8 +32,10 @@ interface PaginationParams {
 // Status Badge Component
 const StatusBadge = ({ status }: any) => {
   const statusStyles: any = {
-    Active: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-    Inactive: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200",
+    Active:
+      "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+    Inactive:
+      "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200",
     Pending:
       "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
   };
@@ -120,11 +122,10 @@ export function DataTable({
           page: (pageIndex + 1).toString(), // Server typically expects 1-based indexing
           pageSize: pageSize.toString(),
           ...(globalFilter && { search: globalFilter }),
-          ...(sort &&
-            sort.length > 0 && {
-              sortBy: sort[0].id,
-              sortOrder: sort[0].desc ? "desc" : "asc",
-            }),
+          ...(sort && sort.length > 0 && {
+            sortBy: sort[0].id,
+            sortOrder: sort[0].desc ? "desc" : "asc",
+          }),
         });
 
         const response = await fetch(`${apiEndpoint}?${params.toString()}`);
@@ -284,9 +285,11 @@ export function DataTable({
       {/* Pagination Controls */}
       <div className="flex gap-4 items-center justify-between py-4">
         <div className="text-sm text-gray-600 dark:text-gray-400">
-          Showing{" "}
-          {data.length > 0 ? pagination.pageIndex * pagination.pageSize + 1 : 0}{" "}
-          to {Math.min((pagination.pageIndex + 1) * pagination.pageSize, total)}{" "}
+          Showing {data.length > 0 ? pagination.pageIndex * pagination.pageSize + 1 : 0} to{" "}
+          {Math.min(
+            (pagination.pageIndex + 1) * pagination.pageSize,
+            total
+          )}{" "}
           of {total} results
         </div>
 
@@ -309,9 +312,7 @@ export function DataTable({
 
           <button
             onClick={() =>
-              table.setPageIndex(
-                Math.min(totalPages - 1, pagination.pageIndex + 1)
-              )
+              table.setPageIndex(Math.min(totalPages - 1, pagination.pageIndex + 1))
             }
             disabled={pagination.pageIndex >= totalPages - 1}
             className="px-4 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-600"

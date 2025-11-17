@@ -1,17 +1,6 @@
 "use client";
 import { motion } from "motion/react";
-import { useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Label } from "@/components/ui/Label";
-import { Textarea } from "@/components/ui/Textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/Select";
 import {
   Award,
   Building2,
@@ -34,25 +23,24 @@ import {
   Hash,
   Factory,
 } from "lucide-react";
-import { toast } from "sonner";
-import { useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
 import { useI18n } from "@/hooks/useI18n";
+import DynamicForm from "../shared/DynamicForm";
+import { z } from "zod";
+import { ProductFormPage } from "./TestForm";
 
+const isoValidations = {
+  company: z.string(),
+  name: z.string(),
+  position: z.string(),
+  email: z.string(),
+  phone: z.string(),
+  isoType: z.string(),
+  employees: z.string(),
+  industry: z.string(),
+  message: z.string(),
+};
 export default function ISOPage() {
   const { t, language } = useI18n();
-  const [formData, setFormData] = useState({
-    company: "",
-    name: "",
-    position: "",
-    email: "",
-    phone: "",
-    isoType: "",
-    employees: "",
-    industry: "",
-    message: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isoTypes = [
     {
@@ -157,44 +145,7 @@ export default function ISOPage() {
     },
   ];
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !formData.company ||
-      !formData.name ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.isoType
-    ) {
-      toast.error(t("Pleasefillallfields"));
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      toast.error(t("Invalid email address"));
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    setTimeout(() => {
-      toast.success(t("iso_booking_success"));
-      setFormData({
-        company: "",
-        name: "",
-        position: "",
-        email: "",
-        phone: "",
-        isoType: "",
-        employees: "",
-        industry: "",
-        message: "",
-      });
-      setIsSubmitting(false);
-    }, 1500);
-  };
+  const handleSubmit = async (data: Record<string, any>) => {};
 
   return (
     <div
@@ -684,268 +635,141 @@ export default function ISOPage() {
                 }}
               />
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid sm:grid-cols-2 gap-6">
-                  {/* Company Name */}
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label
-                      htmlFor="company"
-                      style={{ color: "var(--theme-text-primary)" }}
-                    >
-                      {t("iso_booking_company")}
-                      <span className="text-red-500 ltr:ml-1 rtl:mr-1">*</span>
-                    </Label>
-                    <div className="relative">
-                      <Building className="absolute top-1/2 -translate-y-1/2 ltr:left-3 rtl:right-3 w-5 h-5 text-gray-400" />
-                      <Input
-                        id="company"
-                        type="text"
-                        placeholder={t("iso_booking_company")}
-                        value={formData.company}
-                        onChange={(e: any) =>
-                          setFormData({ ...formData, company: e.target.value })
-                        }
-                        className="ltr:pl-10 rtl:pr-10 glassmorphism border-white/20"
-                        style={{ color: "var(--theme-text-primary)" }}
-                      />
-                    </div>
-                  </div>
+              <DynamicForm
+                config={[
+                  {
+                    name: "company",
+                    label: t("iso_booking_company"),
+                    type: "text",
+                    placeholder: t("iso_booking_company"),
+                    validation: isoValidations.company,
+                    required: true,
 
-                  {/* Contact Name */}
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="name"
-                      style={{ color: "var(--theme-text-primary)" }}
-                    >
-                      {t("iso_booking_name")}
-                      <span className="text-red-500 ltr:ml-1 rtl:mr-1">*</span>
-                    </Label>
-                    <div className="relative">
-                      <User className="absolute top-1/2 -translate-y-1/2 ltr:left-3 rtl:right-3 w-5 h-5 text-gray-400" />
-                      <Input
-                        id="name"
-                        type="text"
-                        placeholder={t("iso_booking_name")}
-                        value={formData.name}
-                        onChange={(e: any) =>
-                          setFormData({ ...formData, name: e.target.value })
-                        }
-                        className="ltr:pl-10 rtl:pr-10 glassmorphism border-white/20"
-                        style={{ color: "var(--theme-text-primary)" }}
-                      />
-                    </div>
-                  </div>
+                    colSize: {
+                      desktop: 12,
+                      tablet: 12,
+                      mobile: 12,
+                    },
+                  },
+                  {
+                    name: "name",
+                    label: t("iso_booking_name"),
+                    type: "text",
+                    placeholder: t("iso_booking_name"),
+                    validation: isoValidations.name,
+                    required: true,
 
-                  {/* Position */}
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="position"
-                      style={{ color: "var(--theme-text-primary)" }}
-                    >
-                      {t("iso_booking_position")}
-                    </Label>
-                    <div className="relative">
-                      <Briefcase className="absolute top-1/2 -translate-y-1/2 ltr:left-3 rtl:right-3 w-5 h-5 text-gray-400" />
-                      <Input
-                        id="position"
-                        type="text"
-                        placeholder={t("iso_booking_position")}
-                        value={formData.position}
-                        onChange={(e: any) =>
-                          setFormData({ ...formData, position: e.target.value })
-                        }
-                        className="ltr:pl-10 rtl:pr-10 glassmorphism border-white/20"
-                        style={{ color: "var(--theme-text-primary)" }}
-                      />
-                    </div>
-                  </div>
+                    colSize: {
+                      desktop: 6,
+                      tablet: 6,
+                      mobile: 12,
+                    },
+                  },
+                  {
+                    name: "position",
+                    label: t("iso_booking_position"),
+                    type: "text",
+                    placeholder: t("iso_booking_position"),
+                    validation: isoValidations.position,
+                    required: true,
 
-                  {/* Email */}
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="email"
-                      style={{ color: "var(--theme-text-primary)" }}
-                    >
-                      {t("iso_booking_email")}
-                      <span className="text-red-500 ltr:ml-1 rtl:mr-1">*</span>
-                    </Label>
-                    <div className="relative">
-                      <Mail className="absolute top-1/2 -translate-y-1/2 ltr:left-3 rtl:right-3 w-5 h-5 text-gray-400" />
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder={t("iso_booking_email")}
-                        value={formData.email}
-                        onChange={(e: any) =>
-                          setFormData({ ...formData, email: e.target.value })
-                        }
-                        className="ltr:pl-10 rtl:pr-10 glassmorphism border-white/20"
-                        style={{ color: "var(--theme-text-primary)" }}
-                      />
-                    </div>
-                  </div>
+                    colSize: {
+                      desktop: 6,
+                      tablet: 6,
+                      mobile: 12,
+                    },
+                  },
+                  {
+                    name: "email",
+                    label: t("iso_booking_email"),
+                    type: "email",
+                    placeholder: t("iso_booking_email"),
+                    validation: isoValidations.email,
+                    required: true,
 
-                  {/* Phone */}
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="phone"
-                      style={{ color: "var(--theme-text-primary)" }}
-                    >
-                      {t("iso_booking_phone")}
-                      <span className="text-red-500 ltr:ml-1 rtl:mr-1">*</span>
-                    </Label>
-                    <div className="relative">
-                      <Phone className="absolute top-1/2 -translate-y-1/2 ltr:left-3 rtl:right-3 w-5 h-5 text-gray-400" />
-                      <Input
-                        id="phone"
-                        type="tel"
-                        placeholder={t("iso_booking_phone")}
-                        value={formData.phone}
-                        onChange={(e: any) =>
-                          setFormData({ ...formData, phone: e.target.value })
-                        }
-                        className="ltr:pl-10 rtl:pr-10 glassmorphism border-white/20"
-                        style={{ color: "var(--theme-text-primary)" }}
-                      />
-                    </div>
-                  </div>
+                    colSize: {
+                      desktop: 6,
+                      tablet: 6,
+                      mobile: 12,
+                    },
+                  },
+                  {
+                    name: "phone",
+                    label: t("iso_booking_phone"),
+                    type: "tel",
+                    placeholder: t("iso_booking_phone"),
+                    validation: isoValidations.phone,
+                    required: true,
 
-                  {/* ISO Type */}
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="isoType"
-                      style={{ color: "var(--theme-text-primary)" }}
-                    >
-                      {t("iso_booking_isoType")}
-                      <span className="text-red-500 ltr:ml-1 rtl:mr-1">*</span>
-                    </Label>
-                    <Select
-                      value={formData.isoType}
-                      onValueChange={(value: any) =>
-                        setFormData({ ...formData, isoType: value })
-                      }
-                    >
-                      <SelectTrigger
-                        className="glassmorphism border-white/20"
-                        style={{ color: "var(--theme-text-primary)" }}
-                      >
-                        <SelectValue placeholder={t("iso_booking_isoType")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {isoTypes.map((type) => (
-                          <SelectItem key={type.value} value={type.value}>
-                            {type.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                    colSize: {
+                      desktop: 6,
+                      tablet: 6,
+                      mobile: 12,
+                    },
+                  },
+                  {
+                    name: "isoType",
+                    label: t("iso_booking_isoType"),
+                    type: "select",
+                    placeholder: t("iso_booking_isoType"),
+                    validation: isoValidations.isoType,
+                    options: isoTypes,
+                    required: true,
 
-                  {/* Number of Employees */}
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="employees"
-                      style={{ color: "var(--theme-text-primary)" }}
-                    >
-                      {t("iso_booking_employees")}
-                    </Label>
-                    <div className="relative">
-                      <Hash className="absolute top-1/2 -translate-y-1/2 ltr:left-3 rtl:right-3 w-5 h-5 text-gray-400" />
-                      <Input
-                        id="employees"
-                        type="text"
-                        placeholder={t("iso_booking_employees")}
-                        value={formData.employees}
-                        onChange={(e: any) =>
-                          setFormData({
-                            ...formData,
-                            employees: e.target.value,
-                          })
-                        }
-                        className="ltr:pl-10 rtl:pr-10 glassmorphism border-white/20"
-                        style={{ color: "var(--theme-text-primary)" }}
-                      />
-                    </div>
-                  </div>
+                    colSize: {
+                      desktop: 4,
+                      tablet: 6,
+                      mobile: 12,
+                    },
+                  },
+                  {
+                    name: "employees",
+                    label: t("iso_booking_employees"),
+                    type: "number",
+                    placeholder: t("iso_booking_employees"),
+                    validation: isoValidations.employees,
+                    required: true,
 
-                  {/* Industry */}
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="industry"
-                      style={{ color: "var(--theme-text-primary)" }}
-                    >
-                      {t("iso_booking_industry")}
-                    </Label>
-                    <div className="relative">
-                      <Factory className="absolute top-1/2 -translate-y-1/2 ltr:left-3 rtl:right-3 w-5 h-5 text-gray-400" />
-                      <Input
-                        id="industry"
-                        type="text"
-                        placeholder={t("iso_booking_industry")}
-                        value={formData.industry}
-                        onChange={(e: any) =>
-                          setFormData({ ...formData, industry: e.target.value })
-                        }
-                        className="ltr:pl-10 rtl:pr-10 glassmorphism border-white/20"
-                        style={{ color: "var(--theme-text-primary)" }}
-                      />
-                    </div>
-                  </div>
+                    colSize: {
+                      desktop: 4,
+                      tablet: 6,
+                      mobile: 12,
+                    },
+                  },
+                  {
+                    name: "industry",
+                    label: t("iso_booking_industry"),
+                    type: "text",
+                    placeholder: t("iso_booking_industry"),
+                    validation: isoValidations.industry,
+                    required: true,
 
-                  {/* Message */}
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label
-                      htmlFor="message"
-                      style={{ color: "var(--theme-text-primary)" }}
-                    >
-                      {t("iso_booking_message")}
-                    </Label>
-                    <Textarea
-                      id="message"
-                      placeholder={t("iso_booking_message")}
-                      value={formData.message}
-                      onChange={(e: any) =>
-                        setFormData({ ...formData, message: e.target.value })
-                      }
-                      rows={4}
-                      className="glassmorphism border-white/20 resize-none"
-                      style={{ color: "var(--theme-text-primary)" }}
-                    />
-                  </div>
-                </div>
+                    colSize: {
+                      desktop: 4,
+                      tablet: 6,
+                      mobile: 12,
+                    },
+                  },
+                  {
+                    name: "message",
+                    label: t("iso_booking_message"),
+                    type: "textarea",
+                    placeholder: t("iso_booking_message"),
+                    validation: isoValidations.message,
+                    required: true,
 
-                {/* Submit Button */}
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full text-white border-0 relative overflow-hidden group py-6"
-                    style={{
-                      backgroundImage: `linear-gradient(to right, var(--theme-gradient-start), var(--theme-gradient-mid))`,
-                    }}
-                  >
-                    <motion.div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      style={{
-                        backgroundImage: `linear-gradient(to right, var(--theme-gradient-mid), var(--theme-gradient-end))`,
-                      }}
-                    />
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      {isSubmitting ? (
-                        t("Sending")
-                      ) : (
-                        <>
-                          <Send className="w-5 h-5" />
-                          {t("iso_booking_submit")}
-                        </>
-                      )}
-                    </span>
-                  </Button>
-                </motion.div>
-              </form>
+                    colSize: {
+                      desktop: 12,
+                      tablet: 12,
+                      mobile: 12,
+                    },
+                  },
+                ]}
+                onSubmit={handleSubmit}
+                submitText={t("iso_booking_submit")}
+                onSuccess={() => console.log("Product created successfully")}
+                className="space-y-6"
+              />
             </div>
           </motion.div>
         </div>
