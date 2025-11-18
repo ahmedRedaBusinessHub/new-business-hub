@@ -95,6 +95,12 @@
       "description": "Sign in securely to your Business Hub account to manage your services, bookings, and entrepreneurship resources. Fast and safe access for partners and clients.",
       "keywords": "login, sign in, business hub account, secure access, client login, partner login, business management",
       "authors": "Yousef Ouda Al-Baladi"
+    },
+    "register": {
+      "title": "Register | Business Hub – Secure Access to Your Account",
+      "description": "Sign up securely to your Business Hub account to manage your services, bookings, and entrepreneurship resources. Fast and safe access for partners and clients.",
+      "keywords": "register, sign up, business hub account, secure access, client register, partner register, business management",
+      "authors": "Yousef Ouda Al-Baladi"
     }
   },
   "nav_home": "Home",
@@ -1534,6 +1540,59 @@
           "description": "info@businesshub.sa"
         }
       ]
+    }
+  },
+  "register": {
+    "hero": {
+      "badge": "Start Your Journey With Us",
+      "title": "Join Business Hub",
+      "subtitle": "Start your journey to success with the leading business platform"
+    },
+    "features": [
+      {
+        "title": "Full Access",
+        "description": "Complete access to all programs and resources"
+      },
+      {
+        "title": "Dedicated Support",
+        "description": "Specialized support team to help you"
+      },
+      {
+        "title": "Wide Network",
+        "description": "Join the entrepreneurs network"
+      }
+    ],
+    "form": {
+      "title": "Create Account",
+      "subtitle": "Create your account now and start your journey",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "Enter your full name",
+      "email": "Email",
+      "phone": "Phone",
+      "company": "Company",
+      "companyPlaceholder": "Optional",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "termsPrefix": "I agree to the ",
+      "termsLink": "Terms & Conditions",
+      "termsAnd": " and ",
+      "privacyLink": "Privacy Policy",
+      "submitButton": "Create Account",
+      "submitting": "Creating...",
+      "divider": "OR",
+      "loginPrompt": "Already have an account? ",
+      "loginLink": "Login"
+    },
+    "validation": {
+      "requiredFields": "Please fill in all required fields",
+      "invalidEmail": "Please enter a valid email address",
+      "passwordLength": "Password must be at least 8 characters",
+      "passwordMismatch": "Passwords do not match",
+      "termsRequired": "You must agree to the terms and conditions"
+    },
+    "messages": {
+      "success": "Account created successfully!",
+      "socialRegister": "Registering with "
     }
   }
 }
