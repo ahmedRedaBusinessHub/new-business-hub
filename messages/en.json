@@ -6,6 +6,12 @@
       "keywords": "entrepreneurship, business hub, startup support, incubator, accelerator, business development, Saudi Arabia",
       "authors": "Yousef Ouda Al-Baladi"
     },
+    "faq": {
+      "title": "FAQ | Business Hub – Vision, Mission & Team",
+      "description": "Learn about Business Hub’s story, vision, mission, values, and team driving innovation and entrepreneur success across Saudi Arabia.",
+      "keywords": "about business hub, company vision, mission, team, entrepreneurship, Saudi Arabia",
+      "authors": "Yousef Ouda Al-Baladi"
+    },
     "about": {
       "title": "About Us | Business Hub – Vision, Mission & Team",
       "description": "Learn about Business Hub’s story, vision, mission, values, and team driving innovation and entrepreneur success across Saudi Arabia.",
@@ -1409,5 +1415,125 @@
         "image": "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80"
       }
     ]
+  },
+  "faq": {
+    "hero": {
+      "badge": "Frequently Asked Questions",
+      "title": "How Can We Help You?",
+      "subtitle": "Find answers to the most common questions about our services and programs",
+      "searchPlaceholder": "Search for your question..."
+    },
+    "categories": [
+      {
+        "id": "all",
+        "name": "All"
+      },
+      {
+        "id": "incubation",
+        "name": "Incubation"
+      },
+      {
+        "id": "accelerator",
+        "name": "Accelerator"
+      },
+      {
+        "id": "workspace",
+        "name": "Workspace"
+      },
+      {
+        "id": "iso",
+        "name": "ISO"
+      },
+      {
+        "id": "general",
+        "name": "General"
+      }
+    ],
+    "noResults": "No results found",
+    "items": [
+      {
+        "category": "incubation",
+        "question": "What is the incubation service you offer?",
+        "answer": "We offer a comprehensive incubation program that includes mentorship, training, consulting, workspace, and access to a wide network of investors and partners. We help entrepreneurs turn their ideas into successful projects through integrated support."
+      },
+      {
+        "category": "incubation",
+        "question": "What is the duration of the incubation program?",
+        "answer": "The incubation program duration ranges from 6 to 18 months, depending on the project nature and needs. We offer flexible programs that can be customized for each project."
+      },
+      {
+        "category": "incubation",
+        "question": "What are the admission requirements for the incubation program?",
+        "answer": "We look for innovative ideas with significant growth potential. You should have a clear idea, a committed team, and readiness to work hard. We evaluate projects based on innovation, market viability, and scalability."
+      },
+      {
+        "category": "accelerator",
+        "question": "What is the difference between incubation and acceleration?",
+        "answer": "The incubation program targets projects in early stages (idea and prototype), while the acceleration program targets startups with a ready product seeking rapid growth and expansion."
+      },
+      {
+        "category": "accelerator",
+        "question": "How long is the acceleration program?",
+        "answer": "The acceleration program typically lasts 3 to 6 months and is designed with high intensity to help achieve rapid and significant growth."
+      },
+      {
+        "category": "accelerator",
+        "question": "Do you take equity from the startup?",
+        "answer": "This varies by program. Some programs are completely free, while others require a small equity stake in exchange for investment and support. We discuss details during the application process."
+      },
+      {
+        "category": "workspace",
+        "question": "What types of workspaces are available?",
+        "answer": "We provide shared workspaces, small private offices, large corporate offices, and virtual offices. All are equipped with the latest technology and integrated services."
+      },
+      {
+        "category": "workspace",
+        "question": "Can I access the office at any time?",
+        "answer": "Yes, we provide 24/7 access for all subscribers in private office packages. Shared spaces are available from 8 AM to 10 PM."
+      },
+      {
+        "category": "iso",
+        "question": "How long does the ISO certification process take?",
+        "answer": "The process typically takes 3 to 6 months, depending on the company's readiness and commitment to implementing required standards."
+      },
+      {
+        "category": "iso",
+        "question": "What is the cost of obtaining ISO certification?",
+        "answer": "Cost varies based on certification type, company size, and number of employees. We offer a free consultation to assess your needs and provide a customized quote."
+      },
+      {
+        "category": "general",
+        "question": "Do you provide funding for projects?",
+        "answer": "Yes, we provide direct funding for selected projects, and we also help connect entrepreneurs with a wide network of investors and investment funds."
+      },
+      {
+        "category": "general",
+        "question": "How can I apply to join your programs?",
+        "answer": "You can apply through our website by filling out the application form. Our team will review your application and contact you within 5-7 business days."
+      },
+      {
+        "category": "general",
+        "question": "Do you offer consulting services?",
+        "answer": "Yes, we offer comprehensive consulting services in business development, marketing, financial planning, operations management, and digital transformation."
+      }
+    ],
+    "contact": {
+      "title": "Didn't Find What You're Looking For?",
+      "subtitle": "Our support team is ready to help you",
+      "methods": [
+        {
+          "title": "Live Chat",
+          "description": "Talk to our support team directly"
+        },
+        {
+          "title": "Call Us",
+          "description": "+966 XX XXX XXXX"
+        },
+        {
+          "title": "Email",
+          "description": "info@businesshub.sa"
+        }
+      ]
+    }
   }
 }
