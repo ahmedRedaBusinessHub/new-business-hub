@@ -101,6 +101,12 @@
       "description": "Sign up securely to your Business Hub account to manage your services, bookings, and entrepreneurship resources. Fast and safe access for partners and clients.",
       "keywords": "register, sign up, business hub account, secure access, client register, partner register, business management",
       "authors": "Yousef Ouda Al-Baladi"
+    },
+    "forgot-password": {
+      "title": "Forgot Password | Business Hub – Secure Access to Your Account",
+      "description": "Sign up securely to your Business Hub account to manage your services, bookings, and entrepreneurship resources. Fast and safe access for partners and clients.",
+      "keywords": "forgot password, sign up, business hub account, secure access, client forgot password, partner forgot password, business management",
+      "authors": "Yousef Ouda Al-Baladi"
     }
   },
   "nav_home": "Home",
@@ -1593,6 +1599,61 @@
     "messages": {
       "success": "Account created successfully!",
       "socialRegister": "Registering with "
+    }
+  },
+  "forgotPassword": {
+    "hero": {
+      "title": "Password Recovery",
+      "subtitle": "Follow the simple steps to regain access to your account"
+    },
+    "steps": [
+      {
+        "title": "Enter your email",
+        "description": "Enter your registered email"
+      },
+      {
+        "title": "Check your email",
+        "description": "We'll send you a reset link"
+      },
+      {
+        "title": "Reset your password",
+        "description": "Follow instructions to create new password"
+      }
+    ],
+    "form": {
+      "title": "Forgot Password?",
+      "subtitle": "Don't worry, we'll help you recover it",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "Enter your email",
+      "emailHelp": "We'll send a password reset link to this email",
+      "submitButton": "Send Recovery Link",
+      "submitting": "Sending...",
+      "backToLogin": "Back to Login"
+    },
+    "success": {
+      "title": "Check Your Email!",
+      "subtitle": "A password reset link has been sent to:",
+      "nextStepsTitle": "📧 What's Next?",
+      "nextSteps": [
+        "Open your email inbox",
+        "Look for an email from Business Hub",
+        "Click on the reset link",
+        "Create a new password"
+      ],
+      "notReceived": "Didn't receive the email? Check your spam folder or",
+      "tryAgain": "Try Again",
+      "backToLogin": "Back to Login"
+    },
+    "validation": {
+      "emailRequired": "Please enter your email",
+      "invalidEmail": "Please enter a valid email address"
+    },
+    "messages": {
+      "linkSent": "Password reset link sent successfully"
+    },
+    "help": {
+      "prefix": "Need help? ",
+      "link": "Contact Support"
     }
   }
 }

@@ -36,7 +36,8 @@ export const authConfig = {
       );
       const isOnLogin =
         nextUrl.pathname.startsWith(`/${currentLocale}/login`) ||
-        nextUrl.pathname.startsWith(`/${currentLocale}/register`);
+        nextUrl.pathname.startsWith(`/${currentLocale}/register`) ||
+        nextUrl.pathname.startsWith(`/${currentLocale}/forgot-password`);
 
       if (isOnProtectedPath) {
         if (!isLoggedIn) {
