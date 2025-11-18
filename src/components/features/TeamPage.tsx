@@ -15,6 +15,20 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { useI18n } from "@/hooks/useI18n";
+import x from "@/assets/images/Tariq Zeyad Afandi.jpg";
+import x2 from "@/assets/images/WhatsApp Image 2025-11-09 at 08.40.27.jpeg";
+import Ibrahim from "@/assets/images/Ibrahim.png";
+import Ahmad from "@/assets/images/Ahmad Yousef.jpg";
+import Jomaa from "@/assets/images/Ahmad Jomaa.png";
+import Almutairy from "@/assets/images/Muhammad Almutairy ai enhanced transparent.png";
+
+import Nadia from "@/assets/images/Nadia.png";
+import Woman from "@/assets/images/Woman Placeholder.png";
+import Safia from "@/assets/images/Safia.png";
+import Ohoud from "@/assets/images/Ohoud Transparent.png";
+
+import Yousuf from "@/assets/images/Yousuf Hamza Sheikh Transparent.png";
+import Essa from "@/assets/images/Essa Bazzari Transparent.png";
 
 export default function TeamPage() {
   const { t } = useI18n("team");
@@ -27,26 +41,17 @@ export default function TeamPage() {
     "var(--theme-accent-light)",
   ];
 
-  const executiveImages = [
-    "https://images.unsplash.com/photo-1691664054347-cc39d34afee3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&q=80",
-    "https://images.unsplash.com/photo-1698499352020-521e54040e04?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&q=80",
-    "https://images.unsplash.com/photo-1756412066323-a336d2becc10?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&q=80",
-  ];
+  const executiveImages = [x2.src, x.src];
 
-  const managementImages = [
-    "https://images.unsplash.com/photo-1740153204804-200310378f2f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&q=80",
-    "https://images.unsplash.com/photo-1659353221488-0b9eb52f45a5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&q=80",
-    "https://images.unsplash.com/photo-1667842503541-965849144d33?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&q=80",
-    "https://images.unsplash.com/photo-1756412066366-b46dafaca253?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&q=80",
-  ];
+  const managementImages = [Almutairy.src, Jomaa.src, Ahmad.src, Ibrahim.src];
 
   const departmentImages = [
-    "https://images.unsplash.com/photo-1638783495774-42986a6756d1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&q=80",
-    "https://images.unsplash.com/photo-1719561940606-ec38a36e5f18?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&q=80",
-    "https://images.unsplash.com/photo-1615592018519-6c5c8c3f4c8e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&q=80",
-    "https://images.unsplash.com/photo-1650784853619-0845742430b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&q=80",
-    "https://images.unsplash.com/photo-1720722023452-8accc263e1e6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&q=80",
-    "https://images.unsplash.com/photo-1663518629510-016989dc4ee3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&q=80",
+    Yousuf.src,
+    Essa.src,
+    Woman.src,
+    Safia.src,
+    Nadia.src,
+    Ohoud.src,
   ];
 
   return (
@@ -194,7 +199,7 @@ export default function TeamPage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2   gap-6 lg:gap-8">
             {executiveImages.map((image, index) => (
               <motion.div
                 key={index}
@@ -204,7 +209,7 @@ export default function TeamPage() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
               >
                 <Card
-                  className="group overflow-hidden border-0 transition-all duration-500 hover:scale-105"
+                  className="group overflow-hidden border-0 transition-all duration-500 hover:scale-105  "
                   style={{
                     backgroundColor: "var(--theme-bg-primary)",
                     boxShadow:
@@ -261,7 +266,7 @@ export default function TeamPage() {
                       ))}
                     </div>
 
-                    <div className="flex flex-col gap-2 text-sm">
+                    {/* <div className="flex flex-col gap-2 text-sm">
                       <a
                         href={`mailto:${t(`executive.members.${index}.email`)}`}
                         className="flex items-center gap-2 hover:opacity-70 transition-opacity"
@@ -288,7 +293,7 @@ export default function TeamPage() {
                         <Linkedin className="w-4 h-4" />
                         <span>LinkedIn</span>
                       </a>
-                    </div>
+                    </div> */}
                   </div>
                 </Card>
               </motion.div>
@@ -393,7 +398,7 @@ export default function TeamPage() {
                       ))}
                     </div>
 
-                    <a
+                    {/* <a
                       href={`mailto:${t(`management.members.${index}.email`)}`}
                       className="flex items-center gap-2 text-sm hover:opacity-70 transition-opacity"
                       style={{ color: "var(--theme-text-secondary)" }}
@@ -402,7 +407,7 @@ export default function TeamPage() {
                       <span className="truncate">
                         {t(`management.members.${index}.email`)}
                       </span>
-                    </a>
+                    </a> */}
                   </div>
                 </Card>
               </motion.div>
@@ -491,14 +496,14 @@ export default function TeamPage() {
                   {t(`departmentHeads.members.${index}.position`)}
                 </p>
 
-                <a
+                {/* <a
                   href={`mailto:${t(`departmentHeads.members.${index}.email`)}`}
                   className="inline-flex items-center gap-1 text-xs hover:opacity-70 transition-opacity"
                   style={{ color: "var(--theme-primary)" }}
                 >
                   <Mail className="w-3 h-3" />
                   <span>{t("contact")}</span>
-                </a>
+                </a> */}
               </motion.div>
             ))}
           </div>

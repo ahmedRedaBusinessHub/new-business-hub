@@ -15,7 +15,7 @@ export default function ServicesSection({}: ServicesSectionProps) {
       ),
       icon: Rocket,
       gradient: "from-[#0D5BDC] to-[#4587F4]",
-      href: "/accelerator",
+      href: "/programs",
     },
     {
       title: t("Business Incubation"),
