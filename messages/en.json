@@ -1655,5 +1655,28 @@
       "prefix": "Need help? ",
       "link": "Contact Support"
     }
+  },
+  "newsDetailPage": {
+    "navigation": {
+      "backToHome": "Back to Home"
+    },
+    "meta": {
+      "readTime": "min read",
+      "minutes": "min"
+    },
+    "share": {
+      "title": "Share",
+      "toast": "Share link copied for "
+    },
+    "relatedNews": {
+      "title": "Related News",
+      "subtitle": "Discover more news and updates",
+      "readMore": "Read More"
+    },
+    "cta": {
+      "title": "Stay Updated",
+      "subtitle": "Subscribe to our newsletter for the latest news and updates",
+      "button": "Subscribe Now"
+    }
   }
 }
