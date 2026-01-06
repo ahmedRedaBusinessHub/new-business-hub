@@ -17,9 +17,9 @@ import Logo from "../../features/Logo";
 import Link from "next/link";
 import { useI18n } from "@/hooks/useI18n";
 
-interface FooterProps {}
+interface FooterProps { }
 
-export default function Footer({}: FooterProps) {
+export default function Footer({ }: FooterProps) {
   const { t } = useI18n("footer");
 
   const socialLinks = [
@@ -174,7 +174,7 @@ export default function Footer({}: FooterProps) {
               {t("sections.services.title")}
             </h3>
             <ul className="space-y-2 sm:space-y-3">
-              {Array.from({ length: 4 }).map((_, index) => (
+              {Array.from({ length: 5 }).map((_, index) => (
                 <li key={index}>
                   <Link
                     href={t(`sections.services.links.${index}.href`)}
