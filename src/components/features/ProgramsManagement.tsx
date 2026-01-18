@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/Button";
 import {
   Table,
@@ -21,6 +21,16 @@ import {
 } from "@/components/ui/AlertDialog";
 import { Badge } from "@/components/ui/Badge";
 import { Plus, Pencil, Trash2, Search, Eye } from "lucide-react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from "@/components/ui/Pagination";
+import { Select } from "@/components/ui/Select";
 import { ProgramForm } from "./ProgramForm";
 import {
   Dialog,
@@ -38,8 +48,6 @@ export interface Program {
   name_en: string | null;
   detail_ar: string | null;
   detail_en: string | null;
-  document_ar_id: number | null;
-  document_en_id: number | null;
   from_datetime: string | null;
   to_datetime: string | null;
   last_registration_date: string | null;
@@ -51,6 +59,8 @@ export interface Program {
   documents_requirements: any;
   status: number;
   organization_id: number;
+  document_ar_url?: string | null; // Document URL from API response
+  document_en_url?: string | null; // Document URL from API response
   created_at: string | null;
   updated_at: string | null;
 }
@@ -63,42 +73,100 @@ export function ProgramsManagement() {
   const [viewingProgram, setViewingProgram] = useState<Program | null>(null);
   const [deletingProgramId, setDeletingProgramId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const fetchPrograms = async () => {
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setCurrentPage(1); // Reset to first page when search changes
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const isFetchingRef = useRef(false);
+  const lastFetchParamsRef = useRef<string>("");
+
+  const fetchPrograms = useCallback(async () => {
+    const params = new URLSearchParams({
+      page: currentPage.toString(),
+      limit: pageSize.toString(),
+      ...(debouncedSearch && { search: debouncedSearch }),
+    });
+    const paramsString = params.toString();
+
+    // Prevent duplicate calls with same parameters
+    if (isFetchingRef.current && lastFetchParamsRef.current === paramsString) {
+      return;
+    }
+
+    isFetchingRef.current = true;
+    lastFetchParamsRef.current = paramsString;
+
     try {
       setLoading(true);
-      const response = await fetch("/api/programs");
+      const response = await fetch(`/api/programs?${paramsString}`);
       if (!response.ok) {
         throw new Error("Failed to fetch programs");
       }
       const data = await response.json();
-      setPrograms(data.data || data);
+      const programsData = Array.isArray(data.data) ? data.data : [];
+      setPrograms(programsData);
+      setTotal(data.total || 0);
+      setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching programs:", error);
       toast.error("Failed to load programs");
+      setPrograms([]);
+      setTotal(0);
+      setTotalPages(0);
     } finally {
       setLoading(false);
+      isFetchingRef.current = false;
     }
-  };
+  }, [currentPage, pageSize, debouncedSearch]);
 
   useEffect(() => {
     fetchPrograms();
-  }, []);
+  }, [fetchPrograms]);
 
-  const handleCreate = async (programData: Omit<Program, "id" | "created_at" | "updated_at">) => {
+  const handleCreate = async (programData: Omit<Program, "id" | "created_at" | "updated_at" | "document_ar_url" | "document_en_url" | "from_datetime" | "to_datetime" | "last_registration_date" | "type" | "subtype" | "values" | "progress_steps" | "application_requirements" | "documents_requirements"> & { documentAr?: File[]; documentEn?: File[] }) => {
     try {
+      const { documentAr, documentEn, ...payload } = programData;
       const response = await fetch("/api/programs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(programData),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || "Failed to create program");
+      }
+
+      const responseData = await response.json();
+      const programId = responseData.id || responseData.data?.id;
+
+      // Upload documents if provided
+      if (documentAr && Array.isArray(documentAr) && documentAr.length > 0 && programId) {
+        const docFile = documentAr[0];
+        if (docFile instanceof File) {
+          await uploadProgramDocument(programId, docFile, "document_ar_id");
+        }
+      }
+      if (documentEn && Array.isArray(documentEn) && documentEn.length > 0 && programId) {
+        const docFile = documentEn[0];
+        if (docFile instanceof File) {
+          await uploadProgramDocument(programId, docFile, "document_en_id");
+        }
       }
 
       toast.success("Program created successfully!");
@@ -109,21 +177,36 @@ export function ProgramsManagement() {
     }
   };
 
-  const handleUpdate = async (programData: Omit<Program, "id" | "created_at" | "updated_at">) => {
+  const handleUpdate = async (programData: Omit<Program, "id" | "created_at" | "updated_at" | "document_ar_url" | "document_en_url" | "from_datetime" | "to_datetime" | "last_registration_date" | "type" | "subtype" | "values" | "progress_steps" | "application_requirements" | "documents_requirements"> & { documentAr?: File[]; documentEn?: File[] }) => {
     if (!editingProgram) return;
 
     try {
+      const { documentAr, documentEn, ...payload } = programData;
       const response = await fetch(`/api/programs/${editingProgram.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(programData),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || "Failed to update program");
+      }
+
+      // Upload documents if provided
+      if (documentAr && Array.isArray(documentAr) && documentAr.length > 0) {
+        const docFile = documentAr[0];
+        if (docFile instanceof File) {
+          await uploadProgramDocument(editingProgram.id, docFile, "document_ar_id");
+        }
+      }
+      if (documentEn && Array.isArray(documentEn) && documentEn.length > 0) {
+        const docFile = documentEn[0];
+        if (docFile instanceof File) {
+          await uploadProgramDocument(editingProgram.id, docFile, "document_en_id");
+        }
       }
 
       toast.success("Program updated successfully!");
@@ -132,6 +215,26 @@ export function ProgramsManagement() {
       fetchPrograms();
     } catch (error: any) {
       toast.error(error.message || "Failed to update program");
+    }
+  };
+
+  const uploadProgramDocument = async (programId: number, docFile: File, refColumn: string) => {
+    try {
+      const formData = new FormData();
+      formData.append("files", docFile);
+      formData.append("refColumn", refColumn);
+
+      const response = await fetch(`/api/programs/${programId}/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload document");
+      }
+    } catch (error: any) {
+      console.error("Error uploading document:", error);
+      toast.error("Failed to upload document");
     }
   };
 
@@ -174,12 +277,6 @@ export function ProgramsManagement() {
     setViewingProgram(null);
   };
 
-  const filteredPrograms = programs.filter(
-    (program) =>
-      program.name_ar?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      program.name_en?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
@@ -195,15 +292,31 @@ export function ProgramsManagement() {
         </Button>
       </div>
 
-      <div className="relative w-full max-w-sm">
-        <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-        <Input
-          type="search"
-          placeholder="Search programs..."
-          className="pl-8"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+      <div className="flex items-center gap-4">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Search programs..."
+            className="pl-8"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <Select
+          error={undefined}
+          value={pageSize.toString()}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value));
+            setCurrentPage(1);
+          }}
+          className="w-32"
+        >
+          <option value="10">10 per page</option>
+          <option value="20">20 per page</option>
+          <option value="50">50 per page</option>
+          <option value="100">100 per page</option>
+        </Select>
       </div>
 
       <div className="rounded-md border">
@@ -223,14 +336,14 @@ export function ProgramsManagement() {
                   Loading programs...
                 </TableCell>
               </TableRow>
-            ) : filteredPrograms.length === 0 ? (
+            ) : programs.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center">
                   No programs found.
                 </TableCell>
               </TableRow>
             ) : (
-              filteredPrograms.map((program) => (
+              programs.map((program) => (
                 <TableRow key={program.id}>
                   <TableCell className="font-medium">{program.name_ar}</TableCell>
                   <TableCell>{program.name_en || "-"}</TableCell>
@@ -276,6 +389,67 @@ export function ProgramsManagement() {
         </Table>
       </div>
 
+      {totalPages > 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (currentPage > 1) setCurrentPage(currentPage - 1);
+                }}
+                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+              if (
+                page === 1 ||
+                page === totalPages ||
+                (page >= currentPage - 1 && page <= currentPage + 1)
+              ) {
+                return (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentPage(page);
+                      }}
+                      isActive={currentPage === page}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                );
+              } else if (page === currentPage - 2 || page === currentPage + 2) {
+                return (
+                  <PaginationItem key={page}>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                );
+              }
+              return null;
+            })}
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                }}
+                className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
+
+      <div className="text-sm text-muted-foreground">
+        Showing {programs.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
+        {Math.min(currentPage * pageSize, total)} of {total} programs
+      </div>
+
       <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
         <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -309,12 +483,9 @@ export function ProgramsManagement() {
                 { name: "detail_en", label: "Detail (EN)", type: "text", colSpan: 12 },
                 { name: "type", label: "Type", type: "number" },
                 { name: "subtype", label: "Subtype", type: "number" },
-                { name: "document_ar_id", label: "Document AR ID", type: "number" },
-                { name: "document_en_id", label: "Document EN ID", type: "number" },
                 { name: "from_datetime", label: "From Date", type: "datetime" },
                 { name: "to_datetime", label: "To Date", type: "datetime" },
                 { name: "last_registration_date", label: "Last Registration Date", type: "datetime" },
-                { name: "organization_id", label: "Organization ID", type: "number" },
                 {
                   name: "status",
                   label: "Status",

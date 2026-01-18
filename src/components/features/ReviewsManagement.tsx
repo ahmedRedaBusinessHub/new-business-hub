@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/Button";
 import {
   Table,
@@ -21,6 +21,16 @@ import {
 } from "@/components/ui/AlertDialog";
 import { Badge } from "@/components/ui/Badge";
 import { Plus, Pencil, Trash2, Search, Eye } from "lucide-react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from "@/components/ui/Pagination";
+import { Select } from "@/components/ui/Select";
 import { ReviewForm } from "./ReviewForm";
 import {
   Dialog,
@@ -40,9 +50,9 @@ export interface Review {
   comment_ar: string | null;
   job_title_en: string | null;
   job_title_ar: string | null;
-  image_id: number | null;
   status: number;
   organization_id: number;
+  image_url?: string | null; // Image URL from API response
   created_at: string | null;
   updated_at: string | null;
 }
@@ -55,42 +65,94 @@ export function ReviewsManagement() {
   const [viewingReview, setViewingReview] = useState<Review | null>(null);
   const [deletingReviewId, setDeletingReviewId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const fetchReviews = async () => {
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setCurrentPage(1); // Reset to first page when search changes
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const isFetchingRef = useRef(false);
+  const lastFetchParamsRef = useRef<string>("");
+
+  const fetchReviews = useCallback(async () => {
+    const params = new URLSearchParams({
+      page: currentPage.toString(),
+      limit: pageSize.toString(),
+      ...(debouncedSearch && { search: debouncedSearch }),
+    });
+    const paramsString = params.toString();
+
+    // Prevent duplicate calls with same parameters
+    if (isFetchingRef.current && lastFetchParamsRef.current === paramsString) {
+      return;
+    }
+
+    isFetchingRef.current = true;
+    lastFetchParamsRef.current = paramsString;
+
     try {
       setLoading(true);
-      const response = await fetch("/api/reviews");
+      const response = await fetch(`/api/reviews?${paramsString}`);
       if (!response.ok) {
         throw new Error("Failed to fetch reviews");
       }
       const data = await response.json();
-      setReviews(data.data || data);
+      const reviewsData = Array.isArray(data.data) ? data.data : [];
+      setReviews(reviewsData);
+      setTotal(data.total || 0);
+      setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching reviews:", error);
       toast.error("Failed to load reviews");
+      setReviews([]);
+      setTotal(0);
+      setTotalPages(0);
     } finally {
       setLoading(false);
+      isFetchingRef.current = false;
     }
-  };
+  }, [currentPage, pageSize, debouncedSearch]);
 
   useEffect(() => {
     fetchReviews();
-  }, []);
+  }, [fetchReviews]);
 
-  const handleCreate = async (reviewData: Omit<Review, "id" | "created_at" | "updated_at">) => {
+  const handleCreate = async (reviewData: Omit<Review, "id" | "created_at" | "updated_at" | "image_url"> & { profileImage?: File[] }) => {
     try {
+      const { profileImage, ...payload } = reviewData;
       const response = await fetch("/api/reviews", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(reviewData),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || "Failed to create review");
+      }
+
+      const responseData = await response.json();
+      const reviewId = responseData.id || responseData.data?.id;
+
+      // Upload image if provided
+      if (profileImage && Array.isArray(profileImage) && profileImage.length > 0 && reviewId) {
+        const imageFile = profileImage[0];
+        if (imageFile instanceof File) {
+          await uploadReviewImage(reviewId, imageFile);
+        }
       }
 
       toast.success("Review created successfully!");
@@ -101,21 +163,30 @@ export function ReviewsManagement() {
     }
   };
 
-  const handleUpdate = async (reviewData: Omit<Review, "id" | "created_at" | "updated_at">) => {
+  const handleUpdate = async (reviewData: Omit<Review, "id" | "created_at" | "updated_at" | "image_url"> & { profileImage?: File[] }) => {
     if (!editingReview) return;
 
     try {
+      const { profileImage, ...payload } = reviewData;
       const response = await fetch(`/api/reviews/${editingReview.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(reviewData),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || "Failed to update review");
+      }
+
+      // Upload image if provided
+      if (profileImage && Array.isArray(profileImage) && profileImage.length > 0) {
+        const imageFile = profileImage[0];
+        if (imageFile instanceof File) {
+          await uploadReviewImage(editingReview.id, imageFile);
+        }
       }
 
       toast.success("Review updated successfully!");
@@ -124,6 +195,26 @@ export function ReviewsManagement() {
       fetchReviews();
     } catch (error: any) {
       toast.error(error.message || "Failed to update review");
+    }
+  };
+
+  const uploadReviewImage = async (reviewId: number, imageFile: File) => {
+    try {
+      const formData = new FormData();
+      formData.append("files", imageFile);
+      formData.append("refColumn", "image_id");
+
+      const response = await fetch(`/api/reviews/${reviewId}/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload image");
+      }
+    } catch (error: any) {
+      console.error("Error uploading image:", error);
+      toast.error("Failed to upload image");
     }
   };
 
@@ -166,14 +257,6 @@ export function ReviewsManagement() {
     setViewingReview(null);
   };
 
-  const filteredReviews = reviews.filter(
-    (review) =>
-      review.name_ar?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      review.name_en?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      review.comment_ar?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      review.comment_en?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
@@ -189,15 +272,31 @@ export function ReviewsManagement() {
         </Button>
       </div>
 
-      <div className="relative w-full max-w-sm">
-        <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-        <Input
-          type="search"
-          placeholder="Search reviews..."
-          className="pl-8"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+      <div className="flex items-center gap-4">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Search reviews..."
+            className="pl-8"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <Select
+          error={undefined}
+          value={pageSize.toString()}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value));
+            setCurrentPage(1);
+          }}
+          className="w-32"
+        >
+          <option value="10">10 per page</option>
+          <option value="20">20 per page</option>
+          <option value="50">50 per page</option>
+          <option value="100">100 per page</option>
+        </Select>
       </div>
 
       <div className="rounded-md border">
@@ -218,14 +317,14 @@ export function ReviewsManagement() {
                   Loading reviews...
                 </TableCell>
               </TableRow>
-            ) : filteredReviews.length === 0 ? (
+            ) : reviews.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center">
                   No reviews found.
                 </TableCell>
               </TableRow>
             ) : (
-              filteredReviews.map((review) => (
+              reviews.map((review) => (
                 <TableRow key={review.id}>
                   <TableCell className="font-medium">{review.name_ar}</TableCell>
                   <TableCell>{review.name_en || "-"}</TableCell>
@@ -294,8 +393,12 @@ export function ReviewsManagement() {
           onOpenChange={handleCloseView}
           title="Review Details"
           header={{
-            type: "simple",
+            type: "avatar",
             title: (data: Review) => data.name_ar || data.name_en || "Review",
+            subtitle: (data: Review) => data.job_title_ar || data.job_title_en || "",
+            imageIdField: "image_id",
+            avatarFallback: (data: Review) => 
+              data.name_ar?.[0] || data.name_en?.[0] || "R",
             badges: [
               {
                 field: "status",
@@ -318,8 +421,6 @@ export function ReviewsManagement() {
                 { name: "job_title_en", label: "Job Title (EN)", type: "text" },
                 { name: "comment_ar", label: "Comment (AR)", type: "text", colSpan: 12 },
                 { name: "comment_en", label: "Comment (EN)", type: "text", colSpan: 12 },
-                { name: "image_id", label: "Image ID", type: "number" },
-                { name: "organization_id", label: "Organization ID", type: "number" },
                 { name: "created_at", label: "Created At", type: "datetime" },
                 { name: "updated_at", label: "Updated At", type: "datetime" },
               ],

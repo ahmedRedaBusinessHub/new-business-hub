@@ -20,7 +20,7 @@ const createFormSchema = (isEdit: boolean) => z.object({
   dob: z.string().optional(),
   gender: z.preprocess(
     (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-    z.number().int().min(0).max(2).nullable().optional()
+    z.number().int().min(1).max(2).nullable().optional()
   ),
   national_id: z.string().optional(),
   status: z.coerce.number().int().min(0).max(1),
@@ -29,37 +29,29 @@ const createFormSchema = (isEdit: boolean) => z.object({
 
 interface UserFormProps {
   user: User | null;
-  onSubmit: (data: Omit<User, "id" | "created_at" | "updated_at" | "organization_id" | "email_verified_at" | "sms_verified_at"> & { password?: string; profileImage?: File[] }) => void;
+  onSubmit: (data: Omit<User, "id" | "created_at" | "updated_at" | "organization_id" | "email_verified_at" | "sms_verified_at" | "image_id" | "image_url"> & { password?: string; profileImage?: File[] }) => void;
   onCancel: () => void;
+  onErrorStateChange?: (hasError: boolean) => void;
 }
 
-export function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
+export function UserForm({ user, onSubmit, onCancel, onErrorStateChange }: UserFormProps) {
   const isEdit = !!user;
   const formSchema = useMemo(() => createFormSchema(isEdit), [isEdit]);
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
 
-  // Fetch existing image when editing
+  // Use image_url from user data instead of fetching
   useEffect(() => {
-    const fetchExistingImage = async () => {
-      if (user?.image_id) {
-        try {
-          const response = await fetch(`/api/users/${user.id}`);
-          if (response.ok) {
-            const responseData = await response.json();
-            const userData = responseData.data || responseData;
-            const fileUrl = userData.image || userData.image_url || null;
-            
-            if (fileUrl) {
-              setExistingImageUrl(`/api/public/file?file_url=${encodeURIComponent(fileUrl)}`);
-            }
-          }
-        } catch (error) {
-          console.error("Error fetching user image:", error);
-        }
+    if (user?.image_url) {
+      // If image_url is already a full URL, use it directly
+      // If it's a file path, prepend the public file endpoint
+      if (user.image_url.startsWith('http') || user.image_url.startsWith('/api/public/file')) {
+        setExistingImageUrl(user.image_url);
+      } else {
+        setExistingImageUrl(`/api/public/file?file_url=${encodeURIComponent(user.image_url)}`);
       }
-    };
-
-    fetchExistingImage();
+    } else {
+      setExistingImageUrl(null);
+    }
   }, [user]);
 
   const handleSubmit = async (data: Record<string, any>) => {
@@ -78,7 +70,7 @@ export function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
         }
       }
       
-      onSubmit({
+      await onSubmit({
         username: validated.username,
         first_name: validated.first_name,
         last_name: validated.last_name || null,
@@ -88,31 +80,61 @@ export function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
         password: validated.password,
         dob: dobValue,
         gender: validated.gender ?? null,
-        image_id: user?.image_id ?? null,
         national_id: validated.national_id || null,
         status: validated.status,
         profileImage: validated.profileImage,
       });
-    } catch (error) {
-      console.error("Form validation error:", error);
+    } catch (error: any) {
+      // Only log if it's a Zod validation error (has issues property)
+      // API errors (from onSubmit) will be handled by DynamicForm's onError
+      if (error.issues || error.name === 'ZodError') {
+        console.error("Form validation error:", error);
+      }
+      // Always re-throw so DynamicForm can handle it
       throw error;
     }
   };
 
-  const defaultValuesMemo = useMemo(() => ({
-    username: user?.username || "",
-    first_name: user?.first_name || "",
-    last_name: user?.last_name || "",
-    email: user?.email || "",
-    country_code: user?.country_code || "",
-    mobile: user?.mobile || "",
-    password: "",
-    dob: user?.dob || "",
-    gender: user?.gender?.toString() || "",
-    national_id: user?.national_id || "",
-    status: user?.status?.toString() || "1",
-    profileImage: undefined,
-  }), [user]);
+  const defaultValuesMemo = useMemo(() => {
+    // Convert ISO DateTime to YYYY-MM-DD format for date input
+    let dobValue = "";
+    if (user?.dob) {
+      try {
+        // If it's already in YYYY-MM-DD format, use it as is
+        if (typeof user.dob === "string" && !user.dob.includes("T")) {
+          dobValue = user.dob;
+        } else {
+          // Convert ISO DateTime (e.g., "2024-01-15T00:00:00.000Z") to YYYY-MM-DD
+          const date = new Date(user.dob);
+          if (!isNaN(date.getTime())) {
+            // Format as YYYY-MM-DD
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+            dobValue = `${year}-${month}-${day}`;
+          }
+        }
+      } catch (error) {
+        // If conversion fails, leave empty
+        dobValue = "";
+      }
+    }
+    
+    return {
+      username: user?.username || "",
+      first_name: user?.first_name || "",
+      last_name: user?.last_name || "",
+      email: user?.email || "",
+      country_code: user?.country_code || "",
+      mobile: user?.mobile || "",
+      password: "",
+      dob: dobValue,
+      gender: user?.gender?.toString() || "",
+      national_id: user?.national_id || "",
+      status: user?.status?.toString() || "1",
+      profileImage: undefined,
+    };
+  }, [user]);
 
   const formConfig = useMemo((): FormField[] => [
           {
@@ -198,10 +220,8 @@ export function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
             required: false,
             helperText: "Gender (optional)",
             options: [
-              { value: "", label: "Not specified" },
-              { value: "0", label: "Male" },
-              { value: "1", label: "Female" },
-              { value: "2", label: "Other" },
+              { value: "1", label: "Male" },
+              { value: "2", label: "Female" },
             ],
           },
           {
@@ -259,7 +279,12 @@ export function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
         config={formConfig}
         onSubmit={handleSubmit}
         submitText={user ? "Update User" : "Create User"}
-        onSuccess={onCancel}
+        onSuccess={() => {
+          // Reset error state on successful submission
+          onErrorStateChange?.(false);
+          // Close the modal
+          onCancel();
+        }}
         defaultValues={defaultValuesMemo}
         key={user?.id || "new"}
         onError={(error) => {
@@ -268,6 +293,8 @@ export function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
           if (!error.fieldErrors || Object.keys(error.fieldErrors).length === 0) {
             // Error toast will be shown by DynamicForm
           }
+          // Signal that there's an error to prevent modal from closing
+          onErrorStateChange?.(true);
         }}
       />
     </>

@@ -176,6 +176,7 @@ export async function apiPut(
  */
 export async function apiDelete(
   endpoint: string,
+  body?: any,
   options: {
     requireAuth?: boolean;
     accessToken?: string;
@@ -188,6 +189,7 @@ export async function apiDelete(
   return fetch(`${apiUrl}${endpoint}`, {
     method: "DELETE",
     headers,
+    body: body ? JSON.stringify(body) : undefined,
   });
 }
 

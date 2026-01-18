@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -123,6 +123,7 @@ export interface DynamicFormProps {
   layout?: "single" | "tabs" | "accordion" | "wizard";
   showProgress?: boolean;
   onError?: (error: Error & { fieldErrors?: Record<string, string> }) => void;
+  formId?: string;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -189,6 +190,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
   layout = "single",
   showProgress = false,
   onError,
+  formId,
 }) => {
   const { t } = useI18n();
   const [currentStep, setCurrentStep] = useState(0);
@@ -235,7 +237,6 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
     onSuccess: () => {
       // Only called when mutation succeeds (no error thrown)
       // This is the ONLY place where we reset form and close modal
-      toast.success("Form submitted successfully!");
       reset();
       onSuccess?.(); // This closes the modal - only called on success
     },
@@ -258,11 +259,15 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
         });
       }
       
-      // Show general error toast if no field errors or if onError callback is provided
+      // Always show error message toast (user requested to show message)
+      // Show the original API message if available, otherwise use the error message
+      const displayMessage = (e as any).originalMessage || e.message || "An error occurred. Please check the form for details.";
+      
       if (onError) {
         onError(e);
-      } else if (!e.fieldErrors || Object.keys(e.fieldErrors).length === 0) {
-        toast.error(e.message);
+      } else {
+        // Show toast with error message (prefer original API message)
+        toast.error(displayMessage);
       }
       
       // DO NOT reset form here - form data must be preserved
@@ -314,21 +319,29 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
         case "textarea":
           return (
             <FieldWrapper {...wrapperProps}>
-              <Textarea {...register(field.name)} />
+              <Textarea {...register(field.name)} placeholder={field.placeholder} />
             </FieldWrapper>
           );
 
         case "select":
           return (
             <FieldWrapper {...wrapperProps}>
-              <Select {...register(field.name)} error={error}>
-                <option value="">{field.placeholder}</option>
-                {field.options?.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </Select>
+              <Controller
+                name={field.name}
+                control={control}
+                render={({ field: controllerField }) => (
+                  <Select 
+                    {...controllerField} 
+                    error={error}
+                    value={controllerField.value ?? ""}
+                    options={field.options}
+                  >
+                    {field.placeholder && (
+                      <option value="">{field.placeholder}</option>
+                    )}
+                  </Select>
+                )}
+              />
             </FieldWrapper>
           );
 
@@ -432,7 +445,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
       // Use mutateAsync - if it throws, onError is called, onSuccess is NOT called
       // This ensures the modal stays open on error
       await mutation.mutateAsync(data);
-    } catch (error) {
+    } catch (error: any) {
       // Error is already handled by mutation.onError
       // We catch here to prevent unhandled promise rejection
       // The form will NOT reset and modal will NOT close because:
@@ -445,6 +458,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
 
   return (
     <motion.form
+      id={formId}
       onSubmit={handleSubmit(handleFormSubmit)}
       className={`space-y-6 ${className}`}
       initial={{ opacity: 0, y: 20 }}
@@ -458,12 +472,14 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
         ))}
       </div>
 
-      <div className="flex justify-end">
-        <Button type="submit" disabled={!isValid || mutation.isPending}>
-          {mutation.isPending ? t("Sending") : submitText}
-          <Send className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
+      {submitText && (
+        <div className="flex justify-end">
+          <Button type="submit" disabled={!isValid || mutation.isPending}>
+            {mutation.isPending ? t("Sending") : submitText}
+            <Send className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </motion.form>
   );
 };

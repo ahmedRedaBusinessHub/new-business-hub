@@ -36,7 +36,6 @@ export interface ContactInteraction {
   type: number | null;
   subject: string | null;
   details: string | null;
-  file_ids: number[];
   organization_id: number;
   created_at: string | null;
   updated_at: string | null;
@@ -76,19 +75,28 @@ export function ContactInteractionManagement({ contactId }: ContactInteractionMa
     }
   }, [contactId]);
 
-  const handleCreate = async (interactionData: Omit<ContactInteraction, "id" | "created_at" | "updated_at">) => {
+  const handleCreate = async (interactionData: Omit<ContactInteraction, "id" | "created_at" | "updated_at"> & { files?: File[] }) => {
     try {
+      const { files, ...payload } = interactionData;
       const response = await fetch("/api/contact-interaction", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...interactionData, contact_id: contactId }),
+        body: JSON.stringify({ ...payload, contact_id: contactId }),
       });
 
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || "Failed to create interaction");
+      }
+
+      const responseData = await response.json();
+      const interactionId = responseData.id || responseData.data?.id;
+
+      // Upload files if provided
+      if (files && Array.isArray(files) && files.length > 0 && interactionId) {
+        await uploadInteractionFiles(interactionId, files);
       }
 
       toast.success("Interaction created successfully!");
@@ -99,21 +107,27 @@ export function ContactInteractionManagement({ contactId }: ContactInteractionMa
     }
   };
 
-  const handleUpdate = async (interactionData: Omit<ContactInteraction, "id" | "created_at" | "updated_at">) => {
+  const handleUpdate = async (interactionData: Omit<ContactInteraction, "id" | "created_at" | "updated_at"> & { files?: File[] }) => {
     if (!editingInteraction) return;
 
     try {
+      const { files, ...payload } = interactionData;
       const response = await fetch(`/api/contact-interaction/${editingInteraction.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(interactionData),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || "Failed to update interaction");
+      }
+
+      // Upload files if provided
+      if (files && Array.isArray(files) && files.length > 0) {
+        await uploadInteractionFiles(editingInteraction.id, files);
       }
 
       toast.success("Interaction updated successfully!");
@@ -122,6 +136,28 @@ export function ContactInteractionManagement({ contactId }: ContactInteractionMa
       fetchInteractions();
     } catch (error: any) {
       toast.error(error.message || "Failed to update interaction");
+    }
+  };
+
+  const uploadInteractionFiles = async (interactionId: number, files: File[]) => {
+    try {
+      const formData = new FormData();
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
+      formData.append("refColumn", "file_ids");
+
+      const response = await fetch(`/api/contact-interaction/${interactionId}/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload files");
+      }
+    } catch (error: any) {
+      console.error("Error uploading files:", error);
+      toast.error("Failed to upload files");
     }
   };
 

@@ -11,18 +11,18 @@ interface UserViewModalProps {
 
 export function UserViewModal({ user, open, onOpenChange }: UserViewModalProps) {
   const fetchUserImage = async (data: User): Promise<string | null> => {
-    if (!data?.image_id) return null;
-    
-    try {
-      const response = await fetch(`/api/users/${data.id}`);
-      if (response.ok) {
-        const responseData = await response.json();
-        const userData = responseData.data || responseData;
-        return userData.image || null;
+    // Use image_url from user data if available (no need to make API call)
+    if (data?.image_url) {
+      // If image_url is already a full URL, use it directly
+      // If it's a file path, prepend the public file endpoint
+      if (data.image_url.startsWith('http') || data.image_url.startsWith('/api/public/file')) {
+        return data.image_url;
       }
-    } catch (error) {
-      console.error("Error fetching user image:", error);
+      return `/api/public/file?file_url=${encodeURIComponent(data.image_url)}`;
     }
+    
+    // Fallback: if image_url is not available, return null
+    // (The image should be available in the users list response)
     return null;
   };
 
@@ -97,8 +97,6 @@ export function UserViewModal({ user, open, onOpenChange }: UserViewModalProps) 
       gridCols: 2,
       fields: [
         { name: "id", label: "User ID", type: "number" },
-        { name: "organization_id", label: "Organization ID", type: "number" },
-        { name: "image_id", label: "Image ID", type: "number" },
         {
           name: "user_access_tokens_count",
           label: "Access Tokens",

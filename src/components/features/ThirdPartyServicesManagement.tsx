@@ -38,11 +38,11 @@ export interface ThirdPartyService {
   name: string;
   namespace: string;
   service_url: string | null;
-  image_id: number | null;
   config: any;
   status: number;
   order_no: number | null;
   organization_id: number;
+  image_url?: string | null; // Image URL from API response
   created_at: string | null;
   updated_at: string | null;
 }
@@ -83,19 +83,31 @@ export function ThirdPartyServicesManagement({ thirdPartyId }: ThirdPartyService
     }
   }, [thirdPartyId]);
 
-  const handleCreate = async (serviceData: Omit<ThirdPartyService, "id" | "created_at" | "updated_at" | "config" | "image_id">) => {
+  const handleCreate = async (serviceData: Omit<ThirdPartyService, "id" | "created_at" | "updated_at" | "config" | "image_url"> & { profileImage?: File[] }) => {
     try {
+      const { profileImage, ...payload } = serviceData;
       const response = await fetch("/api/third-party-services", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...serviceData, third_party_id: thirdPartyId }),
+        body: JSON.stringify({ ...payload, third_party_id: thirdPartyId }),
       });
 
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || "Failed to create service");
+      }
+
+      const responseData = await response.json();
+      const serviceId = responseData.id || responseData.data?.id;
+
+      // Upload image if provided
+      if (profileImage && Array.isArray(profileImage) && profileImage.length > 0 && serviceId) {
+        const imageFile = profileImage[0];
+        if (imageFile instanceof File) {
+          await uploadThirdPartyServiceImage(serviceId, imageFile);
+        }
       }
 
       toast.success("Service created successfully!");
@@ -106,21 +118,30 @@ export function ThirdPartyServicesManagement({ thirdPartyId }: ThirdPartyService
     }
   };
 
-  const handleUpdate = async (serviceData: Omit<ThirdPartyService, "id" | "created_at" | "updated_at" | "config" | "image_id">) => {
+  const handleUpdate = async (serviceData: Omit<ThirdPartyService, "id" | "created_at" | "updated_at" | "config" | "image_url"> & { profileImage?: File[] }) => {
     if (!editingService) return;
 
     try {
+      const { profileImage, ...payload } = serviceData;
       const response = await fetch(`/api/third-party-services/${editingService.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(serviceData),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || "Failed to update service");
+      }
+
+      // Upload image if provided
+      if (profileImage && Array.isArray(profileImage) && profileImage.length > 0) {
+        const imageFile = profileImage[0];
+        if (imageFile instanceof File) {
+          await uploadThirdPartyServiceImage(editingService.id, imageFile);
+        }
       }
 
       toast.success("Service updated successfully!");
@@ -129,6 +150,26 @@ export function ThirdPartyServicesManagement({ thirdPartyId }: ThirdPartyService
       fetchServices();
     } catch (error: any) {
       toast.error(error.message || "Failed to update service");
+    }
+  };
+
+  const uploadThirdPartyServiceImage = async (serviceId: number, imageFile: File) => {
+    try {
+      const formData = new FormData();
+      formData.append("files", imageFile);
+      formData.append("refColumn", "image_id");
+
+      const response = await fetch(`/api/third-party-services/${serviceId}/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload image");
+      }
+    } catch (error: any) {
+      console.error("Error uploading image:", error);
+      toast.error("Failed to upload image");
     }
   };
 
@@ -277,6 +318,23 @@ export function ThirdPartyServicesManagement({ thirdPartyId }: ThirdPartyService
           open={isViewOpen}
           onOpenChange={handleCloseView}
           title="Service Details"
+          header={{
+            type: "avatar",
+            title: (data: ThirdPartyService) => data.name || "Service",
+            subtitle: (data: ThirdPartyService) => data.service_url || data.namespace || "",
+            imageIdField: "image_id",
+            avatarFallback: (data: ThirdPartyService) => 
+              data.name?.[0] || "S",
+            badges: [
+              {
+                field: "status",
+                map: {
+                  1: { label: "Active", variant: "default" },
+                  0: { label: "Inactive", variant: "secondary" },
+                },
+              },
+            ],
+          }}
           tabs={[
             {
               id: "details",

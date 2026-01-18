@@ -9,16 +9,13 @@ const formSchema = z.object({
   ),
   subject: z.string().optional(),
   details: z.string().optional(),
-  organization_id: z.preprocess(
-    (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-    z.number().int().nullable().optional()
-  ),
+  files: z.any().optional(),
 });
 
 interface ContactInteractionFormProps {
   interaction: ContactInteraction | null;
   contactId: number;
-  onSubmit: (data: Omit<ContactInteraction, "id" | "contact_id" | "created_at" | "updated_at" | "file_ids">) => void;
+  onSubmit: (data: Omit<ContactInteraction, "id" | "contact_id" | "created_at" | "updated_at"> & { files?: File[] }) => void;
   onCancel: () => void;
 }
 
@@ -31,8 +28,8 @@ export function ContactInteractionForm({ interaction, contactId, onSubmit, onCan
         type: validated.type ?? null,
         subject: validated.subject || null,
         details: validated.details || null,
-        file_ids: interaction?.file_ids || [],
-        organization_id: validated.organization_id ?? interaction?.organization_id ?? 1,
+        organization_id: interaction?.organization_id ?? 1,
+        files: validated.files,
       });
     } catch (error) {
       console.error("Form validation error:", error);
@@ -72,13 +69,14 @@ export function ContactInteractionForm({ interaction, contactId, onSubmit, onCan
             helperText: "Interaction details (optional)",
           },
           {
-            name: "organization_id",
-            label: "Organization ID",
-            type: "number",
-            placeholder: "Enter organization ID",
-            validation: formSchema.shape.organization_id,
+            name: "files",
+            label: "Files",
+            type: "fileuploader",
+            validation: formSchema.shape.files,
             required: false,
-            helperText: "Organization ID (optional, defaults to 1)",
+            helperText: "Upload files (PDF, DOC, DOCX, Images - Max 10MB)",
+            accept: ".pdf,.doc,.docx,.jpg,.jpeg,.png",
+            multiple: true,
           },
         ]}
         onSubmit={handleSubmit}
@@ -88,7 +86,7 @@ export function ContactInteractionForm({ interaction, contactId, onSubmit, onCan
           type: interaction?.type?.toString() || "",
           subject: interaction?.subject || "",
           details: interaction?.details || "",
-          organization_id: interaction?.organization_id?.toString() || "1",
+          files: undefined,
         }}
       />
     </>

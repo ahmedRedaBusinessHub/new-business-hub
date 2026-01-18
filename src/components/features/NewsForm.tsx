@@ -1,6 +1,8 @@
 import * as z from "zod";
+import { useState, useEffect } from "react";
 import type { News } from "./NewsManagement";
 import DynamicForm from "../shared/DynamicForm";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
 
 const formSchema = z.object({
   title_ar: z.string().min(2, "Arabic title must be at least 2 characters"),
@@ -8,19 +10,34 @@ const formSchema = z.object({
   detail_ar: z.string().optional(),
   detail_en: z.string().optional(),
   status: z.coerce.number().int().min(0).max(1),
-  organization_id: z.preprocess(
-    (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-    z.number().int().nullable().optional()
-  ),
+  mainImage: z.any().optional(),
 });
 
 interface NewsFormProps {
   news: News | null;
-  onSubmit: (data: Omit<News, "id" | "created_at" | "updated_at" | "main_image_id" | "image_ids" | "social_media">) => void;
+  onSubmit: (data: Omit<News, "id" | "created_at" | "updated_at" | "social_media" | "main_image_url"> & { mainImage?: File[] }) => void;
   onCancel: () => void;
 }
 
 export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
+  const isEdit = !!news;
+  const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
+
+  // Use main_image_url from news data instead of fetching
+  useEffect(() => {
+    if (news?.main_image_url) {
+      // If main_image_url is already a full URL, use it directly
+      // If it's a file path, prepend the public file endpoint
+      if (news.main_image_url.startsWith('http') || news.main_image_url.startsWith('/api/public/file')) {
+        setExistingImageUrl(news.main_image_url);
+      } else {
+        setExistingImageUrl(`/api/public/file?file_url=${encodeURIComponent(news.main_image_url)}`);
+      }
+    } else {
+      setExistingImageUrl(null);
+    }
+  }, [news]);
+
   const handleSubmit = async (data: Record<string, any>) => {
     try {
       const validated = formSchema.parse(data);
@@ -31,7 +48,8 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
         detail_ar: validated.detail_ar || null,
         detail_en: validated.detail_en || null,
         status: validated.status,
-        organization_id: validated.organization_id ?? news?.organization_id ?? 1,
+        organization_id: news?.organization_id ?? 1,
+        mainImage: validated.mainImage,
       });
     } catch (error) {
       console.error("Form validation error:", error);
@@ -41,6 +59,22 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
 
   return (
     <>
+      {isEdit && existingImageUrl && (
+        <div className="mb-6 flex items-center gap-4 p-4 border rounded-lg bg-muted/50">
+          <Avatar className="size-20">
+            <AvatarImage src={existingImageUrl} alt="Current main image" />
+            <AvatarFallback>
+              {news?.title_ar?.[0] || news?.title_en?.[0] || "N"}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1">
+            <p className="text-sm font-medium">Current Main Image</p>
+            <p className="text-xs text-muted-foreground">
+              Upload a new image below to replace this one
+            </p>
+          </div>
+        </div>
+      )}
       <DynamicForm
         config={[
           {
@@ -93,13 +127,12 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
             ],
           },
           {
-            name: "organization_id",
-            label: "Organization ID",
-            type: "number",
-            placeholder: "Enter organization ID",
-            validation: formSchema.shape.organization_id,
+            name: "mainImage",
+            label: "Main Image",
+            type: "imageuploader",
+            validation: formSchema.shape.mainImage,
             required: false,
-            helperText: "Organization ID (optional, defaults to 1)",
+            helperText: "Upload main image (JPG, PNG, WEBP - Max 5MB)",
           },
         ]}
         onSubmit={handleSubmit}
@@ -111,7 +144,7 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
           detail_ar: news?.detail_ar || "",
           detail_en: news?.detail_en || "",
           status: news?.status?.toString() || "1",
-          organization_id: news?.organization_id?.toString() || "1",
+          mainImage: undefined,
         }}
       />
     </>

@@ -16,10 +16,6 @@ const createFormSchema = (isEdit: boolean) => z.object({
     (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
     z.number().int().nullable().optional()
   ),
-  organization_id: z.preprocess(
-    (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-    z.number().int().nullable().optional()
-  ),
 });
 
 interface ContactFormProps {
@@ -44,7 +40,7 @@ export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
         notes: validated.notes || null,
         status: validated.status,
         user_id: validated.user_id ?? null,
-        organization_id: validated.organization_id ?? contact?.organization_id ?? 1,
+        organization_id: contact?.organization_id ?? 1,
       });
     } catch (error) {
       console.error("Form validation error:", error);
@@ -123,15 +119,6 @@ export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
             required: false,
             helperText: "Link to user (optional)",
           },
-          {
-            name: "organization_id",
-            label: "Organization ID",
-            type: "number",
-            placeholder: "Enter organization ID",
-            validation: formSchema.shape.organization_id,
-            required: false,
-            helperText: "Organization ID (optional, defaults to 1)",
-          },
         ]}
         onSubmit={handleSubmit}
         submitText={contact ? "Update Contact" : "Create Contact"}
@@ -144,7 +131,6 @@ export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
           notes: contact?.notes || "",
           status: contact?.status?.toString() || "1",
           user_id: contact?.user_id?.toString() || "",
-          organization_id: contact?.organization_id?.toString() || "1",
         }}
       />
     </>

@@ -26,6 +26,7 @@ import {
   MessageSquare,
   Tag,
   CreditCard,
+  Database,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -123,6 +124,11 @@ const managementItems = [
     title: "Settings",
     icon: Settings,
     url: "/admin/settings",
+  },
+  {
+    title: "Cache Management",
+    icon: Database,
+    url: "/admin/cache-management",
   },
 ];
 

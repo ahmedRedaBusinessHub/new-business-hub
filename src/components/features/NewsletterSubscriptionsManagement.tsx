@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/Button";
 import {
   Table,
@@ -21,6 +21,16 @@ import {
 } from "@/components/ui/AlertDialog";
 import { Badge } from "@/components/ui/Badge";
 import { Plus, Pencil, Trash2, Search, Eye } from "lucide-react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from "@/components/ui/Pagination";
+import { Select } from "@/components/ui/Select";
 import { NewsletterSubscriptionForm } from "./NewsletterSubscriptionForm";
 import {
   Dialog,
@@ -50,28 +60,68 @@ export function NewsletterSubscriptionsManagement() {
   const [viewingSubscription, setViewingSubscription] = useState<NewsletterSubscription | null>(null);
   const [deletingSubscriptionId, setDeletingSubscriptionId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const fetchSubscriptions = async () => {
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setCurrentPage(1); // Reset to first page when search changes
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const isFetchingRef = useRef(false);
+  const lastFetchParamsRef = useRef<string>("");
+
+  const fetchSubscriptions = useCallback(async () => {
+    const params = new URLSearchParams({
+      page: currentPage.toString(),
+      limit: pageSize.toString(),
+      ...(debouncedSearch && { search: debouncedSearch }),
+    });
+    const paramsString = params.toString();
+
+    // Prevent duplicate calls with same parameters
+    if (isFetchingRef.current && lastFetchParamsRef.current === paramsString) {
+      return;
+    }
+
+    isFetchingRef.current = true;
+    lastFetchParamsRef.current = paramsString;
+
     try {
       setLoading(true);
-      const response = await fetch("/api/newsletter-subscriptions");
+      const response = await fetch(`/api/newsletter-subscriptions?${paramsString}`);
       if (!response.ok) {
         throw new Error("Failed to fetch subscriptions");
       }
       const data = await response.json();
-      setSubscriptions(data.data || data);
+      const subscriptionsData = Array.isArray(data.data) ? data.data : [];
+      setSubscriptions(subscriptionsData);
+      setTotal(data.total || 0);
+      setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching subscriptions:", error);
       toast.error("Failed to load subscriptions");
+      setSubscriptions([]);
+      setTotal(0);
+      setTotalPages(0);
     } finally {
       setLoading(false);
+      isFetchingRef.current = false;
     }
-  };
+  }, [currentPage, pageSize, debouncedSearch]);
 
   useEffect(() => {
     fetchSubscriptions();
-  }, []);
+  }, [fetchSubscriptions]);
 
   const handleCreate = async (subscriptionData: Omit<NewsletterSubscription, "id" | "created_at" | "updated_at">) => {
     try {
@@ -161,12 +211,6 @@ export function NewsletterSubscriptionsManagement() {
     setViewingSubscription(null);
   };
 
-  const filteredSubscriptions = subscriptions.filter(
-    (sub) =>
-      sub.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sub.name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
@@ -182,15 +226,31 @@ export function NewsletterSubscriptionsManagement() {
         </Button>
       </div>
 
-      <div className="relative w-full max-w-sm">
-        <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-        <Input
-          type="search"
-          placeholder="Search subscriptions..."
-          className="pl-8"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+      <div className="flex items-center gap-4">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Search subscriptions..."
+            className="pl-8"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <Select
+          error={undefined}
+          value={pageSize.toString()}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value));
+            setCurrentPage(1);
+          }}
+          className="w-32"
+        >
+          <option value="10">10 per page</option>
+          <option value="20">20 per page</option>
+          <option value="50">50 per page</option>
+          <option value="100">100 per page</option>
+        </Select>
       </div>
 
       <div className="rounded-md border">
@@ -210,14 +270,14 @@ export function NewsletterSubscriptionsManagement() {
                   Loading subscriptions...
                 </TableCell>
               </TableRow>
-            ) : filteredSubscriptions.length === 0 ? (
+            ) : subscriptions.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center">
                   No subscriptions found.
                 </TableCell>
               </TableRow>
             ) : (
-              filteredSubscriptions.map((sub) => (
+              subscriptions.map((sub) => (
                 <TableRow key={sub.id}>
                   <TableCell className="font-medium">{sub.email}</TableCell>
                   <TableCell>{sub.name || "-"}</TableCell>
@@ -292,7 +352,6 @@ export function NewsletterSubscriptionsManagement() {
               fields: [
                 { name: "email", label: "Email", type: "text" },
                 { name: "name", label: "Name", type: "text" },
-                { name: "organization_id", label: "Organization ID", type: "number" },
                 {
                   name: "status",
                   label: "Status",

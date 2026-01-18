@@ -162,7 +162,7 @@ async function handleUpdate(
  * Handle DELETE request
  */
 async function handleDelete(resource: string, id: string): Promise<NextResponse> {
-  const res = await apiDelete(`/${resource}/${id}`, { requireAuth: true });
+  const res = await apiDelete(`/${resource}/${id}`, undefined, { requireAuth: true });
   return await createApiResponse(res);
 }
 

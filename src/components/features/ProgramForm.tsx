@@ -8,15 +8,13 @@ const formSchema = z.object({
   detail_ar: z.string().optional(),
   detail_en: z.string().optional(),
   status: z.coerce.number().int().min(0).max(1),
-  organization_id: z.preprocess(
-    (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-    z.number().int().nullable().optional()
-  ),
+  documentAr: z.any().optional(),
+  documentEn: z.any().optional(),
 });
 
 interface ProgramFormProps {
   program: Program | null;
-  onSubmit: (data: Omit<Program, "id" | "created_at" | "updated_at" | "document_ar_id" | "document_en_id" | "from_datetime" | "to_datetime" | "last_registration_date" | "type" | "subtype" | "values" | "progress_steps" | "application_requirements" | "documents_requirements">) => void;
+  onSubmit: (data: Omit<Program, "id" | "created_at" | "updated_at" | "from_datetime" | "to_datetime" | "last_registration_date" | "type" | "subtype" | "values" | "progress_steps" | "application_requirements" | "documents_requirements" | "document_ar_url" | "document_en_url"> & { documentAr?: File[]; documentEn?: File[] }) => void;
   onCancel: () => void;
 }
 
@@ -31,9 +29,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
         detail_ar: validated.detail_ar || null,
         detail_en: validated.detail_en || null,
         status: validated.status,
-        organization_id: validated.organization_id ?? program?.organization_id ?? 1,
-        document_ar_id: program?.document_ar_id ?? null,
-        document_en_id: program?.document_en_id ?? null,
+        organization_id: program?.organization_id ?? 1,
         from_datetime: program?.from_datetime ?? null,
         to_datetime: program?.to_datetime ?? null,
         last_registration_date: program?.last_registration_date ?? null,
@@ -43,6 +39,8 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
         progress_steps: program?.progress_steps ?? null,
         application_requirements: program?.application_requirements ?? null,
         documents_requirements: program?.documents_requirements ?? null,
+        documentAr: validated.documentAr,
+        documentEn: validated.documentEn,
       });
     } catch (error) {
       console.error("Form validation error:", error);
@@ -104,13 +102,22 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
             ],
           },
           {
-            name: "organization_id",
-            label: "Organization ID",
-            type: "number",
-            placeholder: "Enter organization ID",
-            validation: formSchema.shape.organization_id,
+            name: "documentAr",
+            label: "Document (Arabic)",
+            type: "fileuploader",
+            validation: formSchema.shape.documentAr,
             required: false,
-            helperText: "Organization ID (optional, defaults to 1)",
+            helperText: "Upload Arabic document (PDF, DOC, DOCX - Max 10MB)",
+            accept: ".pdf,.doc,.docx",
+          },
+          {
+            name: "documentEn",
+            label: "Document (English)",
+            type: "fileuploader",
+            validation: formSchema.shape.documentEn,
+            required: false,
+            helperText: "Upload English document (PDF, DOC, DOCX - Max 10MB)",
+            accept: ".pdf,.doc,.docx",
           },
         ]}
         onSubmit={handleSubmit}
@@ -122,7 +129,8 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
           detail_ar: program?.detail_ar || "",
           detail_en: program?.detail_en || "",
           status: program?.status?.toString() || "1",
-          organization_id: program?.organization_id?.toString() || "1",
+          documentAr: undefined,
+          documentEn: undefined,
         }}
       />
     </>

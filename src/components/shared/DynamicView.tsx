@@ -128,16 +128,36 @@ export const DynamicView: React.FC<DynamicViewProps> = ({
             return;
           }
 
-          // Try fetching by imageIdField
-          if (header.imageIdField && data[header.imageIdField]) {
-            // Try to fetch from API
+          // Try using image_url or main_image_url from data if available (no need to fetch)
+          const imageUrlField = data.main_image_url ? 'main_image_url' : (data.image_url ? 'image_url' : null);
+          if (imageUrlField) {
+            const imageUrl = data[imageUrlField];
+            // If image_url is already a full URL, use it directly
+            // If it's a file path, prepend the public file endpoint
+            if (imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('/api/public/file'))) {
+              setImageUrl(imageUrl);
+            } else if (imageUrl) {
+              setImageUrl(`/api/public/file?file_url=${encodeURIComponent(imageUrl)}`);
+            }
+            return;
+          }
+          
+          // Fallback: Try fetching by imageIdField only if image_url/main_image_url is not available
+          // This should rarely be needed since image_url/main_image_url should be in the data
+          if (header.imageIdField && data[header.imageIdField] && !data.image_url && !data.main_image_url) {
+            // Try to fetch from API (last resort)
             try {
               const response = await fetch(`/api/${title.toLowerCase()}s/${data.id}`);
               if (response.ok) {
                 const responseData = await response.json();
                 const itemData = responseData.data || responseData;
-                if (itemData.image) {
-                  setImageUrl(itemData.image);
+                const fetchedImageUrl = itemData.main_image_url || itemData.image_url || itemData.image;
+                if (fetchedImageUrl) {
+                  if (fetchedImageUrl.startsWith('http') || fetchedImageUrl.startsWith('/api/public/file')) {
+                    setImageUrl(fetchedImageUrl);
+                  } else {
+                    setImageUrl(`/api/public/file?file_url=${encodeURIComponent(fetchedImageUrl)}`);
+                  }
                 }
               }
             } catch (error) {

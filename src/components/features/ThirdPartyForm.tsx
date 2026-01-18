@@ -1,6 +1,8 @@
 import * as z from "zod";
+import { useState, useEffect } from "react";
 import type { ThirdParty } from "./ThirdPartiesManagement";
 import DynamicForm from "../shared/DynamicForm";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -11,19 +13,34 @@ const formSchema = z.object({
     (val) => (val === "" || val === null || val === undefined ? undefined : Number(val)),
     z.number().int().positive().optional()
   ),
-  organization_id: z.preprocess(
-    (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-    z.number().int().nullable().optional()
-  ),
+  profileImage: z.any().optional(),
 });
 
 interface ThirdPartyFormProps {
   thirdParty: ThirdParty | null;
-  onSubmit: (data: Omit<ThirdParty, "id" | "created_at" | "updated_at" | "image_id">) => void;
+  onSubmit: (data: Omit<ThirdParty, "id" | "created_at" | "updated_at" | "image_url"> & { profileImage?: File[] }) => void;
   onCancel: () => void;
 }
 
 export function ThirdPartyForm({ thirdParty, onSubmit, onCancel }: ThirdPartyFormProps) {
+  const isEdit = !!thirdParty;
+  const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
+
+  // Use image_url from thirdParty data instead of fetching
+  useEffect(() => {
+    if (thirdParty?.image_url) {
+      // If image_url is already a full URL, use it directly
+      // If it's a file path, prepend the public file endpoint
+      if (thirdParty.image_url.startsWith('http') || thirdParty.image_url.startsWith('/api/public/file')) {
+        setExistingImageUrl(thirdParty.image_url);
+      } else {
+        setExistingImageUrl(`/api/public/file?file_url=${encodeURIComponent(thirdParty.image_url)}`);
+      }
+    } else {
+      setExistingImageUrl(null);
+    }
+  }, [thirdParty]);
+
   const handleSubmit = async (data: Record<string, any>) => {
     try {
       const validated = formSchema.parse(data);
@@ -34,7 +51,8 @@ export function ThirdPartyForm({ thirdParty, onSubmit, onCancel }: ThirdPartyFor
         website: validated.website || null,
         status: validated.status,
         order_no: validated.order_no ?? null,
-        organization_id: validated.organization_id ?? thirdParty?.organization_id ?? 1,
+        organization_id: thirdParty?.organization_id ?? 1,
+        profileImage: validated.profileImage,
       });
     } catch (error) {
       console.error("Form validation error:", error);
@@ -44,6 +62,22 @@ export function ThirdPartyForm({ thirdParty, onSubmit, onCancel }: ThirdPartyFor
 
   return (
     <>
+      {isEdit && existingImageUrl && (
+        <div className="mb-6 flex items-center gap-4 p-4 border rounded-lg bg-muted/50">
+          <Avatar className="size-20">
+            <AvatarImage src={existingImageUrl} alt="Current profile picture" />
+            <AvatarFallback>
+              {thirdParty?.name?.[0] || "T"}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1">
+            <p className="text-sm font-medium">Current Profile Picture</p>
+            <p className="text-xs text-muted-foreground">
+              Upload a new image below to replace this one
+            </p>
+          </div>
+        </div>
+      )}
       <DynamicForm
         config={[
           {
@@ -96,13 +130,12 @@ export function ThirdPartyForm({ thirdParty, onSubmit, onCancel }: ThirdPartyFor
             helperText: "Display order (optional)",
           },
           {
-            name: "organization_id",
-            label: "Organization ID",
-            type: "number",
-            placeholder: "Enter organization ID",
-            validation: formSchema.shape.organization_id,
+            name: "profileImage",
+            label: "Profile Image",
+            type: "imageuploader",
+            validation: formSchema.shape.profileImage,
             required: false,
-            helperText: "Organization ID (optional, defaults to 1)",
+            helperText: "Upload profile image (JPG, PNG, WEBP - Max 5MB)",
           },
         ]}
         onSubmit={handleSubmit}
@@ -114,7 +147,7 @@ export function ThirdPartyForm({ thirdParty, onSubmit, onCancel }: ThirdPartyFor
           website: thirdParty?.website || "",
           status: thirdParty?.status?.toString() || "1",
           order_no: thirdParty?.order_no ?? undefined,
-          organization_id: thirdParty?.organization_id?.toString() || "1",
+          profileImage: undefined,
         }}
       />
     </>
