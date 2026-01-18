@@ -40,6 +40,8 @@ import {
   Sun,
 } from "lucide-react";
 import { toast } from "sonner";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface UserProfile {
   name: string;
@@ -50,11 +52,13 @@ interface UserProfile {
 }
 
 export function ProfileMenu() {
+  const router = useRouter();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const [profile, setProfile] = useState<UserProfile>({
     name: "Admin User",
@@ -64,9 +68,42 @@ export function ProfileMenu() {
     bio: "System administrator with full access privileges",
   });
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      
+      // Call logout API first to invalidate token on backend
+      const res = await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        console.warn("Logout API call failed, proceeding with local logout");
+      }
+
+      // Sign out from NextAuth (this will clear the session)
+      await signOut({
+        redirect: false,
+      });
+
+      toast.success("Logged out successfully");
+      
+      // Redirect to home page
+      router.push("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Still try to sign out locally even if API call fails
+      await signOut({
+        redirect: false,
+      });
     toast.success("Logged out successfully");
-    // Add logout logic here
+      router.push("/");
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   const handleSaveProfile = () => {
@@ -158,10 +195,14 @@ export function ProfileMenu() {
             <span>Contact</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+          <DropdownMenuItem 
+            onClick={handleLogout} 
+            className="text-red-600"
+            disabled={isLoggingOut}
+          >
             <LogOut className="mr-2 size-4" />
-            <span>Log out</span>
-            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+            <span>{isLoggingOut ? "Logging out..." : "Log out"}</span>
+            {!isLoggingOut && <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

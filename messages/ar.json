@@ -830,9 +830,17 @@
       "divider": "أو"
     },
     "form": {
+      "mode": {
+        "email": "البريد الإلكتروني / اسم المستخدم",
+        "mobile": "الجوال"
+      },
       "email": {
         "label": "البريد الإلكتروني",
         "placeholder": "name@example.com"
+      },
+      "mobile": {
+        "label": "رقم الجوال",
+        "placeholder": "580629187"
       },
       "password": {
         "label": "كلمة المرور",

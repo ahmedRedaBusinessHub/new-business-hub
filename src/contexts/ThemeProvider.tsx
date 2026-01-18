@@ -12,7 +12,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 
 import ThemeSelector from "@/components/features/ThemeSelector";
-import CustomCursor from "@/components/features/CustomCursor";
+// import CustomCursor from "@/components/features/CustomCursor";
 
 import { useI18n } from "@/hooks/useI18n";
 const queryClient = new QueryClient();
@@ -61,7 +61,7 @@ export function ThemeProvider({ children, ...props }: { children: ReactNode }) {
       <NextThemesProvider {...props} defaultTheme={mode}>
         <ThemeContext.Provider value={{ theme, setTheme, mode, setMode }}>
           {children}
-          <CustomCursor />
+          {/* <CustomCursor /> */}
           <ThemeSelector />
           <Toaster />
         </ThemeContext.Provider>

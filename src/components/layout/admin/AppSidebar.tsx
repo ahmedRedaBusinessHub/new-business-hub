@@ -41,47 +41,92 @@ const navigationItems = [
     icon: Users,
     url: "/admin/users",
   },
-  {
-    title: "Products",
-    icon: Package,
-    url: "#",
-  },
-  {
-    title: "Orders",
-    icon: ShoppingCart,
-    url: "#",
-  },
-  {
-    title: "Analytics",
-    icon: BarChart3,
-    url: "#",
-  },
+  // {
+  //   title: "Products",
+  //   icon: Package,
+  //   url: "#",
+  // },
+  // {
+  //   title: "Orders",
+  //   icon: ShoppingCart,
+  //   url: "#",
+  // },
+  // {
+  //   title: "Analytics",
+  //   icon: BarChart3,
+  //   url: "#",
+  // },
 ];
 
 const managementItems = [
+  // {
+  //   title: "Categories",
+  //   icon: Tag,
+  //   url: "#",
+  // },
+  // {
+  //   title: "Payments",
+  //   icon: CreditCard,
+  //   url: "#",
+  // },
+  // {
+  //   title: "Content",
+  //   icon: FileText,
+  //   url: "#",
+  // },
+  // {
+  //   title: "Messages",
+  //   icon: MessageSquare,
+  //   url: "#",
+  // },
   {
-    title: "Categories",
-    icon: Tag,
-    url: "#",
-  },
-  {
-    title: "Payments",
-    icon: CreditCard,
-    url: "#",
-  },
-  {
-    title: "Content",
-    icon: FileText,
-    url: "#",
-  },
-  {
-    title: "Messages",
+    title: "Contacts",
     icon: MessageSquare,
-    url: "#",
+    url: "/admin/contacts",
+  },
+  {
+    title: "Organizations",
+    icon: Package,
+    url: "/admin/organizations",
+  },
+  {
+    title: "Third Parties",
+    icon: Package,
+    url: "/admin/third-parties",
+  },
+  {
+    title: "News",
+    icon: FileText,
+    url: "/admin/news",
+  },
+  {
+    title: "Newsletter",
+    icon: FileText,
+    url: "/admin/newsletter-subscriptions",
+  },
+  {
+    title: "Programs",
+    icon: FileText,
+    url: "/admin/programs",
+  },
+  {
+    title: "Projects",
+    icon: FileText,
+    url: "/admin/projects",
+  },
+  {
+    title: "Reviews",
+    icon: FileText,
+    url: "/admin/reviews",
+  },
+  {
+    title: "Settings",
+    icon: Settings,
+    url: "/admin/settings",
   },
 ];
 
-export async function AppSidebar() {
+export function AppSidebar() {
   const { language } = useI18n();
   return (
     <Sidebar collapsible="icon" side={language == "ar" ? "right" : "left"}>
@@ -135,10 +180,10 @@ export async function AppSidebar() {
               {managementItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title}>
-                    <a href={item.url}>
+                    <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

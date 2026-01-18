@@ -25,6 +25,8 @@ import Logo from "./Logo";
 import { useI18n } from "@/hooks/useI18n";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import OTPVerification from "./OTPVerification";
+import { OtpType, OtpChannel } from "@/types/auth";
 
 export default function RegisterPage() {
   const { t, language } = useI18n("register");
@@ -33,12 +35,22 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [showOTP, setShowOTP] = useState(false);
+  const [otpData, setOtpData] = useState<{
+    identifier: string;
+    country_code?: string;
+    channel: OtpChannel;
+    type: OtpType;
+    userId?: number;
+  } | null>(null);
 
   const [formData, setFormData] = useState({
-    fullName: "",
+    username: "",
     email: "",
-    phone: "",
-    company: "",
+    country_code: "+966",
+    mobile: "",
+    first_name: "",
+    last_name: "",
     password: "",
     confirmPassword: "",
   });
@@ -53,9 +65,13 @@ export default function RegisterPage() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validation
     if (
-      !formData.fullName ||
+      !formData.username ||
       !formData.email ||
+      !formData.country_code ||
+      !formData.mobile ||
+      !formData.first_name ||
       !formData.password ||
       !formData.confirmPassword
     ) {
@@ -69,8 +85,8 @@ export default function RegisterPage() {
       return;
     }
 
-    if (formData.password.length < 8) {
-      toast.error(t("validation.passwordLength"));
+    if (formData.password.length < 6) {
+      toast.error(t("validation.passwordLength") || "Password must be at least 6 characters");
       return;
     }
 
@@ -86,14 +102,85 @@ export default function RegisterPage() {
 
     setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false);
-      toast.success(t("messages.success"));
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          country_code: formData.country_code,
+          mobile: formData.mobile,
+          first_name: formData.first_name,
+          last_name: formData.last_name || undefined,
+          password: formData.password,
+        }),
+      });
 
-      setTimeout(() => {
-        navigate.push("/login");
-      }, 1000);
-    }, 2000);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Registration failed");
+      }
+
+      // Check if verification is required
+      if (data.actions && data.actions.length > 0) {
+        // Determine which channel needs verification
+        const emailAction = data.actions.find((a: any) => 
+          a.action === "sent_email" || a.action === "auto_verified_email"
+        );
+        const smsAction = data.actions.find((a: any) => 
+          a.action === "sent_sms" || a.action === "auto_verified_sms"
+        );
+
+        // If email verification is required
+        if (emailAction && emailAction.action === "sent_email") {
+          setOtpData({
+            identifier: formData.email,
+            channel: OtpChannel.EMAIL,
+            type: OtpType.VERIFICATION,
+            userId: data.userId,
+          });
+          setShowOTP(true);
+          toast.success(emailAction.message || "Verification code sent to your email");
+          setIsLoading(false);
+          return;
+        }
+
+        // If SMS verification is required
+        if (smsAction && smsAction.action === "sent_sms") {
+          setOtpData({
+            identifier: formData.mobile,
+            country_code: formData.country_code,
+            channel: OtpChannel.SMS,
+            type: OtpType.VERIFICATION,
+            userId: data.userId,
+          });
+          setShowOTP(true);
+          toast.success(smsAction.message || "Verification code sent to your mobile");
+          setIsLoading(false);
+          return;
+        }
+
+        // If both are auto-verified, redirect to login
+        toast.success(t("messages.success"));
+        setTimeout(() => {
+          navigate.push("/login");
+        }, 1000);
+      } else {
+        toast.success(t("messages.success"));
+        setTimeout(() => {
+          navigate.push("/login");
+        }, 1000);
+      }
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      toast.error(error.message || "Registration failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSocialRegister = (provider: string) => {
@@ -216,31 +303,94 @@ export default function RegisterPage() {
                 <p className="text-[#262626]/70">{t("form.subtitle")}</p>
               </div>
 
-              <form onSubmit={handleRegister} className="space-y-5">
-                {/* Full Name */}
-                <div>
-                  <Label htmlFor="fullName" className="text-[#262626]">
-                    {t("form.fullName")} *
-                  </Label>
-                  <div className="relative mt-2">
-                    <User
-                      className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-[#262626]/40 ${
-                        language === "ar" ? "right-3" : "left-3"
-                      }`}
-                    />
-                    <Input
-                      id="fullName"
-                      name="fullName"
-                      type="text"
-                      value={formData.fullName}
-                      onChange={handleChange}
-                      className={`h-12 bg-white border-[#0D5BDC]/20 focus:border-[#0D5BDC] text-[#262626] ${
-                        language === "ar" ? "pr-10" : "pl-10"
-                      }`}
-                      placeholder={t("form.fullNamePlaceholder")}
-                    />
+              {showOTP && otpData ? (
+                <OTPVerification
+                  identifier={otpData.identifier}
+                  country_code={otpData.country_code}
+                  channel={otpData.channel}
+                  type={otpData.type}
+                  onBack={() => setShowOTP(false)}
+                  onSuccess={() => {
+                    toast.success("Registration successful! Please login.");
+                    navigate.push("/login");
+                  }}
+                />
+              ) : (
+                <form onSubmit={handleRegister} className="space-y-5">
+                  {/* Username */}
+                  <div>
+                    <Label htmlFor="username" className="text-[#262626]">
+                      Username *
+                    </Label>
+                    <div className="relative mt-2">
+                      <User
+                        className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-[#262626]/40 ${
+                          language === "ar" ? "right-3" : "left-3"
+                        }`}
+                      />
+                      <Input
+                        id="username"
+                        name="username"
+                        type="text"
+                        value={formData.username}
+                        onChange={handleChange}
+                        className={`h-12 bg-white border-[#0D5BDC]/20 focus:border-[#0D5BDC] text-[#262626] ${
+                          language === "ar" ? "pr-10" : "pl-10"
+                        }`}
+                        placeholder="Enter username"
+                      />
+                    </div>
                   </div>
-                </div>
+
+                  {/* First Name */}
+                  <div>
+                    <Label htmlFor="first_name" className="text-[#262626]">
+                      First Name *
+                    </Label>
+                    <div className="relative mt-2">
+                      <User
+                        className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-[#262626]/40 ${
+                          language === "ar" ? "right-3" : "left-3"
+                        }`}
+                      />
+                      <Input
+                        id="first_name"
+                        name="first_name"
+                        type="text"
+                        value={formData.first_name}
+                        onChange={handleChange}
+                        className={`h-12 bg-white border-[#0D5BDC]/20 focus:border-[#0D5BDC] text-[#262626] ${
+                          language === "ar" ? "pr-10" : "pl-10"
+                        }`}
+                        placeholder="Enter first name"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Last Name */}
+                  <div>
+                    <Label htmlFor="last_name" className="text-[#262626]">
+                      Last Name
+                    </Label>
+                    <div className="relative mt-2">
+                      <User
+                        className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-[#262626]/40 ${
+                          language === "ar" ? "right-3" : "left-3"
+                        }`}
+                      />
+                      <Input
+                        id="last_name"
+                        name="last_name"
+                        type="text"
+                        value={formData.last_name}
+                        onChange={handleChange}
+                        className={`h-12 bg-white border-[#0D5BDC]/20 focus:border-[#0D5BDC] text-[#262626] ${
+                          language === "ar" ? "pr-10" : "pl-10"
+                        }`}
+                        placeholder="Enter last name (optional)"
+                      />
+                    </div>
+                  </div>
 
                 {/* Email */}
                 <div>
@@ -267,56 +417,56 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
-                {/* Phone & Company */}
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="phone" className="text-[#262626]">
-                      {t("form.phone")}
-                    </Label>
-                    <div className="relative mt-2">
-                      <Phone
-                        className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-[#262626]/40 ${
-                          language === "ar" ? "right-3" : "left-3"
-                        }`}
-                      />
-                      <Input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className={`h-12 bg-white border-[#0D5BDC]/20 focus:border-[#0D5BDC] text-[#262626] ${
-                          language === "ar" ? "pr-10" : "pl-10"
-                        }`}
-                        placeholder="+966"
-                      />
+                  {/* Mobile & Country Code */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="country_code" className="text-[#262626]">
+                        Country Code *
+                      </Label>
+                      <div className="relative mt-2">
+                        <Phone
+                          className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-[#262626]/40 ${
+                            language === "ar" ? "right-3" : "left-3"
+                          }`}
+                        />
+                        <Input
+                          id="country_code"
+                          name="country_code"
+                          type="text"
+                          value={formData.country_code}
+                          onChange={handleChange}
+                          className={`h-12 bg-white border-[#0D5BDC]/20 focus:border-[#0D5BDC] text-[#262626] ${
+                            language === "ar" ? "pr-10" : "pl-10"
+                          }`}
+                          placeholder="+966"
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div>
-                    <Label htmlFor="company" className="text-[#262626]">
-                      {t("form.company")}
-                    </Label>
-                    <div className="relative mt-2">
-                      <Building
-                        className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-[#262626]/40 ${
-                          language === "ar" ? "right-3" : "left-3"
-                        }`}
-                      />
-                      <Input
-                        id="company"
-                        name="company"
-                        type="text"
-                        value={formData.company}
-                        onChange={handleChange}
-                        className={`h-12 bg-white border-[#0D5BDC]/20 focus:border-[#0D5BDC] text-[#262626] ${
-                          language === "ar" ? "pr-10" : "pl-10"
-                        }`}
-                        placeholder={t("form.companyPlaceholder")}
-                      />
+                    <div>
+                      <Label htmlFor="mobile" className="text-[#262626]">
+                        Mobile Number *
+                      </Label>
+                      <div className="relative mt-2">
+                        <Phone
+                          className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-[#262626]/40 ${
+                            language === "ar" ? "right-3" : "left-3"
+                          }`}
+                        />
+                        <Input
+                          id="mobile"
+                          name="mobile"
+                          type="tel"
+                          value={formData.mobile}
+                          onChange={handleChange}
+                          className={`h-12 bg-white border-[#0D5BDC]/20 focus:border-[#0D5BDC] text-[#262626] ${
+                            language === "ar" ? "pr-10" : "pl-10"
+                          }`}
+                          placeholder="580629187"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
 
                 {/* Password */}
                 <div>
@@ -434,7 +584,8 @@ export default function RegisterPage() {
                 >
                   {isLoading ? t("form.submitting") : t("form.submitButton")}
                 </Button>
-              </form>
+                </form>
+              )}
 
               {/* Divider */}
               <div className="flex items-center gap-4 my-6">

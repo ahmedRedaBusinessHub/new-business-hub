@@ -1,325 +1,274 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-
 import * as z from "zod";
+import { useMemo, useState, useEffect } from "react";
 import type { User } from "./UserManagement";
-import DynamicForm from "../shared/DynamicForm";
-import {
-  fileSchema,
-  imageSchema,
-  multipleImagesSchema,
-} from "@/lib/fileValidation";
+import DynamicForm, { type FormField } from "../shared/DynamicForm";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 
-const formSchema = {
-  firstName: z.string().min(2, "First name must be at least 2 characters"),
-  lastName: z.string().min(2, "Last name must be at least 2 characters"),
+const createFormSchema = (isEdit: boolean) => z.object({
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  first_name: z.string().min(2, "First name must be at least 2 characters"),
+  last_name: z.string().optional(),
   email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Phone number must be at least 10 characters"),
-  role: z.string().min(1, "Please select a role"),
-  department: z.string().min(1, "Please select a department"),
-  status: z.string().min(1, "Please select a status"),
-  birthDate: z.string().min(1, "Please select a birth date"),
-  salary: z.coerce.number().min(0, "Salary must be a positive number"),
-  skills: z.array(z.string()).min(1, "Please select at least one skill"),
-  bio: z.string().min(10, "Bio must be at least 10 characters"),
-  notifications: z.boolean(),
-  newsletter: z.boolean(),
-  experience: z.number().min(0).max(50),
-  availability: z.string().min(1, "Please select availability"),
-  profileImage: z.string().optional(),
-  resume: z.string().optional(),
-  documents: z.array(z.string()).optional(),
-};
-
-type FormValues = z.infer<typeof formSchema>;
+  country_code: z.string().min(1, "Country code is required"),
+  mobile: z.string().min(5, "Mobile number must be at least 5 characters"),
+  password: isEdit 
+    ? z.preprocess(
+        (val) => (val === "" || val === null || val === undefined ? undefined : val),
+        z.string().min(6, "Password must be at least 6 characters").optional()
+      )
+    : z.string().min(6, "Password must be at least 6 characters"),
+  dob: z.string().optional(),
+  gender: z.preprocess(
+    (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
+    z.number().int().min(0).max(2).nullable().optional()
+  ),
+  national_id: z.string().optional(),
+  status: z.coerce.number().int().min(0).max(1),
+  profileImage: z.any().optional(),
+});
 
 interface UserFormProps {
   user: User | null;
-  onSubmit: (data: Omit<User, "id">) => void;
+  onSubmit: (data: Omit<User, "id" | "created_at" | "updated_at" | "organization_id" | "email_verified_at" | "sms_verified_at"> & { password?: string; profileImage?: File[] }) => void;
   onCancel: () => void;
 }
 
-const skillOptions = [
-  "React",
-  "TypeScript",
-  "JavaScript",
-  "Node.js",
-  "Python",
-  "Java",
-  "Marketing",
-  "SEO",
-  "Design",
-  "Management",
-];
-
 export function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
-  const [profilePreview, setProfilePreview] = useState<string | null>(
-    user?.profileImage || null
-  );
-  const [resumeName, setResumeName] = useState<string | null>(
-    user?.resume ? "Current Resume.pdf" : null
-  );
-  const [documentNames, setDocumentNames] = useState<string[]>(
-    user?.documents?.map((_, i) => `Document ${i + 1}`) || []
-  );
+  const isEdit = !!user;
+  const formSchema = useMemo(() => createFormSchema(isEdit), [isEdit]);
+  const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
 
-  const form = useForm<FormValues>({
-    // resolver: zodResolver(formSchema),
-    defaultValues: {
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      email: user?.email || "",
-      phone: user?.phone || "",
-      role: user?.role || "",
-      department: user?.department || "",
-      status: user?.status || "active",
-      birthDate: user?.birthDate || "",
-      salary: user?.salary || 50000,
-      skills: user?.skills || [],
-      bio: user?.bio || "",
-      notifications: user?.notifications ?? true,
-      newsletter: user?.newsletter ?? false,
-      experience: user?.experience || 0,
-      availability: user?.availability || "",
-      profileImage: user?.profileImage || "",
-      resume: user?.resume || "",
-      documents: user?.documents || [],
-    },
-  });
+  // Fetch existing image when editing
+  useEffect(() => {
+    const fetchExistingImage = async () => {
+      if (user?.image_id) {
+        try {
+          const response = await fetch(`/api/users/${user.id}`);
+          if (response.ok) {
+            const responseData = await response.json();
+            const userData = responseData.data || responseData;
+            const fileUrl = userData.image || userData.image_url || null;
+            
+            if (fileUrl) {
+              setExistingImageUrl(`/api/public/file?file_url=${encodeURIComponent(fileUrl)}`);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching user image:", error);
+        }
+      }
+    };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        setProfilePreview(result);
-        form.setValue("profileImage", result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+    fetchExistingImage();
+  }, [user]);
 
-  const handleResumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setResumeName(file.name);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        form.setValue("resume", reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleDocumentsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      const fileArray = Array.from(files);
-      setDocumentNames(fileArray.map((f) => f.name));
-
-      const promises = fileArray.map((file) => {
-        return new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.readAsDataURL(file);
-        });
+  const handleSubmit = async (data: Record<string, any>) => {
+    try {
+      const validated = formSchema.parse(data);
+      
+      // Convert date string to ISO DateTime format for Prisma
+      let dobValue = null;
+      if (validated.dob) {
+        // If it's already a DateTime string, use it; otherwise convert date to DateTime
+        if (validated.dob.includes('T')) {
+          dobValue = validated.dob;
+        } else {
+          // Convert "YYYY-MM-DD" to "YYYY-MM-DDT00:00:00.000Z"
+          dobValue = new Date(validated.dob + 'T00:00:00.000Z').toISOString();
+        }
+      }
+      
+      onSubmit({
+        username: validated.username,
+        first_name: validated.first_name,
+        last_name: validated.last_name || null,
+        email: validated.email,
+        country_code: validated.country_code,
+        mobile: validated.mobile,
+        password: validated.password,
+        dob: dobValue,
+        gender: validated.gender ?? null,
+        image_id: user?.image_id ?? null,
+        national_id: validated.national_id || null,
+        status: validated.status,
+        profileImage: validated.profileImage,
       });
-
-      Promise.all(promises).then((results) => {
-        form.setValue("documents", results);
-      });
+    } catch (error) {
+      console.error("Form validation error:", error);
+      throw error;
     }
   };
 
-  const removeProfileImage = () => {
-    setProfilePreview(null);
-    form.setValue("profileImage", "");
-  };
+  const defaultValuesMemo = useMemo(() => ({
+    username: user?.username || "",
+    first_name: user?.first_name || "",
+    last_name: user?.last_name || "",
+    email: user?.email || "",
+    country_code: user?.country_code || "",
+    mobile: user?.mobile || "",
+    password: "",
+    dob: user?.dob || "",
+    gender: user?.gender?.toString() || "",
+    national_id: user?.national_id || "",
+    status: user?.status?.toString() || "1",
+    profileImage: undefined,
+  }), [user]);
 
-  const removeResume = () => {
-    setResumeName(null);
-    form.setValue("resume", "");
-  };
-
-  const removeDocument = (index: number) => {
-    const currentDocs = form.getValues("documents") || [];
-    const newDocs = currentDocs.filter((_, i) => i !== index);
-    const newNames = documentNames.filter((_, i) => i !== index);
-    setDocumentNames(newNames);
-    form.setValue("documents", newDocs);
-  };
-
-  const handleSubmit = (data: FormValues) => {
-    onSubmit(data);
-  };
-
-  return (
-    <>
-      <DynamicForm
-        config={[
+  const formConfig = useMemo((): FormField[] => [
           {
-            name: "firstName",
-            label: "firstName",
+            name: "username",
+            label: "Username",
             type: "text",
-            placeholder: "johndoe123",
-            validation: formSchema.firstName,
+            placeholder: "Enter username",
+            validation: formSchema.shape.username,
             required: true,
-            helperText: "Choose a unique username (3-20 characters)",
+            helperText: "Unique username (3+ characters)",
           },
           {
-            name: "lastName",
-            label: "lastName",
+            name: "first_name",
+            label: "First Name",
             type: "text",
-            placeholder: "johndoe123",
-            validation: formSchema.lastName,
+            placeholder: "Enter first name",
+            validation: formSchema.shape.first_name,
             required: true,
-            helperText: "Choose a unique username (3-20 characters)",
+            helperText: "User's first name",
           },
-
+          {
+            name: "last_name",
+            label: "Last Name",
+            type: "text",
+            placeholder: "Enter last name",
+            validation: formSchema.shape.last_name,
+            required: false,
+            helperText: "User's last name (optional)",
+          },
           {
             name: "email",
-            label: "email",
+            label: "Email",
             type: "email",
-            placeholder: "johndoe123",
-            validation: formSchema.email,
+            placeholder: "Enter email address",
+            validation: formSchema.shape.email,
             required: true,
-            helperText: "Choose a unique username (3-20 characters)",
+            helperText: "Valid email address",
           },
           {
-            name: "phone",
-            label: "phone",
+            name: "country_code",
+            label: "Country Code",
+            type: "text",
+            placeholder: "e.g., +1, +966",
+            validation: formSchema.shape.country_code,
+            required: true,
+            helperText: "Country calling code (e.g., +1, +966)",
+          },
+          {
+            name: "mobile",
+            label: "Mobile Number",
             type: "tel",
-            placeholder: "johndoe123",
-            validation: formSchema.phone,
+            placeholder: "Enter mobile number",
+            validation: formSchema.shape.mobile,
             required: true,
-            helperText: "Choose a unique username (3-20 characters)",
+            helperText: "Mobile phone number",
           },
           {
-            name: "role",
-            label: "role",
-            type: "select",
-            placeholder: "role",
-            validation: formSchema.role,
-            required: true,
-            helperText: "Choose a unique username (3-20 characters)",
-            options: [
-              { value: "admin", label: "admin" },
-              { value: "user", label: "user" },
-              { value: "moderator", label: "moderator" },
-              { value: "guest", label: "guest" },
-              { value: "other", label: "Other" },
-            ],
-          },
-          {
-            name: "department",
-            label: "department",
-            type: "select",
-            placeholder: "department",
-            validation: formSchema.department,
-            required: true,
-            helperText: "Choose a unique username (3-20 characters)",
-
-            options: [
-              { value: "Engineering", label: "Engineering" },
-              { value: "Marketing", label: "Marketing" },
-              { value: "Sales", label: "Sales" },
-
-              { value: "other", label: "Other" },
-            ],
-          },
-
-          {
-            name: "availability",
-            label: "availability",
-            type: "radio",
-            validation: formSchema.availability,
-            required: true,
-            options: [
-              { value: "full-time", label: "full-time" },
-              { value: "Part-time", label: "Part-time" },
-              { value: "Contract", label: "Contract" },
-            ],
-          },
-          {
-            name: "birthDate",
-            label: "birthDate",
+            name: "dob",
+            label: "Date of Birth",
             type: "date",
-            placeholder: "birthDate",
-            validation: formSchema.birthDate,
-            required: true,
-            helperText: "Choose a unique username (3-20 characters)",
+            placeholder: "Select date of birth",
+            validation: formSchema.shape.dob,
+            required: false,
+            helperText: "Date of birth (optional)",
           },
           {
-            name: "salary",
-            label: "salary",
-            type: "number",
-            placeholder: "salary",
-            validation: formSchema.salary,
-            required: true,
-            helperText: "Choose a unique username (3-20 characters)",
+            name: "password",
+            label: isEdit ? "New Password (leave blank to keep current)" : "Password",
+            type: "password",
+            placeholder: isEdit ? "Leave blank to keep current password" : "Enter password",
+            validation: formSchema.shape.password,
+            required: !isEdit,
+            helperText: isEdit 
+              ? "Enter new password to change (optional, min 6 characters)"
+              : "Password must be at least 6 characters",
           },
           {
-            name: "experience",
-            label: "experience",
-            type: "range",
-            placeholder: "experience",
-            validation: formSchema.experience,
-            required: true,
-            helperText: "Choose a unique username (3-20 characters)",
+            name: "gender",
+            label: "Gender",
+            type: "select",
+            placeholder: "Select gender",
+            validation: formSchema.shape.gender,
+            required: false,
+            helperText: "Gender (optional)",
+            options: [
+              { value: "", label: "Not specified" },
+              { value: "0", label: "Male" },
+              { value: "1", label: "Female" },
+              { value: "2", label: "Other" },
+            ],
           },
           {
-            name: "skills",
-            label: "skills",
-            type: "checkbox",
-            placeholder: "johndoe123",
-            validation: formSchema.skills,
-            required: true,
-            helperText: "Choose a unique username (3-20 characters)",
+            name: "national_id",
+            label: "National ID",
+            type: "text",
+            placeholder: "Enter national ID",
+            validation: formSchema.shape.national_id,
+            required: false,
+            helperText: "National identification number (optional)",
           },
           {
-            name: "bio",
-            label: "bio",
-            type: "textarea",
-            placeholder: "bio",
-            validation: formSchema.bio,
+            name: "status",
+            label: "Status",
+            type: "select",
+            placeholder: "Select status",
+            validation: formSchema.shape.status,
             required: true,
-            helperText: "Choose a unique username (3-20 characters)",
+            helperText: "User account status",
+            options: [
+              { value: "1", label: "Active" },
+              { value: "0", label: "Inactive" },
+            ],
           },
           {
             name: "profileImage",
-            label: "Profile Picture",
-            type: "file",
-            helperText:
-              "Upload your profile picture (JPG, PNG, WEBP - Max 5MB)",
-            validation: imageSchema,
-            multiple: false,
-            colSize: { desktop: 6, tablet: 12, mobile: 12 },
+            label: "Profile Image",
+            type: "imageuploader",
+            validation: formSchema.shape.profileImage,
+            required: false,
+            helperText: "Upload profile picture (JPG, PNG, WEBP - Max 5MB)",
           },
-          {
-            name: "portfolioImages",
-            label: "Portfolio Images",
-            type: "file",
-            helperText:
-              "Upload up to 10 images (JPG, PNG, WEBP - Max 5MB each)",
-            validation: multipleImagesSchema,
-            multiple: true,
-            colSize: { desktop: 6, tablet: 12, mobile: 12 },
-          },
-          {
-            name: "resume",
-            label: "Resume/CV",
-            type: "file",
-            helperText: "Upload your resume (PDF - Max 10MB)",
-            validation: fileSchema,
-            multiple: false,
-            colSize: { desktop: 12, tablet: 12, mobile: 12 },
-          },
-        ]}
+        ], [formSchema, isEdit]);
+
+  return (
+    <>
+      {isEdit && existingImageUrl && (
+        <div className="mb-6 flex items-center gap-4 p-4 border rounded-lg bg-muted/50">
+          <Avatar className="size-20">
+            <AvatarImage src={existingImageUrl} alt="Current profile picture" />
+            <AvatarFallback>
+              {user?.first_name?.[0] || ""}
+              {user?.last_name?.[0] || ""}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1">
+            <p className="text-sm font-medium">Current Profile Picture</p>
+            <p className="text-xs text-muted-foreground">
+              Upload a new image below to replace this one
+            </p>
+          </div>
+        </div>
+      )}
+      <DynamicForm
+        config={formConfig}
         onSubmit={handleSubmit}
-        submitText="Create Account"
-        onSuccess={() => {}}
-        className="max-w-md"
+        submitText={user ? "Update User" : "Create User"}
+        onSuccess={onCancel}
+        defaultValues={defaultValuesMemo}
+        key={user?.id || "new"}
+        onError={(error) => {
+          // Field errors are already handled by DynamicForm
+          // Only show toast if there are no field-specific errors
+          if (!error.fieldErrors || Object.keys(error.fieldErrors).length === 0) {
+            // Error toast will be shown by DynamicForm
+          }
+        }}
       />
     </>
   );

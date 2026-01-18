@@ -830,9 +830,17 @@
       "divider": "OR"
     },
     "form": {
+      "mode": {
+        "email": "Email / Username",
+        "mobile": "Mobile"
+      },
       "email": {
         "label": "Email Address",
         "placeholder": "name@example.com"
+      },
+      "mobile": {
+        "label": "Mobile Number",
+        "placeholder": "580629187"
       },
       "password": {
         "label": "Password",

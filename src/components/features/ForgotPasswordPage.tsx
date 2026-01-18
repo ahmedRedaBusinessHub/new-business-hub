@@ -27,25 +27,35 @@ export default function ForgotPasswordPage() {
     e.preventDefault();
 
     if (!email) {
-      toast.error(t("validation.emailRequired"));
-      return;
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      toast.error(t("validation.invalidEmail"));
+      toast.error(t("validation.emailRequired") || "Email or mobile is required");
       return;
     }
 
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const res = await fetch("/api/auth/forget-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ emailOrMobile: email }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to send reset code");
+      }
+
       setIsSuccess(true);
-      toast.success(t("messages.linkSent"));
-    }, 2000);
+      toast.success(data.message || t("messages.linkSent") || "Reset code sent successfully");
+    } catch (error: any) {
+      console.error("Forget password error:", error);
+      toast.error(error.message || "Failed to send reset code");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

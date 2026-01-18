@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import React, { useState, useMemo, useCallback } from "react";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import {
   Button,
   Checkbox,
@@ -32,7 +32,6 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-  Alert,
   Progress,
   Tooltip,
   TooltipTrigger,
@@ -52,22 +51,14 @@ import {
   AccordionTrigger,
 } from "../ui/Accordion";
 
-/**
- * Enhanced FormField type with support for all UI components
- */
-export type FormField = {
-  // Layout configuration
-  colSize?: {
-    desktop?: number; // 1–12
-    tablet?: number; // 1–12
-    mobile?: number; // 1–12
-  };
+/* -------------------------------------------------------------------------- */
+/*                               Types                                        */
+/* -------------------------------------------------------------------------- */
 
-  // Field identification
+export type FormField = {
+  colSize?: { desktop?: number; tablet?: number; mobile?: number };
   name: string;
   label: string;
-
-  // Extended type support for all UI components
   type:
     | "text"
     | "email"
@@ -98,48 +89,30 @@ export type FormField = {
     | "richtext"
     | "map"
     | "rating"
-    | "section" // For grouping fields
+    | "section"
     | "hidden";
-
-  // Field configuration
   placeholder?: string;
   options?: Array<{ value: string; label: string }>;
   validation: z.ZodTypeAny;
   required?: boolean;
   helperText?: string;
   disabled?: boolean;
-
-  // File upload specific
   multiple?: boolean;
   accept?: string;
   maxSize?: number;
   showPreview?: boolean;
-
-  // Slider/Range specific
   min?: number;
   max?: number;
   step?: number;
-
-  // Rating specific
   maxRating?: number;
-
-  // Section specific (for grouping)
   fields?: FormField[];
   collapsible?: boolean;
   defaultOpen?: boolean;
-
-  // Conditional rendering
   dependsOn?: string;
   showWhen?: (value: any) => boolean;
-
-  // Advanced
   tooltip?: string;
-  icon?: React.ReactNode;
 };
 
-/**
- * Enhanced DynamicForm Props
- */
 export interface DynamicFormProps {
   config: FormField[];
   onSubmit: (data: Record<string, any>) => Promise<void>;
@@ -149,22 +122,63 @@ export interface DynamicFormProps {
   defaultValues?: Record<string, any>;
   layout?: "single" | "tabs" | "accordion" | "wizard";
   showProgress?: boolean;
+  onError?: (error: Error & { fieldErrors?: Record<string, string> }) => void;
 }
 
-/**
- * Enhanced DynamicForm Component
- *
- * Supports all UI components with advanced features:
- * - All input types from basic to complex
- * - Conditional field rendering
- * - Section/grouping with accordion/tabs
- * - File uploads with preview
- * - Rich text editing
- * - Maps and location
- * - Rating systems
- * - Progress indicators
- * - Tooltips and helpers
- */
+/* -------------------------------------------------------------------------- */
+/*                         Stable Field Wrapper                                */
+/* -------------------------------------------------------------------------- */
+
+const FieldWrapper = React.memo(
+  ({
+    name,
+    label,
+    required,
+    tooltip,
+    error,
+    helperText,
+    children,
+  }: {
+    name: string;
+    label?: string;
+    required?: boolean;
+    tooltip?: string;
+    error?: string;
+    helperText?: string;
+    children: React.ReactNode;
+  }) => (
+    <div className="space-y-2">
+      {label && (
+        <div className="flex items-center gap-2">
+          <Label htmlFor={name}>
+            {label}
+            {required && <span className="ml-1 text-red-500">*</span>}
+          </Label>
+          {tooltip && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Info className="h-4 w-4 text-muted-foreground" />
+                </TooltipTrigger>
+                <TooltipContent>{tooltip}</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
+      )}
+      {children}
+      {helperText && !error && (
+        <p className="text-sm text-muted-foreground">{helperText}</p>
+      )}
+      {error && <p className="text-sm text-red-500">{error}</p>}
+    </div>
+  )
+);
+
+/* -------------------------------------------------------------------------- */
+/*                             Component                                      */
+/* -------------------------------------------------------------------------- */
+
 export const DynamicForm: React.FC<DynamicFormProps> = ({
   config,
   onSubmit,
@@ -174,666 +188,280 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
   defaultValues = {},
   layout = "single",
   showProgress = false,
+  onError,
 }) => {
   const { t } = useI18n();
   const [currentStep, setCurrentStep] = useState(0);
 
-  // ============================================================================
-  // Schema Generation
-  // ============================================================================
-  const buildSchema = (fields: FormField[]): Record<string, z.ZodTypeAny> => {
-    const schema: Record<string, z.ZodTypeAny> = {};
+  const schemaObject = useMemo(() => {
+    const build = (fields: FormField[]): Record<string, z.ZodTypeAny> => {
+      const s: Record<string, z.ZodTypeAny> = {};
+      fields.forEach((f) => {
+        if (f.type === "section" && f.fields) Object.assign(s, build(f.fields));
+        else if (f.type !== "hidden") s[f.name] = f.validation;
+      });
+      return s;
+    };
+    return build(config);
+  }, [config]);
 
-    fields.forEach((field) => {
-      if (field.type === "section" && field.fields) {
-        Object.assign(schema, buildSchema(field.fields));
-      } else if (field.type !== "hidden") {
-        schema[field.name] = field.validation;
-      }
-    });
+  const validationSchema = useMemo(() => z.object(schemaObject), [schemaObject]);
 
-    return schema;
-  };
-
-  const schemaObject = buildSchema(config);
-  const validationSchema = z.object(schemaObject);
-  type FormData = z.infer<typeof validationSchema>;
-
-  // ============================================================================
-  // React Hook Form Setup
-  // ============================================================================
   const {
     register,
     handleSubmit,
     control,
     formState: { errors, isValid },
-    watch,
     reset,
-    setValue,
-  } = useForm<FormData>({
+    setError,
+    getValues,
+  } = useForm({
     defaultValues,
     resolver: zodResolver(validationSchema),
     mode: "onChange",
   });
 
-  const watchedValues = watch();
+  const watchedValues = useWatch({ control });
 
-  // ============================================================================
-  // Mutation
-  // ============================================================================
   const mutation = useMutation({
-    mutationFn: async (data: FormData) => {
-      await onSubmit(data);
+    mutationFn: async (data: Record<string, any>) => {
+      try {
+        await onSubmit(data);
+      } catch (error: any) {
+        // Re-throw error to ensure onError is called and onSuccess is NOT called
+        throw error;
+      }
     },
     onSuccess: () => {
-      toast.success(t("Form submitted successfully!"), {
-        position: "top-right",
-        duration: 4000,
-      });
+      // Only called when mutation succeeds (no error thrown)
+      // This is the ONLY place where we reset form and close modal
+      toast.success("Form submitted successfully!");
       reset();
-      if (onSuccess) onSuccess();
+      onSuccess?.(); // This closes the modal - only called on success
     },
-    onError: (error: Error) => {
-      toast.error(
-        error.message || t("Something went wrong. Please try again."),
-        {
-          position: "top-right",
-          duration: 4000,
-        }
-      );
+    onError: (e: Error & { fieldErrors?: Record<string, string> }) => {
+      // IMPORTANT: This is called when mutation fails
+      // onSuccess is NOT called, so:
+      // - reset() is NOT called (form data is preserved)
+      // - onSuccess callback is NOT called (modal stays open)
+      
+      // Preserve current form values - do NOT reset
+      const currentValues = getValues();
+      
+      // Set field-specific errors if provided
+      if (e.fieldErrors) {
+        Object.keys(e.fieldErrors).forEach((fieldName) => {
+          setError(fieldName as any, {
+            type: "server",
+            message: e.fieldErrors![fieldName],
+          });
+        });
+      }
+      
+      // Show general error toast if no field errors or if onError callback is provided
+      if (onError) {
+        onError(e);
+      } else if (!e.fieldErrors || Object.keys(e.fieldErrors).length === 0) {
+        toast.error(e.message);
+      }
+      
+      // DO NOT reset form here - form data must be preserved
+      // DO NOT call onSuccess here - modal must stay open
+      // Form values are already preserved in currentValues if needed
     },
   });
 
-  const onFormSubmit = handleSubmit((data) => mutation.mutateAsync(data));
-
-  // ============================================================================
-  // Field Renderer
-  // ============================================================================
-  const renderField = (field: FormField) => {
-    // Check conditional rendering
-    if (field.dependsOn && field.showWhen) {
-      const dependentValue = watchedValues[field.dependsOn];
-      if (!field.showWhen(dependentValue)) {
-        return null;
+  const renderField = useCallback(
+    (field: FormField) => {
+      if (field.dependsOn && field.showWhen) {
+        if (!field.showWhen(watchedValues?.[field.dependsOn])) return null;
       }
-    }
 
-    const fieldError = errors[field.name];
-    const errorMessage = fieldError?.message as string;
+      const error = errors[field.name]?.message as string | undefined;
 
-    // Wrapper for field with label and error
-    const FieldWrapper = ({ children }: { children: React.ReactNode }) => (
-      <div className="space-y-2">
-        {field.label && (
-          <div className="flex items-center gap-2">
-            <Label htmlFor={field.name}>
-              {field.label}
-              {field.required && <span className="text-red-500 ml-1">*</span>}
-            </Label>
-            {field.tooltip && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Info className="h-4 w-4 text-muted-foreground" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{field.tooltip}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-          </div>
-        )}
-        {children}
-        {field.helperText && !errorMessage && (
-          <p className="text-sm text-muted-foreground">{field.helperText}</p>
-        )}
-        {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
-      </div>
-    );
+      const wrapperProps = {
+        name: field.name,
+        label: field.label,
+        required: field.required,
+        tooltip: field.tooltip,
+        helperText: field.helperText,
+        error,
+      };
 
-    // Render based on type
-    switch (field.type) {
-      // ========== Text-based inputs ==========
-      case "text":
-      case "email":
-      case "password":
-      case "number":
-      case "date":
-      case "datetime-local":
-      case "time":
-      case "week":
-      case "month":
-      case "url":
-      case "tel":
-      case "search":
-        return (
-          <FieldWrapper>
-            <Input
-              id={field.name}
-              type={field.type}
-              placeholder={field.placeholder}
-              disabled={field.disabled}
-              error={fieldError}
-              {...register(field.name)}
-            />
-          </FieldWrapper>
-        );
+      switch (field.type) {
+        case "text":
+        case "email":
+        case "password":
+        case "number":
+        case "tel":
+        case "date":
+        case "datetime-local":
+        case "time":
+        case "week":
+        case "month":
+        case "url":
+        case "search":
+          return (
+            <FieldWrapper {...wrapperProps}>
+              <Input 
+                {...register(field.name)} 
+                type={field.type}
+                placeholder={field.placeholder}
+              />
+            </FieldWrapper>
+          );
 
-      // ========== Textarea ==========
-      case "textarea":
-        return (
-          <FieldWrapper>
-            <Textarea
-              id={field.name}
-              placeholder={field.placeholder}
-              disabled={field.disabled}
-              error={fieldError}
-              {...register(field.name)}
-            />
-          </FieldWrapper>
-        );
+        case "textarea":
+          return (
+            <FieldWrapper {...wrapperProps}>
+              <Textarea {...register(field.name)} />
+            </FieldWrapper>
+          );
 
-      // ========== Select ==========
-      case "select":
-        return (
-          <FieldWrapper>
-            <Select
-              disabled={field.disabled}
-              error={fieldError}
-              {...register(field.name)}
-            >
-              <option value="">
-                {field.placeholder || "Select an option"}
-              </option>
-              {field.options?.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </Select>
-          </FieldWrapper>
-        );
+        case "select":
+          return (
+            <FieldWrapper {...wrapperProps}>
+              <Select {...register(field.name)} error={error}>
+                <option value="">{field.placeholder}</option>
+                {field.options?.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </Select>
+            </FieldWrapper>
+          );
 
-      // ========== Checkbox ==========
-      case "checkbox":
-        return (
-          <FieldWrapper>
-            <Checkbox
-              id={field.name}
-              disabled={field.disabled}
-              {...register(field.name)}
-            />
-          </FieldWrapper>
-        );
-
-      // ========== Radio ==========
-      case "radio":
-        return (
-          <FieldWrapper>
-            <div className="space-y-2">
-              {field.options?.map((option) => (
-                <div key={option.value} className="flex items-center gap-2">
-                  <Radio
-                    id={`${field.name}-${option.value}`}
-                    value={option.value}
-                    disabled={field.disabled}
-                    {...register(field.name)}
+        case "switch":
+          return (
+            <FieldWrapper {...wrapperProps}>
+              <Controller
+                name={field.name}
+                control={control}
+                render={({ field }) => (
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
                   />
-                  <Label htmlFor={`${field.name}-${option.value}`}>
-                    {option.label}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </FieldWrapper>
-        );
-
-      // ========== Switch ==========
-      case "switch":
-        return (
-          <FieldWrapper>
-            <Controller
-              name={field.name}
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <Switch
-                  checked={value}
-                  onCheckedChange={onChange}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-          </FieldWrapper>
-        );
-
-      // ========== Toggle ==========
-      case "toggle":
-        return (
-          <FieldWrapper>
-            <Controller
-              name={field.name}
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <Toggle
-                  pressed={value}
-                  onPressedChange={onChange}
-                  disabled={field.disabled}
-                >
-                  {field.placeholder || "Toggle"}
-                </Toggle>
-              )}
-            />
-          </FieldWrapper>
-        );
-
-      // ========== Slider ==========
-      case "slider":
-        return (
-          <FieldWrapper>
-            <Controller
-              name={field.name}
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <Slider
-                  min={field.min ?? 0}
-                  max={field.max ?? 100}
-                  step={field.step ?? 1}
-                  value={[value || field.min || 0]}
-                  onValueChange={(vals) => onChange(vals[0])}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-          </FieldWrapper>
-        );
-
-      // ========== Range ==========
-      case "range":
-        return (
-          <FieldWrapper>
-            <Range
-              min={field.min ?? 0}
-              max={field.max ?? 100}
-              step={field.step ?? 1}
-              disabled={field.disabled}
-              {...register(field.name)}
-            />
-          </FieldWrapper>
-        );
-
-      // ========== Color ==========
-      case "color":
-        return (
-          <FieldWrapper>
-            <Color
-              disabled={field.disabled}
-              error={fieldError}
-              {...register(field.name)}
-            />
-          </FieldWrapper>
-        );
-
-      // ========== File ==========
-      case "file":
-        return (
-          <FieldWrapper>
-            <File
-              label={field.label}
-              multiple={field.multiple}
-              accept={field.accept}
-              showPreview={field.showPreview}
-              maxSize={field.maxSize}
-              disabled={field.disabled}
-              error={fieldError}
-              helperText={field.helperText}
-              {...register(field.name)}
-            />
-          </FieldWrapper>
-        );
-
-      // ========== File Uploader ==========
-      case "fileuploader":
-        return (
-          <FieldWrapper>
-            <Controller
-              name={field.name}
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <FileUploader
-                  value={value}
-                  onChange={onChange}
-                  accept={field.accept}
-                  multiple={field.multiple}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-          </FieldWrapper>
-        );
-
-      // ========== Image Uploader ==========
-      case "imageuploader":
-        return (
-          <FieldWrapper>
-            <Controller
-              name={field.name}
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <ImageUploader
-                  value={value}
-                  onChange={onChange}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-          </FieldWrapper>
-        );
-
-      // ========== Tag Input ==========
-      case "tags":
-        return (
-          <FieldWrapper>
-            <Controller
-              name={field.name}
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <TagInput
-                  value={value || []}
-                  onChange={onChange}
-                  placeholder={field.placeholder}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-          </FieldWrapper>
-        );
-
-      // ========== Calendar ==========
-      case "calendar":
-        return (
-          <FieldWrapper>
-            <Controller
-              name={field.name}
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <Calendar
-                  mode="single"
-                  selected={value}
-                  onSelect={onChange}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-          </FieldWrapper>
-        );
-
-      // ========== Rich Text Editor ==========
-      case "richtext":
-        return (
-          <FieldWrapper>
-            <Controller
-              name={field.name}
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <RichTextEditor
-                  value={value}
-                  onChange={onChange}
-                  placeholder={field.placeholder}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-          </FieldWrapper>
-        );
-
-      // ========== Map ==========
-      case "map":
-        return (
-          <FieldWrapper>
-            <Controller
-              name={field.name}
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <Map
-                  value={value}
-                  onChange={onChange}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-          </FieldWrapper>
-        );
-
-      // ========== Rating ==========
-      case "rating":
-        return (
-          <FieldWrapper>
-            <Controller
-              name={field.name}
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <Rating
-                  value={value}
-                  onChange={onChange}
-                  max={field.maxRating ?? 5}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-          </FieldWrapper>
-        );
-
-      // ========== Section (Grouping) ==========
-      case "section":
-        if (field.collapsible) {
-          return (
-            <Accordion
-              type="single"
-              collapsible
-              defaultValue={field.defaultOpen ? field.name : undefined}
-            >
-              <AccordionItem value={field.name}>
-                <AccordionTrigger>{field.label}</AccordionTrigger>
-                <AccordionContent>
-                  <div className="grid grid-cols-12 gap-4">
-                    {field.fields?.map((subField) => (
-                      <div
-                        key={subField.name}
-                        className={getColSpanClass(subField.colSize)}
-                      >
-                        {renderField(subField)}
-                      </div>
-                    ))}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+                )}
+              />
+            </FieldWrapper>
           );
-        } else {
+
+        case "rating":
           return (
-            <Card>
-              <CardHeader>
-                <CardTitle>{field.label}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-12 gap-4">
-                  {field.fields?.map((subField) => (
-                    <div
-                      key={subField.name}
-                      className={getColSpanClass(subField.colSize)}
-                    >
-                      {renderField(subField)}
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <FieldWrapper {...wrapperProps}>
+              <Controller
+                name={field.name}
+                control={control}
+                render={({ field: controllerField }) => (
+                  <Rating
+                    value={controllerField.value}
+                    onChange={controllerField.onChange}
+                    max={field.maxRating ?? 5}
+                  />
+                )}
+              />
+            </FieldWrapper>
           );
-        }
 
-      case "hidden":
-        return <input type="hidden" {...register(field.name)} />;
+        case "imageuploader":
+          return (
+            <FieldWrapper {...wrapperProps}>
+              <Controller
+                name={field.name}
+                control={control}
+                render={({ field: controllerField }) => (
+                  <ImageUploader
+                    accept={field.accept || "image/*"}
+                    multiple={field.multiple || false}
+                    maxSize={field.maxSize || 5 * 1024 * 1024}
+                    onChange={(files) => controllerField.onChange(files)}
+                    onError={(error) => {
+                      console.error("Image upload error:", error);
+                      toast.error(error);
+                    }}
+                  />
+                )}
+              />
+            </FieldWrapper>
+          );
 
-      default:
-        return null;
+        case "fileuploader":
+          return (
+            <FieldWrapper {...wrapperProps}>
+              <Controller
+                name={field.name}
+                control={control}
+                render={({ field: controllerField }) => (
+                  <FileUploader
+                    accept={field.accept}
+                    multiple={field.multiple || false}
+                    maxSize={field.maxSize}
+                    onChange={(files) => controllerField.onChange(files)}
+                    onError={(error) => {
+                      console.error("File upload error:", error);
+                      toast.error(error);
+                    }}
+                  />
+                )}
+              />
+            </FieldWrapper>
+          );
+
+        case "hidden":
+          return <input type="hidden" {...register(field.name)} />;
+
+        default:
+          return null;
+      }
+    },
+    [control, errors, register, watchedValues]
+  );
+
+  const getColSpan = (field: FormField): string => {
+    const fullWidthTypes = ["textarea", "richtext", "imageuploader", "fileuploader", "map"];
+    if (fullWidthTypes.includes(field.type)) return "col-span-12";
+    if (field.colSize?.desktop) return `col-span-${field.colSize.desktop}`;
+    // Use sm: breakpoint (640px) for 2-column layout to work better with medium modals (max-w-4xl = 896px)
+    return "col-span-12 sm:col-span-6";
+  };
+  
+  const handleFormSubmit = async (data: Record<string, any>) => {
+    try {
+      // Use mutateAsync - if it throws, onError is called, onSuccess is NOT called
+      // This ensures the modal stays open on error
+      await mutation.mutateAsync(data);
+    } catch (error) {
+      // Error is already handled by mutation.onError
+      // We catch here to prevent unhandled promise rejection
+      // The form will NOT reset and modal will NOT close because:
+      // 1. onSuccess is NOT called (only called on success)
+      // 2. reset() is only called in onSuccess
+      // 3. onSuccess callback (which closes modal) is only called in onSuccess
+      // So the error is handled, form stays open, data is preserved
     }
   };
 
-  // ============================================================================
-  // Utility Functions
-  // ============================================================================
-  const getColSpanClass = (colSize?: {
-    desktop?: number;
-    tablet?: number;
-    mobile?: number;
-  }) => {
-    const desktop = colSize?.desktop || 12;
-    const tablet = colSize?.tablet || 12;
-    const mobile = colSize?.mobile || 12;
-
-    return `col-span-${mobile} md:col-span-${tablet} lg:col-span-${desktop}`;
-  };
-
-  // ============================================================================
-  // Layout Rendering
-  // ============================================================================
-  const renderLayout = () => {
-    switch (layout) {
-      case "tabs":
-        // Group fields by sections for tabs
-        const sections = config.filter((f) => f.type === "section");
-        return (
-          <Tabs defaultValue={sections[0]?.name}>
-            <TabsList>
-              {sections.map((section) => (
-                <TabsTrigger key={section.name} value={section.name}>
-                  {section.label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-            {sections.map((section) => (
-              <TabsContent key={section.name} value={section.name}>
-                <div className="grid grid-cols-12 gap-4">
-                  {section.fields?.map((field) => (
-                    <div
-                      key={field.name}
-                      className={getColSpanClass(field.colSize)}
-                    >
-                      {renderField(field)}
-                    </div>
-                  ))}
-                </div>
-              </TabsContent>
-            ))}
-          </Tabs>
-        );
-
-      case "accordion":
-        return (
-          <Accordion type="single" collapsible>
-            {config.map((field) => (
-              <div key={field.name} className={getColSpanClass(field.colSize)}>
-                {renderField(field)}
-              </div>
-            ))}
-          </Accordion>
-        );
-
-      case "wizard":
-        // Multi-step wizard
-        const steps = config.filter((f) => f.type === "section");
-        const currentStepData = steps[currentStep];
-
-        return (
-          <div className="space-y-6">
-            {showProgress && (
-              <Progress value={((currentStep + 1) / steps.length) * 100} />
-            )}
-            <div className="grid grid-cols-12 gap-4">
-              {currentStepData?.fields?.map((field) => (
-                <div
-                  key={field.name}
-                  className={getColSpanClass(field.colSize)}
-                >
-                  {renderField(field)}
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-between">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
-                disabled={currentStep === 0}
-              >
-                Previous
-              </Button>
-              {currentStep < steps.length - 1 ? (
-                <Button
-                  type="button"
-                  onClick={() =>
-                    setCurrentStep((prev) =>
-                      Math.min(steps.length - 1, prev + 1)
-                    )
-                  }
-                >
-                  Next
-                </Button>
-              ) : null}
-            </div>
-          </div>
-        );
-
-      case "single":
-      default:
-        return (
-          <div className="grid grid-cols-12 gap-4">
-            {config.map((field) => (
-              <div key={field.name} className={getColSpanClass(field.colSize)}>
-                {renderField(field)}
-              </div>
-            ))}
-          </div>
-        );
-    }
-  };
-
-  // ============================================================================
-  // Main Render
-  // ============================================================================
   return (
     <motion.form
-      onSubmit={onFormSubmit}
+      onSubmit={handleSubmit(handleFormSubmit)}
       className={`space-y-6 ${className}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
     >
-      {renderLayout()}
+      <div className="grid grid-cols-12 gap-4">
+        {config.map((f) => (
+          <div key={f.name} className={getColSpan(f)}>
+            {renderField(f)}
+          </div>
+        ))}
+      </div>
 
-      {/* Submit Button */}
-      <div className="flex justify-end pt-4">
-        <Button
-          type="submit"
-          disabled={!isValid || mutation.isPending}
-          className="min-w-[120px]"
-        >
-          {mutation.isPending ? (
-            <>
-              <motion.div
-                className="mr-2 h-4 w-4 rounded-full border-2 border-white border-t-transparent"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-              />
-              {t("Sending")}...
-            </>
-          ) : (
-            <>
-              {submitText}
-              <Send className="ml-2 h-4 w-4" />
-            </>
-          )}
+      <div className="flex justify-end">
+        <Button type="submit" disabled={!isValid || mutation.isPending}>
+          {mutation.isPending ? t("Sending") : submitText}
+          <Send className="ml-2 h-4 w-4" />
         </Button>
       </div>
     </motion.form>
