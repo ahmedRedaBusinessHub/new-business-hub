@@ -55,7 +55,6 @@ export function OrganizationForm({ organization, onSubmit, onCancel }: Organizat
         mobile: validated.mobile || null,
         category_id: validated.category_id ?? null,
         status: validated.status,
-        organization_id: organization?.organization_id ?? null,
         profileImage: validated.profileImage,
       });
     } catch (error) {

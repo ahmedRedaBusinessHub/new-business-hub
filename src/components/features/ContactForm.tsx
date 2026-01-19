@@ -40,7 +40,6 @@ export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
         notes: validated.notes || null,
         status: validated.status,
         user_id: validated.user_id ?? null,
-        organization_id: contact?.organization_id ?? 1,
       });
     } catch (error) {
       console.error("Form validation error:", error);

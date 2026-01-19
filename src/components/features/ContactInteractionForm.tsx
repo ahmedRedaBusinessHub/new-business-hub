@@ -28,7 +28,6 @@ export function ContactInteractionForm({ interaction, contactId, onSubmit, onCan
         type: validated.type ?? null,
         subject: validated.subject || null,
         details: validated.details || null,
-        organization_id: interaction?.organization_id ?? 1,
         files: validated.files,
       });
     } catch (error) {

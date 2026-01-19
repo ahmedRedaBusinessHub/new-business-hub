@@ -52,7 +52,6 @@ export function ThirdPartyServiceForm({ service, thirdPartyId, onSubmit, onCance
         service_url: validated.service_url || null,
         status: validated.status,
         order_no: validated.order_no ?? null,
-        organization_id: service?.organization_id ?? 1,
         profileImage: validated.profileImage,
       });
     } catch (error) {

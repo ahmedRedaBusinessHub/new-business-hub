@@ -27,6 +27,16 @@ import {
   Tag,
   CreditCard,
   Database,
+  Building2,
+  Handshake,
+  Images,
+  List,
+  Boxes,
+  Newspaper,
+  Mail,
+  GraduationCap,
+  FolderKanban,
+  Star,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -85,41 +95,66 @@ const managementItems = [
     icon: MessageSquare,
     url: "/admin/contacts",
   },
-  {
-    title: "Organizations",
-    icon: Package,
-    url: "/admin/organizations",
-  },
-  {
-    title: "Third Parties",
-    icon: Package,
-    url: "/admin/third-parties",
-  },
+  // {
+  //   title: "Organizations",
+  //   icon: Package,
+  //   url: "/admin/organizations",
+  // },
+  // {
+  //   title: "Third Parties",
+  //   icon: Package,
+  //   url: "/admin/third-parties",
+  // },
   {
     title: "News",
-    icon: FileText,
+    icon: Newspaper,
     url: "/admin/news",
   },
   {
     title: "Newsletter",
-    icon: FileText,
+    icon: Mail,
     url: "/admin/newsletter-subscriptions",
   },
   {
     title: "Programs",
-    icon: FileText,
+    icon: GraduationCap,
     url: "/admin/programs",
   },
   {
     title: "Projects",
-    icon: FileText,
+    icon: FolderKanban,
     url: "/admin/projects",
   },
   {
     title: "Reviews",
-    icon: FileText,
+    icon: Star,
     url: "/admin/reviews",
   },
+  {
+    title: "ISO Companies",
+    icon: Building2,
+    url: "/admin/iso-companies",
+  },
+  {
+    title: "Success Partners",
+    icon: Handshake,
+    url: "/admin/success-partners",
+  },
+  {
+    title: "Galleries",
+    icon: Images,
+    url: "/admin/galleries",
+  },
+  {
+    title: "Static Lists",
+    icon: List,
+    url: "/admin/static-lists",
+  },
+  // {
+  //   title: "Objects",
+  //   icon: Boxes,
+  //   url: "/admin/objects",
+  // },
   {
     title: "Settings",
     icon: Settings,

@@ -31,41 +31,38 @@ import {
   PaginationEllipsis,
 } from "@/components/ui/Pagination";
 import { Select } from "@/components/ui/Select";
-import { NewsForm } from "./NewsForm";
+import { GalleryForm } from "./GalleryForm";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import DynamicView, { type ViewTab } from "../shared/DynamicView";
+import DynamicView from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 
-export interface News {
+export interface Gallery {
   id: number;
-  title_ar: string;
   title_en: string | null;
-  detail_ar: string | null;
-  detail_en: string | null;
-  social_media: any;
+  title_ar: string;
+  main_image_id: number | null;
+  main_image_url?: string | null;
+  image_ids: number[];
+  image_urls?: string[];
   status: number;
   organization_id: number;
-  main_image_id?: number | null;
-  main_image_url?: string | null;
-  image_ids?: number[];
-  image_urls?: string[];
   created_at: string | null;
   updated_at: string | null;
 }
 
-export function NewsManagement() {
-  const [news, setNews] = useState<News[]>([]);
+export function GalleriesManagement() {
+  const [galleries, setGalleries] = useState<Gallery[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
-  const [editingNews, setEditingNews] = useState<News | null>(null);
-  const [viewingNews, setViewingNews] = useState<News | null>(null);
-  const [deletingNewsId, setDeletingNewsId] = useState<number | null>(null);
+  const [editingGallery, setEditingGallery] = useState<Gallery | null>(null);
+  const [viewingGallery, setViewingGallery] = useState<Gallery | null>(null);
+  const [deletingGalleryId, setDeletingGalleryId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -78,7 +75,7 @@ export function NewsManagement() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchQuery);
-      setCurrentPage(1); // Reset to first page when search changes
+      setCurrentPage(1);
     }, 300);
 
     return () => clearTimeout(timer);
@@ -87,7 +84,7 @@ export function NewsManagement() {
   const isFetchingRef = useRef(false);
   const lastFetchParamsRef = useRef<string>("");
 
-  const fetchNews = useCallback(async () => {
+  const fetchGalleries = useCallback(async () => {
     const params = new URLSearchParams({
       page: currentPage.toString(),
       limit: pageSize.toString(),
@@ -95,7 +92,6 @@ export function NewsManagement() {
     });
     const paramsString = params.toString();
 
-    // Prevent duplicate calls with same parameters
     if (isFetchingRef.current && lastFetchParamsRef.current === paramsString) {
       return;
     }
@@ -105,19 +101,19 @@ export function NewsManagement() {
 
     try {
       setLoading(true);
-      const response = await fetch(`/api/news?${paramsString}`);
+      const response = await fetch(`/api/galleries?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch news");
+        throw new Error("Failed to fetch galleries");
       }
       const data = await response.json();
-      const newsData = Array.isArray(data.data) ? data.data : [];
-      setNews(newsData);
+      const galleriesData = Array.isArray(data.data) ? data.data : [];
+      setGalleries(galleriesData);
       setTotal(data.total || 0);
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
-      console.error("Error fetching news:", error);
-      toast.error("Failed to load news");
-      setNews([]);
+      console.error("Error fetching galleries:", error);
+      toast.error("Failed to load galleries");
+      setGalleries([]);
       setTotal(0);
       setTotalPages(0);
     } finally {
@@ -127,13 +123,13 @@ export function NewsManagement() {
   }, [currentPage, pageSize, debouncedSearch]);
 
   useEffect(() => {
-    fetchNews();
-  }, [fetchNews]);
+    fetchGalleries();
+  }, [fetchGalleries]);
 
-  const handleCreate = async (newsData: Omit<News, "id" | "created_at" | "updated_at" | "main_image_url"> & { mainImage?: File[]; imageIds?: File[] }) => {
+  const handleCreate = async (galleryData: Omit<Gallery, "id" | "created_at" | "updated_at" | "main_image_url" | "image_urls"> & { mainImage?: File[]; imageIds?: File[] }) => {
     try {
-      const { mainImage, imageIds, ...payload } = newsData;
-      const response = await fetch("/api/news", {
+      const { mainImage, imageIds, ...payload } = galleryData;
+      const response = await fetch("/api/galleries", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -143,39 +139,39 @@ export function NewsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create news");
+        throw new Error(error.message || "Failed to create gallery");
       }
 
       const responseData = await response.json();
-      const newsId = responseData.id || responseData.data?.id;
+      const galleryId = responseData.id || responseData.data?.id;
 
       // Upload main image if provided
-      if (mainImage && Array.isArray(mainImage) && mainImage.length > 0 && newsId) {
+      if (mainImage && Array.isArray(mainImage) && mainImage.length > 0 && galleryId) {
         const imageFile = mainImage[0];
         if (imageFile instanceof File) {
-          await uploadNewsImage(newsId, imageFile, "main_image_id");
+          await uploadGalleryImage(galleryId, imageFile, "main_image_id");
         }
       }
 
-      // Upload additional images if provided
-      if (imageIds && Array.isArray(imageIds) && imageIds.length > 0 && newsId) {
-        await uploadNewsFiles(newsId, imageIds, "image_ids");
+      // Upload gallery images if provided
+      if (imageIds && Array.isArray(imageIds) && imageIds.length > 0 && galleryId) {
+        await uploadGalleryImages(galleryId, imageIds);
       }
 
-      toast.success("News created successfully!");
+      toast.success("Gallery created successfully!");
       setIsFormOpen(false);
-      fetchNews();
+      fetchGalleries();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create news");
+      toast.error(error.message || "Failed to create gallery");
     }
   };
 
-  const handleUpdate = async (newsData: Omit<News, "id" | "created_at" | "updated_at" | "main_image_url"> & { mainImage?: File[]; imageIds?: File[] }) => {
-    if (!editingNews) return;
+  const handleUpdate = async (galleryData: Omit<Gallery, "id" | "created_at" | "updated_at" | "main_image_url" | "image_urls"> & { mainImage?: File[]; imageIds?: File[] }) => {
+    if (!editingGallery) return;
 
     try {
-      const { mainImage, imageIds, ...payload } = newsData;
-      const response = await fetch(`/api/news/${editingNews.id}`, {
+      const { mainImage, imageIds, ...payload } = galleryData;
+      const response = await fetch(`/api/galleries/${editingGallery.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -185,38 +181,38 @@ export function NewsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update news");
+        throw new Error(error.message || "Failed to update gallery");
       }
 
       // Upload main image if provided
       if (mainImage && Array.isArray(mainImage) && mainImage.length > 0) {
         const imageFile = mainImage[0];
         if (imageFile instanceof File) {
-          await uploadNewsImage(editingNews.id, imageFile, "main_image_id");
+          await uploadGalleryImage(editingGallery.id, imageFile, "main_image_id");
         }
       }
 
-      // Upload additional images if provided
+      // Upload gallery images if provided
       if (imageIds && Array.isArray(imageIds) && imageIds.length > 0) {
-        await uploadNewsFiles(editingNews.id, imageIds, "image_ids");
+        await uploadGalleryImages(editingGallery.id, imageIds);
       }
 
-      toast.success("News updated successfully!");
-      setEditingNews(null);
+      toast.success("Gallery updated successfully!");
+      setEditingGallery(null);
       setIsFormOpen(false);
-      fetchNews();
+      fetchGalleries();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update news");
+      toast.error(error.message || "Failed to update gallery");
     }
   };
 
-  const uploadNewsImage = async (newsId: number, imageFile: File, refColumn: string = "main_image_id") => {
+  const uploadGalleryImage = async (galleryId: number, imageFile: File, refColumn: string = "main_image_id") => {
     try {
       const formData = new FormData();
       formData.append("files", imageFile);
       formData.append("refColumn", refColumn);
 
-      const response = await fetch(`/api/news/${newsId}/upload`, {
+      const response = await fetch(`/api/galleries/${galleryId}/upload`, {
         method: "POST",
         body: formData,
       });
@@ -230,79 +226,81 @@ export function NewsManagement() {
     }
   };
 
-  const uploadNewsFiles = async (newsId: number, files: File[], refColumn: string) => {
+  const uploadGalleryImages = async (galleryId: number, imageFiles: File[]) => {
     try {
       const formData = new FormData();
-      files.forEach((file) => {
-        formData.append("files", file);
+      imageFiles.forEach((file) => {
+        if (file instanceof File) {
+          formData.append("files", file);
+        }
       });
-      formData.append("refColumn", refColumn);
+      formData.append("refColumn", "image_ids");
 
-      const response = await fetch(`/api/news/${newsId}/upload`, {
+      const response = await fetch(`/api/galleries/${galleryId}/upload`, {
         method: "POST",
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload files");
+        throw new Error("Failed to upload gallery images");
       }
     } catch (error: any) {
-      console.error("Error uploading files:", error);
-      toast.error("Failed to upload files");
+      console.error("Error uploading gallery images:", error);
+      toast.error("Failed to upload gallery images");
     }
   };
 
   const handleDelete = async (id: number) => {
     try {
-      const response = await fetch(`/api/news/${id}`, {
+      const response = await fetch(`/api/galleries/${id}`, {
         method: "DELETE",
       });
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete news");
+        throw new Error(error.message || "Failed to delete gallery");
       }
 
-      toast.success("News deleted successfully!");
-      setDeletingNewsId(null);
-      fetchNews();
+      toast.success("Gallery deleted successfully!");
+      setDeletingGalleryId(null);
+      fetchGalleries();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete news");
+      toast.error(error.message || "Failed to delete gallery");
     }
   };
 
-  const handleEdit = (newsItem: News) => {
-    setEditingNews(newsItem);
+  const handleEdit = (gallery: Gallery) => {
+    setEditingGallery(gallery);
     setIsFormOpen(true);
   };
 
-  const handleView = (newsItem: News) => {
-    setViewingNews(newsItem);
+  const handleView = (gallery: Gallery) => {
+    setViewingGallery(gallery);
     setIsViewOpen(true);
   };
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
-    setEditingNews(null);
+    setEditingGallery(null);
   };
 
   const handleCloseView = () => {
     setIsViewOpen(false);
-    setViewingNews(null);
+    setViewingGallery(null);
   };
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>News Management</h2>
+          <h2>Galleries Management</h2>
           <p className="text-muted-foreground">
-            Manage news articles with full CRUD operations
+            Manage galleries with full CRUD operations
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add News
+          Add Gallery
         </Button>
       </div>
 
@@ -311,7 +309,7 @@ export function NewsManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search news..."
+            placeholder="Search galleries..."
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -337,8 +335,9 @@ export function NewsManagement() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Title (AR)</TableHead>
-              <TableHead>Title (EN)</TableHead>
+              <TableHead>Title (Arabic)</TableHead>
+              <TableHead>Title (English)</TableHead>
+              <TableHead>Images</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -346,26 +345,31 @@ export function NewsManagement() {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center">
-                  Loading news...
+                <TableCell colSpan={5} className="h-24 text-center">
+                  Loading galleries...
                 </TableCell>
               </TableRow>
-            ) : news.length === 0 ? (
+            ) : galleries.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center">
-                  No news found.
+                <TableCell colSpan={5} className="h-24 text-center">
+                  No galleries found.
                 </TableCell>
               </TableRow>
             ) : (
-              news.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell className="font-medium">{item.title_ar}</TableCell>
-                  <TableCell>{item.title_en || "-"}</TableCell>
+              galleries.map((gallery) => (
+                <TableRow key={gallery.id}>
+                  <TableCell className="font-medium">{gallery.title_ar}</TableCell>
+                  <TableCell>{gallery.title_en || "-"}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline">
+                      {gallery.image_ids?.length || 0} images
+                    </Badge>
+                  </TableCell>
                   <TableCell>
                     <Badge
-                      variant={item.status === 1 ? "default" : "secondary"}
+                      variant={gallery.status === 1 ? "default" : "secondary"}
                     >
-                      {item.status === 1 ? "Active" : "Inactive"}
+                      {gallery.status === 1 ? "Active" : "Inactive"}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -373,24 +377,24 @@ export function NewsManagement() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleView(item)}
-                        title="View news details"
+                        onClick={() => handleView(gallery)}
+                        title="View gallery details"
                       >
                         <Eye className="size-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleEdit(item)}
-                        title="Edit news"
+                        onClick={() => handleEdit(gallery)}
+                        title="Edit gallery"
                       >
                         <Pencil className="size-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => setDeletingNewsId(item.id)}
-                        title="Delete news"
+                        onClick={() => setDeletingGalleryId(gallery.id)}
+                        title="Delete gallery"
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -460,38 +464,38 @@ export function NewsManagement() {
       )}
 
       <div className="text-sm text-muted-foreground">
-        Showing {news.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
-        {Math.min(currentPage * pageSize, total)} of {total} news
+        Showing {galleries.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
+        {Math.min(currentPage * pageSize, total)} of {total} galleries
       </div>
 
       <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
-        <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl sm:max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingNews ? "Edit News" : "Create New News"}
+              {editingGallery ? "Edit Gallery" : "Create New Gallery"}
             </DialogTitle>
           </DialogHeader>
-          <NewsForm
-            news={editingNews}
-            onSubmit={editingNews ? handleUpdate : handleCreate}
+          <GalleryForm
+            gallery={editingGallery}
+            onSubmit={editingGallery ? handleUpdate : handleCreate}
             onCancel={handleCloseForm}
           />
         </DialogContent>
       </Dialog>
 
-      {viewingNews && (
+      {viewingGallery && (
         <DynamicView
-          data={viewingNews}
+          data={viewingGallery}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="News Details"
+          title="Gallery Details"
           header={{
             type: "avatar",
-            title: (data: News) => data.title_ar || data.title_en || "News",
-            subtitle: (data: News) => data.detail_ar || data.detail_en || "",
+            title: (data: Gallery) => data.title_ar || "Gallery",
+            subtitle: (data: Gallery) => data.title_en || "",
             imageIdField: "main_image_id",
-            avatarFallback: (data: News) => 
-              data.title_ar?.[0] || data.title_en?.[0] || "N",
+            avatarFallback: (data: Gallery) => 
+              data.title_ar?.[0] || data.title_en?.[0] || "G",
             badges: [
               {
                 field: "status",
@@ -508,10 +512,8 @@ export function NewsManagement() {
               label: "Details",
               gridCols: 2,
               fields: [
-                { name: "title_ar", label: "Title (AR)", type: "text", colSpan: 12 },
-                { name: "title_en", label: "Title (EN)", type: "text", colSpan: 12 },
-                { name: "detail_ar", label: "Detail (AR)", type: "text", colSpan: 12 },
-                { name: "detail_en", label: "Detail (EN)", type: "text", colSpan: 12 },
+                { name: "title_ar", label: "Title (Arabic)", type: "text", colSpan: 12 },
+                { name: "title_en", label: "Title (English)", type: "text", colSpan: 12 },
                 {
                   name: "status",
                   label: "Status",
@@ -526,74 +528,50 @@ export function NewsManagement() {
               ],
             },
             {
-              id: "social",
-              label: "Social Media",
-              customContent: (data: News) => {
-                const socialMedia = typeof data.social_media === 'string' 
-                  ? JSON.parse(data.social_media || '{}') 
-                  : (data.social_media || {});
-                const platforms = Object.entries(socialMedia).filter(([_, url]) => url);
-                if (platforms.length === 0) {
-                  return <p className="text-muted-foreground">No social media links</p>;
-                }
-                return (
-                  <div className="space-y-2">
-                    {platforms.map(([platform, url]) => (
-                      <div key={platform} className="flex items-center gap-3 p-3 border rounded-lg bg-muted/50">
-                        <span className="capitalize font-medium w-24">{platform}:</span>
-                        <a 
-                          href={url as string} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline truncate"
-                        >
-                          {url as string}
-                        </a>
-                      </div>
-                    ))}
-                  </div>
-                );
-              },
-            },
-            {
               id: "images",
               label: "Images",
-              customContent: (data: News) => {
-                const hasMainImage = data.main_image_url;
-                const hasImages = data.image_urls && data.image_urls.length > 0;
-                if (!hasMainImage && !hasImages) {
-                  return <p className="text-muted-foreground">No images uploaded</p>;
-                }
+              customContent: (data: Gallery) => {
+                const mainImageUrl = data.main_image_url;
+                const imageUrls = data.image_urls || [];
+                
                 return (
                   <div className="space-y-6">
-                    {hasMainImage && (
+                    {mainImageUrl && (
                       <div>
-                        <p className="text-sm font-medium mb-2">Main Image</p>
-                        <img
-                          src={data.main_image_url!.startsWith('http') || data.main_image_url!.startsWith('/api/public/file') 
-                            ? data.main_image_url! 
-                            : `/api/public/file?file_url=${encodeURIComponent(data.main_image_url!)}`}
-                          alt="Main"
-                          className="max-w-xs h-auto rounded-lg border"
-                        />
+                        <h4 className="text-sm font-medium mb-2">Main Image</h4>
+                        <div className="border rounded-lg overflow-hidden w-fit">
+                          <img
+                            src={mainImageUrl.startsWith('http') || mainImageUrl.startsWith('/api/public/file') 
+                              ? mainImageUrl 
+                              : `/api/public/file?file_url=${encodeURIComponent(mainImageUrl)}`}
+                            alt="Main"
+                            className="max-w-xs max-h-48 object-cover"
+                          />
+                        </div>
                       </div>
                     )}
-                    {hasImages && (
+                    
+                    {imageUrls.length > 0 && (
                       <div>
-                        <p className="text-sm font-medium mb-2">Gallery Images</p>
-                        <div className="grid grid-cols-3 gap-4">
-                          {data.image_urls!.filter(url => url != null).map((url, index) => (
-                            <img
-                              key={index}
-                              src={url.startsWith('http') || url.startsWith('/api/public/file') 
-                                ? url 
-                                : `/api/public/file?file_url=${encodeURIComponent(url)}`}
-                              alt={`Image ${index + 1}`}
-                              className="w-full h-32 object-cover rounded-lg border"
-                            />
+                        <h4 className="text-sm font-medium mb-2">Gallery Images ({imageUrls.length})</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                          {imageUrls.map((url, index) => (
+                            <div key={index} className="border rounded-lg overflow-hidden">
+                              <img
+                                src={url.startsWith('http') || url.startsWith('/api/public/file') 
+                                  ? url 
+                                  : `/api/public/file?file_url=${encodeURIComponent(url)}`}
+                                alt={`Gallery ${index + 1}`}
+                                className="w-full h-32 object-cover"
+                              />
+                            </div>
                           ))}
                         </div>
                       </div>
+                    )}
+                    
+                    {!mainImageUrl && imageUrls.length === 0 && (
+                      <p className="text-muted-foreground text-sm">No images uploaded</p>
                     )}
                   </div>
                 );
@@ -605,20 +583,20 @@ export function NewsManagement() {
       )}
 
       <AlertDialog
-        open={!!deletingNewsId}
-        onOpenChange={(open) => !open && setDeletingNewsId(null)}
+        open={!!deletingGalleryId}
+        onOpenChange={(open) => !open && setDeletingGalleryId(null)}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the news article.
+              This action cannot be undone. This will permanently delete the gallery and all its images.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => deletingNewsId && handleDelete(deletingNewsId)}
+              onClick={() => deletingGalleryId && handleDelete(deletingGalleryId)}
             >
               Delete
             </AlertDialogAction>
@@ -628,4 +606,3 @@ export function NewsManagement() {
     </div>
   );
 }
-

@@ -326,7 +326,6 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
         link: validated.link || null,
         social_media: currentSocialMedia,
         status: validated.status,
-        organization_id: project?.organization_id ?? 1,
         mainImage: validated.mainImage,
         imageIds: imageFiles,
         fileIds: fileFiles,

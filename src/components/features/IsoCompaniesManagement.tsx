@@ -31,41 +31,42 @@ import {
   PaginationEllipsis,
 } from "@/components/ui/Pagination";
 import { Select } from "@/components/ui/Select";
-import { NewsForm } from "./NewsForm";
+import { IsoCompanyForm } from "./IsoCompanyForm";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import DynamicView, { type ViewTab } from "../shared/DynamicView";
+import DynamicView from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 
-export interface News {
+export interface IsoCompany {
   id: number;
-  title_ar: string;
-  title_en: string | null;
-  detail_ar: string | null;
-  detail_en: string | null;
-  social_media: any;
+  company_name: string | null;
+  name: string;
+  position: string | null;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+  website: string | null;
+  notes: string | null;
+  image_id: number | null;
+  image_url?: string | null;
   status: number;
   organization_id: number;
-  main_image_id?: number | null;
-  main_image_url?: string | null;
-  image_ids?: number[];
-  image_urls?: string[];
   created_at: string | null;
   updated_at: string | null;
 }
 
-export function NewsManagement() {
-  const [news, setNews] = useState<News[]>([]);
+export function IsoCompaniesManagement() {
+  const [isoCompanies, setIsoCompanies] = useState<IsoCompany[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
-  const [editingNews, setEditingNews] = useState<News | null>(null);
-  const [viewingNews, setViewingNews] = useState<News | null>(null);
-  const [deletingNewsId, setDeletingNewsId] = useState<number | null>(null);
+  const [editingCompany, setEditingCompany] = useState<IsoCompany | null>(null);
+  const [viewingCompany, setViewingCompany] = useState<IsoCompany | null>(null);
+  const [deletingCompanyId, setDeletingCompanyId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -78,7 +79,7 @@ export function NewsManagement() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchQuery);
-      setCurrentPage(1); // Reset to first page when search changes
+      setCurrentPage(1);
     }, 300);
 
     return () => clearTimeout(timer);
@@ -87,7 +88,7 @@ export function NewsManagement() {
   const isFetchingRef = useRef(false);
   const lastFetchParamsRef = useRef<string>("");
 
-  const fetchNews = useCallback(async () => {
+  const fetchIsoCompanies = useCallback(async () => {
     const params = new URLSearchParams({
       page: currentPage.toString(),
       limit: pageSize.toString(),
@@ -95,7 +96,6 @@ export function NewsManagement() {
     });
     const paramsString = params.toString();
 
-    // Prevent duplicate calls with same parameters
     if (isFetchingRef.current && lastFetchParamsRef.current === paramsString) {
       return;
     }
@@ -105,19 +105,19 @@ export function NewsManagement() {
 
     try {
       setLoading(true);
-      const response = await fetch(`/api/news?${paramsString}`);
+      const response = await fetch(`/api/iso-companies?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch news");
+        throw new Error("Failed to fetch ISO companies");
       }
       const data = await response.json();
-      const newsData = Array.isArray(data.data) ? data.data : [];
-      setNews(newsData);
+      const companiesData = Array.isArray(data.data) ? data.data : [];
+      setIsoCompanies(companiesData);
       setTotal(data.total || 0);
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
-      console.error("Error fetching news:", error);
-      toast.error("Failed to load news");
-      setNews([]);
+      console.error("Error fetching ISO companies:", error);
+      toast.error("Failed to load ISO companies");
+      setIsoCompanies([]);
       setTotal(0);
       setTotalPages(0);
     } finally {
@@ -127,13 +127,13 @@ export function NewsManagement() {
   }, [currentPage, pageSize, debouncedSearch]);
 
   useEffect(() => {
-    fetchNews();
-  }, [fetchNews]);
+    fetchIsoCompanies();
+  }, [fetchIsoCompanies]);
 
-  const handleCreate = async (newsData: Omit<News, "id" | "created_at" | "updated_at" | "main_image_url"> & { mainImage?: File[]; imageIds?: File[] }) => {
+  const handleCreate = async (companyData: Omit<IsoCompany, "id" | "created_at" | "updated_at" | "image_url"> & { mainImage?: File[] }) => {
     try {
-      const { mainImage, imageIds, ...payload } = newsData;
-      const response = await fetch("/api/news", {
+      const { mainImage, ...payload } = companyData;
+      const response = await fetch("/api/iso-companies", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -143,39 +143,34 @@ export function NewsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create news");
+        throw new Error(error.message || "Failed to create ISO company");
       }
 
       const responseData = await response.json();
-      const newsId = responseData.id || responseData.data?.id;
+      const companyId = responseData.id || responseData.data?.id;
 
-      // Upload main image if provided
-      if (mainImage && Array.isArray(mainImage) && mainImage.length > 0 && newsId) {
+      // Upload image if provided
+      if (mainImage && Array.isArray(mainImage) && mainImage.length > 0 && companyId) {
         const imageFile = mainImage[0];
         if (imageFile instanceof File) {
-          await uploadNewsImage(newsId, imageFile, "main_image_id");
+          await uploadCompanyImage(companyId, imageFile);
         }
       }
 
-      // Upload additional images if provided
-      if (imageIds && Array.isArray(imageIds) && imageIds.length > 0 && newsId) {
-        await uploadNewsFiles(newsId, imageIds, "image_ids");
-      }
-
-      toast.success("News created successfully!");
+      toast.success("ISO company created successfully!");
       setIsFormOpen(false);
-      fetchNews();
+      fetchIsoCompanies();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create news");
+      toast.error(error.message || "Failed to create ISO company");
     }
   };
 
-  const handleUpdate = async (newsData: Omit<News, "id" | "created_at" | "updated_at" | "main_image_url"> & { mainImage?: File[]; imageIds?: File[] }) => {
-    if (!editingNews) return;
+  const handleUpdate = async (companyData: Omit<IsoCompany, "id" | "created_at" | "updated_at" | "image_url"> & { mainImage?: File[] }) => {
+    if (!editingCompany) return;
 
     try {
-      const { mainImage, imageIds, ...payload } = newsData;
-      const response = await fetch(`/api/news/${editingNews.id}`, {
+      const { mainImage, ...payload } = companyData;
+      const response = await fetch(`/api/iso-companies/${editingCompany.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -185,38 +180,33 @@ export function NewsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update news");
+        throw new Error(error.message || "Failed to update ISO company");
       }
 
-      // Upload main image if provided
+      // Upload image if provided
       if (mainImage && Array.isArray(mainImage) && mainImage.length > 0) {
         const imageFile = mainImage[0];
         if (imageFile instanceof File) {
-          await uploadNewsImage(editingNews.id, imageFile, "main_image_id");
+          await uploadCompanyImage(editingCompany.id, imageFile);
         }
       }
 
-      // Upload additional images if provided
-      if (imageIds && Array.isArray(imageIds) && imageIds.length > 0) {
-        await uploadNewsFiles(editingNews.id, imageIds, "image_ids");
-      }
-
-      toast.success("News updated successfully!");
-      setEditingNews(null);
+      toast.success("ISO company updated successfully!");
+      setEditingCompany(null);
       setIsFormOpen(false);
-      fetchNews();
+      fetchIsoCompanies();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update news");
+      toast.error(error.message || "Failed to update ISO company");
     }
   };
 
-  const uploadNewsImage = async (newsId: number, imageFile: File, refColumn: string = "main_image_id") => {
+  const uploadCompanyImage = async (companyId: number, imageFile: File) => {
     try {
       const formData = new FormData();
       formData.append("files", imageFile);
-      formData.append("refColumn", refColumn);
+      formData.append("refColumn", "image_id");
 
-      const response = await fetch(`/api/news/${newsId}/upload`, {
+      const response = await fetch(`/api/iso-companies/${companyId}/upload`, {
         method: "POST",
         body: formData,
       });
@@ -230,79 +220,57 @@ export function NewsManagement() {
     }
   };
 
-  const uploadNewsFiles = async (newsId: number, files: File[], refColumn: string) => {
-    try {
-      const formData = new FormData();
-      files.forEach((file) => {
-        formData.append("files", file);
-      });
-      formData.append("refColumn", refColumn);
-
-      const response = await fetch(`/api/news/${newsId}/upload`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to upload files");
-      }
-    } catch (error: any) {
-      console.error("Error uploading files:", error);
-      toast.error("Failed to upload files");
-    }
-  };
-
   const handleDelete = async (id: number) => {
     try {
-      const response = await fetch(`/api/news/${id}`, {
+      const response = await fetch(`/api/iso-companies/${id}`, {
         method: "DELETE",
       });
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete news");
+        throw new Error(error.message || "Failed to delete ISO company");
       }
 
-      toast.success("News deleted successfully!");
-      setDeletingNewsId(null);
-      fetchNews();
+      toast.success("ISO company deleted successfully!");
+      setDeletingCompanyId(null);
+      fetchIsoCompanies();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete news");
+      toast.error(error.message || "Failed to delete ISO company");
     }
   };
 
-  const handleEdit = (newsItem: News) => {
-    setEditingNews(newsItem);
+  const handleEdit = (company: IsoCompany) => {
+    setEditingCompany(company);
     setIsFormOpen(true);
   };
 
-  const handleView = (newsItem: News) => {
-    setViewingNews(newsItem);
+  const handleView = (company: IsoCompany) => {
+    setViewingCompany(company);
     setIsViewOpen(true);
   };
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
-    setEditingNews(null);
+    setEditingCompany(null);
   };
 
   const handleCloseView = () => {
     setIsViewOpen(false);
-    setViewingNews(null);
+    setViewingCompany(null);
   };
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>News Management</h2>
+          <h2>ISO Companies Management</h2>
           <p className="text-muted-foreground">
-            Manage news articles with full CRUD operations
+            Manage ISO companies with full CRUD operations
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add News
+          Add ISO Company
         </Button>
       </div>
 
@@ -311,7 +279,7 @@ export function NewsManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search news..."
+            placeholder="Search ISO companies..."
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -337,8 +305,10 @@ export function NewsManagement() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Title (AR)</TableHead>
-              <TableHead>Title (EN)</TableHead>
+              <TableHead>Company Name</TableHead>
+              <TableHead>Contact Person</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Phone</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -346,26 +316,28 @@ export function NewsManagement() {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center">
-                  Loading news...
+                <TableCell colSpan={6} className="h-24 text-center">
+                  Loading ISO companies...
                 </TableCell>
               </TableRow>
-            ) : news.length === 0 ? (
+            ) : isoCompanies.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center">
-                  No news found.
+                <TableCell colSpan={6} className="h-24 text-center">
+                  No ISO companies found.
                 </TableCell>
               </TableRow>
             ) : (
-              news.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell className="font-medium">{item.title_ar}</TableCell>
-                  <TableCell>{item.title_en || "-"}</TableCell>
+              isoCompanies.map((company) => (
+                <TableRow key={company.id}>
+                  <TableCell className="font-medium">{company.company_name || "-"}</TableCell>
+                  <TableCell>{company.name}</TableCell>
+                  <TableCell>{company.email || "-"}</TableCell>
+                  <TableCell>{company.phone || "-"}</TableCell>
                   <TableCell>
                     <Badge
-                      variant={item.status === 1 ? "default" : "secondary"}
+                      variant={company.status === 1 ? "default" : "secondary"}
                     >
-                      {item.status === 1 ? "Active" : "Inactive"}
+                      {company.status === 1 ? "Active" : "Inactive"}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -373,24 +345,24 @@ export function NewsManagement() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleView(item)}
-                        title="View news details"
+                        onClick={() => handleView(company)}
+                        title="View ISO company details"
                       >
                         <Eye className="size-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleEdit(item)}
-                        title="Edit news"
+                        onClick={() => handleEdit(company)}
+                        title="Edit ISO company"
                       >
                         <Pencil className="size-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => setDeletingNewsId(item.id)}
-                        title="Delete news"
+                        onClick={() => setDeletingCompanyId(company.id)}
+                        title="Delete ISO company"
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -460,38 +432,38 @@ export function NewsManagement() {
       )}
 
       <div className="text-sm text-muted-foreground">
-        Showing {news.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
-        {Math.min(currentPage * pageSize, total)} of {total} news
+        Showing {isoCompanies.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
+        {Math.min(currentPage * pageSize, total)} of {total} ISO companies
       </div>
 
       <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
         <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingNews ? "Edit News" : "Create New News"}
+              {editingCompany ? "Edit ISO Company" : "Create New ISO Company"}
             </DialogTitle>
           </DialogHeader>
-          <NewsForm
-            news={editingNews}
-            onSubmit={editingNews ? handleUpdate : handleCreate}
+          <IsoCompanyForm
+            company={editingCompany}
+            onSubmit={editingCompany ? handleUpdate : handleCreate}
             onCancel={handleCloseForm}
           />
         </DialogContent>
       </Dialog>
 
-      {viewingNews && (
+      {viewingCompany && (
         <DynamicView
-          data={viewingNews}
+          data={viewingCompany}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="News Details"
+          title="ISO Company Details"
           header={{
             type: "avatar",
-            title: (data: News) => data.title_ar || data.title_en || "News",
-            subtitle: (data: News) => data.detail_ar || data.detail_en || "",
-            imageIdField: "main_image_id",
-            avatarFallback: (data: News) => 
-              data.title_ar?.[0] || data.title_en?.[0] || "N",
+            title: (data: IsoCompany) => data.company_name || data.name || "ISO Company",
+            subtitle: (data: IsoCompany) => data.position || "",
+            imageIdField: "image_id",
+            avatarFallback: (data: IsoCompany) => 
+              data.company_name?.[0] || data.name?.[0] || "I",
             badges: [
               {
                 field: "status",
@@ -508,10 +480,14 @@ export function NewsManagement() {
               label: "Details",
               gridCols: 2,
               fields: [
-                { name: "title_ar", label: "Title (AR)", type: "text", colSpan: 12 },
-                { name: "title_en", label: "Title (EN)", type: "text", colSpan: 12 },
-                { name: "detail_ar", label: "Detail (AR)", type: "text", colSpan: 12 },
-                { name: "detail_en", label: "Detail (EN)", type: "text", colSpan: 12 },
+                { name: "company_name", label: "Company Name", type: "text", colSpan: 12 },
+                { name: "name", label: "Contact Person", type: "text", colSpan: 12 },
+                { name: "position", label: "Position", type: "text" },
+                { name: "email", label: "Email", type: "text" },
+                { name: "phone", label: "Phone", type: "text" },
+                { name: "website", label: "Website", type: "text" },
+                { name: "address", label: "Address", type: "text", colSpan: 12 },
+                { name: "notes", label: "Notes", type: "text", colSpan: 12 },
                 {
                   name: "status",
                   label: "Status",
@@ -525,100 +501,26 @@ export function NewsManagement() {
                 { name: "updated_at", label: "Updated At", type: "datetime" },
               ],
             },
-            {
-              id: "social",
-              label: "Social Media",
-              customContent: (data: News) => {
-                const socialMedia = typeof data.social_media === 'string' 
-                  ? JSON.parse(data.social_media || '{}') 
-                  : (data.social_media || {});
-                const platforms = Object.entries(socialMedia).filter(([_, url]) => url);
-                if (platforms.length === 0) {
-                  return <p className="text-muted-foreground">No social media links</p>;
-                }
-                return (
-                  <div className="space-y-2">
-                    {platforms.map(([platform, url]) => (
-                      <div key={platform} className="flex items-center gap-3 p-3 border rounded-lg bg-muted/50">
-                        <span className="capitalize font-medium w-24">{platform}:</span>
-                        <a 
-                          href={url as string} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline truncate"
-                        >
-                          {url as string}
-                        </a>
-                      </div>
-                    ))}
-                  </div>
-                );
-              },
-            },
-            {
-              id: "images",
-              label: "Images",
-              customContent: (data: News) => {
-                const hasMainImage = data.main_image_url;
-                const hasImages = data.image_urls && data.image_urls.length > 0;
-                if (!hasMainImage && !hasImages) {
-                  return <p className="text-muted-foreground">No images uploaded</p>;
-                }
-                return (
-                  <div className="space-y-6">
-                    {hasMainImage && (
-                      <div>
-                        <p className="text-sm font-medium mb-2">Main Image</p>
-                        <img
-                          src={data.main_image_url!.startsWith('http') || data.main_image_url!.startsWith('/api/public/file') 
-                            ? data.main_image_url! 
-                            : `/api/public/file?file_url=${encodeURIComponent(data.main_image_url!)}`}
-                          alt="Main"
-                          className="max-w-xs h-auto rounded-lg border"
-                        />
-                      </div>
-                    )}
-                    {hasImages && (
-                      <div>
-                        <p className="text-sm font-medium mb-2">Gallery Images</p>
-                        <div className="grid grid-cols-3 gap-4">
-                          {data.image_urls!.filter(url => url != null).map((url, index) => (
-                            <img
-                              key={index}
-                              src={url.startsWith('http') || url.startsWith('/api/public/file') 
-                                ? url 
-                                : `/api/public/file?file_url=${encodeURIComponent(url)}`}
-                              alt={`Image ${index + 1}`}
-                              className="w-full h-32 object-cover rounded-lg border"
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              },
-            },
           ]}
           maxWidth="4xl"
         />
       )}
 
       <AlertDialog
-        open={!!deletingNewsId}
-        onOpenChange={(open) => !open && setDeletingNewsId(null)}
+        open={!!deletingCompanyId}
+        onOpenChange={(open) => !open && setDeletingCompanyId(null)}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the news article.
+              This action cannot be undone. This will permanently delete the ISO company.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => deletingNewsId && handleDelete(deletingNewsId)}
+              onClick={() => deletingCompanyId && handleDelete(deletingCompanyId)}
             >
               Delete
             </AlertDialogAction>
@@ -628,4 +530,3 @@ export function NewsManagement() {
     </div>
   );
 }
-

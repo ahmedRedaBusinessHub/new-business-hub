@@ -52,7 +52,6 @@ export function ReviewForm({ review, onSubmit, onCancel }: ReviewFormProps) {
         job_title_ar: validated.job_title_ar || null,
         job_title_en: validated.job_title_en || null,
         status: validated.status,
-        organization_id: review?.organization_id ?? 1,
         profileImage: validated.profileImage,
       });
     } catch (error) {

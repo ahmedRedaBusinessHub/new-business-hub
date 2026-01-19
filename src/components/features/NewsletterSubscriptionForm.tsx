@@ -23,7 +23,6 @@ export function NewsletterSubscriptionForm({ subscription, onSubmit, onCancel }:
         email: validated.email,
         name: validated.name || null,
         status: validated.status,
-        organization_id: subscription?.organization_id ?? 1,
       });
     } catch (error) {
       console.error("Form validation error:", error);

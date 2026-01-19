@@ -51,7 +51,6 @@ export function ThirdPartyForm({ thirdParty, onSubmit, onCancel }: ThirdPartyFor
         website: validated.website || null,
         status: validated.status,
         order_no: validated.order_no ?? null,
-        organization_id: thirdParty?.organization_id ?? 1,
         profileImage: validated.profileImage,
       });
     } catch (error) {

@@ -34,7 +34,6 @@ export function SettingsForm({
       key_value: validated.key_value !== undefined ? validated.key_value : null,
       status: validated.status,
       order_no: validated.order_no ?? null,
-      organization_id: setting?.organization_id || 1,
     };
     onSubmit(payload);
   };
