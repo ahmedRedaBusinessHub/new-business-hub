@@ -1,6 +1,21 @@
 import * as z from "zod";
+import { useState, useEffect } from "react";
 import type { Contact } from "./ContactsManagement";
 import DynamicForm from "../shared/DynamicForm";
+import { staticListsCache } from "@/lib/staticListsCache";
+
+interface User {
+  id: number;
+  first_name: string;
+  last_name: string | null;
+  email: string;
+}
+
+interface ContactTypeConfig {
+  id: number;
+  name_en: string;
+  name_ar: string;
+}
 
 const createFormSchema = (isEdit: boolean) => z.object({
   name: z.string().optional(),
@@ -27,6 +42,46 @@ interface ContactFormProps {
 export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
   const isEdit = !!contact;
   const formSchema = createFormSchema(isEdit);
+  const [users, setUsers] = useState<User[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [contactTypes, setContactTypes] = useState<ContactTypeConfig[]>([]);
+  const [loadingContactTypes, setLoadingContactTypes] = useState(true);
+
+  // Fetch users for dropdown
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoadingUsers(true);
+        const response = await fetch("/api/users?limit=1000");
+        if (response.ok) {
+          const data = await response.json();
+          const usersData = Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [];
+          setUsers(usersData);
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      } finally {
+        setLoadingUsers(false);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  // Fetch contact types from static_lists cache
+  useEffect(() => {
+    const fetchContactTypes = async () => {
+      try {
+        setLoadingContactTypes(true);
+        const typesConfig = await staticListsCache.getByNamespace('contact.types');
+        setContactTypes(typesConfig);
+      } catch (error) {
+        console.error("Error fetching contact types:", error);
+      } finally {
+        setLoadingContactTypes(false);
+      }
+    };
+    fetchContactTypes();
+  }, []);
 
   const handleSubmit = async (data: Record<string, any>) => {
     try {
@@ -81,11 +136,18 @@ export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
           {
             name: "contact_type",
             label: "Contact Type",
-            type: "number",
-            placeholder: "Enter contact type",
+            type: "select",
+            placeholder: loadingContactTypes ? "Loading types..." : "Select contact type (optional)",
             validation: formSchema.shape.contact_type,
             required: false,
             helperText: "Contact type (optional)",
+            options: [
+              { value: "", label: "None" },
+              ...contactTypes.map((type) => ({
+                value: type.id.toString(),
+                label: type.name_en,
+              })),
+            ],
           },
           {
             name: "notes",
@@ -111,12 +173,19 @@ export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
           },
           {
             name: "user_id",
-            label: "User ID",
-            type: "number",
-            placeholder: "Enter user ID",
+            label: "User",
+            type: "select",
+            placeholder: loadingUsers ? "Loading users..." : "Select user (optional)",
             validation: formSchema.shape.user_id,
             required: false,
             helperText: "Link to user (optional)",
+            options: [
+              { value: "", label: "None" },
+              ...users.map((user) => ({
+                value: user.id.toString(),
+                label: `${user.first_name}${user.last_name ? ` ${user.last_name}` : ""} (${user.email})`,
+              })),
+            ],
           },
         ]}
         onSubmit={handleSubmit}

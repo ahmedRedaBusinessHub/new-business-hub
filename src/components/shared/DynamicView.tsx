@@ -199,13 +199,13 @@ export const DynamicView: React.FC<DynamicViewProps> = ({
   };
 
   const formatValue = (field: ViewField, value: any): React.ReactNode => {
-    if (value === null || value === undefined || value === "") {
-      return "-";
-    }
-
-    // Custom render function takes priority
+    // Custom render function takes priority - call it even if value is undefined
     if (field.render) {
       return field.render(value, data);
+    }
+
+    if (value === null || value === undefined || value === "") {
+      return "-";
     }
 
     // Custom format function
@@ -267,6 +267,8 @@ export const DynamicView: React.FC<DynamicViewProps> = ({
         );
       
       case "custom":
+        // For custom type, if there's a render function, it should have been called already
+        // Otherwise, just return the value as-is
         return value;
       
       default:

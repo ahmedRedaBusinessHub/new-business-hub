@@ -42,6 +42,13 @@ import {
 import DynamicView, { type ViewTab } from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
+import { staticListsCache } from "@/lib/staticListsCache";
+
+interface ContactTypeConfig {
+  id: number;
+  name_en: string;
+  name_ar: string;
+}
 
 export interface Contact {
   id: number;
@@ -71,6 +78,27 @@ export function ContactsManagement() {
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [contactTypes, setContactTypes] = useState<ContactTypeConfig[]>([]);
+
+  // Fetch contact types from static_lists cache
+  useEffect(() => {
+    const fetchContactTypes = async () => {
+      try {
+        const typesConfig = await staticListsCache.getByNamespace('contact.types');
+        setContactTypes(typesConfig);
+      } catch (error) {
+        console.error("Error fetching contact types:", error);
+      }
+    };
+    fetchContactTypes();
+  }, []);
+
+  // Helper function to get contact type name by ID
+  const getContactTypeName = (typeId: number | null): string => {
+    if (typeId === null) return "-";
+    const type = contactTypes.find(t => t.id === typeId);
+    return type?.name_en || String(typeId);
+  };
 
   // Debounce search query
   useEffect(() => {
@@ -289,7 +317,7 @@ export function ContactsManagement() {
                   <TableCell className="font-medium">{contact.name || "-"}</TableCell>
                   <TableCell>{contact.email || "-"}</TableCell>
                   <TableCell>{contact.phone || "-"}</TableCell>
-                  <TableCell>{contact.contact_type || "-"}</TableCell>
+                  <TableCell>{getContactTypeName(contact.contact_type)}</TableCell>
                   <TableCell>
                     <Badge
                       variant={contact.status === 1 ? "default" : "secondary"}
@@ -420,7 +448,7 @@ export function ContactsManagement() {
                 { name: "name", label: "Name", type: "text" },
                 { name: "email", label: "Email", type: "text" },
                 { name: "phone", label: "Phone", type: "text" },
-                { name: "contact_type", label: "Type", type: "text" },
+                { name: "contact_type", label: "Type", type: "text", render: (value: number | null) => getContactTypeName(value) },
                 { name: "notes", label: "Notes", type: "text", colSpan: 12 },
               ],
             },

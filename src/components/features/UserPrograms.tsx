@@ -11,7 +11,9 @@ import {
 } from "@/components/ui/Table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
-import { Search } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Search, Eye } from "lucide-react";
+import DynamicView from "../shared/DynamicView";
 import {
   Pagination,
   PaginationContent,
@@ -22,6 +24,7 @@ import {
   PaginationEllipsis,
 } from "@/components/ui/Pagination";
 import { Select } from "@/components/ui/Select";
+import { staticListsCache } from "@/lib/staticListsCache";
 
 interface UserProgramsProps {
   userId: number;
@@ -36,6 +39,22 @@ export function UserPrograms({ userId }: UserProgramsProps) {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [viewingUserProgram, setViewingUserProgram] = useState<any | null>(null);
+  const [statuses, setStatuses] = useState<any[]>([]);
+
+  // Fetch statuses from static_lists cache
+  useEffect(() => {
+    const fetchStatuses = async () => {
+      try {
+        const statusesConfig = await staticListsCache.getByNamespace('user_program.statuses');
+        setStatuses(statusesConfig);
+      } catch (error) {
+        console.error("Error fetching statuses:", error);
+      }
+    };
+    fetchStatuses();
+  }, []);
 
   // Debounce search query
   useEffect(() => {
@@ -83,6 +102,35 @@ export function UserPrograms({ userId }: UserProgramsProps) {
     fetchPrograms();
   }, [fetchPrograms]);
 
+  const handleView = (userProgram: any) => {
+    setViewingUserProgram(userProgram);
+    setIsViewOpen(true);
+  };
+
+  const handleCloseView = () => {
+    setIsViewOpen(false);
+    setViewingUserProgram(null);
+  };
+
+  const getDocuments = (userProgram: any): Array<{ name: string; file_id: number; file_url?: string }> => {
+    if (!userProgram.upload_documents || !Array.isArray(userProgram.upload_documents)) {
+      return [];
+    }
+    return userProgram.upload_documents
+      .filter((doc: any) => doc?.file_id)
+      .map((doc: any) => ({
+        name: doc.name || `File ${doc.file_id}`,
+        file_id: doc.file_id,
+        file_url: doc.file_url,
+      }));
+  };
+
+  const getStatusName = (statusId: number | null): string => {
+    if (statusId === null) return "-";
+    const status = statuses.find(s => s.id === statusId);
+    return status ? `${status.name_en} / ${status.name_ar}` : String(statusId);
+  };
+
   if (loading) {
     return <div className="p-4 text-center">Loading programs...</div>;
   }
@@ -129,23 +177,36 @@ export function UserPrograms({ userId }: UserProgramsProps) {
                   <TableHead>Program Name</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Enrolled At</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {userPrograms.map((program: any) => (
                   <TableRow key={program.id}>
                     <TableCell>
-                      {program.programs?.name || program.program_name || "-"}
+                      {program.programs?.name_ar 
+                        ? (program.programs?.name_en 
+                            ? `${program.programs.name_ar} / ${program.programs.name_en}` 
+                            : program.programs.name_ar)
+                        : (program.programs?.name_en || program.programs?.name || program.program_name || "-")}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={program.status === 1 ? "default" : "secondary"}>
-                        {program.status === 1 ? "Active" : "Inactive"}
-                      </Badge>
+                      {getStatusName(program.status)}
                     </TableCell>
                     <TableCell>
                       {program.created_at
                         ? new Date(program.created_at).toLocaleDateString()
                         : "-"}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleView(program)}
+                        title="View program details"
+                      >
+                        <Eye className="size-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -209,6 +270,103 @@ export function UserPrograms({ userId }: UserProgramsProps) {
           </>
         )}
       </CardContent>
+
+      {viewingUserProgram && (
+        <DynamicView
+          data={viewingUserProgram}
+          open={isViewOpen}
+          onOpenChange={handleCloseView}
+          title="User Program Details"
+          tabs={[
+            {
+              id: "details",
+              label: "Details",
+              gridCols: 2,
+              fields: [
+                { 
+                  name: "program_name", 
+                  label: "Program Name", 
+                  type: "text", 
+                  render: (value: any, data: any) => {
+                    if (data.programs?.name_ar) {
+                      return data.programs.name_en 
+                        ? `${data.programs.name_ar} / ${data.programs.name_en}` 
+                        : data.programs.name_ar;
+                    }
+                    return data.programs?.name_en || data.programs?.name || "-";
+                  }
+                },
+                { name: "company_name", label: "Company Name", type: "text" },
+                { name: "project_name", label: "Project Name", type: "text" },
+                { name: "project_description", label: "Project Description", type: "text", colSpan: 12 },
+                { name: "team_size", label: "Team Size", type: "text" },
+                { name: "fund_needed", label: "Fund Needed", type: "text", render: (value: number | null) => value ? `$${value}` : "-" },
+                { name: "why_applying", label: "Why Applying", type: "text", colSpan: 12 },
+                { 
+                  name: "status", 
+                  label: "Status", 
+                  type: "text", 
+                  render: (value: number | null) => getStatusName(value) 
+                },
+                { name: "created_at", label: "Enrolled At", type: "datetime" },
+                { name: "updated_at", label: "Updated At", type: "datetime" },
+              ],
+            },
+            {
+              id: "documents",
+              label: "Documents",
+              customContent: (data: any) => {
+                const documents = getDocuments(data);
+                if (documents.length === 0) {
+                  return <p className="text-muted-foreground">No documents uploaded</p>;
+                }
+                return (
+                  <div className="space-y-2">
+                    {documents.map((doc) => {
+                      // Construct file URL from file_url if available
+                      const fileUrl = doc.file_url 
+                        ? (doc.file_url.startsWith('http') || doc.file_url.startsWith('/api/public/file') 
+                            ? doc.file_url 
+                            : `/api/public/file?file_url=${encodeURIComponent(doc.file_url)}`)
+                        : null;
+                      
+                      return (
+                        <div key={doc.file_id} className="flex items-center gap-2 p-3 border rounded-lg bg-muted/50">
+                          {fileUrl ? (
+                            <>
+                              <a 
+                                href={fileUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-sm hover:underline text-primary flex-1"
+                              >
+                                {doc.name}
+                              </a>
+                              <a
+                                href={fileUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-muted-foreground hover:text-primary"
+                              >
+                                Open
+                              </a>
+                            </>
+                          ) : (
+                            <span className="text-sm text-muted-foreground flex-1">
+                              {doc.name}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              },
+            },
+          ]}
+          maxWidth="4xl"
+        />
+      )}
     </Card>
   );
 }

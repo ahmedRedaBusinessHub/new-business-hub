@@ -20,8 +20,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/AlertDialog";
 import { Badge } from "@/components/ui/Badge";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye } from "lucide-react";
 import { ContactInteractionForm } from "./ContactInteractionForm";
+import DynamicView from "../shared/DynamicView";
 import {
   Dialog,
   DialogContent,
@@ -29,6 +30,13 @@ import {
   DialogTitle,
 } from "@/components/ui/Dialog";
 import { toast } from "sonner";
+import { staticListsCache } from "@/lib/staticListsCache";
+
+interface InteractionTypeConfig {
+  id: number;
+  name_en: string;
+  name_ar: string;
+}
 
 export interface ContactInteraction {
   id: number;
@@ -37,6 +45,8 @@ export interface ContactInteraction {
   subject: string | null;
   details: string | null;
   organization_id: number;
+  file_urls?: string[];
+  file_ids?: number[];
   created_at: string | null;
   updated_at: string | null;
 }
@@ -48,9 +58,32 @@ interface ContactInteractionManagementProps {
 export function ContactInteractionManagement({ contactId }: ContactInteractionManagementProps) {
   const [interactions, setInteractions] = useState<ContactInteraction[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isViewOpen, setIsViewOpen] = useState(false);
   const [editingInteraction, setEditingInteraction] = useState<ContactInteraction | null>(null);
+  const [viewingInteraction, setViewingInteraction] = useState<ContactInteraction | null>(null);
   const [deletingInteractionId, setDeletingInteractionId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [interactionTypes, setInteractionTypes] = useState<InteractionTypeConfig[]>([]);
+
+  // Fetch interaction types from static_lists cache
+  useEffect(() => {
+    const fetchInteractionTypes = async () => {
+      try {
+        const typesConfig = await staticListsCache.getByNamespace('contact_interaction.types');
+        setInteractionTypes(typesConfig);
+      } catch (error) {
+        console.error("Error fetching interaction types:", error);
+      }
+    };
+    fetchInteractionTypes();
+  }, []);
+
+  // Helper function to get interaction type name by ID
+  const getInteractionTypeName = (typeId: number | null): string => {
+    if (typeId === null) return "-";
+    const type = interactionTypes.find(t => t.id === typeId);
+    return type?.name_en || String(typeId);
+  };
 
   const fetchInteractions = async () => {
     try {
@@ -185,9 +218,19 @@ export function ContactInteractionManagement({ contactId }: ContactInteractionMa
     setIsFormOpen(true);
   };
 
+  const handleView = (interaction: ContactInteraction) => {
+    setViewingInteraction(interaction);
+    setIsViewOpen(true);
+  };
+
   const handleCloseForm = () => {
     setIsFormOpen(false);
     setEditingInteraction(null);
+  };
+
+  const handleCloseView = () => {
+    setIsViewOpen(false);
+    setViewingInteraction(null);
   };
 
   return (
@@ -232,7 +275,7 @@ export function ContactInteractionManagement({ contactId }: ContactInteractionMa
             ) : (
               interactions.map((interaction) => (
                 <TableRow key={interaction.id}>
-                  <TableCell>{interaction.type || "-"}</TableCell>
+                  <TableCell>{getInteractionTypeName(interaction.type)}</TableCell>
                   <TableCell>{interaction.subject || "-"}</TableCell>
                   <TableCell className="max-w-xs truncate">
                     {interaction.details || "-"}
@@ -247,7 +290,16 @@ export function ContactInteractionManagement({ contactId }: ContactInteractionMa
                       <Button
                         variant="ghost"
                         size="icon"
+                        onClick={() => handleView(interaction)}
+                        title="View interaction details"
+                      >
+                        <Eye className="size-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleEdit(interaction)}
+                        title="Edit interaction"
                       >
                         <Pencil className="size-4" />
                       </Button>
@@ -255,6 +307,7 @@ export function ContactInteractionManagement({ contactId }: ContactInteractionMa
                         variant="ghost"
                         size="icon"
                         onClick={() => setDeletingInteractionId(interaction.id)}
+                        title="Delete interaction"
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -282,6 +335,71 @@ export function ContactInteractionManagement({ contactId }: ContactInteractionMa
           />
         </DialogContent>
       </Dialog>
+
+      {viewingInteraction && (
+        <DynamicView
+          data={viewingInteraction}
+          open={isViewOpen}
+          onOpenChange={handleCloseView}
+          title="Interaction Details"
+          tabs={[
+            {
+              id: "details",
+              label: "Details",
+              gridCols: 2,
+              fields: [
+                { name: "type", label: "Type", type: "text", render: (value: number | null) => getInteractionTypeName(value) },
+                { name: "subject", label: "Subject", type: "text" },
+                { name: "details", label: "Details", type: "text", colSpan: 12 },
+                { name: "created_at", label: "Created At", type: "datetime" },
+                { name: "updated_at", label: "Updated At", type: "datetime" },
+              ],
+            },
+            {
+              id: "files",
+              label: "Files",
+              customContent: (data: ContactInteraction) => {
+                const hasFiles = data.file_urls && data.file_urls.length > 0;
+                if (!hasFiles) {
+                  return <p className="text-muted-foreground">No files uploaded</p>;
+                }
+                return (
+                  <div className="space-y-2">
+                    {data.file_urls!.map((url, index) => {
+                      const fileName = url.split('/').pop() || `File ${index + 1}`;
+                      const fileUrl = url.startsWith('http') || url.startsWith('/api/public/file') 
+                        ? url 
+                        : `/api/public/file?file_url=${encodeURIComponent(url)}`;
+                      
+                      return (
+                        <div key={index} className="flex items-center gap-2 p-3 border rounded-lg bg-muted/50">
+                          <a 
+                            href={fileUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-sm hover:underline text-primary flex-1"
+                          >
+                            {fileName}
+                          </a>
+                          <a
+                            href={fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-muted-foreground hover:text-primary"
+                          >
+                            Open
+                          </a>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              },
+            },
+          ]}
+          maxWidth="4xl"
+        />
+      )}
 
       <AlertDialog
         open={!!deletingInteractionId}

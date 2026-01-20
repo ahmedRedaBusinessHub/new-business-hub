@@ -42,6 +42,7 @@ import DynamicView, { type ViewTab } from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { staticListsCache } from "@/lib/staticListsCache";
+import { ProgramUserPrograms } from "./ProgramUserPrograms";
 
 interface StaticListOption {
   id: number;
@@ -795,6 +796,13 @@ export function ProgramsManagement() {
                     )}
                   </div>
                 );
+              },
+            },
+            {
+              id: "user-programs",
+              label: "User Programs",
+              customContent: (data: Program) => {
+                return <ProgramUserPrograms programId={data.id} />;
               },
             },
           ]}
