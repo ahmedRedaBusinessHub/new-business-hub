@@ -128,7 +128,8 @@ export function NewsManagement() {
 
   useEffect(() => {
     fetchNews();
-  }, [fetchNews]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, debouncedSearch]);
 
   const handleCreate = async (newsData: Omit<News, "id" | "created_at" | "updated_at" | "main_image_url"> & { mainImage?: File[]; imageIds?: File[] }) => {
     try {

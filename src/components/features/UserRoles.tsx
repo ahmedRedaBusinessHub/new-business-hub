@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Badge } from "@/components/ui/Badge";
 import {
   Table,
@@ -36,6 +36,8 @@ export function UserRoles({ userId }: UserRolesProps) {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const fetchingRef = useRef(false);
+  const lastFetchedParamsRef = useRef<string>("");
 
   // Debounce search query
   useEffect(() => {
@@ -50,15 +52,25 @@ export function UserRoles({ userId }: UserRolesProps) {
   const fetchRoles = useCallback(async () => {
     if (!userId) return;
 
+    const params = new URLSearchParams({
+      page: currentPage.toString(),
+      limit: pageSize.toString(),
+      ...(debouncedSearch && { search: debouncedSearch }),
+    });
+    const paramsString = params.toString();
+
+    // Prevent duplicate calls with same parameters
+    if (fetchingRef.current && lastFetchedParamsRef.current === paramsString) {
+      return;
+    }
+
+    // Mark as fetching and track params
+    fetchingRef.current = true;
+    lastFetchedParamsRef.current = paramsString;
+
     try {
       setLoading(true);
-      const params = new URLSearchParams({
-        page: currentPage.toString(),
-        limit: pageSize.toString(),
-        ...(debouncedSearch && { search: debouncedSearch }),
-      });
-
-      const response = await fetch(`/api/user-roles/user/${userId}?${params.toString()}`).catch(() => null);
+      const response = await fetch(`/api/user-roles/user/${userId}?${paramsString}`).catch(() => null);
       if (response?.ok) {
         const data = await response.json();
         setUserRoles(Array.isArray(data.data) ? data.data : []);
@@ -75,13 +87,15 @@ export function UserRoles({ userId }: UserRolesProps) {
       setTotal(0);
       setTotalPages(0);
     } finally {
+      fetchingRef.current = false;
       setLoading(false);
     }
   }, [userId, currentPage, pageSize, debouncedSearch]);
 
   useEffect(() => {
     fetchRoles();
-  }, [fetchRoles]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, currentPage, pageSize, debouncedSearch]);
 
   if (loading) {
     return <div className="p-4 text-center">Loading roles...</div>;

@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Contact } from "./ContactsManagement";
 import DynamicForm from "../shared/DynamicForm";
 import { staticListsCache } from "@/lib/staticListsCache";
@@ -46,11 +46,16 @@ export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [contactTypes, setContactTypes] = useState<ContactTypeConfig[]>([]);
   const [loadingContactTypes, setLoadingContactTypes] = useState(true);
+  const usersFetchedRef = useRef(false);
+  const contactTypesFetchedRef = useRef(false);
 
-  // Fetch users for dropdown
+  // Fetch users for dropdown (only once)
   useEffect(() => {
+    if (usersFetchedRef.current) return;
+    
     const fetchUsers = async () => {
       try {
+        usersFetchedRef.current = true;
         setLoadingUsers(true);
         const response = await fetch("/api/users?limit=1000");
         if (response.ok) {
@@ -60,6 +65,7 @@ export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
         }
       } catch (error) {
         console.error("Error fetching users:", error);
+        usersFetchedRef.current = false; // Reset on error to allow retry
       } finally {
         setLoadingUsers(false);
       }
@@ -67,15 +73,19 @@ export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
     fetchUsers();
   }, []);
 
-  // Fetch contact types from static_lists cache
+  // Fetch contact types from static_lists cache (only once)
   useEffect(() => {
+    if (contactTypesFetchedRef.current) return;
+    
     const fetchContactTypes = async () => {
       try {
+        contactTypesFetchedRef.current = true;
         setLoadingContactTypes(true);
         const typesConfig = await staticListsCache.getByNamespace('contact.types');
         setContactTypes(typesConfig);
       } catch (error) {
         console.error("Error fetching contact types:", error);
+        contactTypesFetchedRef.current = false; // Reset on error to allow retry
       } finally {
         setLoadingContactTypes(false);
       }

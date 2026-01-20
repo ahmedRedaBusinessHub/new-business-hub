@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import DynamicForm from "../shared/DynamicForm";
 import { FileUploader } from "@/components/ui/FileUploader";
 import { Label } from "@/components/ui/Label";
@@ -79,11 +79,16 @@ export function UserProgramForm({ userProgram, programId, onSubmit, onCancel }: 
   const [loadingStatuses, setLoadingStatuses] = useState(true);
   const [deletedFileIds, setDeletedFileIds] = useState<number[]>([]);
   const [fileFiles, setFileFiles] = useState<Array<{ file: File; name: string }>>([]);
+  const usersFetchedRef = useRef(false);
+  const statusesFetchedRef = useRef(false);
 
-  // Fetch users for dropdown
+  // Fetch users for dropdown (only once)
   useEffect(() => {
+    if (usersFetchedRef.current) return;
+    
     const fetchUsers = async () => {
       try {
+        usersFetchedRef.current = true;
         setLoadingUsers(true);
         const response = await fetch("/api/users?limit=1000");
         if (response.ok) {
@@ -93,6 +98,7 @@ export function UserProgramForm({ userProgram, programId, onSubmit, onCancel }: 
         }
       } catch (error) {
         console.error("Error fetching users:", error);
+        usersFetchedRef.current = false; // Reset on error to allow retry
       } finally {
         setLoadingUsers(false);
       }
@@ -100,15 +106,19 @@ export function UserProgramForm({ userProgram, programId, onSubmit, onCancel }: 
     fetchUsers();
   }, []);
 
-  // Fetch statuses from static_lists cache
+  // Fetch statuses from static_lists cache (only once)
   useEffect(() => {
+    if (statusesFetchedRef.current) return;
+    
     const fetchStatuses = async () => {
       try {
+        statusesFetchedRef.current = true;
         setLoadingStatuses(true);
         const statusesConfig = await staticListsCache.getByNamespace('user_program.statuses');
         setStatuses(statusesConfig);
       } catch (error) {
         console.error("Error fetching statuses:", error);
+        statusesFetchedRef.current = false; // Reset on error to allow retry
       } finally {
         setLoadingStatuses(false);
       }

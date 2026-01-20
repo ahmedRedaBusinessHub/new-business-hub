@@ -37,6 +37,7 @@ import {
   GraduationCap,
   FolderKanban,
   Star,
+  Shield,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -52,59 +53,6 @@ const navigationItems = [
     icon: Users,
     url: "/admin/users",
   },
-  // {
-  //   title: "Products",
-  //   icon: Package,
-  //   url: "#",
-  // },
-  // {
-  //   title: "Orders",
-  //   icon: ShoppingCart,
-  //   url: "#",
-  // },
-  // {
-  //   title: "Analytics",
-  //   icon: BarChart3,
-  //   url: "#",
-  // },
-];
-
-const managementItems = [
-  // {
-  //   title: "Categories",
-  //   icon: Tag,
-  //   url: "#",
-  // },
-  // {
-  //   title: "Payments",
-  //   icon: CreditCard,
-  //   url: "#",
-  // },
-  // {
-  //   title: "Content",
-  //   icon: FileText,
-  //   url: "#",
-  // },
-  // {
-  //   title: "Messages",
-  //   icon: MessageSquare,
-  //   url: "#",
-  // },
-  {
-    title: "Contacts",
-    icon: MessageSquare,
-    url: "/admin/contacts",
-  },
-  // {
-  //   title: "Organizations",
-  //   icon: Package,
-  //   url: "/admin/organizations",
-  // },
-  // {
-  //   title: "Third Parties",
-  //   icon: Package,
-  //   url: "/admin/third-parties",
-  // },
   {
     title: "News",
     icon: Newspaper,
@@ -141,6 +89,57 @@ const managementItems = [
     url: "/admin/success-partners",
   },
   {
+    title: "Contacts",
+    icon: MessageSquare,
+    url: "/admin/contacts",
+  },
+
+];
+
+const managementItems = [
+  // {
+  //   title: "Categories",
+  //   icon: Tag,
+  //   url: "#",
+  // },
+  // {
+  //   title: "Payments",
+  //   icon: CreditCard,
+  //   url: "#",
+  // },
+  // {
+  //   title: "Content",
+  //   icon: FileText,
+  //   url: "#",
+  // },
+  // {
+  //   title: "Messages",
+  //   icon: MessageSquare,
+  //   url: "#",
+  // },
+  {
+    title: "Roles",
+    icon: Shield,
+    url: "/admin/roles",
+  },
+  {
+    title: "Objects",
+    icon: Boxes,
+    url: "/admin/objects",
+  },
+  
+  // {
+  //   title: "Organizations",
+  //   icon: Package,
+  //   url: "/admin/organizations",
+  // },
+  // {
+  //   title: "Third Parties",
+  //   icon: Package,
+  //   url: "/admin/third-parties",
+  // },
+
+  {
     title: "Galleries",
     icon: Images,
     url: "/admin/galleries",
@@ -150,11 +149,7 @@ const managementItems = [
     icon: List,
     url: "/admin/static-lists",
   },
-  // {
-  //   title: "Objects",
-  //   icon: Boxes,
-  //   url: "/admin/objects",
-  // },
+
   {
     title: "Settings",
     icon: Settings,

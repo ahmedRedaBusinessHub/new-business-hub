@@ -133,9 +133,14 @@ export function ObjectsManagement() {
     }
   }, [currentPage, pageSize, debouncedSearch]);
 
-  // Fetch all objects for parent dropdown
+  const allObjectsFetchedRef = useRef(false);
+
+  // Fetch all objects for parent dropdown (only once)
   const fetchAllObjects = useCallback(async () => {
+    if (allObjectsFetchedRef.current) return;
+    
     try {
+      allObjectsFetchedRef.current = true;
       const response = await fetch(`/api/objects?limit=1000`);
       if (!response.ok) {
         throw new Error("Failed to fetch objects");
@@ -145,13 +150,15 @@ export function ObjectsManagement() {
       setAllObjects(objectsData);
     } catch (error: any) {
       console.error("Error fetching all objects:", error);
+      allObjectsFetchedRef.current = false; // Reset on error to allow retry
     }
   }, []);
 
   useEffect(() => {
     fetchObjects();
     fetchAllObjects();
-  }, [fetchObjects, fetchAllObjects]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, debouncedSearch]);
 
   const handleCreate = async (objectData: Omit<ObjectItem, "id" | "created_at" | "updated_at" | "parent">) => {
     try {

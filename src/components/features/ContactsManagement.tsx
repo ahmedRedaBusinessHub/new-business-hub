@@ -79,15 +79,20 @@ export function ContactsManagement() {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [contactTypes, setContactTypes] = useState<ContactTypeConfig[]>([]);
+  const contactTypesFetchedRef = useRef(false);
 
-  // Fetch contact types from static_lists cache
+  // Fetch contact types from static_lists cache (only once)
   useEffect(() => {
+    if (contactTypesFetchedRef.current) return;
+    
     const fetchContactTypes = async () => {
       try {
+        contactTypesFetchedRef.current = true;
         const typesConfig = await staticListsCache.getByNamespace('contact.types');
         setContactTypes(typesConfig);
       } catch (error) {
         console.error("Error fetching contact types:", error);
+        contactTypesFetchedRef.current = false; // Reset on error to allow retry
       }
     };
     fetchContactTypes();
@@ -154,7 +159,8 @@ export function ContactsManagement() {
 
   useEffect(() => {
     fetchContacts();
-  }, [fetchContacts]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, debouncedSearch]);
 
   const handleCreate = async (contactData: Omit<Contact, "id" | "created_at" | "updated_at">) => {
     try {

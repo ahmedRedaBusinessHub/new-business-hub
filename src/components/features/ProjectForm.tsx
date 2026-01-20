@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Project } from "./ProjectsManagement";
 import DynamicForm from "../shared/DynamicForm";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
@@ -78,6 +78,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
   const [deletedImageUrls, setDeletedImageUrls] = useState<string[]>([]);
   const [deletedFileUrls, setDeletedFileUrls] = useState<string[]>([]);
+  const staticListsFetchedRef = useRef(false);
 
   const handleDeleteImage = async (url: string, imageId?: number) => {
     if (!project?.id || !imageId) {
@@ -151,10 +152,13 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
     }
   };
 
-  // Fetch static lists for type and categories
+  // Fetch static lists for type and categories (only once)
   useEffect(() => {
+    if (staticListsFetchedRef.current) return;
+    
     const fetchStaticLists = async () => {
       try {
+        staticListsFetchedRef.current = true;
         setLoadingStaticLists(true);
         
         // Fetch project types using cache
@@ -217,6 +221,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
       } catch (error) {
         console.error('Error fetching static lists:', error);
         toast.error('Failed to load project types and categories');
+        staticListsFetchedRef.current = false; // Reset on error to allow retry
       } finally {
         setLoadingStaticLists(false);
       }

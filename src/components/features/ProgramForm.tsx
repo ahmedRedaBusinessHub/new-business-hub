@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Program } from "./ProgramsManagement";
 import DynamicForm from "../shared/DynamicForm";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
@@ -97,6 +97,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
   const [deletedImageUrls, setDeletedImageUrls] = useState<string[]>([]);
   const [deletedDocumentAr, setDeletedDocumentAr] = useState(false);
   const [deletedDocumentEn, setDeletedDocumentEn] = useState(false);
+  const staticListsFetchedRef = useRef(false);
 
   const handleDeleteDocument = async (refColumn: 'document_ar_id' | 'document_en_id') => {
     if (!program?.id) {
@@ -179,10 +180,13 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
     }
   };
 
-  // Fetch static lists
+  // Fetch static lists (only once)
   useEffect(() => {
+    if (staticListsFetchedRef.current) return;
+    
     const fetchStaticLists = async () => {
       try {
+        staticListsFetchedRef.current = true;
         setLoadingStaticLists(true);
         
         const typesConfig = await staticListsCache.getByNamespace('program.types');
@@ -193,6 +197,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
       } catch (error) {
         console.error('Error fetching static lists:', error);
         toast.error('Failed to load program types and subtypes');
+        staticListsFetchedRef.current = false; // Reset on error to allow retry
       } finally {
         setLoadingStaticLists(false);
       }

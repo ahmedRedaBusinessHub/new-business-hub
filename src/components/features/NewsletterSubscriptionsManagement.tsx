@@ -121,7 +121,8 @@ export function NewsletterSubscriptionsManagement() {
 
   useEffect(() => {
     fetchSubscriptions();
-  }, [fetchSubscriptions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, debouncedSearch]);
 
   const handleCreate = async (subscriptionData: Omit<NewsletterSubscription, "id" | "created_at" | "updated_at">) => {
     try {

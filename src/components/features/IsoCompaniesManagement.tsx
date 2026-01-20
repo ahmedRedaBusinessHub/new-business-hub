@@ -128,7 +128,8 @@ export function IsoCompaniesManagement() {
 
   useEffect(() => {
     fetchIsoCompanies();
-  }, [fetchIsoCompanies]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, debouncedSearch]);
 
   const handleCreate = async (companyData: Omit<IsoCompany, "id" | "created_at" | "updated_at" | "image_url"> & { mainImage?: File[] }) => {
     try {

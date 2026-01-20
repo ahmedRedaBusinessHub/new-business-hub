@@ -123,7 +123,8 @@ export function SettingsManagement() {
 
   useEffect(() => {
     fetchSettings();
-  }, [fetchSettings]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, debouncedSearch]);
 
   const handleCreate = async (settingData: Omit<Setting, "id" | "created_at" | "updated_at">) => {
     try {

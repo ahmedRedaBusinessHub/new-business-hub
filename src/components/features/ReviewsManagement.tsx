@@ -126,7 +126,8 @@ export function ReviewsManagement() {
 
   useEffect(() => {
     fetchReviews();
-  }, [fetchReviews]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, debouncedSearch]);
 
   const handleCreate = async (reviewData: Omit<Review, "id" | "created_at" | "updated_at" | "image_url"> & { profileImage?: File[] }) => {
     try {

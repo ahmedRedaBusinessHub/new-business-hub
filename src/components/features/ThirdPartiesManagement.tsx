@@ -125,7 +125,8 @@ export function ThirdPartiesManagement() {
 
   useEffect(() => {
     fetchThirdParties();
-  }, [fetchThirdParties]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, debouncedSearch]);
 
   const handleCreate = async (thirdPartyData: Omit<ThirdParty, "id" | "created_at" | "updated_at" | "image_url"> & { profileImage?: File[] }) => {
     try {

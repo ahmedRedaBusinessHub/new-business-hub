@@ -124,7 +124,8 @@ export function GalleriesManagement() {
 
   useEffect(() => {
     fetchGalleries();
-  }, [fetchGalleries]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, debouncedSearch]);
 
   const handleCreate = async (galleryData: Omit<Gallery, "id" | "created_at" | "updated_at" | "main_image_url" | "image_urls"> & { mainImage?: File[]; imageIds?: File[] }) => {
     try {

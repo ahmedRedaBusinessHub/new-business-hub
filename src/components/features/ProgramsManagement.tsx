@@ -97,11 +97,15 @@ export function ProgramsManagement() {
   const [loading, setLoading] = useState(true);
   const [programTypes, setProgramTypes] = useState<StaticListOption[]>([]);
   const [programSubtypes, setProgramSubtypes] = useState<StaticListOption[]>([]);
+  const staticListsFetchedRef = useRef(false);
 
-  // Fetch static lists for type and subtype
+  // Fetch static lists for type and subtype (only once)
   useEffect(() => {
+    if (staticListsFetchedRef.current) return;
+    
     const fetchStaticLists = async () => {
       try {
+        staticListsFetchedRef.current = true;
         const typesConfig = await staticListsCache.getByNamespace('program.types');
         setProgramTypes(typesConfig);
         
@@ -109,6 +113,7 @@ export function ProgramsManagement() {
         setProgramSubtypes(subtypesConfig);
       } catch (error) {
         console.error('Error fetching static lists:', error);
+        staticListsFetchedRef.current = false; // Reset on error to allow retry
       }
     };
 
@@ -182,7 +187,8 @@ export function ProgramsManagement() {
 
   useEffect(() => {
     fetchPrograms();
-  }, [fetchPrograms]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, debouncedSearch]);
 
   const handleCreate = async (programData: Omit<Program, "id" | "created_at" | "updated_at" | "organization_id"> & { 
     mainImage?: File[]; 

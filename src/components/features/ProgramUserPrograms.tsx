@@ -133,7 +133,8 @@ export function ProgramUserPrograms({ programId }: ProgramUserProgramsProps) {
     if (programId) {
       fetchUserPrograms();
     }
-  }, [fetchUserPrograms, programId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [programId, currentPage, pageSize, debouncedSearch]);
 
   const handleCreate = async (userProgramData: Omit<UserProgram, "id" | "program_id" | "created_at" | "updated_at" | "organization_id"> & { files?: File[]; fileNames?: string[] }) => {
     try {

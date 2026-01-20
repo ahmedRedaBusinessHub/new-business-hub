@@ -20,7 +20,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/AlertDialog";
 import { Badge } from "@/components/ui/Badge";
-import { Plus, Pencil, Trash2, Search, Eye } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Eye, Shield } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -31,39 +31,36 @@ import {
   PaginationEllipsis,
 } from "@/components/ui/Pagination";
 import { Select } from "@/components/ui/Select";
-import { OrganizationForm } from "./OrganizationForm";
+import { RoleForm } from "./RoleForm";
+import DynamicView, { type ViewHeader, type ViewTab } from "../shared/DynamicView";
+import { RolePermissions } from "./RolePermissions";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import DynamicView, { type ViewTab } from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 
-export interface Organization {
+export interface Role {
   id: number;
   name: string;
   namespace: string;
-  email: string | null;
-  country_code: string | null;
-  mobile: string | null;
-  category_id: number | null;
   status: number;
-  organization_id: number | null;
-  image_url?: string | null; // Image URL from API response
+  organization_id: number;
   created_at: string | null;
   updated_at: string | null;
 }
 
-export function OrganizationsManagement() {
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
+export function RoleManagement() {
+  const [roles, setRoles] = useState<Role[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingRole, setEditingRole] = useState<Role | null>(null);
+  const [deletingRoleId, setDeletingRoleId] = useState<number | null>(null);
+  const [hasFormError, setHasFormError] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
-  const [editingOrganization, setEditingOrganization] = useState<Organization | null>(null);
-  const [viewingOrganization, setViewingOrganization] = useState<Organization | null>(null);
-  const [deletingOrganizationId, setDeletingOrganizationId] = useState<number | null>(null);
+  const [viewingRole, setViewingRole] = useState<Role | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -76,7 +73,7 @@ export function OrganizationsManagement() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchQuery);
-      setCurrentPage(1); // Reset to first page when search changes
+      setCurrentPage(1);
     }, 300);
 
     return () => clearTimeout(timer);
@@ -84,38 +81,38 @@ export function OrganizationsManagement() {
 
   const isFetchingRef = useRef(false);
   const lastFetchParamsRef = useRef<string>("");
-
-  const fetchOrganizations = useCallback(async () => {
+  
+  const fetchRoles = useCallback(async () => {
     const params = new URLSearchParams({
       page: currentPage.toString(),
       limit: pageSize.toString(),
       ...(debouncedSearch && { search: debouncedSearch }),
     });
     const paramsString = params.toString();
-
-    // Prevent duplicate calls with same parameters
+    
     if (isFetchingRef.current && lastFetchParamsRef.current === paramsString) {
       return;
     }
-
+    
     isFetchingRef.current = true;
     lastFetchParamsRef.current = paramsString;
-
+    
     try {
       setLoading(true);
-      const response = await fetch(`/api/organizations?${paramsString}`);
+
+      const response = await fetch(`/api/roles?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch organizations");
+        throw new Error("Failed to fetch roles");
       }
       const data = await response.json();
-      const organizationsData = Array.isArray(data.data) ? data.data : [];
-      setOrganizations(organizationsData);
+      const rolesData = Array.isArray(data.data) ? data.data : [];
+      setRoles(rolesData);
       setTotal(data.total || 0);
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
-      console.error("Error fetching organizations:", error);
-      toast.error("Failed to load organizations");
-      setOrganizations([]);
+      console.error("Error fetching roles:", error);
+      toast.error("Failed to load roles");
+      setRoles([]);
       setTotal(0);
       setTotalPages(0);
     } finally {
@@ -125,151 +122,234 @@ export function OrganizationsManagement() {
   }, [currentPage, pageSize, debouncedSearch]);
 
   useEffect(() => {
-    fetchOrganizations();
+    fetchRoles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, pageSize, debouncedSearch]);
 
-  const handleCreate = async (organizationData: Omit<Organization, "id" | "created_at" | "updated_at" | "image_url"> & { profileImage?: File[] }) => {
+  const handleCreate = async (roleData: Omit<Role, "id" | "created_at" | "updated_at" | "organization_id">) => {
     try {
-      const { profileImage, ...payload } = organizationData;
-      const response = await fetch("/api/organizations", {
+      const response = await fetch("/api/roles", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(roleData),
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to create organization");
-      }
-
-      const responseData = await response.json();
-      const organizationId = responseData.id || responseData.data?.id;
-
-      // Upload image if provided
-      if (profileImage && Array.isArray(profileImage) && profileImage.length > 0 && organizationId) {
-        const imageFile = profileImage[0];
-        if (imageFile instanceof File) {
-          await uploadOrganizationImage(organizationId, imageFile);
+      let responseData: any;
+      try {
+        responseData = await response.json();
+      } catch (parseError) {
+        if (!response.ok) {
+          throw new Error(`Failed to parse error response: ${response.status} ${response.statusText}`);
         }
+        throw parseError;
       }
 
-      toast.success("Organization created successfully!");
+      if (!response.ok || (responseData.statusCode && responseData.statusCode >= 400)) {
+        let errorMessage = "Failed to create role";
+        let fieldErrors: Record<string, string> = {};
+        
+        const errorData = responseData;
+        errorMessage = errorData.message || errorData.error || errorMessage;
+        
+        if (errorData.message && typeof errorData.message === "string") {
+          const errorMsg = errorData.message;
+          const errorMsgLower = errorMsg.toLowerCase();
+          
+          if (errorMsgLower.includes("unique constraint failed on the fields: (`namespace`)") ||
+              (errorMsgLower.includes("namespace") && errorMsgLower.includes("unique"))) {
+            fieldErrors.namespace = errorData.message;
+            errorMessage = "Namespace already exists";
+          }
+        }
+        
+        const error = new Error(errorData.message || errorMessage) as any;
+        error.fieldErrors = fieldErrors;
+        error.originalMessage = errorData.message;
+        error.statusCode = errorData.statusCode;
+        throw error;
+      }
+
+      toast.success("Role created successfully!");
       setIsFormOpen(false);
-      fetchOrganizations();
+      fetchRoles();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create organization");
+      if (!error.fieldErrors || Object.keys(error.fieldErrors).length === 0) {
+        console.error("Create error:", error);
+        toast.error(error.message || "Failed to create role");
+      }
+      throw error;
     }
   };
 
-  const handleUpdate = async (organizationData: Omit<Organization, "id" | "created_at" | "updated_at" | "image_url"> & { profileImage?: File[] }) => {
-    if (!editingOrganization) return;
+  const handleUpdate = async (roleData: Omit<Role, "id" | "created_at" | "updated_at" | "organization_id">) => {
+    if (!editingRole) return;
 
     try {
-      const { profileImage, ...payload } = organizationData;
-      const response = await fetch(`/api/organizations/${editingOrganization.id}`, {
+      const updatePayload: any = {};
+      Object.keys(roleData).forEach((key) => {
+        const value = roleData[key as keyof typeof roleData];
+        if (value !== undefined) {
+          updatePayload[key] = value;
+        }
+      });
+
+      const response = await fetch(`/api/roles/${editingRole.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(updatePayload),
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to update organization");
-      }
-
-      // Upload image if provided
-      if (profileImage && Array.isArray(profileImage) && profileImage.length > 0) {
-        const imageFile = profileImage[0];
-        if (imageFile instanceof File) {
-          await uploadOrganizationImage(editingOrganization.id, imageFile);
+      let responseData: any;
+      try {
+        responseData = await response.json();
+      } catch (parseError) {
+        if (!response.ok) {
+          throw new Error(`Failed to parse error response: ${response.status} ${response.statusText}`);
         }
+        throw parseError;
       }
 
-      toast.success("Organization updated successfully!");
-      setEditingOrganization(null);
+      if (!response.ok || (responseData.statusCode && responseData.statusCode >= 400)) {
+        let errorMessage = "Failed to update role";
+        let fieldErrors: Record<string, string> = {};
+        
+        const errorData = responseData;
+        errorMessage = errorData.message || errorData.error || errorMessage;
+        
+        if (errorData.message && typeof errorData.message === "string") {
+          const errorMsg = errorData.message;
+          const errorMsgLower = errorMsg.toLowerCase();
+          
+          if (errorMsgLower.includes("unique constraint failed on the fields: (`namespace`)") ||
+              (errorMsgLower.includes("namespace") && errorMsgLower.includes("unique"))) {
+            fieldErrors.namespace = errorData.message;
+            errorMessage = "Namespace already exists";
+          }
+        }
+        
+        const errorObj = new Error(errorData.message || errorMessage) as any;
+        errorObj.fieldErrors = fieldErrors;
+        errorObj.originalMessage = errorData.message;
+        errorObj.statusCode = errorData.statusCode;
+        throw errorObj;
+      }
+
+      toast.success("Role updated successfully!");
+      setEditingRole(null);
       setIsFormOpen(false);
-      fetchOrganizations();
+      fetchRoles();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update organization");
-    }
-  };
-
-  const uploadOrganizationImage = async (organizationId: number, imageFile: File) => {
-    try {
-      const formData = new FormData();
-      formData.append("files", imageFile);
-      formData.append("refColumn", "image_id");
-
-      const response = await fetch(`/api/organizations/${organizationId}/upload`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to upload image");
+      if (!error.fieldErrors || Object.keys(error.fieldErrors).length === 0) {
+        console.error("Update error:", error);
+        toast.error(error.message || "Failed to update role");
       }
-    } catch (error: any) {
-      console.error("Error uploading image:", error);
-      toast.error("Failed to upload image");
+      throw error;
     }
   };
 
   const handleDelete = async (id: number) => {
     try {
-      const response = await fetch(`/api/organizations/${id}`, {
+      const response = await fetch(`/api/roles/${id}`, {
         method: "DELETE",
       });
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete organization");
+        throw new Error(error.message || "Failed to delete role");
       }
 
-      toast.success("Organization deleted successfully!");
-      setDeletingOrganizationId(null);
-      fetchOrganizations();
+      toast.success("Role deleted successfully!");
+      setDeletingRoleId(null);
+      fetchRoles();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete organization");
+      toast.error(error.message || "Failed to delete role");
     }
   };
 
-  const handleEdit = (organization: Organization) => {
-    setEditingOrganization(organization);
+  const handleEdit = (role: Role) => {
+    setEditingRole(role);
     setIsFormOpen(true);
   };
 
-  const handleView = (organization: Organization) => {
-    setViewingOrganization(organization);
-    setIsViewOpen(true);
+  const handleCloseForm = (open?: boolean) => {
+    if (open === false || open === undefined) {
+      setIsFormOpen(false);
+      setEditingRole(null);
+      setHasFormError(false);
+    }
   };
 
-  const handleCloseForm = () => {
-    setIsFormOpen(false);
-    setEditingOrganization(null);
+  const handleView = (role: Role) => {
+    setViewingRole(role);
+    setIsViewOpen(true);
   };
 
   const handleCloseView = () => {
     setIsViewOpen(false);
-    setViewingOrganization(null);
+    setViewingRole(null);
   };
+
+  const viewHeader: ViewHeader = {
+    type: "icon",
+    title: (data: Role) => data.name,
+    subtitle: (data: Role) => data.namespace,
+    icon: Shield,
+    badges: [
+      {
+        field: "status",
+        variant: "default",
+        map: {
+          1: { label: "Active", variant: "default" },
+          0: { label: "Inactive", variant: "secondary" },
+        },
+      },
+    ],
+  };
+
+  const viewTabs: ViewTab[] = [
+    {
+      id: "details",
+      label: "Details",
+      gridCols: 2,
+      fields: [
+        { name: "name", label: "Name", type: "text" },
+        { name: "namespace", label: "Namespace", type: "text" },
+        {
+          name: "status",
+          label: "Status",
+          type: "badge",
+          badgeMap: {
+            1: { label: "Active", variant: "default" },
+            0: { label: "Inactive", variant: "secondary" },
+          },
+        },
+        { name: "created_at", label: "Created At", type: "datetime" },
+        { name: "updated_at", label: "Updated At", type: "datetime" },
+      ],
+    },
+    {
+      id: "permissions",
+      label: "Permissions",
+      customContent: viewingRole ? <RolePermissions roleId={viewingRole.id} /> : null,
+    },
+  ];
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>Organizations Management</h2>
+          <h2>Role Management</h2>
           <p className="text-muted-foreground">
-            Manage organizations with full CRUD operations
+            Manage roles and assign permissions
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add Organization
+          Add Role
         </Button>
       </div>
 
@@ -278,7 +358,7 @@ export function OrganizationsManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search organizations..."
+            placeholder="Search roles..."
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -306,8 +386,6 @@ export function OrganizationsManagement() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Namespace</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Mobile</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -315,28 +393,34 @@ export function OrganizationsManagement() {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={6} className="h-24 text-center">
-                  Loading organizations...
+                <TableCell colSpan={4} className="h-24 text-center">
+                  Loading roles...
                 </TableCell>
               </TableRow>
-            ) : organizations.length === 0 ? (
+            ) : roles.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="h-24 text-center">
-                  No organizations found.
+                <TableCell colSpan={4} className="h-24 text-center">
+                  No roles found.
                 </TableCell>
               </TableRow>
             ) : (
-              organizations.map((org) => (
-                <TableRow key={org.id}>
-                  <TableCell className="font-medium">{org.name}</TableCell>
-                  <TableCell>{org.namespace}</TableCell>
-                  <TableCell>{org.email || "-"}</TableCell>
-                  <TableCell>{org.mobile || "-"}</TableCell>
+              roles.map((role) => (
+                <TableRow key={role.id}>
+                  <TableCell className="font-medium">{role.name}</TableCell>
+                  <TableCell>
+                    <code className="rounded bg-muted px-2 py-1 text-sm">
+                      {role.namespace}
+                    </code>
+                  </TableCell>
                   <TableCell>
                     <Badge
-                      variant={org.status === 1 ? "default" : "secondary"}
+                      variant={
+                        role.status === 1
+                          ? "default"
+                          : "secondary"
+                      }
                     >
-                      {org.status === 1 ? "Active" : "Inactive"}
+                      {role.status === 1 ? "Active" : "Inactive"}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -344,24 +428,24 @@ export function OrganizationsManagement() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleView(org)}
-                        title="View organization details"
+                        onClick={() => handleView(role)}
+                        title="View role details"
                       >
                         <Eye className="size-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleEdit(org)}
-                        title="Edit organization"
+                        onClick={() => handleEdit(role)}
+                        title="Edit role"
                       >
                         <Pencil className="size-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => setDeletingOrganizationId(org.id)}
-                        title="Delete organization"
+                        onClick={() => setDeletingRoleId(role.id)}
+                        title="Delete role"
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -430,101 +514,56 @@ export function OrganizationsManagement() {
         </Pagination>
       )}
 
-      <div className="text-sm text-muted-foreground">
-        Showing {organizations.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
-        {Math.min(currentPage * pageSize, total)} of {total} organizations
-      </div>
+      {total > 0 && (
+        <div className="text-sm text-muted-foreground text-center">
+          Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, total)} of {total} roles
+        </div>
+      )}
 
       <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
-        <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>
-              {editingOrganization ? "Edit Organization" : "Create New Organization"}
+              {editingRole ? "Edit Role" : "Create New Role"}
             </DialogTitle>
           </DialogHeader>
-          <OrganizationForm
-            organization={editingOrganization}
-            onSubmit={editingOrganization ? handleUpdate : handleCreate}
+          <RoleForm
+            role={editingRole}
+            onSubmit={editingRole ? handleUpdate : handleCreate}
             onCancel={handleCloseForm}
+            onErrorStateChange={setHasFormError}
           />
         </DialogContent>
       </Dialog>
 
-      {viewingOrganization && (
+      {viewingRole && (
         <DynamicView
-          data={viewingOrganization}
+          data={viewingRole}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="Organization Details"
-          header={{
-            type: "avatar",
-            title: (data: Organization) => data.name || "Organization",
-            subtitle: (data: Organization) => data.email || data.namespace || "",
-            imageIdField: "image_id",
-            avatarFallback: (data: Organization) => 
-              data.name?.[0] || "O",
-            badges: [
-              {
-                field: "status",
-                map: {
-                  1: { label: "Active", variant: "default" },
-                  0: { label: "Inactive", variant: "secondary" },
-                },
-              },
-            ],
-          }}
-          tabs={[
-            {
-              id: "details",
-              label: "Details",
-              gridCols: 2,
-              fields: [
-                { name: "name", label: "Name", type: "text" },
-                { name: "namespace", label: "Namespace", type: "text" },
-                { name: "email", label: "Email", type: "text" },
-                {
-                  name: "mobile",
-                  label: "Mobile",
-                  type: "text",
-                  format: (value: string | null, data: Organization) =>
-                    data.country_code && value ? `${data.country_code} ${value}` : value || "-",
-                },
-                { name: "country_code", label: "Country Code", type: "text" },
-                { name: "category_id", label: "Category ID", type: "number" },
-                {
-                  name: "status",
-                  label: "Status",
-                  type: "badge",
-                  badgeMap: {
-                    1: { label: "Active", variant: "default" },
-                    0: { label: "Inactive", variant: "secondary" },
-                  },
-                },
-                { name: "created_at", label: "Created At", type: "datetime" },
-                { name: "updated_at", label: "Updated At", type: "datetime" },
-              ],
-            },
-          ]}
-          maxWidth="4xl"
+          title="Role Details"
+          header={viewHeader}
+          tabs={viewTabs}
+          maxWidth="7xl"
         />
       )}
 
       <AlertDialog
-        open={!!deletingOrganizationId}
-        onOpenChange={(open) => !open && setDeletingOrganizationId(null)}
+        open={!!deletingRoleId}
+        onOpenChange={(open) => !open && setDeletingRoleId(null)}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
-              organization and remove it from the system.
+              role and remove all associated permissions from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => deletingOrganizationId && handleDelete(deletingOrganizationId)}
+              onClick={() => deletingRoleId && handleDelete(deletingRoleId)}
             >
               Delete
             </AlertDialogAction>
@@ -534,4 +573,3 @@ export function OrganizationsManagement() {
     </div>
   );
 }
-

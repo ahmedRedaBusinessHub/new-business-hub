@@ -122,7 +122,8 @@ export function SuccessPartnersManagement() {
 
   useEffect(() => {
     fetchPartners();
-  }, [fetchPartners]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, debouncedSearch]);
 
   const handleCreate = async (partnerData: Omit<SuccessPartner, "id" | "created_at" | "updated_at" | "image_url"> & { mainImage?: File[] }) => {
     try {

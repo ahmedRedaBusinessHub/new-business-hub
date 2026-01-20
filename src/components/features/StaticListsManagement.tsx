@@ -122,7 +122,8 @@ export function StaticListsManagement() {
 
   useEffect(() => {
     fetchStaticLists();
-  }, [fetchStaticLists]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, debouncedSearch]);
 
   const handleCreate = async (listData: Omit<StaticList, "id" | "created_at" | "updated_at">) => {
     try {

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Badge } from "@/components/ui/Badge";
 import {
   Table,
@@ -42,15 +42,22 @@ export function UserPrograms({ userId }: UserProgramsProps) {
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [viewingUserProgram, setViewingUserProgram] = useState<any | null>(null);
   const [statuses, setStatuses] = useState<any[]>([]);
+  const statusesFetchedRef = useRef(false);
+  const fetchingProgramsRef = useRef(false);
+  const lastFetchedParamsRef = useRef<string>("");
 
-  // Fetch statuses from static_lists cache
+  // Fetch statuses from static_lists cache (only once)
   useEffect(() => {
+    if (statusesFetchedRef.current) return;
+    
     const fetchStatuses = async () => {
       try {
+        statusesFetchedRef.current = true;
         const statusesConfig = await staticListsCache.getByNamespace('user_program.statuses');
         setStatuses(statusesConfig);
       } catch (error) {
         console.error("Error fetching statuses:", error);
+        statusesFetchedRef.current = false; // Reset on error to allow retry
       }
     };
     fetchStatuses();
@@ -69,15 +76,27 @@ export function UserPrograms({ userId }: UserProgramsProps) {
   const fetchPrograms = useCallback(async () => {
     if (!userId) return;
 
+    // Create params string to check for duplicate calls
+    const params = new URLSearchParams({
+      page: currentPage.toString(),
+      limit: pageSize.toString(),
+      ...(debouncedSearch && { search: debouncedSearch }),
+    });
+    const paramsString = params.toString();
+
+    // Prevent duplicate calls with same parameters
+    if (fetchingProgramsRef.current && lastFetchedParamsRef.current === paramsString) {
+      return;
+    }
+
+    // Mark as fetching and track params
+    fetchingProgramsRef.current = true;
+    lastFetchedParamsRef.current = paramsString;
+
     try {
       setLoading(true);
-      const params = new URLSearchParams({
-        page: currentPage.toString(),
-        limit: pageSize.toString(),
-        ...(debouncedSearch && { search: debouncedSearch }),
-      });
-
-      const response = await fetch(`/api/user-program/user/${userId}?${params.toString()}`).catch(() => null);
+      const response = await fetch(`/api/user-program/user/${userId}?${paramsString}`).catch(() => null);
+      
       if (response?.ok) {
         const data = await response.json();
         setUserPrograms(Array.isArray(data.data) ? data.data : []);
@@ -88,19 +107,21 @@ export function UserPrograms({ userId }: UserProgramsProps) {
         setTotal(0);
         setTotalPages(0);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching user programs:", error);
       setUserPrograms([]);
       setTotal(0);
       setTotalPages(0);
     } finally {
+      fetchingProgramsRef.current = false;
       setLoading(false);
     }
   }, [userId, currentPage, pageSize, debouncedSearch]);
 
   useEffect(() => {
     fetchPrograms();
-  }, [fetchPrograms]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, currentPage, pageSize, debouncedSearch]);
 
   const handleView = (userProgram: any) => {
     setViewingUserProgram(userProgram);
