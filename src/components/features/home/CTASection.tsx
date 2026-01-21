@@ -31,16 +31,13 @@ export default function CTASection() {
     try {
       setIsSubmitting(true);
 
-      const response = await fetch(
-        process.env.EXTERNAL_API_URL + "/api/newsletter/subscribe",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
+      const response = await fetch("/api/public/newsletter-subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to subscribe");

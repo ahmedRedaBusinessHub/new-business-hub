@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "motion/react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import {
   Award,
@@ -145,7 +146,19 @@ export default function ISOPage() {
     },
   ];
 
-  const handleSubmit = async (data: Record<string, any>) => {};
+  const handleSubmit = async (data: Record<string, any>) => {
+    const response = await fetch('/api/public/iso-request', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(t("iso_booking_error"));
+    }
+  };
 
   return (
     <div
@@ -767,7 +780,7 @@ export default function ISOPage() {
                 ]}
                 onSubmit={handleSubmit}
                 submitText={t("iso_booking_submit")}
-                onSuccess={() => console.log("Product created successfully")}
+                onSuccess={() => toast.success(t("iso_booking_success"))}
                 className="space-y-6"
               />
             </div>

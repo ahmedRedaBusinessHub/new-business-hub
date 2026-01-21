@@ -3,10 +3,13 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   MoreHorizontalIcon,
+  ChevronRight,
+  ChevronLeft
 } from "lucide-react";
 
 import { cn } from "./utils";
 import { Button, buttonVariants } from "./Button";
+import { useI18n } from "@/hooks/useI18n";
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -67,8 +70,10 @@ function PaginationLink({
 
 function PaginationPrevious({
   className,
+  children,
   ...props
 }: React.ComponentProps<typeof PaginationLink>) {
+  const { t, language } = useI18n("news");
   return (
     <PaginationLink
       aria-label="Go to previous page"
@@ -76,16 +81,30 @@ function PaginationPrevious({
       className={cn("gap-1 px-2.5 sm:pl-2.5", className)}
       {...props}
     >
-      <ChevronLeftIcon />
-      <span className="hidden sm:block">Previous</span>
+      {children ? (
+        children
+      ) : language === "ar" ? (
+        <>
+          <ChevronRight className="w-4 h-4 ml-1" />
+          <span>{t("meta.previous") || "السابق"}</span>
+        </>
+      ) : (
+        <>
+          <ChevronLeft className="w-4 h-4 mr-1" />
+          <span>{t("meta.previous") || "Previous"}</span>
+        </>
+
+      )}
     </PaginationLink>
   );
 }
 
 function PaginationNext({
   className,
+  children,
   ...props
 }: React.ComponentProps<typeof PaginationLink>) {
+  const { t, language } = useI18n("news");
   return (
     <PaginationLink
       aria-label="Go to next page"
@@ -93,8 +112,21 @@ function PaginationNext({
       className={cn("gap-1 px-2.5 sm:pr-2.5", className)}
       {...props}
     >
-      <span className="hidden sm:block">Next</span>
-      <ChevronRightIcon />
+      {children ? (
+        children
+      ) :
+        language === "ar" ? (
+          <>
+            <span>{t("meta.next") || "التالي"}</span>
+            <ChevronLeft className="w-4 h-4 mr-1" />
+          </>
+        ) : (
+          <>
+            <span>{t("meta.next") || "Next"}</span>
+            <ChevronRight className="w-4 h-4 ml-1" />
+          </>
+
+        )}
     </PaginationLink>
   );
 }

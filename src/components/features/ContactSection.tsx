@@ -8,10 +8,6 @@ import { Label } from "@/components/ui/Label";
 import { Textarea } from "@/components/ui/Textarea";
 import {
   Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
 } from "@/components/ui/Select";
 import { Mail, Phone, MapPin, Send, User, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
@@ -58,8 +54,19 @@ export default function ContactSection() {
 
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/public/contact-us", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit form");
+      }
+
       toast.success(t("form.success"));
       setFormData({
         name: "",
@@ -68,8 +75,12 @@ export default function ContactSection() {
         inquiryType: "",
         details: "",
       });
+    } catch (error) {
+      console.error(error);
+      toast.error(t("form.error") || "Something went wrong. Please try again.");
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -258,31 +269,27 @@ export default function ContactSection() {
                     {t("form.labels.inquiryType")}
                     <span className="text-red-500 ltr:ml-1 rtl:mr-1">*</span>
                   </Label>
-                  {/* <Select
+                  <Select
                     value={formData.inquiryType}
-                    onValueChange={(value: any) =>
-                      setFormData({ ...formData, inquiryType: value })
+                    onChange={(e) =>
+                      setFormData({ ...formData, inquiryType: e.target.value })
                     }
+                    error={null}
+                    className="glassmorphism border-white/20"
                   >
-                    <SelectTrigger
-                      className="glassmorphism border-white/20"
-                      style={{ color: "var(--theme-text-primary)" }}
-                    >
-                      <SelectValue
-                        placeholder={t("form.placeholders.inquiryType")}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 6 }).map((_, index) => (
-                        <SelectItem
-                          key={t(`inquiryTypes.${index}.value`)}
-                          value={t(`inquiryTypes.${index}.value`)}
-                        >
-                          {t(`inquiryTypes.${index}.label`)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select> */}
+                    <option value="" disabled>
+                      {t("form.placeholders.inquiryType")}
+                    </option>
+                    {Array.from({ length: 6 }).map((_, index) => (
+                      <option
+                        key={t(`inquiryTypes.${index}.value`)}
+                        value={t(`inquiryTypes.${index}.value`)}
+                        className="text-gray-900"
+                      >
+                        {t(`inquiryTypes.${index}.label`)}
+                      </option>
+                    ))}
+                  </Select>
                 </div>
 
                 {/* Request Details Field */}

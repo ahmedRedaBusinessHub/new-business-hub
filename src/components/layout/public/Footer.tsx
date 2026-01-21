@@ -16,11 +16,53 @@ import { motion } from "motion/react";
 import Logo from "../../features/Logo";
 import Link from "next/link";
 import { useI18n } from "@/hooks/useI18n";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface FooterProps { }
 
 export default function Footer({ }: FooterProps) {
   const { t } = useI18n("footer");
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubscribe = async () => {
+    if (!email) {
+      toast.error(t("newsletter.placeholder") || "Please enter your email");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Invalid email address");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/public/newsletter-subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        toast.success("Successfully subscribed to newsletter!");
+        setEmail("");
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.message || "Failed to subscribe");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+      console.error("Subscription error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const socialLinks = [
     { icon: Facebook, href: process.env.NEXT_PUBLIC_LINKEDIN },
@@ -120,11 +162,16 @@ export default function Footer({ }: FooterProps) {
                   <div className="flex gap-2">
                     <Input
                       type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={isSubmitting}
                       placeholder={t("newsletter.placeholder")}
                       className="glassmorphism-dark border-white/20 text-white placeholder:text-white/50 text-sm"
                     />
                     <Button
                       size="icon"
+                      onClick={handleSubscribe}
+                      disabled={isSubmitting}
                       className="flex-shrink-0 text-white border-0"
                       style={{
                         backgroundImage: `linear-gradient(to right, var(--theme-gradient-start), var(--theme-gradient-mid))`,
@@ -298,11 +345,16 @@ export default function Footer({ }: FooterProps) {
             <div className="flex gap-2">
               <Input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isSubmitting}
                 placeholder={t("newsletter.placeholder")}
                 className="glassmorphism-dark border-white/20 text-white placeholder:text-white/50 text-sm"
               />
               <Button
                 size="icon"
+                onClick={handleSubscribe}
+                disabled={isSubmitting}
                 className="flex-shrink-0 text-white border-0"
                 style={{
                   backgroundImage: `linear-gradient(to right, var(--theme-gradient-start), var(--theme-gradient-mid))`,

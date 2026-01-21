@@ -107,6 +107,12 @@
       "description": "Sign up securely to your Business Hub account to manage your services, bookings, and entrepreneurship resources. Fast and safe access for partners and clients.",
       "keywords": "forgot password, sign up, business hub account, secure access, client forgot password, partner forgot password, business management",
       "authors": "Yousef Ouda Al-Baladi"
+    },
+    "news": {
+      "title": "News | Business Hub",
+      "description": "Latest updates and news from Business Hub",
+      "keywords": "news, business hub, updates, entrepreneurship, saudi arabia",
+      "authors": "Business Hub Team"
     }
   },
   "nav_home": "Home",
@@ -452,6 +458,7 @@
   "Our Gallery": "Our Gallery",
   "The Exhibition": "The Exhibition",
   "Highlights of our journey and achievements with our partners": "Highlights of our journey and achievements with our partners",
+  "More Images": "More Images",
   "accelerator": {
     "badge": "Business Accelerator",
     "hero": {
@@ -863,6 +870,30 @@
       "loginSuccess": "Login successful!",
       "loginFailed": "Sign in failed",
       "socialLogin": "Logging in with {provider}..."
+    },
+    "otp": {
+      "header": {
+        "badge": "Two-Factor Authentication",
+        "title": "Verify Your Identity",
+        "subtitleEmail": "We've sent a verification code to {email}",
+        "subtitleSms": "We've sent a verification code to {phone}"
+      },
+      "validation": {
+        "incomplete": "Please enter the complete 6-digit OTP"
+      },
+      "messages": {
+        "success": "Verified successfully!",
+        "failed": "OTP verification failed",
+        "wait": "Please wait {time} before requesting a new OTP",
+        "resendError": "Unable to resend OTP. Please go back and try logging in again.",
+        "countdown": "Resend available in {time}"
+      },
+      "button": {
+        "verifying": "Verifying...",
+        "verify": "Verify OTP",
+        "back": "Back",
+        "resend": "Resend OTP"
+      }
     }
   },
   "ourWork": {
@@ -1413,6 +1444,12 @@
     "title": "News & Updates",
     "subtitle": "Stay updated with the latest news and developments in the entrepreneurship world",
     "readMore": "Read More",
+    "meta": {
+      "minutes": "min",
+      "previous": "Previous",
+      "next": "Next",
+      "loadMore": "Load More"
+    },
     "items": [
       {
         "title": "Launch of New Startup Support Program",
@@ -1666,6 +1703,25 @@
     "help": {
       "prefix": "Need help? ",
       "link": "Contact Support"
+    },
+    "reset": {
+      "title": "Reset Password",
+      "subtitle": "Enter the OTP sent to your email and your new password",
+      "otpLabel": "One-Time Password (OTP)",
+      "otpPlaceholder": "Enter OTP",
+      "newPasswordLabel": "New Password",
+      "newPasswordPlaceholder": "Enter new password",
+      "confirmPasswordLabel": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm new password",
+      "submitButton": "Reset Password",
+      "backButton": "Back",
+      "successTitle": "Password Reset Successfully",
+      "successSubtitle": "Your password has been successfully reset. You can now login with your new password.",
+      "backToLogin": "Back to Login",
+      "validation": {
+        "fillAll": "Please fill in all fields",
+        "match": "Passwords do not match"
+      }
     }
   },
   "newsDetailPage": {

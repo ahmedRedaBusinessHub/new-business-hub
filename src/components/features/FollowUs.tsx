@@ -142,11 +142,28 @@ export default function FollowUsPage() {
 
     setIsSubscribing(true);
 
-    setTimeout(() => {
-      toast.success(t("follow_newsletter_success"));
-      setEmail("");
+    try {
+      const response = await fetch("/api/public/newsletter-subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        toast.success(t("follow_newsletter_success"));
+        setEmail("");
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.message || t("Something went wrong"));
+      }
+    } catch (error) {
+      toast.error(t("Something went wrong"));
+      console.error("Subscription error:", error);
+    } finally {
       setIsSubscribing(false);
-    }, 1500);
+    }
   };
 
   const handleDownload = (url: string) => {

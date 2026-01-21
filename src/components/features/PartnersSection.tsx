@@ -1,62 +1,40 @@
 import { useI18n } from "@/hooks/useI18n";
 import { motion } from "motion/react";
-
-import img1 from "@/assets/images/668f7b5beb68ffa78e258e7b_MBS-p-500.png";
-import img2 from "@/assets/images/668f7b330b4643ab55a2af30_Alula.png";
-import img3 from "@/assets/images/668f7c230ad53cd953279e26_MBS (1)-p-500.png";
-import img4 from "@/assets/images/668f7ce82232881730d2abc1_c-p-500.png";
-import img5 from "@/assets/images/668f7dfdfa60301a6d0acafe_c (4)-p-500.png";
-import img6 from "@/assets/images/668f7e0f9c67d37cb7be2de1_c (3)-p-500.png";
-import img7 from "@/assets/images/668f7f1d0b4643ab55a51961_c (6)-p-500.png";
-import img8 from "@/assets/images/668f7f012d887504a5d1b604_c (5).png";
-import img9 from "@/assets/images/668f7f123b1fbe1cc8ee9601_image-removebg-preview (1).png";
-import img10 from "@/assets/images/669e49b058760dc337763071_images-removebg-preview.png";
-import img11 from "@/assets/images/666806a3a706eff59d9732ee_namaa-p-500.png";
-import img12 from "@/assets/images/666806bbe335dfee5d8625c7_logo-p-500.png";
-import img13 from "@/assets/images/6668067b78d75e6a6cebacc4_22f430bdfcd08a97018186e19af1e903-p-500.png";
-import img14 from "@/assets/images/6668081f554e44b758a38b66_amana-logo-p-500.png";
-import img15 from "@/assets/images/6668092f118ee12514595537_m_Logo.png";
-import img16 from "@/assets/images/66680768b453d64c4dec2ff3.png";
-import img17 from "@/assets/images/666807356a52d785ab7f1118_بنك-التنمية-الاجتماعية.png";
-import img18 from "@/assets/images/666940684d5f15e82f0ff2d1_image-removebg-preview (2).png";
-import img19 from "@/assets/images/Alrayyan_Colleges_Logo.png";
-import img20 from "@/assets/images/images.png";
-import img21 from "@/assets/images/IU_ALL_H_COLOR_RGB.svg";
-import img22 from "@/assets/images/MOkmlwSC_400x400.jpg";
-import img23 from "@/assets/images/ntdp-logo-white.svg";
-import img24 from "@/assets/images/space_apps_003.png";
+import { useEffect, useState } from "react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { getImageUrl } from "@/lib/utils";
 
-interface PartnersSectionProps {}
+interface PartnersSectionProps { }
 
-export default function PartnersSection({}: PartnersSectionProps) {
+export default function PartnersSection({ }: PartnersSectionProps) {
   const { t } = useI18n();
-  const partners = [
-    img1,
-    img2,
-    img3,
-    img4,
-    img5,
-    img6,
-    img7,
-    img8,
-    img9,
-    img10,
-    img11,
-    img12,
-    img13,
-    img14,
-    img15,
-    img16,
-    img17,
-    img18,
-    img19,
-    img20,
-    img21,
-    img22,
-    img23,
-    img24,
-  ];
+  const [partners, setPartners] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPartners = async () => {
+      try {
+        const response = await fetch("/api/public/success-partners?limit=100");
+        if (response.ok) {
+          const data = await response.json();
+          console.log("🚀 ~ fetchPartners ~ data:", data)
+          setPartners(data.data || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch partners:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPartners();
+  }, []);
+
+  // Duplicate partners to ensure seamless loop if we have data
+  const displayPartners = partners.length > 0 ? [...partners, ...partners, ...partners] : [];
+
+  if (loading) return null; // Or a loading skeleton
+  if (partners.length === 0) return null;
 
   return (
     <section className="py-20 bg-white relative overflow-hidden">
@@ -100,9 +78,9 @@ export default function PartnersSection({}: PartnersSectionProps) {
               },
             }}
           >
-            {[...partners].map((partner, index) => (
+            {displayPartners.map((partner, index) => (
               <motion.div
-                key={index}
+                key={`${partner.id}-${index}`}
                 whileHover={{ scale: 1.05 }}
                 className="flex-shrink-0 group"
               >
@@ -112,8 +90,9 @@ export default function PartnersSection({}: PartnersSectionProps) {
 
                   <span className="text-[#262626] group-hover:bg-gradient-to-r group-hover:from-[#0D5BDC] group-hover:to-[#340F87] group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 whitespace-nowrap relative z-10">
                     <ImageWithFallback
-                      src={partner.src}
-                      className="h-30 w-auto"
+                      src={getImageUrl(partner.image_url)}
+                      alt={partner.name_en || partner.name_ar}
+                      className="h-30 w-auto max-h-[80px] object-contain"
                     />
                   </span>
                 </div>

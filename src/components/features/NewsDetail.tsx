@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import {
   Calendar,
@@ -21,105 +22,104 @@ import { toast } from "sonner";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useI18n } from "@/hooks/useI18n";
+import { getImageUrl, getReadTime } from "@/lib/utils";
 
 export default function NewsDetailPage() {
   const { id } = useParams();
   const { t, language } = useI18n("newsDetailPage");
+  const [article, setArticle] = useState<any>(null);
+  const [relatedNews, setRelatedNews] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock news data - in real app, fetch from API
-  const newsArticles = [
-    {
-      id: "1",
-      titleAr: "بيزنس هب تطلق برنامج تسريع جديد للشركات التقنية",
-      titleEn:
-        "Business Hub Launches New Acceleration Program for Tech Startups",
-      contentAr: `أعلنت بيزنس هب اليوم عن إطلاق برنامج تسريع جديد مخصص للشركات الناشئة في قطاع التقنية. يهدف البرنامج إلى دعم 20 شركة ناشئة على مدار 6 أشهر بتمويل يصل إلى 500 ألف ريال لكل شركة.
+  useEffect(() => {
+    const fetchArticle = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/public/news/${id}`);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("🚀 ~ fetchArticle ~ data:", data)
+          setArticle(data.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch article", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-يتضمن البرنامج جلسات إرشادية مكثفة مع خبراء في مجال التقنية، وورش عمل متخصصة في تطوير المنتجات، والتسويق، والمبيعات، بالإضافة إلى فرص الوصول إلى شبكة واسعة من المستثمرين والشركاء المحتملين.
+    const fetchRelatedNews = async () => {
+      try {
+        const response = await fetch(`/api/public/news?limit=3`); // Fetch 3, will filter current one out later or just take first 2 that are not current
+        if (response.ok) {
+          const data = await response.json();
+          const items = Array.isArray(data.data) ? data.data : [];
+          setRelatedNews(items);
+        }
+      } catch (error) {
+        console.error("Failed to fetch related news", error);
+      }
+    };
 
-وقال المدير التنفيذي لبيزنس هب: "نحن متحمسون جداً لإطلاق هذا البرنامج الذي يمثل خطوة مهمة في دعم النظام البيئي للشركات الناشئة في المملكة. نؤمن بأن الشركات التقنية هي المستقبل، ونحن ملتزمون بتوفير كل الدعم اللازم لنجاحها."
-
-## معايير القبول
-
-يستهدف البرنامج الشركات الناشئة التي:
-- لديها منتج تقني مبتكر في مرحلة MVP أو أكثر تقدماً
-- فريق مؤسس ملتزم بدوام كامل
-- نموذج عمل واضح وقابل للتوسع
-- تعمل في أحد المجالات: الذكاء الاصطناعي، الأمن السيبراني، التقنية المالية، أو التعليم التقني
-
-## كيفية التقديم
-
-يمكن للشركات المهتمة التقديم عبر الموقع الإلكتروني لبيزنس هب حتى نهاية الشهر الحالي. سيتم الإعلان عن الشركات المقبولة في غضون شهر من انتهاء فترة التقديم.`,
-      contentEn: `Business Hub announced today the launch of a new acceleration program dedicated to startups in the technology sector. The program aims to support 20 startups over 6 months with funding of up to 500,000 SAR per company.
-
-The program includes intensive mentoring sessions with technology experts, specialized workshops in product development, marketing, and sales, as well as opportunities to access a wide network of investors and potential partners.
-
-The CEO of Business Hub said: "We are very excited to launch this program, which represents an important step in supporting the startup ecosystem in the Kingdom. We believe that tech companies are the future, and we are committed to providing all the necessary support for their success."
-
-## Acceptance Criteria
-
-The program targets startups that:
-- Have an innovative tech product at MVP stage or more advanced
-- A committed full-time founding team
-- A clear and scalable business model
-- Working in one of these areas: AI, Cybersecurity, FinTech, or EdTech
-
-## How to Apply
-
-Interested companies can apply through the Business Hub website until the end of this month. Accepted companies will be announced within one month of the application deadline.`,
-      date: "2025-01-15",
-      author: "فريق بيزنس هب",
-      authorEn: "Business Hub Team",
-      category: "برامج",
-      categoryEn: "Programs",
-      readTime: 5,
-      image: "https://images.unsplash.com/photo-1556761175-b413da4baf72",
-    },
-    {
-      id: "2",
-      titleAr: "شراكة استراتيجية مع صندوق الاستثمارات العامة",
-      titleEn: "Strategic Partnership with Public Investment Fund",
-      contentAr: `وقعت بيزنس هب اتفاقية شراكة استراتيجية مع صندوق الاستثمارات العامة لدعم الشركات الناشئة الواعدة في المملكة. تهدف هذه الشراكة إلى توفير فرص تمويل أكبر للشركات الناشئة في مراحلها المختلفة.
-
-## تفاصيل الشراكة
-
-بموجب هذه الاتفاقية، ستتاح للشركات المحتضنة في بيزنس هب فرصة الوصول إلى:
-- تمويل يصل إلى 10 ملايين ريال للشركات في مراحل النمو
-- برامج إرشاد متخصصة من خبراء الصندوق
-- فرص الشراكة مع الشركات التابعة للصندوق
-- دعم في التوسع الإقليمي والدولي
-
-تأتي هذه الشراكة في إطار رؤية المملكة 2030 لتعزيز قطاع ريادة الأعمال وتنويع الاقتصاد الوطني.`,
-      contentEn: `Business Hub has signed a strategic partnership agreement with the Public Investment Fund to support promising startups in the Kingdom. This partnership aims to provide greater funding opportunities for startups at different stages.
-
-## Partnership Details
-
-Under this agreement, companies incubated at Business Hub will have access to:
-- Funding up to 10 million SAR for growth-stage companies
-- Specialized mentorship programs from Fund experts
-- Partnership opportunities with Fund-affiliated companies
-- Support in regional and international expansion
-
-This partnership comes within the framework of the Kingdom's Vision 2030 to strengthen the entrepreneurship sector and diversify the national economy.`,
-      date: "2025-01-10",
-      author: "إدارة التسويق",
-      authorEn: "Marketing Department",
-      category: "شراكات",
-      categoryEn: "Partnerships",
-      readTime: 4,
-      image: "https://images.unsplash.com/photo-1552664730-d307ca884978",
-    },
-  ];
-
-  const currentArticle =
-    newsArticles.find((article) => article.id === id) || newsArticles[0];
-  const relatedArticles = newsArticles
-    .filter((article) => article.id !== currentArticle.id)
-    .slice(0, 2);
+    if (id) {
+      fetchArticle();
+      fetchRelatedNews();
+    }
+  }, [id]);
 
   const handleShare = (platform: string) => {
+    navigator.clipboard.writeText(article.social_media[platform]);
     toast.success(`${t("share.toast")}${platform}`);
   };
+
+
+
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center" style={{ backgroundColor: "var(--theme-bg-primary)" }}>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!article) {
+    return (
+      <div className="min-h-screen pt-32 pb-20 px-4 flex flex-col items-center justify-center text-center" style={{ backgroundColor: "var(--theme-bg-primary)" }}>
+        <h2 className="text-2xl font-bold mb-4">{language === 'ar' ? 'المقال غير موجود' : 'Article Not Found'}</h2>
+        <Link href="/news">
+          <Button>{language === 'ar' ? 'العودة للأخبار' : 'Back to News'}</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  const currentArticle = {
+    image: getImageUrl(article.main_image_url),
+    titleAr: article.title_ar,
+    titleEn: article.title_en,
+    contentAr: article.detail_ar,
+    contentEn: article.detail_en,
+    category: language === 'ar' ? 'أخبار' : 'News', // Or fetch category if available
+    categoryEn: 'News',
+    author: language === 'ar' ? 'بيزنس هب' : 'Business Hub',
+    authorEn: 'Business Hub',
+    date: article.created_at,
+    readTime: getReadTime(language === 'ar' ? article.detail_ar : article.detail_en)
+  };
+
+  const relatedArticles = relatedNews
+    .filter((item: any) => item.id.toString() !== id)
+    .slice(0, 2)
+    .map((item: any) => ({
+      id: item.id,
+      image: getImageUrl(item.main_image_url),
+      titleAr: item.title_ar,
+      titleEn: item.title_en,
+      date: item.created_at,
+      readTime: getReadTime(language === 'ar' ? item.detail_ar : item.detail_en),
+      category: language === 'ar' ? 'أخبار' : 'News',
+      categoryEn: 'News'
+    }));
 
   return (
     <div
@@ -135,7 +135,7 @@ This partnership comes within the framework of the Kingdom's Vision 2030 to stre
             alt={
               language === "ar"
                 ? currentArticle.titleAr
-                : currentArticle.titleEn
+                : (currentArticle.titleEn || currentArticle.titleAr)
             }
             className="w-full h-full object-cover"
           />
@@ -232,9 +232,9 @@ This partnership comes within the framework of the Kingdom's Vision 2030 to stre
                 </p>
                 <div className="flex lg:flex-col gap-3">
                   {[
-                    { icon: Facebook, name: "Facebook", color: "#1877F2" },
-                    { icon: Twitter, name: "Twitter", color: "#1DA1F2" },
-                    { icon: Linkedin, name: "LinkedIn", color: "#0A66C2" },
+                    { icon: Facebook, name: "facebook", color: "#1877F2" },
+                    { icon: Twitter, name: "twitter", color: "#1DA1F2" },
+                    { icon: Linkedin, name: "linkedIn", color: "#0A66C2" },
                   ].map((social, index) => (
                     <Button
                       key={index}
@@ -278,10 +278,10 @@ This partnership comes within the framework of the Kingdom's Vision 2030 to stre
                   <div
                     className="whitespace-pre-wrap leading-relaxed"
                     dangerouslySetInnerHTML={{
-                      __html: (language === "ar"
+                      __html: `${(language === "ar"
                         ? currentArticle.contentAr
                         : currentArticle.contentEn
-                      )
+                      )}`
                         .replace(
                           /##\s+(.+)/g,
                           `<h2 style="color: var(--theme-text-primary); margin-top: 2rem; margin-bottom: 1rem;">$1</h2>`
@@ -406,9 +406,8 @@ This partnership comes within the framework of the Kingdom's Vision 2030 to stre
                         >
                           {t("relatedNews.readMore")}
                           <ArrowRight
-                            className={`w-4 h-4 ${
-                              language === "ar" ? "mr-1" : "ml-1"
-                            }`}
+                            className={`w-4 h-4 ${language === "ar" ? "mr-1" : "ml-1"
+                              }`}
                           />
                         </Button>
                       </div>
@@ -448,7 +447,7 @@ This partnership comes within the framework of the Kingdom's Vision 2030 to stre
               >
                 {t("cta.subtitle")}
               </p>
-              <Link href="/follow">
+              <Link href="/follow-us">
                 <Button
                   size="lg"
                   className="px-8 py-6 text-lg"
