@@ -573,7 +573,7 @@ export function UserManagement() {
     {
       id: "roles",
       label: "User Roles",
-      customContent: viewingUser ? <UserRoles userId={viewingUser.id} /> : null,
+      customContent: viewingUser ? <UserRoles userId={viewingUser.id} organizationId={viewingUser.organization_id} /> : null,
     },
     {
       id: "contacts",
