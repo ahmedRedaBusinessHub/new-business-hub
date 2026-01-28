@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/Button";
-import { Globe, Menu, X, ChevronDown, Phone, Mail } from "lucide-react";
+import { Globe, Menu, X, ChevronDown, Phone, Mail, User, LogOut } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import Logo from "../../features/Logo";
 import { useState, useEffect } from "react";
@@ -15,6 +15,17 @@ import { locales } from "@/types/locales";
 import { useI18n } from "@/hooks/useI18n";
 import Link from "next/link";
 import { useUser } from "@/hooks/useUser";
+import { USER_ROLE } from "@/types/auth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/Dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { signOut } from "next-auth/react";
 
 interface NavbarProps {}
 
@@ -230,35 +241,152 @@ export default function Navbar({}: NavbarProps) {
                     />
                   </Button>
                 </motion.div>
-                {/* Login Button */}
-                <Button
-                  onClick={() => {
-                    router.push(user ? "/admin" : "/login");
-                  }}
-                  variant="outline"
-                  className="hidden sm:inline-flex gap-2 px-5 py-2.5 text-sm font-medium transition-all duration-300 relative overflow-hidden group"
-                  style={{
-                    borderWidth: "2px",
-                    borderColor: isScrolled
-                      ? "var(--theme-primary)"
-                      : "rgba(255, 255, 255, 0.9)",
-                    color: isScrolled ? "var(--theme-primary)" : "white",
-                    backgroundColor: isScrolled
-                      ? "transparent"
-                      : "rgba(255, 255, 255, 0.1)",
-                    fontSize: "14px",
-                  }}
-                >
-                  {user ? (
+                {/* User Menu - Conditional Rendering */}
+                {user && user.role?.toString?.()?.toLowerCase() === USER_ROLE ? (
+                  // Show avatar with dropdown for user role only
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="hidden sm:inline-flex items-center gap-2 px-3 py-2 h-auto hover:bg-white/20 dark:hover:bg-white/10 transition-all duration-300 rounded-xl"
+                        style={{
+                          color: isScrolled
+                            ? "var(--theme-text-primary)"
+                            : "white",
+                        }}
+                      >
+                        <Avatar className="size-8">
+                          <AvatarImage
+                            src={user.image || user.avatar}
+                            alt={user.name || user.email}
+                          />
+                          <AvatarFallback
+                            className="text-xs"
+                            style={{
+                              backgroundColor: isScrolled
+                                ? "var(--theme-primary)"
+                                : "rgba(255, 255, 255, 0.2)",
+                              color: isScrolled ? "white" : "white",
+                            }}
+                          >
+                            {user.name
+                              ? user.name
+                                  .split(" ")
+                                  .map((n: string) => n[0])
+                                  .join("")
+                                  .toUpperCase()
+                                  .slice(0, 2)
+                              : user.email
+                                ? user.email[0].toUpperCase()
+                                : "U"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="hidden md:block text-sm font-medium">
+                          {user.name || user.email?.split("@")[0] || "User"}
+                        </span>
+                        <ChevronDown
+                          className="w-4 h-4 hidden md:block"
+                          style={{
+                            color: isScrolled
+                              ? "var(--theme-text-primary)"
+                              : "white",
+                          }}
+                        />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      className="w-56"
+                      style={{
+                        backgroundColor: "var(--theme-bg-primary)",
+                        borderColor: "var(--theme-border)",
+                      }}
+                    >
+                      <DropdownMenuLabel className="font-normal">
+                        <div className="flex flex-col space-y-1">
+                          <p className="text-sm font-medium">
+                            {user.name || "User"}
+                          </p>
+                          <p
+                            className="text-xs"
+                            style={{ color: "var(--theme-text-secondary)" }}
+                          >
+                            {user.email}
+                          </p>
+                        </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => router.push("/profile")}
+                        className="cursor-pointer"
+                      >
+                        <User className="mr-2 h-4 w-4" />
+                        <span>{language === "ar" ? "الملف الشخصي" : "Profile"}</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={async () => {
+                          await signOut({ redirect: false });
+                          router.push("/");
+                        }}
+                        className="cursor-pointer text-red-600 focus:text-red-600"
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>
+                          {language === "ar" ? "تسجيل الخروج" : "Sign out"}
+                        </span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : user && user.role ? (
+                  // Show Control button for all other roles (admin, operation, data-entry, client, store, guest, etc.)
+                  <Button
+                    onClick={() => {
+                      router.push("/admin");
+                    }}
+                    variant="outline"
+                    className="hidden sm:inline-flex gap-2 px-5 py-2.5 text-sm font-medium transition-all duration-300 relative overflow-hidden group"
+                    style={{
+                      borderWidth: "2px",
+                      borderColor: isScrolled
+                        ? "var(--theme-primary)"
+                        : "rgba(255, 255, 255, 0.9)",
+                      color: isScrolled ? "var(--theme-primary)" : "white",
+                      backgroundColor: isScrolled
+                        ? "transparent"
+                        : "rgba(255, 255, 255, 0.1)",
+                      fontSize: "14px",
+                    }}
+                  >
                     <span className="relative z-10">
                       {language === "ar" ? "لوحة التحكم" : "Control"}
                     </span>
-                  ) : (
+                  </Button>
+                ) : (
+                  // Show Login button when no user
+                  <Button
+                    onClick={() => {
+                      router.push("/login");
+                    }}
+                    variant="outline"
+                    className="hidden sm:inline-flex gap-2 px-5 py-2.5 text-sm font-medium transition-all duration-300 relative overflow-hidden group"
+                    style={{
+                      borderWidth: "2px",
+                      borderColor: isScrolled
+                        ? "var(--theme-primary)"
+                        : "rgba(255, 255, 255, 0.9)",
+                      color: isScrolled ? "var(--theme-primary)" : "white",
+                      backgroundColor: isScrolled
+                        ? "transparent"
+                        : "rgba(255, 255, 255, 0.1)",
+                      fontSize: "14px",
+                    }}
+                  >
                     <span className="relative z-10">
                       {language === "ar" ? "تسجيل الدخول" : "Login"}
                     </span>
-                  )}
-                </Button>
+                  </Button>
+                )}
                 {/* CTA Button - Hidden on small screens */}
                 <Button
                   onClick={() => {
@@ -397,45 +525,190 @@ export default function Navbar({}: NavbarProps) {
                         </a>
                       </motion.li>
                     ))}
-                    {/* Login Link for Mobile */}
-                    <motion.li
-                      initial={{ opacity: 0, x: language === "ar" ? 20 : -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: menuItems.length * 0.1 }}
-                    >
-                      <Link
-                        href={user ? "/admin" : "/login"}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="block px-5 py-4 rounded-xl transition-all duration-300 text-sm font-medium"
-                        style={{
-                          color: "var(--theme-primary)",
-                          backgroundColor:
-                            "color-mix(in srgb, var(--theme-primary) 10%, transparent)",
-                          fontSize: "14px",
-                        }}
-                        onMouseEnter={(e: any) => {
-                          e.currentTarget.style.backgroundImage = `linear-gradient(135deg, 
-                            color-mix(in srgb, var(--theme-primary) 20%, transparent), 
-                            color-mix(in srgb, var(--theme-accent) 20%, transparent))`;
-                          e.currentTarget.style.transform =
-                            language === "ar"
-                              ? "translateX(-8px)"
-                              : "translateX(8px)";
-                        }}
-                        onMouseLeave={(e: any) => {
-                          e.currentTarget.style.backgroundColor =
-                            "color-mix(in srgb, var(--theme-primary) 10%, transparent)";
-                          e.currentTarget.style.backgroundImage = "none";
-                          e.currentTarget.style.transform = "translateX(0)";
-                        }}
+                    {/* User Menu for Mobile */}
+                    {user && user.role?.toString?.()?.toLowerCase() === USER_ROLE ? (
+                      // Show avatar, profile, sign out for user role only
+                      <>
+                        <motion.li
+                          initial={{ opacity: 0, x: language === "ar" ? 20 : -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: menuItems.length * 0.1 }}
+                          className="flex items-center gap-3 px-5 py-4 rounded-xl"
+                          style={{
+                            backgroundColor:
+                              "color-mix(in srgb, var(--theme-primary) 10%, transparent)",
+                          }}
+                        >
+                          <Avatar className="size-10">
+                            <AvatarImage
+                              src={user.image || user.avatar}
+                              alt={user.name || user.email}
+                            />
+                            <AvatarFallback
+                              className="text-sm"
+                              style={{
+                                backgroundColor: "var(--theme-primary)",
+                                color: "white",
+                              }}
+                            >
+                              {user.name
+                                ? user.name
+                                    .split(" ")
+                                    .map((n: string) => n[0])
+                                    .join("")
+                                    .toUpperCase()
+                                    .slice(0, 2)
+                                : user.email
+                                  ? user.email[0].toUpperCase()
+                                  : "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col">
+                            <span
+                              className="text-sm font-medium"
+                              style={{ color: "var(--theme-text-primary)" }}
+                            >
+                              {user.name || user.email?.split("@")[0] || "User"}
+                            </span>
+                            <span
+                              className="text-xs"
+                              style={{ color: "var(--theme-text-secondary)" }}
+                            >
+                              {user.email}
+                            </span>
+                          </div>
+                        </motion.li>
+                        <motion.li
+                          initial={{ opacity: 0, x: language === "ar" ? 20 : -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: (menuItems.length + 1) * 0.1 }}
+                        >
+                          <Link
+                            href="/profile"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="block px-5 py-3 rounded-xl transition-all duration-300 text-sm font-medium"
+                            style={{
+                              color: "var(--theme-text-primary)",
+                              backgroundColor: "transparent",
+                            }}
+                            onMouseEnter={(e: any) => {
+                              e.currentTarget.style.backgroundImage = `linear-gradient(135deg, 
+                                color-mix(in srgb, var(--theme-primary) 10%, transparent), 
+                                color-mix(in srgb, var(--theme-accent) 10%, transparent))`;
+                            }}
+                            onMouseLeave={(e: any) => {
+                              e.currentTarget.style.backgroundImage = "none";
+                            }}
+                          >
+                            <div className="flex items-center gap-2">
+                              <User className="w-4 h-4" />
+                              <span>{language === "ar" ? "الملف الشخصي" : "Profile"}</span>
+                            </div>
+                          </Link>
+                        </motion.li>
+                        <motion.li
+                          initial={{ opacity: 0, x: language === "ar" ? 20 : -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: (menuItems.length + 2) * 0.1 }}
+                        >
+                          <button
+                            onClick={async () => {
+                              setIsMobileMenuOpen(false);
+                              await signOut({ redirect: false });
+                              router.push("/");
+                            }}
+                            className="block w-full text-left px-5 py-3 rounded-xl transition-all duration-300 text-sm font-medium text-red-600"
+                            style={{ backgroundColor: "transparent" }}
+                            onMouseEnter={(e: any) => {
+                              e.currentTarget.style.backgroundColor =
+                                "color-mix(in srgb, red 10%, transparent)";
+                            }}
+                            onMouseLeave={(e: any) => {
+                              e.currentTarget.style.backgroundColor = "transparent";
+                            }}
+                          >
+                            <div className="flex items-center gap-2">
+                              <LogOut className="w-4 h-4" />
+                              <span>
+                                {language === "ar" ? "تسجيل الخروج" : "Sign out"}
+                              </span>
+                            </div>
+                          </button>
+                        </motion.li>
+                      </>
+                    ) : user && user.role ? (
+                      // Show Control button for all other roles
+                      <motion.li
+                        initial={{ opacity: 0, x: language === "ar" ? 20 : -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: menuItems.length * 0.1 }}
                       >
-                        {user ? (
-                          <>{language === "ar" ? "لوحة التحكم" : "Control"}</>
-                        ) : (
-                          <>{language === "ar" ? "تسجيل الدخول" : "Login"}</>
-                        )}
-                      </Link>
-                    </motion.li>
+                        <Link
+                          href="/admin"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block px-5 py-4 rounded-xl transition-all duration-300 text-sm font-medium"
+                          style={{
+                            color: "var(--theme-primary)",
+                            backgroundColor:
+                              "color-mix(in srgb, var(--theme-primary) 10%, transparent)",
+                            fontSize: "14px",
+                          }}
+                          onMouseEnter={(e: any) => {
+                            e.currentTarget.style.backgroundImage = `linear-gradient(135deg, 
+                              color-mix(in srgb, var(--theme-primary) 20%, transparent), 
+                              color-mix(in srgb, var(--theme-accent) 20%, transparent))`;
+                            e.currentTarget.style.transform =
+                              language === "ar"
+                                ? "translateX(-8px)"
+                                : "translateX(8px)";
+                          }}
+                          onMouseLeave={(e: any) => {
+                            e.currentTarget.style.backgroundColor =
+                              "color-mix(in srgb, var(--theme-primary) 10%, transparent)";
+                            e.currentTarget.style.backgroundImage = "none";
+                            e.currentTarget.style.transform = "translateX(0)";
+                          }}
+                        >
+                          {language === "ar" ? "لوحة التحكم" : "Control"}
+                        </Link>
+                      </motion.li>
+                    ) : (
+                      // Show Login button when no user
+                      <motion.li
+                        initial={{ opacity: 0, x: language === "ar" ? 20 : -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: menuItems.length * 0.1 }}
+                      >
+                        <Link
+                          href="/login"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block px-5 py-4 rounded-xl transition-all duration-300 text-sm font-medium"
+                          style={{
+                            color: "var(--theme-primary)",
+                            backgroundColor:
+                              "color-mix(in srgb, var(--theme-primary) 10%, transparent)",
+                            fontSize: "14px",
+                          }}
+                          onMouseEnter={(e: any) => {
+                            e.currentTarget.style.backgroundImage = `linear-gradient(135deg, 
+                              color-mix(in srgb, var(--theme-primary) 20%, transparent), 
+                              color-mix(in srgb, var(--theme-accent) 20%, transparent))`;
+                            e.currentTarget.style.transform =
+                              language === "ar"
+                                ? "translateX(-8px)"
+                                : "translateX(8px)";
+                          }}
+                          onMouseLeave={(e: any) => {
+                            e.currentTarget.style.backgroundColor =
+                              "color-mix(in srgb, var(--theme-primary) 10%, transparent)";
+                            e.currentTarget.style.backgroundImage = "none";
+                            e.currentTarget.style.transform = "translateX(0)";
+                          }}
+                        >
+                          {language === "ar" ? "تسجيل الدخول" : "Login"}
+                        </Link>
+                      </motion.li>
+                    )}
                   </ul>
                 </nav>
 

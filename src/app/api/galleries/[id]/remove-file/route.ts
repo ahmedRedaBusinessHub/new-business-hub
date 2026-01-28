@@ -28,7 +28,6 @@ export async function DELETE(
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
-        "role-namespace": "admin",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ fileId, refColumn }),

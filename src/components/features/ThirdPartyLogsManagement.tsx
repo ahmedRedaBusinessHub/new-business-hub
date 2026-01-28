@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/Table";
 import { Badge } from "@/components/ui/Badge";
+import { useI18n } from "@/hooks/useI18n";
 
 export interface ThirdPartyLog {
   id: number;
@@ -29,6 +30,7 @@ interface ThirdPartyLogsManagementProps {
 }
 
 export function ThirdPartyLogsManagement({ serviceId }: ThirdPartyLogsManagementProps) {
+  const { t } = useI18n("admin");
   const [logs, setLogs] = useState<ThirdPartyLog[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -62,9 +64,9 @@ export function ThirdPartyLogsManagement({ serviceId }: ThirdPartyLogsManagement
   return (
     <div className="flex flex-1 flex-col gap-4">
       <div>
-        <h4>Service Logs</h4>
+        <h4>{t("entities.thirdPartyLogs.title")}</h4>
         <p className="text-sm text-muted-foreground">
-          View logs for this service
+          {t("entities.thirdPartyLogs.subtitle")}
         </p>
       </div>
 

@@ -24,7 +24,9 @@ export async function GET(request: NextRequest) {
       const query = search.toLowerCase();
       allData = allData.filter((item: any) => {
         const name = (item.name || "").toLowerCase();
-        return name.includes(query);
+        const namespace = (item.namespace || "").toLowerCase();
+        const website = (item.website || "").toLowerCase();
+        return name.includes(query) || namespace.includes(query) || website.includes(query);
       });
     }
 

@@ -41,6 +41,7 @@ import {
 import DynamicView, { type ViewTab } from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 
 export interface Setting {
   id: number;
@@ -55,6 +56,7 @@ export interface Setting {
 }
 
 export function SettingsManagement() {
+  const { t } = useI18n("admin");
   const [settings, setSettings] = useState<Setting[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -102,7 +104,7 @@ export function SettingsManagement() {
       setLoading(true);
       const response = await fetch(`/api/settings?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch settings");
+        throw new Error(t("entities.settings.failedToLoad"));
       }
       const data = await response.json();
       const settingsData = Array.isArray(data.data) ? data.data : [];
@@ -111,7 +113,7 @@ export function SettingsManagement() {
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching settings:", error);
-      toast.error("Failed to load settings");
+      toast.error(t("entities.settings.failedToLoad"));
       setSettings([]);
       setTotal(0);
       setTotalPages(0);
@@ -138,14 +140,14 @@ export function SettingsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create setting");
+        throw new Error(error.message || t("entities.settings.failedToCreate"));
       }
 
-      toast.success("Setting created successfully!");
+      toast.success(t("entities.settings.created"));
       setIsFormOpen(false);
       fetchSettings();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create setting");
+      toast.error(error.message || t("entities.settings.failedToCreate"));
     }
   };
 
@@ -163,15 +165,15 @@ export function SettingsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update setting");
+        throw new Error(error.message || t("entities.settings.failedToUpdate"));
       }
 
-      toast.success("Setting updated successfully!");
+      toast.success(t("entities.settings.updated"));
       setEditingSetting(null);
       setIsFormOpen(false);
       fetchSettings();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update setting");
+      toast.error(error.message || t("entities.settings.failedToUpdate"));
     }
   };
 
@@ -183,14 +185,14 @@ export function SettingsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete setting");
+        throw new Error(error.message || t("entities.settings.failedToDelete"));
       }
 
-      toast.success("Setting deleted successfully!");
+      toast.success(t("entities.settings.deleted"));
       setDeletingSettingId(null);
       fetchSettings();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete setting");
+      toast.error(error.message || t("entities.settings.failedToDelete"));
     }
   };
 
@@ -218,14 +220,14 @@ export function SettingsManagement() {
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>Settings Management</h2>
+          <h2>{t("entities.settings.title")}</h2>
           <p className="text-muted-foreground">
-            Manage system settings with full CRUD operations
+            {t("entities.settings.subtitle")}
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add Setting
+          {t("entities.settings.add")}
         </Button>
       </div>
 
@@ -234,7 +236,7 @@ export function SettingsManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search settings..."
+            placeholder={t("entities.settings.search")}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -249,10 +251,10 @@ export function SettingsManagement() {
           }}
           className="w-32"
         >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-          <option value="100">100 per page</option>
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
         </Select>
       </div>
 
@@ -272,13 +274,13 @@ export function SettingsManagement() {
             {loading ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center">
-                  Loading settings...
+                  {t("common.loading")}
                 </TableCell>
               </TableRow>
             ) : settings.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center">
-                  No settings found.
+                  {t("table.noResults")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -309,7 +311,7 @@ export function SettingsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleView(setting)}
-                        title="View setting details"
+                        title={t("entities.settings.viewDetails")}
                       >
                         <Eye className="size-4" />
                       </Button>
@@ -317,7 +319,7 @@ export function SettingsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(setting)}
-                        title="Edit setting"
+                        title={t("entities.settings.editTooltip")}
                       >
                         <Pencil className="size-4" />
                       </Button>
@@ -325,7 +327,7 @@ export function SettingsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setDeletingSettingId(setting.id)}
-                        title="Delete setting"
+                        title={t("entities.settings.deleteTooltip")}
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -395,15 +397,15 @@ export function SettingsManagement() {
       )}
 
       <div className="text-sm text-muted-foreground">
-        Showing {settings.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
-        {Math.min(currentPage * pageSize, total)} of {total} settings
+        {t("table.showing")} {settings.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
+        {Math.min(currentPage * pageSize, total)} {t("table.of")} {total} {t("table.results")}
       </div>
 
       <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
         <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingSetting ? "Edit Setting" : "Create New Setting"}
+              {editingSetting ? t("entities.settings.edit") : t("entities.settings.createNew")}
             </DialogTitle>
           </DialogHeader>
           <SettingsForm
@@ -419,7 +421,7 @@ export function SettingsManagement() {
           data={viewingSetting}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="Setting Details"
+          title={t("entities.settings.details")}
           tabs={[
             {
               id: "details",
@@ -454,18 +456,17 @@ export function SettingsManagement() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("common.areYouSure")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              setting and remove it from the system.
+              {t("common.thisActionCannotBeUndone")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingSettingId && handleDelete(deletingSettingId)}
             >
-              Delete
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

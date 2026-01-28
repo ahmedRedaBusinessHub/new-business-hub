@@ -41,6 +41,7 @@ import {
 import DynamicView, { type ViewTab, type ViewHeader } from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 
 export interface Review {
   id: number;
@@ -58,6 +59,7 @@ export interface Review {
 }
 
 export function ReviewsManagement() {
+  const { t } = useI18n("admin");
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -105,7 +107,7 @@ export function ReviewsManagement() {
       setLoading(true);
       const response = await fetch(`/api/reviews?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch reviews");
+        throw new Error(t("entities.reviews.failedToLoad"));
       }
       const data = await response.json();
       const reviewsData = Array.isArray(data.data) ? data.data : [];
@@ -114,7 +116,7 @@ export function ReviewsManagement() {
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching reviews:", error);
-      toast.error("Failed to load reviews");
+      toast.error(t("entities.reviews.failedToLoad"));
       setReviews([]);
       setTotal(0);
       setTotalPages(0);
@@ -142,7 +144,7 @@ export function ReviewsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create review");
+        throw new Error(error.message || t("entities.reviews.failedToCreate"));
       }
 
       const responseData = await response.json();
@@ -156,11 +158,11 @@ export function ReviewsManagement() {
         }
       }
 
-      toast.success("Review created successfully!");
+      toast.success(t("entities.reviews.created"));
       setIsFormOpen(false);
       fetchReviews();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create review");
+      toast.error(error.message || t("entities.reviews.failedToCreate"));
     }
   };
 
@@ -179,7 +181,7 @@ export function ReviewsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update review");
+        throw new Error(error.message || t("entities.reviews.failedToUpdate"));
       }
 
       // Upload image if provided
@@ -190,12 +192,12 @@ export function ReviewsManagement() {
         }
       }
 
-      toast.success("Review updated successfully!");
+      toast.success(t("entities.reviews.updated"));
       setEditingReview(null);
       setIsFormOpen(false);
       fetchReviews();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update review");
+      toast.error(error.message || t("entities.reviews.failedToUpdate"));
     }
   };
 
@@ -211,11 +213,11 @@ export function ReviewsManagement() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload image");
+        throw new Error(t("entities.news.failedToUploadImage"));
       }
     } catch (error: any) {
       console.error("Error uploading image:", error);
-      toast.error("Failed to upload image");
+      toast.error(t("entities.news.failedToUploadImage"));
     }
   };
 
@@ -227,14 +229,14 @@ export function ReviewsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete review");
+        throw new Error(error.message || t("entities.reviews.failedToDelete"));
       }
 
-      toast.success("Review deleted successfully!");
+      toast.success(t("entities.reviews.deleted"));
       setDeletingReviewId(null);
       fetchReviews();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete review");
+      toast.error(error.message || t("entities.reviews.failedToDelete"));
     }
   };
 
@@ -262,14 +264,14 @@ export function ReviewsManagement() {
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>Reviews Management</h2>
+          <h2>{t("entities.reviews.title")}</h2>
           <p className="text-muted-foreground">
-            Manage reviews with full CRUD operations
+            {t("entities.reviews.subtitle")}
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add Review
+          {t("entities.reviews.add")}
         </Button>
       </div>
 
@@ -278,7 +280,7 @@ export function ReviewsManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search reviews..."
+            placeholder={t("entities.reviews.search")}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -293,10 +295,10 @@ export function ReviewsManagement() {
           }}
           className="w-32"
         >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-          <option value="100">100 per page</option>
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
         </Select>
       </div>
 
@@ -304,24 +306,24 @@ export function ReviewsManagement() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name (AR)</TableHead>
-              <TableHead>Name (EN)</TableHead>
+              <TableHead>{t("common.name")} (AR)</TableHead>
+              <TableHead>{t("common.name")} (EN)</TableHead>
               <TableHead>Job Title</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center">
-                  Loading reviews...
+                  {t("common.loading")}
                 </TableCell>
               </TableRow>
             ) : reviews.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center">
-                  No reviews found.
+                  {t("table.noResults")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -334,7 +336,7 @@ export function ReviewsManagement() {
                     <Badge
                       variant={review.status === 1 ? "default" : "secondary"}
                     >
-                      {review.status === 1 ? "Active" : "Inactive"}
+                      {review.status === 1 ? t("common.active") : t("common.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -343,7 +345,7 @@ export function ReviewsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleView(review)}
-                        title="View review details"
+                        title={t("entities.reviews.viewDetails")}
                       >
                         <Eye className="size-4" />
                       </Button>
@@ -351,7 +353,7 @@ export function ReviewsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(review)}
-                        title="Edit review"
+                        title={t("entities.reviews.editTooltip")}
                       >
                         <Pencil className="size-4" />
                       </Button>
@@ -359,7 +361,7 @@ export function ReviewsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setDeletingReviewId(review.id)}
-                        title="Delete review"
+                        title={t("entities.reviews.deleteTooltip")}
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -376,7 +378,7 @@ export function ReviewsManagement() {
         <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingReview ? "Edit Review" : "Create New Review"}
+              {editingReview ? t("entities.reviews.edit") : t("entities.reviews.createNew")}
             </DialogTitle>
           </DialogHeader>
           <ReviewForm
@@ -392,7 +394,7 @@ export function ReviewsManagement() {
           data={viewingReview}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="Review Details"
+          title={t("entities.reviews.details")}
           header={{
             type: "avatar",
             title: (data: Review) => data.name_ar || data.name_en || "Review",
@@ -404,8 +406,8 @@ export function ReviewsManagement() {
               {
                 field: "status",
                 map: {
-                  1: { label: "Active", variant: "default" },
-                  0: { label: "Inactive", variant: "secondary" },
+                  1: { label: t("common.active"), variant: "default" },
+                  0: { label: t("common.inactive"), variant: "secondary" },
                 },
               },
             ],
@@ -437,17 +439,17 @@ export function ReviewsManagement() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("common.areYouSure")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the review.
+              {t("common.thisActionCannotBeUndone")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingReviewId && handleDelete(deletingReviewId)}
             >
-              Delete
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

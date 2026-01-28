@@ -7,6 +7,8 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { DynamicIcon } from "@/lib/icon-map";
+import { useI18n } from "@/hooks/useI18n";
 
 interface Permission {
   id: number;
@@ -28,6 +30,7 @@ interface RolePermissionsProps {
 }
 
 export function RolePermissions({ roleId }: RolePermissionsProps) {
+  const { t } = useI18n("admin");
   const [objects, setObjects] = useState<ObjectWithPermissions[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<number | null>(null);
@@ -49,7 +52,7 @@ export function RolePermissions({ roleId }: RolePermissionsProps) {
       const response = await fetch(`/api/roles/${roleId}/permissions`);
       
       if (!response.ok) {
-        throw new Error("Failed to fetch permissions");
+        throw new Error(t("permissions.failedToLoad"));
       }
 
       const data = await response.json();
@@ -60,7 +63,7 @@ export function RolePermissions({ roleId }: RolePermissionsProps) {
       }
     } catch (error: any) {
       console.error("Error fetching permissions:", error);
-      toast.error("Failed to load permissions");
+      toast.error(t("permissions.failedToLoad"));
       if (lastFetchedRoleIdRef.current === roleId) {
         setObjects([]);
       }
@@ -105,10 +108,10 @@ export function RolePermissions({ roleId }: RolePermissionsProps) {
 
         if (!response.ok) {
           const error = await response.json();
-          throw new Error(error.message || "Failed to unassign permission");
+          throw new Error(error.message || t("permissions.failedToUnassign"));
         }
 
-        toast.success("Permission unassigned successfully");
+        toast.success(t("permissions.permissionUnassigned"));
       } else {
         // Assign permission
         const response = await fetch(`/api/roles/${roleId}/permissions`, {
@@ -123,17 +126,17 @@ export function RolePermissions({ roleId }: RolePermissionsProps) {
 
         if (!response.ok) {
           const error = await response.json();
-          throw new Error(error.message || "Failed to assign permission");
+          throw new Error(error.message || t("permissions.failedToAssign"));
         }
 
-        toast.success("Permission assigned successfully");
+        toast.success(t("permissions.permissionAssigned"));
       }
 
       // Refresh permissions
       await fetchPermissions();
     } catch (error: any) {
       console.error("Error toggling permission:", error);
-      toast.error(error.message || "Failed to update permission");
+      toast.error(error.message || t("permissions.failedToUpdate"));
     } finally {
       setUpdating(null);
     }
@@ -159,7 +162,7 @@ export function RolePermissions({ roleId }: RolePermissionsProps) {
         );
 
         await Promise.all(promises);
-        toast.success(`Assigned ${unassignedPermissions.length} permission(s)`);
+        toast.success(t("permissions.permissionAssigned"));
       } else if (assignedPermissions.length > 0) {
         // Unassign all assigned permissions
         const promises = assignedPermissions.map((p) =>
@@ -172,14 +175,14 @@ export function RolePermissions({ roleId }: RolePermissionsProps) {
         );
 
         await Promise.all(promises);
-        toast.success(`Unassigned ${assignedPermissions.length} permission(s)`);
+        toast.success(t("permissions.permissionUnassigned"));
       }
 
       // Refresh permissions
       await fetchPermissions();
     } catch (error: any) {
       console.error("Error toggling permissions:", error);
-      toast.error("Failed to update permissions");
+      toast.error(t("permissions.failedToUpdate"));
     }
   };
 
@@ -187,7 +190,7 @@ export function RolePermissions({ roleId }: RolePermissionsProps) {
     return (
       <div className="flex items-center justify-center p-8">
         <Loader2 className="size-6 animate-spin text-muted-foreground" />
-        <span className="ml-2 text-muted-foreground">Loading permissions...</span>
+        <span className="ml-2 text-muted-foreground">{t("permissions.loadingPermissions")}</span>
       </div>
     );
   }
@@ -195,7 +198,7 @@ export function RolePermissions({ roleId }: RolePermissionsProps) {
   if (objects.length === 0) {
     return (
       <div className="p-8 text-center text-muted-foreground">
-        No permissions available.
+        {t("permissions.noPermissions")}
       </div>
     );
   }
@@ -213,11 +216,11 @@ export function RolePermissions({ roleId }: RolePermissionsProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2">
-                    {object.icon && <span>{object.icon}</span>}
+                    {object.icon && <DynamicIcon name={object.icon} className="text-muted-foreground" size={20} />}
                     {object.name}
                   </CardTitle>
                   <CardDescription>
-                    {object.namespace} • {assignedCount} of {totalCount} permissions assigned
+                    {object.namespace} • {t("permissions.assignedCount", { count: assignedCount, total: totalCount })}
                   </CardDescription>
                 </div>
                 <Button
@@ -226,13 +229,13 @@ export function RolePermissions({ roleId }: RolePermissionsProps) {
                   onClick={() => handleToggleAllForObject(object)}
                   disabled={totalCount === 0}
                 >
-                  {allAssigned ? "Unassign All" : "Assign All"}
+                  {allAssigned ? t("permissions.unassignAll") : t("permissions.assignAll")}
                 </Button>
               </div>
             </CardHeader>
             <CardContent>
               {object.permissions.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No permissions available for this object.</p>
+                <p className="text-sm text-muted-foreground">{t("permissions.noPermissionsForObject")}</p>
               ) : (
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
                   {object.permissions.map((permission) => (
@@ -254,7 +257,7 @@ export function RolePermissions({ roleId }: RolePermissionsProps) {
                           <span>{permission.action}</span>
                           {permission.assigned && (
                             <Badge variant="default" className="ml-2">
-                              Assigned
+                              {t("permissions.assigned")}
                             </Badge>
                           )}
                         </div>

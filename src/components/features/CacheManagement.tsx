@@ -6,8 +6,10 @@ import { Badge } from "@/components/ui/Badge";
 import { RefreshCw, Trash2, Info } from "lucide-react";
 import { staticListsCache } from "@/lib/staticListsCache";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 
 export function CacheManagement() {
+  const { t } = useI18n("admin");
   const [cacheStats, setCacheStats] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -22,7 +24,7 @@ export function CacheManagement() {
 
   const handleClearAll = () => {
     staticListsCache.clearAll();
-    toast.success("All cache cleared successfully");
+    toast.success(t("entities.cache.cleared"));
     loadStats();
   };
 
@@ -55,9 +57,9 @@ export function CacheManagement() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Cache Management</h2>
+          <h2 className="text-2xl font-bold">{t("entities.cache.title")}</h2>
           <p className="text-muted-foreground">
-            Manage static lists cache to improve performance
+            {t("entities.cache.subtitle")}
           </p>
         </div>
         <div className="flex gap-2">
@@ -76,7 +78,7 @@ export function CacheManagement() {
             onClick={handleClearAll}
           >
             <Trash2 className="h-4 w-4 mr-2" />
-            Clear All Cache
+            {t("entities.cache.clearAll")}
           </Button>
         </div>
       </div>

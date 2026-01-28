@@ -23,9 +23,11 @@ export async function GET(request: NextRequest) {
     if (search) {
       const query = search.toLowerCase();
       allData = allData.filter((item: any) => {
-        const name = (item.name || "").toLowerCase();
-        const description = (item.description || "").toLowerCase();
-        return name.includes(query) || description.includes(query);
+        const nameAr = (item.name_ar || "").toLowerCase();
+        const nameEn = (item.name_en || "").toLowerCase();
+        const detailAr = (item.detail_ar || "").toLowerCase();
+        const detailEn = (item.detail_en || "").toLowerCase();
+        return nameAr.includes(query) || nameEn.includes(query) || detailAr.includes(query) || detailEn.includes(query);
       });
     }
 

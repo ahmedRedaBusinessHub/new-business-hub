@@ -30,6 +30,7 @@ import {
   DialogTitle,
 } from "@/components/ui/Dialog";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 import { staticListsCache } from "@/lib/staticListsCache";
 
 interface InteractionTypeConfig {
@@ -56,6 +57,7 @@ interface ContactInteractionManagementProps {
 }
 
 export function ContactInteractionManagement({ contactId }: ContactInteractionManagementProps) {
+  const { t } = useI18n("admin");
   const [interactions, setInteractions] = useState<ContactInteraction[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -90,13 +92,13 @@ export function ContactInteractionManagement({ contactId }: ContactInteractionMa
       setLoading(true);
       const response = await fetch(`/api/contact-interaction?contact_id=${contactId}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch interactions");
+        throw new Error(t("entities.contactInteractions.failedToLoad"));
       }
       const data = await response.json();
       setInteractions(data.data || data);
     } catch (error: any) {
       console.error("Error fetching interactions:", error);
-      toast.error("Failed to load interactions");
+      toast.error(t("entities.contactInteractions.failedToLoad"));
     } finally {
       setLoading(false);
     }

@@ -42,6 +42,9 @@ import {
 } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
+import { handleApiError, isForbidden } from "@/lib/api-client";
+import { ForbiddenError } from "../shared/ForbiddenError";
+import { useI18n } from "@/hooks/useI18n";
 
 export interface Role {
   id: number;
@@ -54,6 +57,7 @@ export interface Role {
 }
 
 export function RoleManagement() {
+  const { t } = useI18n("admin");
   const [roles, setRoles] = useState<Role[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
@@ -68,6 +72,7 @@ export function RoleManagement() {
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [isForbiddenError, setIsForbiddenError] = useState(false);
 
   // Debounce search query
   useEffect(() => {
@@ -99,11 +104,24 @@ export function RoleManagement() {
     
     try {
       setLoading(true);
+      setIsForbiddenError(false);
 
       const response = await fetch(`/api/roles?${paramsString}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch roles");
+      
+      if (isForbidden(response)) {
+        setIsForbiddenError(true);
+        handleApiError(response, t("roles.failedToLoad"));
+        setRoles([]);
+        setTotal(0);
+        setTotalPages(0);
+        return;
       }
+
+      if (!response.ok) {
+        handleApiError(response, t("roles.failedToLoad"));
+        throw new Error(t("roles.failedToLoad"));
+      }
+      
       const data = await response.json();
       const rolesData = Array.isArray(data.data) ? data.data : [];
       setRoles(rolesData);
@@ -111,7 +129,9 @@ export function RoleManagement() {
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching roles:", error);
-      toast.error("Failed to load roles");
+      if (!isForbiddenError) {
+        toast.error(t("roles.failedToLoad"));
+      }
       setRoles([]);
       setTotal(0);
       setTotalPages(0);
@@ -146,8 +166,13 @@ export function RoleManagement() {
         throw parseError;
       }
 
+      if (isForbidden(response)) {
+        handleApiError(response, t("roles.failedToCreate"));
+        throw new Error(t("roles.accessForbidden"));
+      }
+
       if (!response.ok || (responseData.statusCode && responseData.statusCode >= 400)) {
-        let errorMessage = "Failed to create role";
+        let errorMessage = t("roles.failedToCreate");
         let fieldErrors: Record<string, string> = {};
         
         const errorData = responseData;
@@ -160,10 +185,11 @@ export function RoleManagement() {
           if (errorMsgLower.includes("unique constraint failed on the fields: (`namespace`)") ||
               (errorMsgLower.includes("namespace") && errorMsgLower.includes("unique"))) {
             fieldErrors.namespace = errorData.message;
-            errorMessage = "Namespace already exists";
+            errorMessage = t("roles.namespaceExists");
           }
         }
         
+        handleApiError(response, errorMessage);
         const error = new Error(errorData.message || errorMessage) as any;
         error.fieldErrors = fieldErrors;
         error.originalMessage = errorData.message;
@@ -171,13 +197,13 @@ export function RoleManagement() {
         throw error;
       }
 
-      toast.success("Role created successfully!");
+      toast.success(t("roles.roleCreated"));
       setIsFormOpen(false);
       fetchRoles();
     } catch (error: any) {
       if (!error.fieldErrors || Object.keys(error.fieldErrors).length === 0) {
         console.error("Create error:", error);
-        toast.error(error.message || "Failed to create role");
+        toast.error(error.message || t("roles.failedToCreate"));
       }
       throw error;
     }
@@ -213,8 +239,13 @@ export function RoleManagement() {
         throw parseError;
       }
 
+      if (isForbidden(response)) {
+        handleApiError(response, t("roles.failedToUpdate"));
+        throw new Error(t("roles.accessForbidden"));
+      }
+
       if (!response.ok || (responseData.statusCode && responseData.statusCode >= 400)) {
-        let errorMessage = "Failed to update role";
+        let errorMessage = t("roles.failedToUpdate");
         let fieldErrors: Record<string, string> = {};
         
         const errorData = responseData;
@@ -227,10 +258,11 @@ export function RoleManagement() {
           if (errorMsgLower.includes("unique constraint failed on the fields: (`namespace`)") ||
               (errorMsgLower.includes("namespace") && errorMsgLower.includes("unique"))) {
             fieldErrors.namespace = errorData.message;
-            errorMessage = "Namespace already exists";
+            errorMessage = t("roles.namespaceExists");
           }
         }
         
+        handleApiError(response, errorMessage);
         const errorObj = new Error(errorData.message || errorMessage) as any;
         errorObj.fieldErrors = fieldErrors;
         errorObj.originalMessage = errorData.message;
@@ -238,14 +270,14 @@ export function RoleManagement() {
         throw errorObj;
       }
 
-      toast.success("Role updated successfully!");
+      toast.success(t("roles.roleUpdated"));
       setEditingRole(null);
       setIsFormOpen(false);
       fetchRoles();
     } catch (error: any) {
       if (!error.fieldErrors || Object.keys(error.fieldErrors).length === 0) {
         console.error("Update error:", error);
-        toast.error(error.message || "Failed to update role");
+        toast.error(error.message || t("roles.failedToUpdate"));
       }
       throw error;
     }
@@ -257,16 +289,22 @@ export function RoleManagement() {
         method: "DELETE",
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to delete role");
+      if (isForbidden(response)) {
+        handleApiError(response, t("roles.failedToDelete"));
+        throw new Error(t("roles.accessForbidden"));
       }
 
-      toast.success("Role deleted successfully!");
+      if (!response.ok) {
+        const error = await response.json();
+        handleApiError(response, error.message || t("roles.failedToDelete"));
+        throw new Error(error.message || t("roles.failedToDelete"));
+      }
+
+      toast.success(t("roles.roleDeleted"));
       setDeletingRoleId(null);
       fetchRoles();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete role");
+      toast.error(error.message || t("roles.failedToDelete"));
     }
   };
 
@@ -303,8 +341,8 @@ export function RoleManagement() {
         field: "status",
         variant: "default",
         map: {
-          1: { label: "Active", variant: "default" },
-          0: { label: "Inactive", variant: "secondary" },
+          1: { label: t("common.active"), variant: "default" },
+          0: { label: t("common.inactive"), variant: "secondary" },
         },
       },
     ],
@@ -313,27 +351,27 @@ export function RoleManagement() {
   const viewTabs: ViewTab[] = [
     {
       id: "details",
-      label: "Details",
+      label: t("roles.details"),
       gridCols: 2,
       fields: [
-        { name: "name", label: "Name", type: "text" },
-        { name: "namespace", label: "Namespace", type: "text" },
+        { name: "name", label: t("common.name"), type: "text" },
+        { name: "namespace", label: t("roles.namespace"), type: "text" },
         {
           name: "status",
-          label: "Status",
+          label: t("common.status"),
           type: "badge",
           badgeMap: {
-            1: { label: "Active", variant: "default" },
-            0: { label: "Inactive", variant: "secondary" },
+            1: { label: t("common.active"), variant: "default" },
+            0: { label: t("common.inactive"), variant: "secondary" },
           },
         },
-        { name: "created_at", label: "Created At", type: "datetime" },
-        { name: "updated_at", label: "Updated At", type: "datetime" },
+        { name: "created_at", label: t("common.createdAt"), type: "datetime" },
+        { name: "updated_at", label: t("common.updatedAt"), type: "datetime" },
       ],
     },
     {
       id: "permissions",
-      label: "Permissions",
+      label: t("roles.permissions"),
       customContent: viewingRole ? <RolePermissions roleId={viewingRole.id} /> : null,
     },
   ];
@@ -342,14 +380,14 @@ export function RoleManagement() {
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>Role Management</h2>
+          <h2>{t("roles.title")}</h2>
           <p className="text-muted-foreground">
-            Manage roles and assign permissions
+            {t("roles.subtitle")}
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add Role
+          {t("roles.addRole")}
         </Button>
       </div>
 
@@ -358,7 +396,7 @@ export function RoleManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search roles..."
+            placeholder={t("roles.searchRoles")}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -373,37 +411,44 @@ export function RoleManagement() {
           }}
           className="w-32"
         >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-          <option value="100">100 per page</option>
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
         </Select>
       </div>
 
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Namespace</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {loading ? (
+      {isForbiddenError ? (
+        <ForbiddenError
+          title={t("common.accessForbidden")}
+          message={t("common.youDoNotHavePermission")}
+          resource="roles"
+        />
+      ) : (
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center">
-                  Loading roles...
-                </TableCell>
+                <TableHead>{t("common.name")}</TableHead>
+                <TableHead>{t("roles.namespace")}</TableHead>
+                <TableHead>{t("common.status")}</TableHead>
+                <TableHead className="text-right">{t("common.actions")}</TableHead>
               </TableRow>
-            ) : roles.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center">
-                  No roles found.
-                </TableCell>
-              </TableRow>
-            ) : (
+            </TableHeader>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="h-24 text-center">
+                    {t("common.loading")}
+                  </TableCell>
+                </TableRow>
+              ) : roles.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="h-24 text-center">
+                    {t("common.noData")}
+                  </TableCell>
+                </TableRow>
+              ) : (
               roles.map((role) => (
                 <TableRow key={role.id}>
                   <TableCell className="font-medium">{role.name}</TableCell>
@@ -420,7 +465,7 @@ export function RoleManagement() {
                           : "secondary"
                       }
                     >
-                      {role.status === 1 ? "Active" : "Inactive"}
+                      {role.status === 1 ? t("common.active") : t("common.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -429,7 +474,7 @@ export function RoleManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleView(role)}
-                        title="View role details"
+                        title={t("roles.viewRoleDetails")}
                       >
                         <Eye className="size-4" />
                       </Button>
@@ -437,7 +482,7 @@ export function RoleManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(role)}
-                        title="Edit role"
+                        title={t("roles.editRoleTooltip")}
                       >
                         <Pencil className="size-4" />
                       </Button>
@@ -445,7 +490,7 @@ export function RoleManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setDeletingRoleId(role.id)}
-                        title="Delete role"
+                        title={t("roles.deleteRoleTooltip")}
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -456,9 +501,10 @@ export function RoleManagement() {
             )}
           </TableBody>
         </Table>
-      </div>
+        </div>
+      )}
 
-      {totalPages > 1 && (
+      {!isForbiddenError && totalPages > 1 && (
         <Pagination>
           <PaginationContent>
             <PaginationItem>
@@ -514,9 +560,9 @@ export function RoleManagement() {
         </Pagination>
       )}
 
-      {total > 0 && (
+      {!isForbiddenError && total > 0 && (
         <div className="text-sm text-muted-foreground text-center">
-          Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, total)} of {total} roles
+          {t("table.showing")} {((currentPage - 1) * pageSize) + 1} {t("table.of")} {Math.min(currentPage * pageSize, total)} {t("table.of")} {total} {t("table.results")}
         </div>
       )}
 
@@ -524,7 +570,7 @@ export function RoleManagement() {
         <DialogContent className="max-w-2xl sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>
-              {editingRole ? "Edit Role" : "Create New Role"}
+              {editingRole ? t("roles.editRole") : t("roles.createNewRole")}
             </DialogTitle>
           </DialogHeader>
           <RoleForm
@@ -541,7 +587,7 @@ export function RoleManagement() {
           data={viewingRole}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="Role Details"
+          title={t("roles.roleDetails")}
           header={viewHeader}
           tabs={viewTabs}
           maxWidth="7xl"
@@ -554,18 +600,17 @@ export function RoleManagement() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("common.areYouSure")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              role and remove all associated permissions from our servers.
+              {t("common.thisActionCannotBeUndone")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingRoleId && handleDelete(deletingRoleId)}
             >
-              Delete
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -42,6 +42,7 @@ import {
 import DynamicView, { type ViewTab } from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 import { staticListsCache } from "@/lib/staticListsCache";
 
 interface ContactTypeConfig {
@@ -65,6 +66,7 @@ export interface Contact {
 }
 
 export function ContactsManagement() {
+  const { t } = useI18n("admin");
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -138,7 +140,7 @@ export function ContactsManagement() {
       setLoading(true);
       const response = await fetch(`/api/contacts?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch contacts");
+        throw new Error(t("entities.contacts.failedToLoad"));
       }
       const data = await response.json();
       const contactsData = Array.isArray(data.data) ? data.data : [];
@@ -147,7 +149,7 @@ export function ContactsManagement() {
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching contacts:", error);
-      toast.error("Failed to load contacts");
+      toast.error(t("entities.contacts.failedToLoad"));
       setContacts([]);
       setTotal(0);
       setTotalPages(0);
@@ -174,14 +176,14 @@ export function ContactsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create contact");
+        throw new Error(error.message || t("entities.contacts.failedToCreate"));
       }
 
-      toast.success("Contact created successfully!");
+      toast.success(t("entities.contacts.created"));
       setIsFormOpen(false);
       fetchContacts();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create contact");
+      toast.error(error.message || t("entities.contacts.failedToCreate"));
     }
   };
 
@@ -199,15 +201,15 @@ export function ContactsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update contact");
+        throw new Error(error.message || t("entities.contacts.failedToUpdate"));
       }
 
-      toast.success("Contact updated successfully!");
+      toast.success(t("entities.contacts.updated"));
       setEditingContact(null);
       setIsFormOpen(false);
       fetchContacts();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update contact");
+      toast.error(error.message || t("entities.contacts.failedToUpdate"));
     }
   };
 
@@ -219,14 +221,14 @@ export function ContactsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete contact");
+        throw new Error(error.message || t("entities.contacts.failedToDelete"));
       }
 
-      toast.success("Contact deleted successfully!");
+      toast.success(t("entities.contacts.deleted"));
       setDeletingContactId(null);
       fetchContacts();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete contact");
+      toast.error(error.message || t("entities.contacts.failedToDelete"));
     }
   };
 
@@ -254,14 +256,14 @@ export function ContactsManagement() {
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>Contacts Management</h2>
+          <h2>{t("entities.contacts.title")}</h2>
           <p className="text-muted-foreground">
-            Manage contacts with full CRUD operations
+            {t("entities.contacts.subtitle")}
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add Contact
+          {t("entities.contacts.add")}
         </Button>
       </div>
 
@@ -270,7 +272,7 @@ export function ContactsManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search contacts..."
+            placeholder={t("entities.contacts.search")}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -285,10 +287,10 @@ export function ContactsManagement() {
           }}
           className="w-32"
         >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-          <option value="100">100 per page</option>
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
         </Select>
       </div>
 
@@ -296,25 +298,25 @@ export function ContactsManagement() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("common.name")}</TableHead>
+              <TableHead>{t("users.email")}</TableHead>
+              <TableHead>{t("users.mobile")}</TableHead>
+              <TableHead>{t("objects.type")}</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center">
-                  Loading contacts...
+                  {t("common.loading")}
                 </TableCell>
               </TableRow>
             ) : contacts.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center">
-                  No contacts found.
+                  {t("table.noResults")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -328,7 +330,7 @@ export function ContactsManagement() {
                     <Badge
                       variant={contact.status === 1 ? "default" : "secondary"}
                     >
-                      {contact.status === 1 ? "Active" : "Inactive"}
+                      {contact.status === 1 ? t("common.active") : t("common.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -420,15 +422,15 @@ export function ContactsManagement() {
       )}
 
       <div className="text-sm text-muted-foreground">
-        Showing {contacts.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
-        {Math.min(currentPage * pageSize, total)} of {total} contacts
+        {t("table.showing")} {contacts.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
+        {Math.min(currentPage * pageSize, total)} {t("table.of")} {total} {t("table.results")}
       </div>
 
       <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
         <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingContact ? "Edit Contact" : "Create New Contact"}
+              {editingContact ? t("entities.contacts.edit") : t("entities.contacts.createNew")}
             </DialogTitle>
           </DialogHeader>
           <ContactForm
@@ -444,7 +446,7 @@ export function ContactsManagement() {
           data={viewingContact}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="Contact Details"
+          title={t("entities.contacts.details")}
           tabs={[
             {
               id: "details",
@@ -474,18 +476,17 @@ export function ContactsManagement() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("common.areYouSure")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              contact and remove it from the system.
+              {t("common.thisActionCannotBeUndone")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingContactId && handleDelete(deletingContactId)}
             >
-              Delete
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

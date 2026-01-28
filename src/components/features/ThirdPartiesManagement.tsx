@@ -42,6 +42,7 @@ import {
 import DynamicView, { type ViewTab } from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 
 export interface ThirdParty {
   id: number;
@@ -57,6 +58,7 @@ export interface ThirdParty {
 }
 
 export function ThirdPartiesManagement() {
+  const { t } = useI18n("admin");
   const [thirdParties, setThirdParties] = useState<ThirdParty[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -104,7 +106,7 @@ export function ThirdPartiesManagement() {
       setLoading(true);
       const response = await fetch(`/api/third-parties?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch third parties");
+        throw new Error(t("entities.thirdParties.failedToLoad"));
       }
       const data = await response.json();
       const thirdPartiesData = Array.isArray(data.data) ? data.data : [];
@@ -113,7 +115,7 @@ export function ThirdPartiesManagement() {
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching third parties:", error);
-      toast.error("Failed to load third parties");
+      toast.error(t("entities.thirdParties.failedToLoad"));
       setThirdParties([]);
       setTotal(0);
       setTotalPages(0);
@@ -141,7 +143,7 @@ export function ThirdPartiesManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create third party");
+        throw new Error(error.message || t("entities.thirdParties.failedToCreate"));
       }
 
       const responseData = await response.json();
@@ -155,11 +157,11 @@ export function ThirdPartiesManagement() {
         }
       }
 
-      toast.success("Third party created successfully!");
+      toast.success(t("entities.thirdParties.created"));
       setIsFormOpen(false);
       fetchThirdParties();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create third party");
+      toast.error(error.message || t("entities.thirdParties.failedToCreate"));
     }
   };
 
@@ -178,7 +180,7 @@ export function ThirdPartiesManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update third party");
+        throw new Error(error.message || t("entities.thirdParties.failedToUpdate"));
       }
 
       // Upload image if provided
@@ -189,12 +191,12 @@ export function ThirdPartiesManagement() {
         }
       }
 
-      toast.success("Third party updated successfully!");
+      toast.success(t("entities.thirdParties.updated"));
       setEditingThirdParty(null);
       setIsFormOpen(false);
       fetchThirdParties();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update third party");
+      toast.error(error.message || t("entities.thirdParties.failedToUpdate"));
     }
   };
 
@@ -210,11 +212,11 @@ export function ThirdPartiesManagement() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload image");
+        throw new Error(t("entities.news.failedToUploadImage"));
       }
     } catch (error: any) {
       console.error("Error uploading image:", error);
-      toast.error("Failed to upload image");
+      toast.error(t("entities.news.failedToUploadImage"));
     }
   };
 
@@ -226,14 +228,14 @@ export function ThirdPartiesManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete third party");
+        throw new Error(error.message || t("entities.thirdParties.failedToDelete"));
       }
 
-      toast.success("Third party deleted successfully!");
+      toast.success(t("entities.thirdParties.deleted"));
       setDeletingThirdPartyId(null);
       fetchThirdParties();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete third party");
+      toast.error(error.message || t("entities.thirdParties.failedToDelete"));
     }
   };
 
@@ -277,7 +279,7 @@ export function ThirdPartiesManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search third parties..."
+            placeholder={t("entities.thirdParties.search")}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -292,10 +294,10 @@ export function ThirdPartiesManagement() {
           }}
           className="w-32"
         >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-          <option value="100">100 per page</option>
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
         </Select>
       </div>
 
@@ -303,25 +305,25 @@ export function ThirdPartiesManagement() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Namespace</TableHead>
+              <TableHead>{t("common.name")}</TableHead>
+              <TableHead>{t("roles.namespace")}</TableHead>
               <TableHead>Website</TableHead>
-              <TableHead>Order</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("objects.orderNo")}</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center">
-                  Loading third parties...
+                  {t("common.loading")}
                 </TableCell>
               </TableRow>
             ) : thirdParties.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center">
-                  No third parties found.
+                  {t("table.noResults")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -335,7 +337,7 @@ export function ThirdPartiesManagement() {
                     <Badge
                       variant={tp.status === 1 ? "default" : "secondary"}
                     >
-                      {tp.status === 1 ? "Active" : "Inactive"}
+                      {tp.status === 1 ? t("common.active") : t("common.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -427,15 +429,15 @@ export function ThirdPartiesManagement() {
       )}
 
       <div className="text-sm text-muted-foreground">
-        Showing {thirdParties.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
-        {Math.min(currentPage * pageSize, total)} of {total} third parties
+        {t("table.showing")} {thirdParties.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
+        {Math.min(currentPage * pageSize, total)} {t("table.of")} {total} {t("table.results")}
       </div>
 
       <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
         <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingThirdParty ? "Edit Third Party" : "Create New Third Party"}
+              {editingThirdParty ? t("entities.thirdParties.edit") : t("entities.thirdParties.createNew")}
             </DialogTitle>
           </DialogHeader>
           <ThirdPartyForm
@@ -451,7 +453,7 @@ export function ThirdPartiesManagement() {
           data={viewingThirdParty}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="Third Party Details"
+          title={t("entities.thirdParties.details")}
           header={{
             type: "avatar",
             title: (data: ThirdParty) => data.name || "Third Party",
@@ -508,18 +510,17 @@ export function ThirdPartiesManagement() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("common.areYouSure")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              third party and remove it from the system.
+              {t("common.thisActionCannotBeUndone")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingThirdPartyId && handleDelete(deletingThirdPartyId)}
             >
-              Delete
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

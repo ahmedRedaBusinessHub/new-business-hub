@@ -41,6 +41,7 @@ import {
 import DynamicView, { type ViewTab } from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 
 export interface News {
   id: number;
@@ -60,6 +61,7 @@ export interface News {
 }
 
 export function NewsManagement() {
+  const { t } = useI18n("admin");
   const [news, setNews] = useState<News[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -107,7 +109,7 @@ export function NewsManagement() {
       setLoading(true);
       const response = await fetch(`/api/news?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch news");
+        throw new Error(t("entities.news.failedToLoad"));
       }
       const data = await response.json();
       const newsData = Array.isArray(data.data) ? data.data : [];
@@ -116,7 +118,7 @@ export function NewsManagement() {
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching news:", error);
-      toast.error("Failed to load news");
+      toast.error(t("entities.news.failedToLoad"));
       setNews([]);
       setTotal(0);
       setTotalPages(0);
@@ -144,7 +146,7 @@ export function NewsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create news");
+        throw new Error(error.message || t("entities.news.failedToCreate"));
       }
 
       const responseData = await response.json();
@@ -163,11 +165,11 @@ export function NewsManagement() {
         await uploadNewsFiles(newsId, imageIds, "image_ids");
       }
 
-      toast.success("News created successfully!");
+      toast.success(t("entities.news.created"));
       setIsFormOpen(false);
       fetchNews();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create news");
+        toast.error(error.message || t("entities.news.failedToCreate"));
     }
   };
 
@@ -186,7 +188,7 @@ export function NewsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update news");
+        throw new Error(error.message || t("entities.news.failedToUpdate"));
       }
 
       // Upload main image if provided
@@ -202,12 +204,12 @@ export function NewsManagement() {
         await uploadNewsFiles(editingNews.id, imageIds, "image_ids");
       }
 
-      toast.success("News updated successfully!");
+      toast.success(t("entities.news.updated"));
       setEditingNews(null);
       setIsFormOpen(false);
       fetchNews();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update news");
+        toast.error(error.message || t("entities.news.failedToUpdate"));
     }
   };
 
@@ -223,11 +225,11 @@ export function NewsManagement() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload image");
+        throw new Error(t("entities.news.failedToUploadImage"));
       }
     } catch (error: any) {
       console.error("Error uploading image:", error);
-      toast.error("Failed to upload image");
+      toast.error(t("entities.news.failedToUploadImage"));
     }
   };
 
@@ -245,11 +247,11 @@ export function NewsManagement() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload files");
+        throw new Error(t("entities.news.failedToUploadFiles"));
       }
     } catch (error: any) {
       console.error("Error uploading files:", error);
-      toast.error("Failed to upload files");
+      toast.error(t("entities.news.failedToUploadFiles"));
     }
   };
 
@@ -261,14 +263,14 @@ export function NewsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete news");
+        throw new Error(error.message || t("entities.news.failedToDelete"));
       }
 
-      toast.success("News deleted successfully!");
+      toast.success(t("entities.news.deleted"));
       setDeletingNewsId(null);
       fetchNews();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete news");
+      toast.error(error.message || t("entities.news.failedToDelete"));
     }
   };
 
@@ -296,14 +298,14 @@ export function NewsManagement() {
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>News Management</h2>
+          <h2>{t("entities.news.title")}</h2>
           <p className="text-muted-foreground">
-            Manage news articles with full CRUD operations
+            {t("entities.news.subtitle")}
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add News
+          {t("entities.news.add")}
         </Button>
       </div>
 
@@ -312,7 +314,7 @@ export function NewsManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search news..."
+            placeholder={t("entities.news.search")}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -327,10 +329,10 @@ export function NewsManagement() {
           }}
           className="w-32"
         >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-          <option value="100">100 per page</option>
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
         </Select>
       </div>
 
@@ -338,23 +340,23 @@ export function NewsManagement() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Title (AR)</TableHead>
-              <TableHead>Title (EN)</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("common.name")} (AR)</TableHead>
+              <TableHead>{t("common.name")} (EN)</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center">
-                  Loading news...
+                  {t("common.loading")}
                 </TableCell>
               </TableRow>
             ) : news.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center">
-                  No news found.
+                  {t("common.noData")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -366,7 +368,7 @@ export function NewsManagement() {
                     <Badge
                       variant={item.status === 1 ? "default" : "secondary"}
                     >
-                      {item.status === 1 ? "Active" : "Inactive"}
+                      {item.status === 1 ? t("common.active") : t("common.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -375,7 +377,7 @@ export function NewsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleView(item)}
-                        title="View news details"
+                        title={t("entities.news.viewDetails")}
                       >
                         <Eye className="size-4" />
                       </Button>
@@ -383,7 +385,7 @@ export function NewsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(item)}
-                        title="Edit news"
+                        title={t("entities.news.editTooltip")}
                       >
                         <Pencil className="size-4" />
                       </Button>
@@ -391,7 +393,7 @@ export function NewsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setDeletingNewsId(item.id)}
-                        title="Delete news"
+                        title={t("entities.news.deleteTooltip")}
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -461,15 +463,15 @@ export function NewsManagement() {
       )}
 
       <div className="text-sm text-muted-foreground">
-        Showing {news.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
-        {Math.min(currentPage * pageSize, total)} of {total} news
+        {t("table.showing")} {news.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} {t("table.of")}{" "}
+        {Math.min(currentPage * pageSize, total)} {t("table.of")} {total} {t("table.results")}
       </div>
 
       <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
         <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingNews ? "Edit News" : "Create New News"}
+              {editingNews ? t("entities.news.edit") : t("entities.news.createNew")}
             </DialogTitle>
           </DialogHeader>
           <NewsForm
@@ -485,7 +487,7 @@ export function NewsManagement() {
           data={viewingNews}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="News Details"
+          title={t("entities.news.details")}
           header={{
             type: "avatar",
             title: (data: News) => data.title_ar || data.title_en || "News",
@@ -611,17 +613,17 @@ export function NewsManagement() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("common.areYouSure")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the news article.
+              {t("common.thisActionCannotBeUndone")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingNewsId && handleDelete(deletingNewsId)}
             >
-              Delete
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

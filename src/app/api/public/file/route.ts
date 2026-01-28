@@ -40,7 +40,6 @@ export async function GET(request: NextRequest) {
     const response = await fetch(`${apiUrl}/public/file?file_url=${encodeURIComponent(fileUrl)}`, {
       method: "GET",
       headers: {
-        "role-namespace": "admin",
       },
     });
 

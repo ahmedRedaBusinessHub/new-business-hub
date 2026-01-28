@@ -41,6 +41,7 @@ import {
 import DynamicView from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 
 export interface Gallery {
   id: number;
@@ -57,6 +58,7 @@ export interface Gallery {
 }
 
 export function GalleriesManagement() {
+  const { t } = useI18n("admin");
   const [galleries, setGalleries] = useState<Gallery[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -103,7 +105,7 @@ export function GalleriesManagement() {
       setLoading(true);
       const response = await fetch(`/api/galleries?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch galleries");
+        throw new Error(t("entities.galleries.failedToLoad"));
       }
       const data = await response.json();
       const galleriesData = Array.isArray(data.data) ? data.data : [];
@@ -112,7 +114,7 @@ export function GalleriesManagement() {
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching galleries:", error);
-      toast.error("Failed to load galleries");
+      toast.error(t("entities.galleries.failedToLoad"));
       setGalleries([]);
       setTotal(0);
       setTotalPages(0);
@@ -140,7 +142,7 @@ export function GalleriesManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create gallery");
+        throw new Error(error.message || t("entities.galleries.failedToCreate"));
       }
 
       const responseData = await response.json();
@@ -159,11 +161,11 @@ export function GalleriesManagement() {
         await uploadGalleryImages(galleryId, imageIds);
       }
 
-      toast.success("Gallery created successfully!");
+      toast.success(t("entities.galleries.created"));
       setIsFormOpen(false);
       fetchGalleries();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create gallery");
+      toast.error(error.message || t("entities.galleries.failedToCreate"));
     }
   };
 
@@ -182,7 +184,7 @@ export function GalleriesManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update gallery");
+        throw new Error(error.message || t("entities.galleries.failedToUpdate"));
       }
 
       // Upload main image if provided
@@ -198,12 +200,12 @@ export function GalleriesManagement() {
         await uploadGalleryImages(editingGallery.id, imageIds);
       }
 
-      toast.success("Gallery updated successfully!");
+      toast.success(t("entities.galleries.updated"));
       setEditingGallery(null);
       setIsFormOpen(false);
       fetchGalleries();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update gallery");
+      toast.error(error.message || t("entities.galleries.failedToUpdate"));
     }
   };
 
@@ -259,14 +261,14 @@ export function GalleriesManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete gallery");
+        throw new Error(error.message || t("entities.galleries.failedToDelete"));
       }
 
-      toast.success("Gallery deleted successfully!");
+      toast.success(t("entities.galleries.deleted"));
       setDeletingGalleryId(null);
       fetchGalleries();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete gallery");
+      toast.error(error.message || t("entities.galleries.failedToDelete"));
     }
   };
 
@@ -294,14 +296,14 @@ export function GalleriesManagement() {
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>Galleries Management</h2>
+          <h2>{t("entities.galleries.title")}</h2>
           <p className="text-muted-foreground">
-            Manage galleries with full CRUD operations
+            {t("entities.galleries.subtitle")}
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add Gallery
+          {t("entities.galleries.add")}
         </Button>
       </div>
 
@@ -310,7 +312,7 @@ export function GalleriesManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search galleries..."
+            placeholder={t("entities.galleries.search")}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -325,10 +327,10 @@ export function GalleriesManagement() {
           }}
           className="w-32"
         >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-          <option value="100">100 per page</option>
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
         </Select>
       </div>
 
@@ -336,24 +338,24 @@ export function GalleriesManagement() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Title (Arabic)</TableHead>
-              <TableHead>Title (English)</TableHead>
+              <TableHead>{t("common.name")} (AR)</TableHead>
+              <TableHead>{t("common.name")} (EN)</TableHead>
               <TableHead>Images</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center">
-                  Loading galleries...
+                  {t("common.loading")}
                 </TableCell>
               </TableRow>
             ) : galleries.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center">
-                  No galleries found.
+                  {t("common.noData")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -370,7 +372,7 @@ export function GalleriesManagement() {
                     <Badge
                       variant={gallery.status === 1 ? "default" : "secondary"}
                     >
-                      {gallery.status === 1 ? "Active" : "Inactive"}
+                      {gallery.status === 1 ? t("common.active") : t("common.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -379,7 +381,7 @@ export function GalleriesManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleView(gallery)}
-                        title="View gallery details"
+                        title={t("entities.galleries.viewDetails")}
                       >
                         <Eye className="size-4" />
                       </Button>
@@ -387,7 +389,7 @@ export function GalleriesManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(gallery)}
-                        title="Edit gallery"
+                        title={t("entities.galleries.editTooltip")}
                       >
                         <Pencil className="size-4" />
                       </Button>
@@ -395,7 +397,7 @@ export function GalleriesManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setDeletingGalleryId(gallery.id)}
-                        title="Delete gallery"
+                        title={t("entities.galleries.deleteTooltip")}
                       >
                         <Trash2 className="size-4" />
                       </Button>

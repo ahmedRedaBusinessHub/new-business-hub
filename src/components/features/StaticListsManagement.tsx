@@ -41,6 +41,7 @@ import {
 import DynamicView from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 
 export interface StaticList {
   id: number;
@@ -55,6 +56,7 @@ export interface StaticList {
 }
 
 export function StaticListsManagement() {
+  const { t } = useI18n("admin");
   const [staticLists, setStaticLists] = useState<StaticList[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -101,7 +103,7 @@ export function StaticListsManagement() {
       setLoading(true);
       const response = await fetch(`/api/static-lists?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch static lists");
+        throw new Error(t("entities.staticLists.failedToLoad"));
       }
       const data = await response.json();
       const listsData = Array.isArray(data.data) ? data.data : [];
@@ -110,7 +112,7 @@ export function StaticListsManagement() {
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching static lists:", error);
-      toast.error("Failed to load static lists");
+      toast.error(t("entities.staticLists.failedToLoad"));
       setStaticLists([]);
       setTotal(0);
       setTotalPages(0);
@@ -137,14 +139,14 @@ export function StaticListsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create static list");
+        throw new Error(error.message || t("entities.staticLists.failedToCreate"));
       }
 
-      toast.success("Static list created successfully!");
+      toast.success(t("entities.staticLists.created"));
       setIsFormOpen(false);
       fetchStaticLists();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create static list");
+      toast.error(error.message || t("entities.staticLists.failedToCreate"));
     }
   };
 
@@ -162,15 +164,15 @@ export function StaticListsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update static list");
+        throw new Error(error.message || t("entities.staticLists.failedToUpdate"));
       }
 
-      toast.success("Static list updated successfully!");
+      toast.success(t("entities.staticLists.updated"));
       setEditingList(null);
       setIsFormOpen(false);
       fetchStaticLists();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update static list");
+      toast.error(error.message || t("entities.staticLists.failedToUpdate"));
     }
   };
 
@@ -182,14 +184,14 @@ export function StaticListsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete static list");
+        throw new Error(error.message || t("entities.staticLists.failedToDelete"));
       }
 
-      toast.success("Static list deleted successfully!");
+      toast.success(t("entities.staticLists.deleted"));
       setDeletingListId(null);
       fetchStaticLists();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete static list");
+      toast.error(error.message || t("entities.staticLists.failedToDelete"));
     }
   };
 
@@ -215,21 +217,21 @@ export function StaticListsManagement() {
 
   const copyNamespace = (namespace: string) => {
     navigator.clipboard.writeText(namespace);
-    toast.success("Namespace copied to clipboard!");
+    toast.success(t("objects.namespaceCopied"));
   };
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>Static Lists Management</h2>
+          <h2>{t("entities.staticLists.title")}</h2>
           <p className="text-muted-foreground">
-            Manage static lists and configurations
+            {t("entities.staticLists.subtitle")}
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add Static List
+          {t("entities.staticLists.add")}
         </Button>
       </div>
 
@@ -238,7 +240,7 @@ export function StaticListsManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search static lists..."
+            placeholder={t("entities.staticLists.search")}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -253,10 +255,10 @@ export function StaticListsManagement() {
           }}
           className="w-32"
         >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-          <option value="100">100 per page</option>
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
         </Select>
       </div>
 
@@ -275,13 +277,13 @@ export function StaticListsManagement() {
             {loading ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center">
-                  Loading static lists...
+                  {t("common.loading")}
                 </TableCell>
               </TableRow>
             ) : staticLists.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center">
-                  No static lists found.
+                  {t("table.noResults")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -318,7 +320,7 @@ export function StaticListsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleView(list)}
-                        title="View static list details"
+                        title={t("entities.staticLists.viewDetails")}
                       >
                         <Eye className="size-4" />
                       </Button>
@@ -326,7 +328,7 @@ export function StaticListsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(list)}
-                        title="Edit static list"
+                        title={t("entities.staticLists.editTooltip")}
                       >
                         <Pencil className="size-4" />
                       </Button>
@@ -404,15 +406,15 @@ export function StaticListsManagement() {
       )}
 
       <div className="text-sm text-muted-foreground">
-        Showing {staticLists.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
-        {Math.min(currentPage * pageSize, total)} of {total} static lists
+        {t("table.showing")} {staticLists.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
+        {Math.min(currentPage * pageSize, total)} {t("table.of")} {total} {t("table.results")}
       </div>
 
       <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
         <DialogContent className="max-w-3xl sm:max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingList ? "Edit Static List" : "Create New Static List"}
+              {editingList ? t("entities.staticLists.edit") : t("entities.staticLists.createNew")}
             </DialogTitle>
           </DialogHeader>
           <StaticListForm
@@ -428,7 +430,7 @@ export function StaticListsManagement() {
           data={viewingList}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="Static List Details"
+          title={t("entities.staticLists.details")}
           header={{
             type: "simple",
             title: (data: StaticList) => data.name,
@@ -507,17 +509,17 @@ export function StaticListsManagement() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("common.areYouSure")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the static list.
+              {t("common.thisActionCannotBeUndone")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingListId && handleDelete(deletingListId)}
             >
-              Delete
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

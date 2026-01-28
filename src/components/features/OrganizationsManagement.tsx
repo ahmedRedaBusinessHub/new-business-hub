@@ -41,6 +41,7 @@ import {
 import DynamicView, { type ViewTab } from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 
 export interface Organization {
   id: number;
@@ -58,6 +59,7 @@ export interface Organization {
 }
 
 export function OrganizationsManagement() {
+  const { t } = useI18n("admin");
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -105,7 +107,7 @@ export function OrganizationsManagement() {
       setLoading(true);
       const response = await fetch(`/api/organizations?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch organizations");
+        throw new Error(t("entities.organizations.failedToLoad"));
       }
       const data = await response.json();
       const organizationsData = Array.isArray(data.data) ? data.data : [];
@@ -114,7 +116,7 @@ export function OrganizationsManagement() {
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching organizations:", error);
-      toast.error("Failed to load organizations");
+      toast.error(t("entities.organizations.failedToLoad"));
       setOrganizations([]);
       setTotal(0);
       setTotalPages(0);
@@ -142,7 +144,7 @@ export function OrganizationsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create organization");
+        throw new Error(error.message || t("entities.organizations.failedToCreate"));
       }
 
       const responseData = await response.json();
@@ -156,11 +158,11 @@ export function OrganizationsManagement() {
         }
       }
 
-      toast.success("Organization created successfully!");
+      toast.success(t("entities.organizations.created"));
       setIsFormOpen(false);
       fetchOrganizations();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create organization");
+      toast.error(error.message || t("entities.organizations.failedToCreate"));
     }
   };
 
@@ -179,7 +181,7 @@ export function OrganizationsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update organization");
+        throw new Error(error.message || t("entities.organizations.failedToUpdate"));
       }
 
       // Upload image if provided
@@ -190,12 +192,12 @@ export function OrganizationsManagement() {
         }
       }
 
-      toast.success("Organization updated successfully!");
+      toast.success(t("entities.organizations.updated"));
       setEditingOrganization(null);
       setIsFormOpen(false);
       fetchOrganizations();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update organization");
+      toast.error(error.message || t("entities.organizations.failedToUpdate"));
     }
   };
 
@@ -211,11 +213,11 @@ export function OrganizationsManagement() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload image");
+        throw new Error(t("entities.news.failedToUploadImage"));
       }
     } catch (error: any) {
       console.error("Error uploading image:", error);
-      toast.error("Failed to upload image");
+      toast.error(t("entities.news.failedToUploadImage"));
     }
   };
 
@@ -227,14 +229,14 @@ export function OrganizationsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete organization");
+        throw new Error(error.message || t("entities.organizations.failedToDelete"));
       }
 
-      toast.success("Organization deleted successfully!");
+      toast.success(t("entities.organizations.deleted"));
       setDeletingOrganizationId(null);
       fetchOrganizations();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete organization");
+      toast.error(error.message || t("entities.organizations.failedToDelete"));
     }
   };
 
@@ -262,14 +264,14 @@ export function OrganizationsManagement() {
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>Organizations Management</h2>
+          <h2>{t("entities.organizations.title")}</h2>
           <p className="text-muted-foreground">
-            Manage organizations with full CRUD operations
+            {t("entities.organizations.subtitle")}
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add Organization
+          {t("entities.organizations.add")}
         </Button>
       </div>
 
@@ -278,7 +280,7 @@ export function OrganizationsManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search organizations..."
+            placeholder={t("entities.organizations.search")}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -293,10 +295,10 @@ export function OrganizationsManagement() {
           }}
           className="w-32"
         >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-          <option value="100">100 per page</option>
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
         </Select>
       </div>
 
@@ -304,25 +306,25 @@ export function OrganizationsManagement() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Namespace</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Mobile</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("common.name")}</TableHead>
+              <TableHead>{t("roles.namespace")}</TableHead>
+              <TableHead>{t("users.email")}</TableHead>
+              <TableHead>{t("users.mobile")}</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center">
-                  Loading organizations...
+                  {t("common.loading")}
                 </TableCell>
               </TableRow>
             ) : organizations.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center">
-                  No organizations found.
+                  {t("table.noResults")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -336,7 +338,7 @@ export function OrganizationsManagement() {
                     <Badge
                       variant={org.status === 1 ? "default" : "secondary"}
                     >
-                      {org.status === 1 ? "Active" : "Inactive"}
+                      {org.status === 1 ? t("common.active") : t("common.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -345,7 +347,7 @@ export function OrganizationsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleView(org)}
-                        title="View organization details"
+                        title={t("entities.organizations.viewDetails")}
                       >
                         <Eye className="size-4" />
                       </Button>
@@ -353,7 +355,7 @@ export function OrganizationsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(org)}
-                        title="Edit organization"
+                        title={t("entities.organizations.editTooltip")}
                       >
                         <Pencil className="size-4" />
                       </Button>
@@ -361,7 +363,7 @@ export function OrganizationsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setDeletingOrganizationId(org.id)}
-                        title="Delete organization"
+                        title={t("entities.organizations.deleteTooltip")}
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -431,15 +433,15 @@ export function OrganizationsManagement() {
       )}
 
       <div className="text-sm text-muted-foreground">
-        Showing {organizations.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
-        {Math.min(currentPage * pageSize, total)} of {total} organizations
+        {t("table.showing")} {organizations.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
+        {Math.min(currentPage * pageSize, total)} {t("table.of")} {total} {t("table.results")}
       </div>
 
       <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
         <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingOrganization ? "Edit Organization" : "Create New Organization"}
+              {editingOrganization ? t("entities.organizations.edit") : t("entities.organizations.createNew")}
             </DialogTitle>
           </DialogHeader>
           <OrganizationForm
@@ -455,7 +457,7 @@ export function OrganizationsManagement() {
           data={viewingOrganization}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="Organization Details"
+          title={t("entities.organizations.details")}
           header={{
             type: "avatar",
             title: (data: Organization) => data.name || "Organization",
@@ -515,18 +517,17 @@ export function OrganizationsManagement() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("common.areYouSure")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              organization and remove it from the system.
+              {t("common.thisActionCannotBeUndone")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingOrganizationId && handleDelete(deletingOrganizationId)}
             >
-              Delete
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

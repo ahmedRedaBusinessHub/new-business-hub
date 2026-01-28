@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Logo from "@/components/features/Logo";
 import {
   Sidebar,
@@ -15,155 +16,69 @@ import {
   SidebarRail,
 } from "@/components/ui/Sidebar";
 import { useI18n } from "@/hooks/useI18n";
-import {
-  LayoutDashboard,
-  Users,
-  ShoppingCart,
-  Package,
-  BarChart3,
-  Settings,
-  FileText,
-  MessageSquare,
-  Tag,
-  CreditCard,
-  Database,
-  Building2,
-  Handshake,
-  Images,
-  List,
-  Boxes,
-  Newspaper,
-  Mail,
-  GraduationCap,
-  FolderKanban,
-  Star,
-  Shield,
-} from "lucide-react";
+import { Settings, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { DynamicIcon } from "@/lib/icon-map";
 
-const navigationItems = [
-  {
-    title: "Dashboard",
-    icon: LayoutDashboard,
-    url: "/admin",
-    isActive: true,
-  },
-  {
-    title: "Users",
-    icon: Users,
-    url: "/admin/users",
-  },
-  {
-    title: "News",
-    icon: Newspaper,
-    url: "/admin/news",
-  },
-  {
-    title: "Newsletter",
-    icon: Mail,
-    url: "/admin/newsletter-subscriptions",
-  },
-  {
-    title: "Programs",
-    icon: GraduationCap,
-    url: "/admin/programs",
-  },
-  {
-    title: "Projects",
-    icon: FolderKanban,
-    url: "/admin/projects",
-  },
-  {
-    title: "Reviews",
-    icon: Star,
-    url: "/admin/reviews",
-  },
-  {
-    title: "ISO Companies",
-    icon: Building2,
-    url: "/admin/iso-companies",
-  },
-  {
-    title: "Success Partners",
-    icon: Handshake,
-    url: "/admin/success-partners",
-  },
-  {
-    title: "Contacts",
-    icon: MessageSquare,
-    url: "/admin/contacts",
-  },
+interface NavigationItem {
+  id: number;
+  name: string;
+  namespace: string;
+  icon: string | null;
+  type: number;
+  url: string;
+  order_no: number | null;
+}
 
-];
-
-const managementItems = [
-  // {
-  //   title: "Categories",
-  //   icon: Tag,
-  //   url: "#",
-  // },
-  // {
-  //   title: "Payments",
-  //   icon: CreditCard,
-  //   url: "#",
-  // },
-  // {
-  //   title: "Content",
-  //   icon: FileText,
-  //   url: "#",
-  // },
-  // {
-  //   title: "Messages",
-  //   icon: MessageSquare,
-  //   url: "#",
-  // },
-  {
-    title: "Roles",
-    icon: Shield,
-    url: "/admin/roles",
-  },
-  {
-    title: "Objects",
-    icon: Boxes,
-    url: "/admin/objects",
-  },
-  
-  // {
-  //   title: "Organizations",
-  //   icon: Package,
-  //   url: "/admin/organizations",
-  // },
-  // {
-  //   title: "Third Parties",
-  //   icon: Package,
-  //   url: "/admin/third-parties",
-  // },
-
-  {
-    title: "Galleries",
-    icon: Images,
-    url: "/admin/galleries",
-  },
-  {
-    title: "Static Lists",
-    icon: List,
-    url: "/admin/static-lists",
-  },
-
-  {
-    title: "Settings",
-    icon: Settings,
-    url: "/admin/settings",
-  },
-  {
-    title: "Cache Management",
-    icon: Database,
-    url: "/admin/cache-management",
-  },
-];
+interface NavigationData {
+  mainMenu: NavigationItem[];
+  management: NavigationItem[];
+}
 
 export function AppSidebar() {
-  const { language } = useI18n();
+  const { language, t } = useI18n("admin");
+  const pathname = usePathname();
+  const [navigation, setNavigation] = useState<NavigationData>({
+    mainMenu: [],
+    management: [],
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNavigation = async () => {
+      try {
+        setLoading(true);
+        const lang = language === "ar" ? "ar" : "en";
+        const response = await fetch(`/api/objects/navigation?lang=${lang}`, {
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch navigation");
+        }
+
+        const result = await response.json();
+        if (result.status === 1 && result.data) {
+          setNavigation(result.data);
+        }
+      } catch (error) {
+        console.error("Error fetching navigation:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNavigation();
+  }, [language]);
+
+  const isActive = (url: string) => {
+    if (url === "/admin") {
+      return pathname === "/admin" || pathname === "/admin/";
+    }
+    return pathname?.startsWith(url);
+  };
+
   return (
     <Sidebar collapsible="icon" side={language == "ar" ? "right" : "left"}>
       <SidebarHeader>
@@ -175,9 +90,9 @@ export function AppSidebar() {
                   <Logo />
                 </div>
                 <div className="grid flex-1 text-left leading-tight">
-                  <span className="truncate">Business Hub</span>
+                  <span className="truncate">{t("sidebar.businessHub")}</span>
                   <span className="truncate text-muted-foreground">
-                    بيزنس هب
+                    {t("sidebar.businessHubAr")}
                   </span>
                 </div>
               </Link>
@@ -187,54 +102,82 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navigationItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={item.isActive}
-                    tooltip={item.title}
-                  >
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {loading ? (
+          <div className="flex items-center justify-center p-8">
+            <Loader2 className="size-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : (
+          <>
+            {navigation.mainMenu.length > 0 && (
+              <SidebarGroup>
+                <SidebarGroupLabel>{t("sidebar.mainMenu")}</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {navigation.mainMenu.map((item) => (
+                      <SidebarMenuItem key={item.id}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={isActive(item.url)}
+                          tooltip={item.name}
+                        >
+                          <Link href={item.url}>
+                            {item.icon && (
+                              <DynamicIcon
+                                name={item.icon}
+                                className="size-4"
+                                size={16}
+                              />
+                            )}
+                            <span>{item.name}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            )}
 
-        <SidebarGroup>
-          <SidebarGroupLabel>Management</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {managementItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+            {navigation.management.length > 0 && (
+              <SidebarGroup>
+                <SidebarGroupLabel>{t("sidebar.management")}</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {navigation.management.map((item) => (
+                      <SidebarMenuItem key={item.id}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={isActive(item.url)}
+                          tooltip={item.name}
+                        >
+                          <Link href={item.url}>
+                            {item.icon && (
+                              <DynamicIcon
+                                name={item.icon}
+                                className="size-4"
+                                size={16}
+                              />
+                            )}
+                            <span>{item.name}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            )}
+          </>
+        )}
       </SidebarContent>
 
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Settings">
+            <SidebarMenuButton asChild tooltip={t("sidebar.settings")}>
               <a href="#">
                 <Settings />
-                <span>Settings</span>
+                <span>{t("sidebar.settings")}</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

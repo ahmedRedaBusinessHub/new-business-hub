@@ -41,6 +41,7 @@ import {
 import DynamicView, { type ViewTab } from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 import { staticListsCache } from "@/lib/staticListsCache";
 import { ProgramUserPrograms } from "./ProgramUserPrograms";
 
@@ -82,6 +83,7 @@ export interface Program {
 }
 
 export function ProgramsManagement() {
+  const { t } = useI18n("admin");
   const [programs, setPrograms] = useState<Program[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -166,7 +168,7 @@ export function ProgramsManagement() {
       setLoading(true);
       const response = await fetch(`/api/programs?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch programs");
+        throw new Error(t("entities.programs.failedToLoad"));
       }
       const data = await response.json();
       const programsData = Array.isArray(data.data) ? data.data : [];
@@ -175,7 +177,7 @@ export function ProgramsManagement() {
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching programs:", error);
-      toast.error("Failed to load programs");
+      toast.error(t("entities.programs.failedToLoad"));
       setPrograms([]);
       setTotal(0);
       setTotalPages(0);
@@ -208,7 +210,7 @@ export function ProgramsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create program");
+        throw new Error(error.message || t("entities.programs.failedToCreate"));
       }
 
       const responseData = await response.json();
@@ -241,11 +243,11 @@ export function ProgramsManagement() {
         }
       }
 
-      toast.success("Program created successfully!");
+      toast.success(t("entities.programs.created"));
       setIsFormOpen(false);
       fetchPrograms();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create program");
+      toast.error(error.message || t("entities.programs.failedToCreate"));
     }
   };
 
@@ -269,7 +271,7 @@ export function ProgramsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update program");
+        throw new Error(error.message || t("entities.programs.failedToUpdate"));
       }
 
       // Upload main image if provided
@@ -299,12 +301,12 @@ export function ProgramsManagement() {
         }
       }
 
-      toast.success("Program updated successfully!");
+      toast.success(t("entities.programs.updated"));
       setEditingProgram(null);
       setIsFormOpen(false);
       fetchPrograms();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update program");
+      toast.error(error.message || t("entities.programs.failedToUpdate"));
     }
   };
 
@@ -320,11 +322,11 @@ export function ProgramsManagement() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload image");
+        throw new Error(t("entities.programs.failedToUploadImage"));
       }
     } catch (error: any) {
       console.error("Error uploading image:", error);
-      toast.error("Failed to upload image");
+      toast.error(t("entities.programs.failedToUploadImage"));
     }
   };
 
@@ -342,11 +344,11 @@ export function ProgramsManagement() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload files");
+        throw new Error(t("entities.programs.failedToUploadFiles"));
       }
     } catch (error: any) {
       console.error("Error uploading files:", error);
-      toast.error("Failed to upload files");
+      toast.error(t("entities.programs.failedToUploadFiles"));
     }
   };
 
@@ -362,11 +364,11 @@ export function ProgramsManagement() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload document");
+        throw new Error(t("entities.programs.failedToUploadDocument"));
       }
     } catch (error: any) {
       console.error("Error uploading document:", error);
-      toast.error("Failed to upload document");
+      toast.error(t("entities.programs.failedToUploadDocument"));
     }
   };
 
@@ -378,14 +380,14 @@ export function ProgramsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete program");
+        throw new Error(error.message || t("entities.programs.failedToDelete"));
       }
 
-      toast.success("Program deleted successfully!");
+      toast.success(t("entities.programs.deleted"));
       setDeletingProgramId(null);
       fetchPrograms();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete program");
+      toast.error(error.message || t("entities.programs.failedToDelete"));
     }
   };
 
@@ -413,14 +415,14 @@ export function ProgramsManagement() {
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>Programs Management</h2>
+          <h2>{t("entities.programs.title")}</h2>
           <p className="text-muted-foreground">
-            Manage programs with full CRUD operations
+            {t("entities.programs.subtitle")}
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add Program
+          {t("entities.programs.add")}
         </Button>
       </div>
 
@@ -429,7 +431,7 @@ export function ProgramsManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search programs..."
+            placeholder={t("entities.programs.search")}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -444,10 +446,10 @@ export function ProgramsManagement() {
           }}
           className="w-32"
         >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-          <option value="100">100 per page</option>
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
         </Select>
       </div>
 
@@ -455,23 +457,23 @@ export function ProgramsManagement() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name (AR)</TableHead>
-              <TableHead>Name (EN)</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("common.name")} (AR)</TableHead>
+              <TableHead>{t("common.name")} (EN)</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center">
-                  Loading programs...
+                  {t("common.loading")}
                 </TableCell>
               </TableRow>
             ) : programs.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center">
-                  No programs found.
+                  {t("table.noResults")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -483,7 +485,7 @@ export function ProgramsManagement() {
                     <Badge
                       variant={program.status === 1 ? "default" : "secondary"}
                     >
-                      {program.status === 1 ? "Active" : "Inactive"}
+                      {program.status === 1 ? t("common.active") : t("common.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -492,7 +494,7 @@ export function ProgramsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleView(program)}
-                        title="View program details"
+                        title={t("entities.programs.viewDetails")}
                       >
                         <Eye className="size-4" />
                       </Button>
@@ -500,7 +502,7 @@ export function ProgramsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(program)}
-                        title="Edit program"
+                        title={t("entities.programs.editTooltip")}
                       >
                         <Pencil className="size-4" />
                       </Button>
@@ -508,7 +510,7 @@ export function ProgramsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setDeletingProgramId(program.id)}
-                        title="Delete program"
+                        title={t("entities.programs.deleteTooltip")}
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -578,15 +580,15 @@ export function ProgramsManagement() {
       )}
 
       <div className="text-sm text-muted-foreground">
-        Showing {programs.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
-        {Math.min(currentPage * pageSize, total)} of {total} programs
+        {t("table.showing")} {programs.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
+        {Math.min(currentPage * pageSize, total)} {t("table.of")} {total} {t("table.results")}
       </div>
 
       <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
         <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingProgram ? "Edit Program" : "Create New Program"}
+              {editingProgram ? t("entities.programs.edit") : t("entities.programs.createNew")}
             </DialogTitle>
           </DialogHeader>
           <ProgramForm
@@ -602,7 +604,7 @@ export function ProgramsManagement() {
           data={viewingProgram}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="Program Details"
+          title={t("entities.programs.details")}
           tabs={[
             {
               id: "details",
@@ -822,17 +824,17 @@ export function ProgramsManagement() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("common.areYouSure")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the program.
+              {t("common.thisActionCannotBeUndone")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingProgramId && handleDelete(deletingProgramId)}
             >
-              Delete
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -26,7 +26,8 @@ export async function GET(request: NextRequest) {
         const companyName = (item.company_name || "").toLowerCase();
         const name = (item.name || "").toLowerCase();
         const email = (item.email || "").toLowerCase();
-        return companyName.includes(query) || name.includes(query) || email.includes(query);
+        const phone = (item.phone || "").toLowerCase();
+        return companyName.includes(query) || name.includes(query) || email.includes(query) || phone.includes(query);
       });
     }
 

@@ -41,6 +41,7 @@ import {
 import DynamicView, { type ViewTab } from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 import { staticListsCache } from "@/lib/staticListsCache";
 import { TypeName, CategoryNames } from "./ProjectViewHelpers";
 
@@ -67,6 +68,7 @@ export interface Project {
 }
 
 export function ProjectsManagement() {
+  const { t } = useI18n("admin");
   const [projects, setProjects] = useState<Project[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -114,7 +116,7 @@ export function ProjectsManagement() {
       setLoading(true);
       const response = await fetch(`/api/projects?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch projects");
+        throw new Error(t("entities.projects.failedToLoad"));
       }
       const data = await response.json();
       const projectsData = Array.isArray(data.data) ? data.data : [];
@@ -123,7 +125,7 @@ export function ProjectsManagement() {
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching projects:", error);
-      toast.error("Failed to load projects");
+      toast.error(t("entities.projects.failedToLoad"));
       setProjects([]);
       setTotal(0);
       setTotalPages(0);
@@ -154,7 +156,7 @@ export function ProjectsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create project");
+        throw new Error(error.message || t("entities.projects.failedToCreate"));
       }
 
       const responseData = await response.json();
@@ -178,11 +180,11 @@ export function ProjectsManagement() {
         await uploadProjectFiles(projectId, fileIds, "file_ids");
       }
 
-      toast.success("Project created successfully!");
+      toast.success(t("entities.projects.created"));
       setIsFormOpen(false);
       fetchProjects();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create project");
+      toast.error(error.message || t("entities.projects.failedToCreate"));
     }
   };
 
@@ -205,7 +207,7 @@ export function ProjectsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update project");
+        throw new Error(error.message || t("entities.projects.failedToUpdate"));
       }
 
       // Upload main image if provided
@@ -226,12 +228,12 @@ export function ProjectsManagement() {
         await uploadProjectFiles(editingProject.id, fileIds, "file_ids");
       }
 
-      toast.success("Project updated successfully!");
+      toast.success(t("entities.projects.updated"));
       setEditingProject(null);
       setIsFormOpen(false);
       fetchProjects();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update project");
+      toast.error(error.message || t("entities.projects.failedToUpdate"));
     }
   };
 
@@ -243,14 +245,14 @@ export function ProjectsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete project");
+        throw new Error(error.message || t("entities.projects.failedToDelete"));
       }
 
-      toast.success("Project deleted successfully!");
+      toast.success(t("entities.projects.deleted"));
       setDeletingProjectId(null);
       fetchProjects();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete project");
+      toast.error(error.message || t("entities.projects.failedToDelete"));
     }
   };
 
@@ -266,11 +268,11 @@ export function ProjectsManagement() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload image");
+        throw new Error(t("entities.news.failedToUploadImage"));
       }
     } catch (error: any) {
       console.error("Error uploading image:", error);
-      toast.error("Failed to upload image");
+      toast.error(t("entities.news.failedToUploadImage"));
     }
   };
 
@@ -288,11 +290,11 @@ export function ProjectsManagement() {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to upload ${refColumn}`);
+        throw new Error(t("entities.news.failedToUploadFiles"));
       }
     } catch (error: any) {
       console.error(`Error uploading ${refColumn}:`, error);
-      toast.error(`Failed to upload ${refColumn}`);
+      toast.error(t("entities.news.failedToUploadFiles"));
     }
   };
 
@@ -320,14 +322,14 @@ export function ProjectsManagement() {
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>Projects Management</h2>
+          <h2>{t("entities.projects.title")}</h2>
           <p className="text-muted-foreground">
-            Manage projects with full CRUD operations
+            {t("entities.projects.subtitle")}
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add Project
+          {t("entities.projects.add")}
         </Button>
       </div>
 
@@ -336,7 +338,7 @@ export function ProjectsManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search projects..."
+            placeholder={t("entities.projects.search")}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -351,10 +353,10 @@ export function ProjectsManagement() {
           }}
           className="w-32"
         >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-          <option value="100">100 per page</option>
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
         </Select>
       </div>
 
@@ -362,23 +364,23 @@ export function ProjectsManagement() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Title (AR)</TableHead>
-              <TableHead>Title (EN)</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("common.name")} (AR)</TableHead>
+              <TableHead>{t("common.name")} (EN)</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center">
-                  Loading projects...
+                  {t("common.loading")}
                 </TableCell>
               </TableRow>
             ) : projects.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center">
-                  No projects found.
+                  {t("table.noResults")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -390,7 +392,7 @@ export function ProjectsManagement() {
                     <Badge
                       variant={project.status === 1 ? "default" : "secondary"}
                     >
-                      {project.status === 1 ? "Active" : "Inactive"}
+                      {project.status === 1 ? t("common.active") : t("common.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -399,7 +401,7 @@ export function ProjectsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleView(project)}
-                        title="View project details"
+                        title={t("entities.projects.viewDetails")}
                       >
                         <Eye className="size-4" />
                       </Button>
@@ -407,7 +409,7 @@ export function ProjectsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(project)}
-                        title="Edit project"
+                        title={t("entities.projects.editTooltip")}
                       >
                         <Pencil className="size-4" />
                       </Button>
@@ -415,7 +417,7 @@ export function ProjectsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setDeletingProjectId(project.id)}
-                        title="Delete project"
+                        title={t("entities.projects.deleteTooltip")}
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -485,15 +487,15 @@ export function ProjectsManagement() {
       )}
 
       <div className="text-sm text-muted-foreground">
-        Showing {projects.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
-        {Math.min(currentPage * pageSize, total)} of {total} projects
+        {t("table.showing")} {projects.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
+        {Math.min(currentPage * pageSize, total)} {t("table.of")} {total} {t("table.results")}
       </div>
 
       <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
         <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingProject ? "Edit Project" : "Create New Project"}
+              {editingProject ? t("entities.projects.edit") : t("entities.projects.createNew")}
             </DialogTitle>
           </DialogHeader>
           <ProjectForm
@@ -509,7 +511,7 @@ export function ProjectsManagement() {
           data={viewingProject}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="Project Details"
+          title={t("entities.projects.details")}
           header={{
             type: "avatar",
             title: (data: Project) => data.title_ar || data.title_en || "Project",
@@ -521,8 +523,8 @@ export function ProjectsManagement() {
               {
                 field: "status",
                 map: {
-                  1: { label: "Active", variant: "default" },
-                  0: { label: "Inactive", variant: "secondary" },
+                  1: { label: t("common.active"), variant: "default" },
+                  0: { label: t("common.inactive"), variant: "secondary" },
                 },
               },
             ],
@@ -707,17 +709,17 @@ export function ProjectsManagement() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("common.areYouSure")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the project.
+              {t("common.thisActionCannotBeUndone")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingProjectId && handleDelete(deletingProjectId)}
             >
-              Delete
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

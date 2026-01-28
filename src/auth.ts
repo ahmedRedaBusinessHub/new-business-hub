@@ -11,11 +11,12 @@ async function getUserFromToken(accessToken: string, identifier: string) {
     if (meRes.ok) {
       const userData = await meRes.json();
       const user = userData.data || userData.user || userData;
+      const role = user.role?.toString?.()?.toLowerCase?.() || "client";
       return {
         id: user.id?.toString() || user.userId?.toString() || identifier,
         name: user.name || user.firstName || user.username || identifier,
         email: user.email || identifier,
-        role: user.role || "client",
+        role: role as UserRole,
         accessToken,
       };
     }

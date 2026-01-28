@@ -37,7 +37,6 @@ async function buildHeaders(
 ): Promise<Record<string, string>> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    "role-namespace": "admin",
     ...options.customHeaders,
   };
 

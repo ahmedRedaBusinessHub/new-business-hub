@@ -41,6 +41,7 @@ import {
 import DynamicView, { type ViewTab } from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 
 export interface NewsletterSubscription {
   id: number;
@@ -53,6 +54,7 @@ export interface NewsletterSubscription {
 }
 
 export function NewsletterSubscriptionsManagement() {
+  const { t } = useI18n("admin");
   const [subscriptions, setSubscriptions] = useState<NewsletterSubscription[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -100,7 +102,7 @@ export function NewsletterSubscriptionsManagement() {
       setLoading(true);
       const response = await fetch(`/api/newsletter-subscriptions?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch subscriptions");
+        throw new Error(t("entities.newsletterSubscriptions.failedToLoad"));
       }
       const data = await response.json();
       const subscriptionsData = Array.isArray(data.data) ? data.data : [];
@@ -109,7 +111,7 @@ export function NewsletterSubscriptionsManagement() {
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching subscriptions:", error);
-      toast.error("Failed to load subscriptions");
+      toast.error(t("entities.newsletterSubscriptions.failedToLoad"));
       setSubscriptions([]);
       setTotal(0);
       setTotalPages(0);
@@ -136,14 +138,14 @@ export function NewsletterSubscriptionsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create subscription");
+        throw new Error(error.message || t("entities.newsletterSubscriptions.failedToCreate"));
       }
 
-      toast.success("Subscription created successfully!");
+      toast.success(t("entities.newsletterSubscriptions.created"));
       setIsFormOpen(false);
       fetchSubscriptions();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create subscription");
+      toast.error(error.message || t("entities.newsletterSubscriptions.failedToCreate"));
     }
   };
 
@@ -161,15 +163,15 @@ export function NewsletterSubscriptionsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update subscription");
+        throw new Error(error.message || t("entities.newsletterSubscriptions.failedToUpdate"));
       }
 
-      toast.success("Subscription updated successfully!");
+      toast.success(t("entities.newsletterSubscriptions.updated"));
       setEditingSubscription(null);
       setIsFormOpen(false);
       fetchSubscriptions();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update subscription");
+      toast.error(error.message || t("entities.newsletterSubscriptions.failedToUpdate"));
     }
   };
 
@@ -181,14 +183,14 @@ export function NewsletterSubscriptionsManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete subscription");
+        throw new Error(error.message || t("entities.newsletterSubscriptions.failedToDelete"));
       }
 
-      toast.success("Subscription deleted successfully!");
+      toast.success(t("entities.newsletterSubscriptions.deleted"));
       setDeletingSubscriptionId(null);
       fetchSubscriptions();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete subscription");
+      toast.error(error.message || t("entities.newsletterSubscriptions.failedToDelete"));
     }
   };
 
@@ -216,14 +218,14 @@ export function NewsletterSubscriptionsManagement() {
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>Newsletter Subscriptions Management</h2>
+          <h2>{t("entities.newsletterSubscriptions.title")}</h2>
           <p className="text-muted-foreground">
-            Manage newsletter subscriptions with full CRUD operations
+            {t("entities.newsletterSubscriptions.subtitle")}
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add Subscription
+          {t("entities.newsletterSubscriptions.add")}
         </Button>
       </div>
 
@@ -232,7 +234,7 @@ export function NewsletterSubscriptionsManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search subscriptions..."
+            placeholder={t("entities.newsletterSubscriptions.search")}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -247,10 +249,10 @@ export function NewsletterSubscriptionsManagement() {
           }}
           className="w-32"
         >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-          <option value="100">100 per page</option>
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
         </Select>
       </div>
 
@@ -258,23 +260,23 @@ export function NewsletterSubscriptionsManagement() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Email</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("users.email")}</TableHead>
+              <TableHead>{t("common.name")}</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center">
-                  Loading subscriptions...
+                  {t("common.loading")}
                 </TableCell>
               </TableRow>
             ) : subscriptions.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center">
-                  No subscriptions found.
+                  {t("table.noResults")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -286,7 +288,7 @@ export function NewsletterSubscriptionsManagement() {
                     <Badge
                       variant={sub.status === 1 ? "default" : "secondary"}
                     >
-                      {sub.status === 1 ? "Active" : "Inactive"}
+                      {sub.status === 1 ? t("common.active") : t("common.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -303,7 +305,7 @@ export function NewsletterSubscriptionsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(sub)}
-                        title="Edit subscription"
+                        title={t("entities.newsletterSubscriptions.editTooltip")}
                       >
                         <Pencil className="size-4" />
                       </Button>
@@ -311,7 +313,7 @@ export function NewsletterSubscriptionsManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setDeletingSubscriptionId(sub.id)}
-                        title="Delete subscription"
+                        title={t("entities.newsletterSubscriptions.deleteTooltip")}
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -328,7 +330,7 @@ export function NewsletterSubscriptionsManagement() {
         <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingSubscription ? "Edit Subscription" : "Create New Subscription"}
+              {editingSubscription ? t("entities.newsletterSubscriptions.edit") : t("entities.newsletterSubscriptions.createNew")}
             </DialogTitle>
           </DialogHeader>
           <NewsletterSubscriptionForm
@@ -344,7 +346,7 @@ export function NewsletterSubscriptionsManagement() {
           data={viewingSubscription}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="Newsletter Subscription Details"
+          title={t("entities.newsletterSubscriptions.details")}
           tabs={[
             {
               id: "details",
@@ -358,8 +360,8 @@ export function NewsletterSubscriptionsManagement() {
                   label: "Status",
                   type: "badge",
                   badgeMap: {
-                    1: { label: "Active", variant: "default" },
-                    0: { label: "Inactive", variant: "secondary" },
+                    1: { label: t("common.active"), variant: "default" },
+                    0: { label: t("common.inactive"), variant: "secondary" },
                   },
                 },
                 { name: "created_at", label: "Created At", type: "datetime" },
@@ -377,17 +379,17 @@ export function NewsletterSubscriptionsManagement() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("common.areYouSure")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the subscription.
+              {t("common.thisActionCannotBeUndone")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingSubscriptionId && handleDelete(deletingSubscriptionId)}
             >
-              Delete
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

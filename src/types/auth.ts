@@ -1,4 +1,7 @@
-export type UserRole = "admin" | "data-entry" | "client" | "store" | "guest";
+export type UserRole = "admin" | "data-entry" | "operation" | "client" | "store" | "guest" | "user";
+
+// Only "user" role sees Avatar dropdown, all other roles see Control button
+export const USER_ROLE: UserRole = "user";
 
 export interface User {
   id: string;

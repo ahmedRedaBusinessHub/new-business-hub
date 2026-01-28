@@ -12,8 +12,10 @@ import { Search } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/Sidebar";
 import { NotificationList } from "@/components/features/NotificationList";
 import { ProfileMenu } from "@/components/features/ProfileMenu";
+import { useI18n } from "@/hooks/useI18n";
 
 export function Header() {
+  const { t } = useI18n("admin");
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
       <SidebarTrigger className="-ml-1" />
@@ -21,11 +23,11 @@ export function Header() {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem className="hidden md:block">
-            <BreadcrumbLink href="#">Dashboard</BreadcrumbLink>
+            <BreadcrumbLink href="#">{t("header.dashboard")}</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator className="hidden md:block" />
           <BreadcrumbItem>
-            <BreadcrumbPage>Overview</BreadcrumbPage>
+            <BreadcrumbPage>{t("header.overview")}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -35,7 +37,7 @@ export function Header() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search..."
+            placeholder={t("header.searchPlaceholder")}
             className="w-[300px] pl-8"
           />
         </div>

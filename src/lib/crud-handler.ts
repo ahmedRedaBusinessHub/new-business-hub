@@ -226,7 +226,6 @@ async function handleUpload(
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        "role-namespace": "admin",
       },
       body: backendFormData,
     });

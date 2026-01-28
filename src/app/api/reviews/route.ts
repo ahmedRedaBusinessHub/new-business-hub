@@ -23,9 +23,13 @@ export async function GET(request: NextRequest) {
     if (search) {
       const query = search.toLowerCase();
       allData = allData.filter((item: any) => {
-        const name = (item.name || "").toLowerCase();
-        const comment = (item.comment || "").toLowerCase();
-        return name.includes(query) || comment.includes(query);
+        const nameAr = (item.name_ar || "").toLowerCase();
+        const nameEn = (item.name_en || "").toLowerCase();
+        const jobTitleAr = (item.job_title_ar || "").toLowerCase();
+        const jobTitleEn = (item.job_title_en || "").toLowerCase();
+        const commentAr = (item.comment_ar || "").toLowerCase();
+        const commentEn = (item.comment_en || "").toLowerCase();
+        return nameAr.includes(query) || nameEn.includes(query) || jobTitleAr.includes(query) || jobTitleEn.includes(query) || commentAr.includes(query) || commentEn.includes(query);
       });
     }
 

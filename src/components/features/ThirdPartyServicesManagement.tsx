@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/Dialog";
 import DynamicView, { type ViewTab } from "../shared/DynamicView";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 
 export interface ThirdPartyService {
   id: number;
@@ -65,13 +66,13 @@ export function ThirdPartyServicesManagement({ thirdPartyId }: ThirdPartyService
       setLoading(true);
       const response = await fetch(`/api/third-party-services?third_party_id=${thirdPartyId}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch services");
+        throw new Error(t("entities.thirdPartyServices.failedToLoad"));
       }
       const data = await response.json();
       setServices(data.data || data);
     } catch (error: any) {
       console.error("Error fetching services:", error);
-      toast.error("Failed to load services");
+      toast.error(t("entities.thirdPartyServices.failedToLoad"));
     } finally {
       setLoading(false);
     }

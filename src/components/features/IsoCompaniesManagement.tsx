@@ -41,6 +41,7 @@ import {
 import DynamicView from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 
 export interface IsoCompany {
   id: number;
@@ -61,6 +62,7 @@ export interface IsoCompany {
 }
 
 export function IsoCompaniesManagement() {
+  const { t } = useI18n("admin");
   const [isoCompanies, setIsoCompanies] = useState<IsoCompany[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -107,7 +109,7 @@ export function IsoCompaniesManagement() {
       setLoading(true);
       const response = await fetch(`/api/iso-companies?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch ISO companies");
+        throw new Error(t("entities.isoCompanies.failedToLoad"));
       }
       const data = await response.json();
       const companiesData = Array.isArray(data.data) ? data.data : [];
@@ -116,7 +118,7 @@ export function IsoCompaniesManagement() {
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching ISO companies:", error);
-      toast.error("Failed to load ISO companies");
+      toast.error(t("entities.isoCompanies.failedToLoad"));
       setIsoCompanies([]);
       setTotal(0);
       setTotalPages(0);
@@ -144,7 +146,7 @@ export function IsoCompaniesManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create ISO company");
+        throw new Error(error.message || t("entities.isoCompanies.failedToCreate"));
       }
 
       const responseData = await response.json();
@@ -158,11 +160,11 @@ export function IsoCompaniesManagement() {
         }
       }
 
-      toast.success("ISO company created successfully!");
+      toast.success(t("entities.isoCompanies.created"));
       setIsFormOpen(false);
       fetchIsoCompanies();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create ISO company");
+      toast.error(error.message || t("entities.isoCompanies.failedToCreate"));
     }
   };
 
@@ -181,7 +183,7 @@ export function IsoCompaniesManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update ISO company");
+        throw new Error(error.message || t("entities.isoCompanies.failedToUpdate"));
       }
 
       // Upload image if provided
@@ -192,12 +194,12 @@ export function IsoCompaniesManagement() {
         }
       }
 
-      toast.success("ISO company updated successfully!");
+      toast.success(t("entities.isoCompanies.updated"));
       setEditingCompany(null);
       setIsFormOpen(false);
       fetchIsoCompanies();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update ISO company");
+      toast.error(error.message || t("entities.isoCompanies.failedToUpdate"));
     }
   };
 
@@ -213,11 +215,11 @@ export function IsoCompaniesManagement() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload image");
+        throw new Error(t("entities.news.failedToUploadImage"));
       }
     } catch (error: any) {
       console.error("Error uploading image:", error);
-      toast.error("Failed to upload image");
+      toast.error(t("entities.news.failedToUploadImage"));
     }
   };
 
@@ -229,14 +231,14 @@ export function IsoCompaniesManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete ISO company");
+        throw new Error(error.message || t("entities.isoCompanies.failedToDelete"));
       }
 
-      toast.success("ISO company deleted successfully!");
+      toast.success(t("entities.isoCompanies.deleted"));
       setDeletingCompanyId(null);
       fetchIsoCompanies();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete ISO company");
+      toast.error(error.message || t("entities.isoCompanies.failedToDelete"));
     }
   };
 
@@ -280,7 +282,7 @@ export function IsoCompaniesManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search ISO companies..."
+            placeholder={t("entities.isoCompanies.search")}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -295,10 +297,10 @@ export function IsoCompaniesManagement() {
           }}
           className="w-32"
         >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-          <option value="100">100 per page</option>
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
         </Select>
       </div>
 
@@ -306,25 +308,25 @@ export function IsoCompaniesManagement() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Company Name</TableHead>
+              <TableHead>{t("common.name")}</TableHead>
               <TableHead>Contact Person</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("users.email")}</TableHead>
+              <TableHead>{t("users.mobile")}</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center">
-                  Loading ISO companies...
+                  {t("common.loading")}
                 </TableCell>
               </TableRow>
             ) : isoCompanies.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center">
-                  No ISO companies found.
+                  {t("table.noResults")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -338,7 +340,7 @@ export function IsoCompaniesManagement() {
                     <Badge
                       variant={company.status === 1 ? "default" : "secondary"}
                     >
-                      {company.status === 1 ? "Active" : "Inactive"}
+                      {company.status === 1 ? t("common.active") : t("common.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -347,7 +349,7 @@ export function IsoCompaniesManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleView(company)}
-                        title="View ISO company details"
+                        title={t("entities.isoCompanies.viewDetails")}
                       >
                         <Eye className="size-4" />
                       </Button>
@@ -355,7 +357,7 @@ export function IsoCompaniesManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(company)}
-                        title="Edit ISO company"
+                        title={t("entities.isoCompanies.editTooltip")}
                       >
                         <Pencil className="size-4" />
                       </Button>
@@ -363,7 +365,7 @@ export function IsoCompaniesManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setDeletingCompanyId(company.id)}
-                        title="Delete ISO company"
+                        title={t("entities.isoCompanies.deleteTooltip")}
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -441,7 +443,7 @@ export function IsoCompaniesManagement() {
         <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingCompany ? "Edit ISO Company" : "Create New ISO Company"}
+              {editingCompany ? t("entities.isoCompanies.edit") : t("entities.isoCompanies.createNew")}
             </DialogTitle>
           </DialogHeader>
           <IsoCompanyForm
@@ -457,7 +459,7 @@ export function IsoCompaniesManagement() {
           data={viewingCompany}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="ISO Company Details"
+          title={t("entities.isoCompanies.details")}
           header={{
             type: "avatar",
             title: (data: IsoCompany) => data.company_name || data.name || "ISO Company",
@@ -513,17 +515,17 @@ export function IsoCompaniesManagement() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("common.areYouSure")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the ISO company.
+              {t("common.thisActionCannotBeUndone")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingCompanyId && handleDelete(deletingCompanyId)}
             >
-              Delete
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -24,7 +24,8 @@ export async function GET(request: NextRequest) {
       const query = search.toLowerCase();
       allData = allData.filter((item: any) => {
         const email = (item.email || "").toLowerCase();
-        return email.includes(query);
+        const name = (item.name || "").toLowerCase();
+        return email.includes(query) || name.includes(query);
       });
     }
 

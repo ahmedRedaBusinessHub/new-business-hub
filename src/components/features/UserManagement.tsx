@@ -47,6 +47,7 @@ import {
 } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
 
 export interface User {
   id: number;
@@ -83,6 +84,7 @@ const UserAvatarImage = memo(function UserAvatarImage({ imageUrl }: { imageUrl: 
 });
 
 export function UserManagement() {
+  const { t } = useI18n("admin");
   const [users, setUsers] = useState<User[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -132,7 +134,7 @@ export function UserManagement() {
 
       const response = await fetch(`/api/users?${paramsString}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch users");
+        throw new Error(t("users.failedToLoad"));
       }
       const data = await response.json();
       const usersData = Array.isArray(data.data) ? data.data : [];
@@ -141,7 +143,7 @@ export function UserManagement() {
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching users:", error);
-      toast.error("Failed to load users");
+      toast.error(t("users.failedToLoad"));
       setUsers([]);
       setTotal(0);
       setTotalPages(0);
@@ -192,7 +194,7 @@ export function UserManagement() {
 
       // Check for errors in response body (even if response.ok is true)
       if (!response.ok || (responseData.statusCode && responseData.statusCode >= 400)) {
-        let errorMessage = "Failed to create user";
+        let errorMessage = t("users.failedToCreate");
         let fieldErrors: Record<string, string> = {};
         
         // Use the already parsed responseData instead of parsing again
@@ -257,7 +259,7 @@ export function UserManagement() {
         }
       }
 
-      toast.success("User created successfully!");
+      toast.success(t("users.userCreated"));
       setIsFormOpen(false);
       fetchUsers();
     } catch (error: any) {
@@ -265,7 +267,7 @@ export function UserManagement() {
       // Field-specific errors are expected and handled gracefully, so we don't need to log them
       if (!error.fieldErrors || Object.keys(error.fieldErrors).length === 0) {
         console.error("Create error:", error);
-        toast.error(error.message || "Failed to create user");
+        toast.error(error.message || t("users.failedToCreate"));
       }
       // IMPORTANT: Re-throw error to let DynamicForm handle it
       // This ensures:
@@ -339,7 +341,7 @@ export function UserManagement() {
 
       // Check for errors in response body (even if response.ok is true)
       if (!response.ok || (responseData.statusCode && responseData.statusCode >= 400)) {
-        let errorMessage = "Failed to update user";
+        let errorMessage = t("users.failedToUpdate");
         let fieldErrors: Record<string, string> = {};
         
         // Use the already parsed responseData instead of parsing again
@@ -399,7 +401,7 @@ export function UserManagement() {
         }
       }
 
-      toast.success("User updated successfully!");
+      toast.success(t("users.userUpdated"));
       setEditingUser(null);
       setIsFormOpen(false);
       fetchUsers();
@@ -408,7 +410,7 @@ export function UserManagement() {
       // Field-specific errors are expected and handled gracefully, so we don't need to log them
       if (!error.fieldErrors || Object.keys(error.fieldErrors).length === 0) {
         console.error("Update error:", error);
-        toast.error(error.message || "Failed to update user");
+        toast.error(error.message || t("users.failedToUpdate"));
       }
       // Re-throw to let DynamicForm handle field errors
       throw error;
@@ -428,7 +430,7 @@ export function UserManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to upload image");
+        throw new Error(error.message || t("users.failedToUploadImage"));
       }
 
       return await response.json();
@@ -446,14 +448,14 @@ export function UserManagement() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete user");
+        throw new Error(error.message || t("users.failedToDelete"));
       }
 
-      toast.success("User deleted successfully!");
+      toast.success(t("users.userDeleted"));
       setDeletingUserId(null);
       fetchUsers();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete user");
+      toast.error(error.message || t("users.failedToDelete"));
     }
   };
 
@@ -512,8 +514,8 @@ export function UserManagement() {
         field: "status",
         variant: "default",
         map: {
-          1: { label: "Active", variant: "default" },
-          0: { label: "Inactive", variant: "secondary" },
+          1: { label: t("common.active"), variant: "default" },
+          0: { label: t("common.inactive"), variant: "secondary" },
         },
       },
     ],
@@ -525,13 +527,13 @@ export function UserManagement() {
       label: "Details",
       gridCols: 2,
       fields: [
-        { name: "username", label: "Username", type: "text" },
-        { name: "first_name", label: "First Name", type: "text" },
-        { name: "last_name", label: "Last Name", type: "text" },
-        { name: "email", label: "Email", type: "text" },
+        { name: "username", label: t("users.username"), type: "text" },
+        { name: "first_name", label: t("users.firstName"), type: "text" },
+        { name: "last_name", label: t("users.lastName"), type: "text" },
+        { name: "email", label: t("users.email"), type: "text" },
         {
           name: "mobile",
-          label: "Mobile Number",
+          label: t("users.mobileNumber"),
           type: "text",
           format: (value: string, data: User) =>
             data.country_code && value ? `${data.country_code} ${value}` : value || "-",
@@ -553,16 +555,16 @@ export function UserManagement() {
         { name: "national_id", label: "National ID", type: "text" },
         {
           name: "status",
-          label: "Status",
+          label: t("common.status"),
           type: "badge",
           badgeMap: {
-            1: { label: "Active", variant: "default" },
-            0: { label: "Inactive", variant: "secondary" },
+            1: { label: t("common.active"), variant: "default" },
+            0: { label: t("common.inactive"), variant: "secondary" },
           },
         },
-        { name: "email_verified_at", label: "Email Verified At", type: "datetime" },
+        { name: "email_verified_at", label: t("users.emailVerifiedAt"), type: "datetime" },
         { name: "sms_verified_at", label: "SMS Verified At", type: "datetime" },
-        { name: "created_at", label: "Created At", type: "datetime" },
+        { name: "created_at", label: t("common.createdAt"), type: "datetime" },
       ],
     },
     {
@@ -599,14 +601,14 @@ export function UserManagement() {
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>User Management</h2>
+          <h2>{t("users.title")}</h2>
           <p className="text-muted-foreground">
-            Manage users with full CRUD operations
+            {t("users.subtitle")}
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add User
+          {t("users.addUser")}
         </Button>
       </div>
 
@@ -615,7 +617,7 @@ export function UserManagement() {
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search users..."
+            placeholder={t("users.searchUsers")}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -630,10 +632,10 @@ export function UserManagement() {
           }}
           className="w-32"
         >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-          <option value="100">100 per page</option>
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
         </Select>
       </div>
 
@@ -641,25 +643,25 @@ export function UserManagement() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Mobile</TableHead>
-              <TableHead>Username</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("common.name")}</TableHead>
+              <TableHead>{t("users.email")}</TableHead>
+              <TableHead>{t("users.mobile")}</TableHead>
+              <TableHead>{t("users.username")}</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center">
-                  Loading users...
+                  {t("common.loading")}
                 </TableCell>
               </TableRow>
             ) : users.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center">
-                  No users found.
+                  {t("common.noData")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -694,7 +696,7 @@ export function UserManagement() {
                           : "secondary"
                       }
                     >
-                      {user.status === 1 ? "Active" : "Inactive"}
+                      {user.status === 1 ? t("common.active") : t("common.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -703,7 +705,7 @@ export function UserManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleView(user)}
-                        title="View user details"
+                        title={t("users.viewUserDetails")}
                       >
                         <Eye className="size-4" />
                       </Button>
@@ -711,7 +713,7 @@ export function UserManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(user)}
-                        title="Edit user"
+                        title={t("users.editUserTooltip")}
                       >
                         <Pencil className="size-4" />
                       </Button>
@@ -719,7 +721,7 @@ export function UserManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setDeletingUserId(user.id)}
-                        title="Delete user"
+                        title={t("users.deleteUserTooltip")}
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -790,7 +792,7 @@ export function UserManagement() {
 
       {total > 0 && (
         <div className="text-sm text-muted-foreground text-center">
-          Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, total)} of {total} users
+          {t("table.showing")} {((currentPage - 1) * pageSize) + 1} {t("table.of")} {Math.min(currentPage * pageSize, total)} {t("table.of")} {total} {t("table.results")}
         </div>
       )}
 
@@ -798,7 +800,7 @@ export function UserManagement() {
         <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingUser ? "Edit User" : "Create New User"}
+              {editingUser ? t("users.editUser") : t("users.createNewUser")}
             </DialogTitle>
           </DialogHeader>
           <UserForm
@@ -815,7 +817,7 @@ export function UserManagement() {
           data={viewingUser}
           open={isViewOpen}
           onOpenChange={handleCloseView}
-          title="User Details"
+          title={t("users.userDetails")}
           header={viewHeader}
           tabs={viewTabs}
           maxWidth="4xl"
@@ -828,18 +830,17 @@ export function UserManagement() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("common.areYouSure")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              user account and remove their data from our servers.
+              {t("users.deleteConfirmDescription")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingUserId && handleDelete(deletingUserId)}
             >
-              Delete
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
