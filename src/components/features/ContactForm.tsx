@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import type { Contact } from "./ContactsManagement";
 import DynamicForm from "../shared/DynamicForm";
 import { staticListsCache } from "@/lib/staticListsCache";
+import { getLocalizedLabel } from "@/lib/localizedLabel";
+import { useI18n } from "@/hooks/useI18n";
 
 interface User {
   id: number;
@@ -40,6 +42,7 @@ interface ContactFormProps {
 }
 
 export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
+  const { language } = useI18n();
   const isEdit = !!contact;
   const formSchema = createFormSchema(isEdit);
   const [users, setUsers] = useState<User[]>([]);
@@ -155,7 +158,7 @@ export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
               { value: "", label: "None" },
               ...contactTypes.map((type) => ({
                 value: type.id.toString(),
-                label: type.name_en,
+                label: getLocalizedLabel(type.name_en, type.name_ar, language),
               })),
             ],
           },

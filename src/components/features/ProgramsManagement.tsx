@@ -43,6 +43,7 @@ import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { useI18n } from "@/hooks/useI18n";
 import { staticListsCache } from "@/lib/staticListsCache";
+import { getLocalizedLabel } from "@/lib/localizedLabel";
 import { ProgramUserPrograms } from "./ProgramUserPrograms";
 
 interface StaticListOption {
@@ -83,7 +84,7 @@ export interface Program {
 }
 
 export function ProgramsManagement() {
-  const { t } = useI18n("admin");
+  const { t, language } = useI18n("admin");
   const [programs, setPrograms] = useState<Program[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -99,9 +100,10 @@ export function ProgramsManagement() {
   const [loading, setLoading] = useState(true);
   const [programTypes, setProgramTypes] = useState<StaticListOption[]>([]);
   const [programSubtypes, setProgramSubtypes] = useState<StaticListOption[]>([]);
+  const [programStatuses, setProgramStatuses] = useState<StaticListOption[]>([]);
   const staticListsFetchedRef = useRef(false);
 
-  // Fetch static lists for type and subtype (only once)
+  // Fetch static lists for type, subtype, and status (only once)
   useEffect(() => {
     if (staticListsFetchedRef.current) return;
     
@@ -113,6 +115,9 @@ export function ProgramsManagement() {
         
         const subtypesConfig = await staticListsCache.getByNamespace('program.subtypes');
         setProgramSubtypes(subtypesConfig);
+
+        const statusesConfig = await staticListsCache.getByNamespace('program.statuses');
+        setProgramStatuses(statusesConfig);
       } catch (error) {
         console.error('Error fetching static lists:', error);
         staticListsFetchedRef.current = false; // Reset on error to allow retry
@@ -122,17 +127,23 @@ export function ProgramsManagement() {
     fetchStaticLists();
   }, []);
 
-  // Helper functions to get type/subtype names
+  // Helper functions to get type/subtype/status names
   const getTypeName = (typeId: number | null) => {
     if (typeId === null) return "-";
     const type = programTypes.find(t => t.id === typeId);
-    return type ? `${type.name_en} / ${type.name_ar}` : String(typeId);
+    return type ? getLocalizedLabel(type.name_en, type.name_ar, language) : String(typeId);
   };
 
   const getSubtypeName = (subtypeId: number | null) => {
     if (subtypeId === null) return "-";
     const subtype = programSubtypes.find(s => s.id === subtypeId);
-    return subtype ? `${subtype.name_en} / ${subtype.name_ar}` : String(subtypeId);
+    return subtype ? getLocalizedLabel(subtype.name_en, subtype.name_ar, language) : String(subtypeId);
+  };
+
+  const getStatusName = (statusId: number | null) => {
+    if (statusId === null) return "-";
+    const status = programStatuses.find(s => s.id === statusId);
+    return status ? getLocalizedLabel(status.name_en, status.name_ar, language) : String(statusId);
   };
 
   // Debounce search query
@@ -485,7 +496,7 @@ export function ProgramsManagement() {
                     <Badge
                       variant={program.status === 1 ? "default" : "secondary"}
                     >
-                      {program.status === 1 ? t("common.active") : t("common.inactive")}
+                      {getStatusName(program.status)}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -625,11 +636,8 @@ export function ProgramsManagement() {
                 {
                   name: "status",
                   label: "Status",
-                  type: "badge",
-                  badgeMap: {
-                    1: { label: "Active", variant: "default" },
-                    0: { label: "Inactive", variant: "secondary" },
-                  },
+                  type: "text",
+                  render: (value: number | null) => getStatusName(value),
                 },
                 { name: "created_at", label: "Created At", type: "datetime" },
                 { name: "updated_at", label: "Updated At", type: "datetime" },

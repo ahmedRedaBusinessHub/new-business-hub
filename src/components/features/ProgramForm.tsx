@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { Send, Trash2, Plus } from "lucide-react";
 import { staticListsCache } from "@/lib/staticListsCache";
+import { getLocalizedLabel } from "@/lib/localizedLabel";
+import { useI18n } from "@/hooks/useI18n";
 
 // Base schema for form fields
 const baseFormSchema = z.object({
@@ -79,10 +81,12 @@ interface JsonFieldItem {
 }
 
 export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
+  const { language } = useI18n();
   const isEdit = !!program;
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const [programTypes, setProgramTypes] = useState<StaticListOption[]>([]);
   const [programSubtypes, setProgramSubtypes] = useState<StaticListOption[]>([]);
+  const [programStatuses, setProgramStatuses] = useState<StaticListOption[]>([]);
   const [loadingStaticLists, setLoadingStaticLists] = useState(true);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [documentArFiles, setDocumentArFiles] = useState<File[]>([]);
@@ -194,6 +198,9 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
         
         const subtypesConfig = await staticListsCache.getByNamespace('program.subtypes');
         setProgramSubtypes(subtypesConfig);
+
+        const statusesConfig = await staticListsCache.getByNamespace('program.statuses');
+        setProgramStatuses(statusesConfig);
       } catch (error) {
         console.error('Error fetching static lists:', error);
         toast.error('Failed to load program types and subtypes');
@@ -450,7 +457,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
             helperText: "Program type (optional)",
             options: loadingStaticLists 
               ? [{ value: "", label: "Loading..." }]
-              : programTypes.map(t => ({ value: t.id.toString(), label: `${t.name_en} / ${t.name_ar}` })),
+              : programTypes.map(opt => ({ value: opt.id.toString(), label: getLocalizedLabel(opt.name_en, opt.name_ar, language) })),
           },
           {
             name: "subtype",
@@ -462,7 +469,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
             helperText: "Program subtype (optional)",
             options: loadingStaticLists 
               ? [{ value: "", label: "Loading..." }]
-              : programSubtypes.map(s => ({ value: s.id.toString(), label: `${s.name_en} / ${s.name_ar}` })),
+              : programSubtypes.map(s => ({ value: s.id.toString(), label: getLocalizedLabel(s.name_en, s.name_ar, language) })),
           },
           {
             name: "promo_video",
@@ -490,10 +497,9 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
             validation: formFieldSchema.shape.status,
             required: true,
             helperText: "Program status",
-            options: [
-              { value: "1", label: "Active" },
-              { value: "0", label: "Inactive" },
-            ],
+            options: programStatuses.length > 0
+              ? programStatuses.map((s) => ({ value: String(s.id), label: getLocalizedLabel(s.name_en, s.name_ar, language) }))
+              : [{ value: "1", label: "Active" }, { value: "0", label: "Inactive" }],
           },
           {
             name: "mainImage",

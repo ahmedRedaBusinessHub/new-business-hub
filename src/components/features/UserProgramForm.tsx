@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import { staticListsCache } from "@/lib/staticListsCache";
+import { getLocalizedLabel } from "@/lib/localizedLabel";
+import { useI18n } from "@/hooks/useI18n";
 
 interface User {
   id: number;
@@ -72,6 +74,7 @@ interface StatusOption {
 }
 
 export function UserProgramForm({ userProgram, programId, onSubmit, onCancel }: UserProgramFormProps) {
+  const { language } = useI18n();
   const isEdit = !!userProgram;
   const [users, setUsers] = useState<User[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
@@ -309,7 +312,7 @@ export function UserProgramForm({ userProgram, programId, onSubmit, onCancel }: 
               { value: "", label: "None" },
               ...statuses.map((status) => ({
                 value: status.id.toString(),
-                label: `${status.name_en} / ${status.name_ar}`,
+                label: getLocalizedLabel(status.name_en, status.name_ar, language),
               })),
             ],
           },

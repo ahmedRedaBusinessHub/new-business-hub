@@ -33,6 +33,8 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/Input";
 import { Search } from "lucide-react";
 import { staticListsCache } from "@/lib/staticListsCache";
+import { getLocalizedLabel } from "@/lib/localizedLabel";
+import { useI18n } from "@/hooks/useI18n";
 import {
   Pagination,
   PaginationContent,
@@ -49,6 +51,7 @@ interface ProgramUserProgramsProps {
 }
 
 export function ProgramUserPrograms({ programId }: ProgramUserProgramsProps) {
+  const { language } = useI18n();
   const [userPrograms, setUserPrograms] = useState<any[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -282,7 +285,7 @@ export function ProgramUserPrograms({ programId }: ProgramUserProgramsProps) {
   const getStatusName = (statusId: number | null): string => {
     if (statusId === null) return "-";
     const status = statuses.find(s => s.id === statusId);
-    return status ? `${status.name_en} / ${status.name_ar}` : String(statusId);
+    return status ? getLocalizedLabel(status.name_en, status.name_ar, language) : String(statusId);
   };
 
   const getDocuments = (userProgram: any): Array<{ name: string; file_id: number; file_url?: string }> => {

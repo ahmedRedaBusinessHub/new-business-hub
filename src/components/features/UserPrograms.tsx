@@ -25,12 +25,15 @@ import {
 } from "@/components/ui/Pagination";
 import { Select } from "@/components/ui/Select";
 import { staticListsCache } from "@/lib/staticListsCache";
+import { getLocalizedLabel } from "@/lib/localizedLabel";
+import { useI18n } from "@/hooks/useI18n";
 
 interface UserProgramsProps {
   userId: number;
 }
 
 export function UserPrograms({ userId }: UserProgramsProps) {
+  const { language } = useI18n();
   const [loading, setLoading] = useState(true);
   const [userPrograms, setUserPrograms] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -149,7 +152,7 @@ export function UserPrograms({ userId }: UserProgramsProps) {
   const getStatusName = (statusId: number | null): string => {
     if (statusId === null) return "-";
     const status = statuses.find(s => s.id === statusId);
-    return status ? `${status.name_en} / ${status.name_ar}` : String(statusId);
+    return status ? getLocalizedLabel(status.name_en, status.name_ar, language) : String(statusId);
   };
 
   if (loading) {
@@ -205,11 +208,7 @@ export function UserPrograms({ userId }: UserProgramsProps) {
                 {userPrograms.map((program: any) => (
                   <TableRow key={program.id}>
                     <TableCell>
-                      {program.programs?.name_ar 
-                        ? (program.programs?.name_en 
-                            ? `${program.programs.name_ar} / ${program.programs.name_en}` 
-                            : program.programs.name_ar)
-                        : (program.programs?.name_en || program.programs?.name || program.program_name || "-")}
+                      {getLocalizedLabel(program.programs?.name_en, program.programs?.name_ar, language) || program.program_name || "-"}
                     </TableCell>
                     <TableCell>
                       {getStatusName(program.status)}
@@ -308,14 +307,8 @@ export function UserPrograms({ userId }: UserProgramsProps) {
                   name: "program_name", 
                   label: "Program Name", 
                   type: "text", 
-                  render: (value: any, data: any) => {
-                    if (data.programs?.name_ar) {
-                      return data.programs.name_en 
-                        ? `${data.programs.name_ar} / ${data.programs.name_en}` 
-                        : data.programs.name_ar;
-                    }
-                    return data.programs?.name_en || data.programs?.name || "-";
-                  }
+                  render: (_value: any, data: any) =>
+                    getLocalizedLabel(data.programs?.name_en, data.programs?.name_ar, language) || data.programs?.name || "-"
                 },
                 { name: "company_name", label: "Company Name", type: "text" },
                 { name: "project_name", label: "Project Name", type: "text" },

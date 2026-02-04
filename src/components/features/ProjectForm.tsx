@@ -13,6 +13,8 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { toast } from "sonner";
 import { Send, Trash2 } from "lucide-react";
 import { staticListsCache } from "@/lib/staticListsCache";
+import { getLocalizedLabel } from "@/lib/localizedLabel";
+import { useI18n } from "@/hooks/useI18n";
 
 // Base schema for form fields (used in DynamicForm config)
 // Using simpler schema without preprocess to avoid Zod v4 compatibility issues
@@ -67,10 +69,12 @@ interface StaticListOption {
 }
 
 export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
+  const { language } = useI18n();
   const isEdit = !!project;
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const [projectTypes, setProjectTypes] = useState<StaticListOption[]>([]);
   const [projectCategories, setProjectCategories] = useState<StaticListOption[]>([]);
+  const [projectStatuses, setProjectStatuses] = useState<StaticListOption[]>([]);
   const [loadingStaticLists, setLoadingStaticLists] = useState(true);
   const [socialMediaLinks, setSocialMediaLinks] = useState<Record<string, string>>({});
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -218,6 +222,9 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
             { id: 3, name_en: 'Category 3', name_ar: 'فئة 3' },
           ]);
         }
+
+        const statusesConfig = await staticListsCache.getByNamespace('project.statuses');
+        setProjectStatuses(statusesConfig || []);
       } catch (error) {
         console.error('Error fetching static lists:', error);
         toast.error('Failed to load project types and categories');
@@ -417,7 +424,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
             helperText: "Project type (optional)",
             options: loadingStaticLists 
               ? [{ value: "", label: "Loading..." }]
-              : projectTypes.map(t => ({ value: t.id.toString(), label: `${t.name_en} / ${t.name_ar}` })),
+              : projectTypes.map(t => ({ value: t.id.toString(), label: getLocalizedLabel(t.name_en, t.name_ar, language) })),
           },
           {
             name: "link",
@@ -436,10 +443,12 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
             validation: formFieldSchema.shape.status,
             required: true,
             helperText: "Project status",
-            options: [
-              { value: "1", label: "Active" },
-              { value: "0", label: "Inactive" },
-            ],
+            options: projectStatuses.length > 0
+              ? projectStatuses.map((s) => ({ value: String(s.id), label: getLocalizedLabel(s.name_en, s.name_ar, language) }))
+              : [
+                  { value: "1", label: "Active" },
+                  { value: "0", label: "Inactive" },
+                ],
           },
           {
             name: "mainImage",
@@ -502,7 +511,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
                       htmlFor={`category-${category.id}`}
                       className="text-sm font-normal cursor-pointer"
                     >
-                      {category.name_en} / {category.name_ar}
+                      {getLocalizedLabel(category.name_en, category.name_ar, language)}
                     </Label>
                   </div>
                 ))

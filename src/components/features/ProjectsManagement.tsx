@@ -43,7 +43,9 @@ import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { useI18n } from "@/hooks/useI18n";
 import { staticListsCache } from "@/lib/staticListsCache";
+import { getLocalizedLabel } from "@/lib/localizedLabel";
 import { TypeName, CategoryNames } from "./ProjectViewHelpers";
+import { ProjectUserProjects } from "./ProjectUserProjects";
 
 export interface Project {
   id: number;
@@ -68,7 +70,7 @@ export interface Project {
 }
 
 export function ProjectsManagement() {
-  const { t } = useI18n("admin");
+  const { t, language } = useI18n("admin");
   const [projects, setProjects] = useState<Project[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -82,6 +84,29 @@ export function ProjectsManagement() {
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [projectStatuses, setProjectStatuses] = useState<{ id: number; name_en: string; name_ar: string }[]>([]);
+  const projectStatusesFetchedRef = useRef(false);
+
+  // Fetch project status list (only once)
+  useEffect(() => {
+    if (projectStatusesFetchedRef.current) return;
+    const fetchStatuses = async () => {
+      try {
+        projectStatusesFetchedRef.current = true;
+        const statusesConfig = await staticListsCache.getByNamespace("project.statuses");
+        setProjectStatuses(statusesConfig || []);
+      } catch {
+        projectStatusesFetchedRef.current = false;
+      }
+    };
+    fetchStatuses();
+  }, []);
+
+  const getStatusName = (statusId: number | null): string => {
+    if (statusId === null) return "-";
+    const status = projectStatuses.find((s) => s.id === statusId);
+    return status ? getLocalizedLabel(status.name_en, status.name_ar, language) : String(statusId);
+  };
 
   // Debounce search query
   useEffect(() => {
@@ -392,7 +417,7 @@ export function ProjectsManagement() {
                     <Badge
                       variant={project.status === 1 ? "default" : "secondary"}
                     >
-                      {project.status === 1 ? t("common.active") : t("common.inactive")}
+                      {getStatusName(project.status)}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -522,10 +547,15 @@ export function ProjectsManagement() {
             badges: [
               {
                 field: "status",
-                map: {
-                  1: { label: t("common.active"), variant: "default" },
-                  0: { label: t("common.inactive"), variant: "secondary" },
-                },
+                map: Object.fromEntries(
+                  projectStatuses.map((s) => [
+                    s.id,
+                    {
+                      label: getLocalizedLabel(s.name_en, s.name_ar, language),
+                      variant: (s.id === 1 ? "default" : "secondary") as "default" | "secondary",
+                    },
+                  ])
+                ),
               },
             ],
           }}
@@ -573,11 +603,8 @@ export function ProjectsManagement() {
                 {
                   name: "status",
                   label: "Status",
-                  type: "badge",
-                  badgeMap: {
-                    1: { label: "Active", variant: "default" },
-                    0: { label: "Inactive", variant: "secondary" },
-                  },
+                  type: "text",
+                  render: (value: number | null) => getStatusName(value),
                 },
                 {
                   name: "category_ids",
@@ -697,6 +724,13 @@ export function ProjectsManagement() {
                   },
                 },
               ],
+            },
+            {
+              id: "user-projects",
+              label: "User Projects",
+              customContent: (data: Project) => {
+                return <ProjectUserProjects projectId={data.id} />;
+              },
             },
           ]}
           maxWidth="4xl"

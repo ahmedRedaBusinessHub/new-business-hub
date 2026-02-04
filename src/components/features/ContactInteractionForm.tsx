@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import type { ContactInteraction } from "./ContactInteractionManagement";
 import DynamicForm from "../shared/DynamicForm";
 import { staticListsCache } from "@/lib/staticListsCache";
+import { getLocalizedLabel } from "@/lib/localizedLabel";
+import { useI18n } from "@/hooks/useI18n";
 import { FileUploader } from "@/components/ui/FileUploader";
 import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";
@@ -33,6 +35,7 @@ interface ContactInteractionFormProps {
 }
 
 export function ContactInteractionForm({ interaction, contactId, onSubmit, onCancel }: ContactInteractionFormProps) {
+  const { language } = useI18n();
   const isEdit = !!interaction;
   const [interactionTypes, setInteractionTypes] = useState<InteractionTypeConfig[]>([]);
   const [loadingInteractionTypes, setLoadingInteractionTypes] = useState(true);
@@ -123,7 +126,7 @@ export function ContactInteractionForm({ interaction, contactId, onSubmit, onCan
               { value: "", label: "None" },
               ...interactionTypes.map((type) => ({
                 value: type.id.toString(),
-                label: type.name_en,
+                label: getLocalizedLabel(type.name_en, type.name_ar, language),
               })),
             ],
           },

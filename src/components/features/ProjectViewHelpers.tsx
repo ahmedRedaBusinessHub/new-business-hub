@@ -1,12 +1,15 @@
 "use client";
 import { useState, useEffect } from "react";
 import { staticListsCache } from "@/lib/staticListsCache";
+import { getLocalizedLabel } from "@/lib/localizedLabel";
+import { useI18n } from "@/hooks/useI18n";
 
 interface TypeNameProps {
   typeId: number;
 }
 
 export function TypeName({ typeId }: TypeNameProps) {
+  const { language } = useI18n();
   const [typeName, setTypeName] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
@@ -20,7 +23,7 @@ export function TypeName({ typeId }: TypeNameProps) {
     const fetchType = async () => {
       try {
         const typeObj = await staticListsCache.getItemById('project.types', typeId);
-        setTypeName(typeObj ? typeObj.name_en : typeId.toString());
+        setTypeName(typeObj ? getLocalizedLabel(typeObj.name_en, typeObj.name_ar, language) : typeId.toString());
       } catch (error) {
         console.error('Error fetching type:', error);
         setTypeName(typeId.toString());
@@ -30,7 +33,7 @@ export function TypeName({ typeId }: TypeNameProps) {
     };
 
     fetchType();
-  }, [typeId]);
+  }, [typeId, language]);
 
   if (loading) return <span className="text-muted-foreground">Loading...</span>;
   return <span>{typeName}</span>;
@@ -41,6 +44,7 @@ interface CategoryNamesProps {
 }
 
 export function CategoryNames({ categoryIds }: CategoryNamesProps) {
+  const { language } = useI18n();
   const [categoryNames, setCategoryNames] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
@@ -54,7 +58,7 @@ export function CategoryNames({ categoryIds }: CategoryNamesProps) {
     const fetchCategories = async () => {
       try {
         const categories = await staticListsCache.getItemsByIds('project.categories', categoryIds);
-        setCategoryNames(categories.map(cat => cat.name_en).join(", "));
+        setCategoryNames(categories.map(cat => getLocalizedLabel(cat.name_en, cat.name_ar, language)).join(", "));
       } catch (error) {
         console.error('Error fetching categories:', error);
         setCategoryNames(categoryIds.join(", "));
@@ -64,7 +68,7 @@ export function CategoryNames({ categoryIds }: CategoryNamesProps) {
     };
 
     fetchCategories();
-  }, [categoryIds]);
+  }, [categoryIds, language]);
 
   if (loading) return <span className="text-muted-foreground">Loading...</span>;
   return <span>{categoryNames}</span>;

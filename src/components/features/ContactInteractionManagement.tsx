@@ -32,6 +32,7 @@ import {
 import { toast } from "sonner";
 import { useI18n } from "@/hooks/useI18n";
 import { staticListsCache } from "@/lib/staticListsCache";
+import { getLocalizedLabel } from "@/lib/localizedLabel";
 
 interface InteractionTypeConfig {
   id: number;
@@ -57,7 +58,7 @@ interface ContactInteractionManagementProps {
 }
 
 export function ContactInteractionManagement({ contactId }: ContactInteractionManagementProps) {
-  const { t } = useI18n("admin");
+  const { t, language } = useI18n("admin");
   const [interactions, setInteractions] = useState<ContactInteraction[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -84,7 +85,7 @@ export function ContactInteractionManagement({ contactId }: ContactInteractionMa
   const getInteractionTypeName = (typeId: number | null): string => {
     if (typeId === null) return "-";
     const type = interactionTypes.find(t => t.id === typeId);
-    return type?.name_en || String(typeId);
+    return type ? getLocalizedLabel(type.name_en, type.name_ar, language) : String(typeId);
   };
 
   const fetchInteractions = async () => {

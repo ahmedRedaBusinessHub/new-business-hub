@@ -37,6 +37,7 @@ import DynamicView, { type ViewHeader, type ViewTab } from "../shared/DynamicVie
 import { UserRoles } from "./UserRoles";
 import { UserAccessTokens } from "./UserAccessTokens";
 import { UserPrograms } from "./UserPrograms";
+import { UserProjects } from "./UserProjects";
 import { UserContacts } from "./UserContacts";
 import { UserResetPasswordTokens } from "./UserResetPasswordTokens";
 import {
@@ -571,6 +572,11 @@ export function UserManagement() {
       id: "programs",
       label: "Programs",
       customContent: viewingUser ? <UserPrograms userId={viewingUser.id} /> : null,
+    },
+    {
+      id: "projects",
+      label: "Applied Projects",
+      customContent: viewingUser ? <UserProjects userId={viewingUser.id} /> : null,
     },
     {
       id: "roles",

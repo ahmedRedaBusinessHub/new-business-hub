@@ -44,6 +44,7 @@ import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { useI18n } from "@/hooks/useI18n";
 import { staticListsCache } from "@/lib/staticListsCache";
+import { getLocalizedLabel } from "@/lib/localizedLabel";
 
 interface ContactTypeConfig {
   id: number;
@@ -66,7 +67,7 @@ export interface Contact {
 }
 
 export function ContactsManagement() {
-  const { t } = useI18n("admin");
+  const { t, language } = useI18n("admin");
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -104,7 +105,7 @@ export function ContactsManagement() {
   const getContactTypeName = (typeId: number | null): string => {
     if (typeId === null) return "-";
     const type = contactTypes.find(t => t.id === typeId);
-    return type?.name_en || String(typeId);
+    return type ? getLocalizedLabel(type.name_en, type.name_ar, language) : String(typeId);
   };
 
   // Debounce search query
