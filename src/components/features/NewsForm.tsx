@@ -37,7 +37,7 @@ const formSchema = baseFormSchema;
 
 interface NewsFormProps {
   news: News | null;
-  onSubmit: (data: Omit<News, "id" | "created_at" | "updated_at" | "main_image_url"> & { 
+  onSubmit: (data: Omit<News, "id" | "created_at" | "updated_at" | "main_image_url"> & {
     mainImage?: File[];
     imageIds?: File[];
   }) => void;
@@ -90,8 +90,8 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
   useEffect(() => {
     if (news?.social_media) {
       try {
-        const socialMedia = typeof news.social_media === 'string' 
-          ? JSON.parse(news.social_media) 
+        const socialMedia = typeof news.social_media === 'string'
+          ? JSON.parse(news.social_media)
           : news.social_media;
         setSocialMediaLinks(socialMedia || {});
       } catch {
@@ -118,7 +118,7 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
   const handleSubmit = async (data: Record<string, any>) => {
     try {
       const currentSocialMedia = socialMediaLinks || {};
-      
+
       const dataWithSocialMedia: Record<string, any> = {
         title_ar: data.title_ar ?? "",
         title_en: data.title_en ?? "",
@@ -126,22 +126,22 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
         detail_en: data.detail_en ?? "",
         status: data.status !== undefined && data.status !== null ? data.status : 1,
       };
-      
+
       dataWithSocialMedia.mainImage = data.mainImage;
       dataWithSocialMedia.imageIds = imageFiles.length > 0 ? imageFiles : undefined;
       dataWithSocialMedia.social_media = currentSocialMedia;
-      
+
       if (!formSchema) {
         throw new Error('Form schema is not defined');
       }
-      
+
       let validated;
       try {
         validated = formSchema.parse(dataWithSocialMedia);
       } catch (parseError: any) {
         throw parseError;
       }
-      
+
       onSubmit({
         title_ar: validated.title_ar,
         title_en: validated.title_en || null,
@@ -183,7 +183,7 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
           </div>
         </div>
       )}
-      
+
       <DynamicForm
         formId="news-form"
         className="w-full"
@@ -258,7 +258,7 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
           mainImage: undefined,
         }}
       />
-      
+
       <Tabs defaultValue="social" className="w-full mt-6">
         <TabsList className={`grid w-full h-auto p-1 bg-muted/50 rounded-xl ${isEdit ? 'grid-cols-2' : 'grid-cols-1'}`}>
           <TabsTrigger value="social" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">Social Media</TabsTrigger>
@@ -299,8 +299,8 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
                       return (
                         <div key={index} className="relative group rounded-xl overflow-hidden bg-muted/50">
                           <img
-                            src={url.startsWith('http') || url.startsWith('/api/public/file') 
-                              ? url 
+                            src={url.startsWith('http') || url.startsWith('/api/public/file')
+                              ? url
                               : `/api/public/file?file_url=${encodeURIComponent(url)}`}
                             alt={`Image ${index + 1}`}
                             className="w-full h-32 object-cover"
@@ -320,13 +320,13 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
                 </div>
               </div>
             )}
-            
+
             <div className="space-y-3">
               <Label className="text-sm font-medium text-muted-foreground">Upload New Images</Label>
               <div className="bg-muted/50 rounded-xl p-4">
                 <ImageUploader
                   multiple={true}
-                  accept="image/*"
+                  accept=".jpg,.jpeg,.png,.gif,.webp,.avif,.bmp,.tiff"
                   maxSize={5 * 1024 * 1024}
                   onChange={(files) => setImageFiles(files)}
                   onError={(error) => toast.error(error)}
@@ -347,26 +347,26 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
             type="button"
             onClick={async (e) => {
               e.preventDefault();
-              
+
               const form = document.getElementById('news-form') as HTMLFormElement;
-              
+
               if (!form) {
                 toast.error('Form not found. Please try again.');
                 return;
               }
-              
+
               try {
                 form.requestSubmit();
               } catch (error) {
                 console.warn('requestSubmit failed, manually collecting form values', error);
-                
+
                 const formData = new FormData(form);
                 const formValues: Record<string, any> = {};
-                
+
                 formData.forEach((value, key) => {
                   formValues[key] = value;
                 });
-                
+
                 const allInputs = form.querySelectorAll('input, select, textarea');
                 allInputs.forEach((input) => {
                   const element = input as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
@@ -378,7 +378,7 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
                     }
                   }
                 });
-                
+
                 await handleSubmit(formValues);
               }
             }}

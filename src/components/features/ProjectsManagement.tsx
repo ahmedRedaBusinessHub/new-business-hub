@@ -164,7 +164,7 @@ export function ProjectsManagement() {
     fetchProjects();
   }, [currentPage, pageSize, debouncedSearch]); // Removed fetchProjects from dependencies
 
-  const handleCreate = async (projectData: Omit<Project, "id" | "created_at" | "updated_at" | "main_image_url"> & { 
+  const handleCreate = async (projectData: Omit<Project, "id" | "created_at" | "updated_at" | "main_image_url"> & {
     mainImage?: File[];
     imageIds?: File[];
     fileIds?: File[];
@@ -213,7 +213,7 @@ export function ProjectsManagement() {
     }
   };
 
-  const handleUpdate = async (projectData: Omit<Project, "id" | "created_at" | "updated_at" | "main_image_url"> & { 
+  const handleUpdate = async (projectData: Omit<Project, "id" | "created_at" | "updated_at" | "main_image_url"> & {
     mainImage?: File[];
     imageIds?: File[];
     fileIds?: File[];
@@ -542,7 +542,7 @@ export function ProjectsManagement() {
             title: (data: Project) => data.title_ar || data.title_en || "Project",
             subtitle: (data: Project) => data.detail_ar || data.detail_en || "",
             imageIdField: "main_image_id",
-            avatarFallback: (data: Project) => 
+            avatarFallback: (data: Project) =>
               data.title_ar?.[0] || data.title_en?.[0] || "P",
             badges: [
               {
@@ -574,13 +574,13 @@ export function ProjectsManagement() {
                     if (!value) {
                       return <p className="text-sm text-muted-foreground">No main image</p>;
                     }
-                    const imageUrl = value.startsWith('http') || value.startsWith('/api/public/file') 
-                      ? value 
+                    const imageUrl = value.startsWith('http') || value.startsWith('/api/public/file')
+                      ? value
                       : `/api/public/file?file_url=${encodeURIComponent(value)}`;
                     return (
                       <img
                         src={imageUrl}
-                        alt="Main Project Image"
+                        alt={imageUrl}
                         className="w-48 h-48 object-cover rounded-lg border"
                       />
                     );
@@ -638,9 +638,9 @@ export function ProjectsManagement() {
                         {Object.entries(socialMedia).map(([platform, url]) => (
                           <div key={platform} className="flex items-center gap-2">
                             <span className="font-medium capitalize">{platform}:</span>
-                            <a 
-                              href={url as string} 
-                              target="_blank" 
+                            <a
+                              href={url as string}
+                              target="_blank"
                               rel="noopener noreferrer"
                               className="text-primary hover:underline"
                             >
@@ -672,8 +672,8 @@ export function ProjectsManagement() {
                         {value.filter(url => url != null).map((url, index) => (
                           <img
                             key={index}
-                            src={url.startsWith('http') || url.startsWith('/api/public/file') 
-                              ? url 
+                            src={url.startsWith('http') || url.startsWith('/api/public/file')
+                              ? url
                               : `/api/public/file?file_url=${encodeURIComponent(url)}`}
                             alt={`Image ${index + 1}`}
                             className="w-full h-32 object-cover rounded-lg border"
@@ -702,15 +702,15 @@ export function ProjectsManagement() {
                       <div className="space-y-2">
                         {value.filter(url => url != null).map((url, index) => {
                           const fileName = url.split('/').pop() || `File ${index + 1}`;
-                          const fileUrl = url.startsWith('http') || url.startsWith('/api/public/file') 
-                            ? url 
+                          const fileUrl = url.startsWith('http') || url.startsWith('/api/public/file')
+                            ? url
                             : `/api/public/file?file_url=${encodeURIComponent(url)}`;
-                          
+
                           return (
                             <div key={index} className="flex items-center gap-2 p-2 border rounded-lg">
-                              <a 
-                                href={fileUrl} 
-                                target="_blank" 
+                              <a
+                                href={fileUrl}
+                                target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex-1 text-sm hover:underline text-primary"
                               >
@@ -725,13 +725,13 @@ export function ProjectsManagement() {
                 },
               ],
             },
-            {
-              id: "user-projects",
-              label: "User Projects",
-              customContent: (data: Project) => {
-                return <ProjectUserProjects projectId={data.id} />;
-              },
-            },
+            // {
+            //   id: "user-projects",
+            //   label: "User Projects",
+            //   customContent: (data: Project) => {
+            //     return <ProjectUserProjects projectId={data.id} />;
+            //   },
+            // },
           ]}
           maxWidth="4xl"
         />

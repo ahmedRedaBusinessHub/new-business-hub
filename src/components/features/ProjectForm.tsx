@@ -54,7 +54,7 @@ const formSchema = baseFormSchema;
 
 interface ProjectFormProps {
   project: Project | null;
-  onSubmit: (data: Omit<Project, "id" | "created_at" | "updated_at" | "main_image_url"> & { 
+  onSubmit: (data: Omit<Project, "id" | "created_at" | "updated_at" | "main_image_url"> & {
     mainImage?: File[];
     imageIds?: File[];
     fileIds?: File[];
@@ -159,12 +159,12 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
   // Fetch static lists for type and categories (only once)
   useEffect(() => {
     if (staticListsFetchedRef.current) return;
-    
+
     const fetchStaticLists = async () => {
       try {
         staticListsFetchedRef.current = true;
         setLoadingStaticLists(true);
-        
+
         // Fetch project types using cache
         const typesConfig = await staticListsCache.getByNamespace('project.types');
         if (typesConfig.length > 0) {
@@ -241,8 +241,8 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
   useEffect(() => {
     if (project?.social_media) {
       try {
-        const socialMedia = typeof project.social_media === 'string' 
-          ? JSON.parse(project.social_media) 
+        const socialMedia = typeof project.social_media === 'string'
+          ? JSON.parse(project.social_media)
           : project.social_media;
         setSocialMediaLinks(socialMedia || {});
       } catch {
@@ -251,7 +251,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
     } else {
       setSocialMediaLinks({});
     }
-    
+
     if (project?.category_ids) {
       setSelectedCategoryIds(project.category_ids);
     } else {
@@ -280,7 +280,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
       // These are managed outside the form, so we always use the latest state
       const currentSocialMedia = socialMediaLinks || {};
       const currentCategoryIds = selectedCategoryIds || [];
-      
+
       // Merge social media links into data for validation
       // Ensure all required fields are present with defaults
       // Only include fields that exist in the schema
@@ -291,7 +291,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
         detail_en: data.detail_en ?? "",
         status: data.status !== undefined && data.status !== null ? data.status : 1,
       };
-      
+
       // Add optional fields only if they exist
       // Convert type to number if it's a string (from form select)
       if (data.type !== undefined && data.type !== null && data.type !== "") {
@@ -300,34 +300,34 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
       } else {
         dataWithSocialMedia.type = null;
       }
-      
+
       // Handle link - ensure it's a string (empty string if null/undefined)
       if (data.link !== undefined && data.link !== null && data.link !== "") {
         dataWithSocialMedia.link = String(data.link);
       } else {
         dataWithSocialMedia.link = "";
       }
-      
+
       // Always include optional fields explicitly (even if undefined) to avoid Zod schema issues
       dataWithSocialMedia.mainImage = data.mainImage;
       dataWithSocialMedia.imageIds = imageFiles.length > 0 ? imageFiles : undefined;
       dataWithSocialMedia.fileIds = fileFiles.length > 0 ? fileFiles : undefined;
-      
+
       // Always include these as they're managed by state (use current state values)
       dataWithSocialMedia.social_media = currentSocialMedia;
       dataWithSocialMedia.category_ids = currentCategoryIds;
-      
+
       if (!formSchema) {
         throw new Error('Form schema is not defined');
       }
-      
+
       let validated;
       try {
         validated = formSchema.parse(dataWithSocialMedia);
       } catch (parseError: any) {
         throw parseError;
       }
-      
+
       onSubmit({
         title_ar: validated.title_ar,
         title_en: validated.title_en || null,
@@ -422,7 +422,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
             validation: formFieldSchema.shape.type,
             required: false,
             helperText: "Project type (optional)",
-            options: loadingStaticLists 
+            options: loadingStaticLists
               ? [{ value: "", label: "Loading..." }]
               : projectTypes.map(t => ({ value: t.id.toString(), label: getLocalizedLabel(t.name_en, t.name_ar, language) })),
           },
@@ -446,9 +446,9 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
             options: projectStatuses.length > 0
               ? projectStatuses.map((s) => ({ value: String(s.id), label: getLocalizedLabel(s.name_en, s.name_ar, language) }))
               : [
-                  { value: "1", label: "Active" },
-                  { value: "0", label: "Inactive" },
-                ],
+                { value: "1", label: "Active" },
+                { value: "0", label: "Inactive" },
+              ],
           },
           {
             name: "mainImage",
@@ -475,7 +475,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
           mainImage: undefined,
         }}
       />
-      
+
       <Tabs defaultValue="details" className="w-full">
         <TabsList className={`grid w-full ${isEdit ? 'grid-cols-4' : 'grid-cols-2'}`}>
           <TabsTrigger value="details">Details</TabsTrigger>
@@ -483,7 +483,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
           {isEdit && <TabsTrigger value="images">Images</TabsTrigger>}
           {isEdit && <TabsTrigger value="files">Files</TabsTrigger>}
         </TabsList>
-        
+
         <TabsContent value="details" className="space-y-4">
           {/* Category IDs - Multi-select using checkboxes */}
           <div className="space-y-2">
@@ -500,7 +500,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
                       id={`category-${category.id}`}
                       checked={selectedCategoryIds.includes(category.id)}
                       onCheckedChange={(checked: boolean) => {
-                        setSelectedCategoryIds(prev => 
+                        setSelectedCategoryIds(prev =>
                           checked
                             ? [...prev, category.id]
                             : prev.filter(id => id !== category.id)
@@ -554,35 +554,36 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
                     .map((url, index) => {
                       const imageId = project.image_ids?.[index];
                       return (
-                    <div key={index} className="relative group">
-                      <img
-                        src={url.startsWith('http') || url.startsWith('/api/public/file') 
-                          ? url 
-                          : `/api/public/file?file_url=${encodeURIComponent(url)}`}
-                        alt={`Image ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg border"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-2 right-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => handleDeleteImage(url, imageId)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  );
-                  })}
+                        <div key={index} className="relative group">
+                          <img
+                            src={url.startsWith('http') || url.startsWith('/api/public/file')
+                              ? url
+                              : `/api/public/file?file_url=${encodeURIComponent(url)}`}
+                            alt={`Image ${index + 1}`}
+                            className="w-full h-32 object-cover rounded-lg border"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-2 right-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => handleDeleteImage(url, imageId)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
             )}
-            
+
             <div className="space-y-2">
               <Label>Upload New Images</Label>
               <ImageUploader
                 multiple={true}
-                accept="image/*"
+
+                accept=".jpg,.jpeg,.png,.gif,.webp,.avif,.bmp,.tiff"
                 maxSize={5 * 1024 * 1024}
                 onChange={(files) => setImageFiles(files)}
                 onError={(error) => toast.error(error)}
@@ -604,38 +605,38 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
                   {project.file_urls
                     .filter(url => url != null && !deletedFileUrls.includes(url))
                     .map((url, index) => {
-                    const fileName = url.split('/').pop() || `File ${index + 1}`;
-                    const fileUrl = url.startsWith('http') || url.startsWith('/api/public/file') 
-                      ? url 
-                      : `/api/public/file?file_url=${encodeURIComponent(url)}`;
-                    const fileId = project.file_ids?.[index];
-                    
-                    return (
-                      <div key={index} className="flex items-center gap-2 p-2 border rounded-lg group hover:bg-muted/50 transition-colors">
-                        <a 
-                          href={fileUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="flex-1 text-sm hover:underline text-primary"
-                        >
-                          {fileName}
-                        </a>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                          onClick={() => handleDeleteFile(url, fileId)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    );
-                  })}
+                      const fileName = url.split('/').pop() || `File ${index + 1}`;
+                      const fileUrl = url.startsWith('http') || url.startsWith('/api/public/file')
+                        ? url
+                        : `/api/public/file?file_url=${encodeURIComponent(url)}`;
+                      const fileId = project.file_ids?.[index];
+
+                      return (
+                        <div key={index} className="flex items-center gap-2 p-2 border rounded-lg group hover:bg-muted/50 transition-colors">
+                          <a
+                            href={fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 text-sm hover:underline text-primary"
+                          >
+                            {fileName}
+                          </a>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => handleDeleteFile(url, fileId)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
             )}
-            
+
             <div className="space-y-2">
               <Label>Upload New Files</Label>
               <FileUploader
@@ -660,15 +661,15 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
             type="button"
             onClick={async (e) => {
               e.preventDefault();
-              
+
               // Find the form - now it should always be in DOM (moved outside TabsContent)
               const form = document.getElementById('project-form') as HTMLFormElement;
-              
+
               if (!form) {
                 toast.error('Form not found. Please try again.');
                 return;
               }
-              
+
               // Try to trigger form submission using requestSubmit
               // This will trigger react-hook-form's handleSubmit which validates and calls our handleSubmit
               try {
@@ -676,16 +677,16 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
               } catch (error) {
                 // If requestSubmit fails (e.g., form is hidden), manually collect values and submit
                 console.warn('requestSubmit failed, manually collecting form values', error);
-                
+
                 // Manually collect form values
                 const formData = new FormData(form);
                 const formValues: Record<string, any> = {};
-                
+
                 // Collect from FormData
                 formData.forEach((value, key) => {
                   formValues[key] = value;
                 });
-                
+
                 // Also collect from all inputs, selects, textareas (in case FormData missed some)
                 const allInputs = form.querySelectorAll('input, select, textarea');
                 allInputs.forEach((input) => {
@@ -698,7 +699,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
                     }
                   }
                 });
-                
+
                 // Call handleSubmit directly with collected values
                 // handleSubmit will merge in state values (socialMediaLinks, etc.)
                 await handleSubmit(formValues);

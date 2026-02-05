@@ -91,13 +91,13 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [documentArFiles, setDocumentArFiles] = useState<File[]>([]);
   const [documentEnFiles, setDocumentEnFiles] = useState<File[]>([]);
-  
+
   // JSON fields state
   const [values, setValues] = useState<JsonFieldItem[]>([{ icon: '', text: '' }]);
   const [progressSteps, setProgressSteps] = useState<JsonFieldItem[]>([{ number: 1, text: '' }]);
   const [applicationRequirements, setApplicationRequirements] = useState<JsonFieldItem[]>([{ icon: '', text: '' }]);
   const [documentsRequirements, setDocumentsRequirements] = useState<JsonFieldItem[]>([{ icon: '', text: '' }]);
-  
+
   const [deletedImageUrls, setDeletedImageUrls] = useState<string[]>([]);
   const [deletedDocumentAr, setDeletedDocumentAr] = useState(false);
   const [deletedDocumentEn, setDeletedDocumentEn] = useState(false);
@@ -111,7 +111,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
 
     // Get the document ID based on refColumn
     const docId = refColumn === 'document_ar_id' ? program.document_ar_id : program.document_en_id;
-    
+
     if (!docId) {
       toast.error("Document ID not found");
       return;
@@ -187,15 +187,15 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
   // Fetch static lists (only once)
   useEffect(() => {
     if (staticListsFetchedRef.current) return;
-    
+
     const fetchStaticLists = async () => {
       try {
         staticListsFetchedRef.current = true;
         setLoadingStaticLists(true);
-        
+
         const typesConfig = await staticListsCache.getByNamespace('program.types');
         setProgramTypes(typesConfig);
-        
+
         const subtypesConfig = await staticListsCache.getByNamespace('program.subtypes');
         setProgramSubtypes(subtypesConfig);
 
@@ -220,17 +220,17 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
         const parsedValues = typeof program.values === 'string' ? JSON.parse(program.values) : program.values;
         setValues(Array.isArray(parsedValues) && parsedValues.length > 0 ? parsedValues : [{ icon: '', text: '' }]);
       }
-      
+
       if (program.progress_steps) {
         const parsedSteps = typeof program.progress_steps === 'string' ? JSON.parse(program.progress_steps) : program.progress_steps;
         setProgressSteps(Array.isArray(parsedSteps) && parsedSteps.length > 0 ? parsedSteps : [{ number: 1, text: '' }]);
       }
-      
+
       if (program.application_requirements) {
         const parsedReqs = typeof program.application_requirements === 'string' ? JSON.parse(program.application_requirements) : program.application_requirements;
         setApplicationRequirements(Array.isArray(parsedReqs) && parsedReqs.length > 0 ? parsedReqs : [{ icon: '', text: '' }]);
       }
-      
+
       if (program.documents_requirements) {
         const parsedDocs = typeof program.documents_requirements === 'string' ? JSON.parse(program.documents_requirements) : program.documents_requirements;
         setDocumentsRequirements(Array.isArray(parsedDocs) && parsedDocs.length > 0 ? parsedDocs : [{ icon: '', text: '' }]);
@@ -266,43 +266,43 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
         promo_image: data.promo_image || null,
         status: data.status !== undefined && data.status !== null ? data.status : 1,
       };
-      
+
       if (data.type !== undefined && data.type !== null && data.type !== "") {
         const typeValue = typeof data.type === 'string' ? Number(data.type) : data.type;
         dataWithJsonFields.type = isNaN(typeValue) ? null : typeValue;
       } else {
         dataWithJsonFields.type = null;
       }
-      
+
       if (data.subtype !== undefined && data.subtype !== null && data.subtype !== "") {
         const subtypeValue = typeof data.subtype === 'string' ? Number(data.subtype) : data.subtype;
         dataWithJsonFields.subtype = isNaN(subtypeValue) ? null : subtypeValue;
       } else {
         dataWithJsonFields.subtype = null;
       }
-      
+
       dataWithJsonFields.mainImage = data.mainImage;
       dataWithJsonFields.imageIds = imageFiles.length > 0 ? imageFiles : undefined;
       dataWithJsonFields.document_ar = documentArFiles.length > 0 ? documentArFiles : undefined;
       dataWithJsonFields.document_en = documentEnFiles.length > 0 ? documentEnFiles : undefined;
-      
+
       // Add JSON fields
       dataWithJsonFields.values = values.filter(v => v.text.trim() !== '');
       dataWithJsonFields.progress_steps = progressSteps.filter(s => s.text.trim() !== '');
       dataWithJsonFields.application_requirements = applicationRequirements.filter(r => r.text.trim() !== '');
       dataWithJsonFields.documents_requirements = documentsRequirements.filter(d => d.text.trim() !== '');
-      
+
       if (!formSchema) {
         throw new Error('Form schema is not defined');
       }
-      
+
       let validated;
       try {
         validated = formSchema.parse(dataWithJsonFields);
       } catch (parseError: any) {
         throw parseError;
       }
-      
+
       onSubmit({
         name_ar: validated.name_ar,
         name_en: validated.name_en || null,
@@ -382,7 +382,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
           </div>
         </div>
       )}
-      
+
       <DynamicForm
         formId="program-form"
         className="w-full"
@@ -455,7 +455,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
             validation: formFieldSchema.shape.type,
             required: false,
             helperText: "Program type (optional)",
-            options: loadingStaticLists 
+            options: loadingStaticLists
               ? [{ value: "", label: "Loading..." }]
               : programTypes.map(opt => ({ value: opt.id.toString(), label: getLocalizedLabel(opt.name_en, opt.name_ar, language) })),
           },
@@ -467,7 +467,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
             validation: formFieldSchema.shape.subtype,
             required: false,
             helperText: "Program subtype (optional)",
-            options: loadingStaticLists 
+            options: loadingStaticLists
               ? [{ value: "", label: "Loading..." }]
               : programSubtypes.map(s => ({ value: s.id.toString(), label: getLocalizedLabel(s.name_en, s.name_ar, language) })),
           },
@@ -529,7 +529,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
           mainImage: undefined,
         }}
       />
-      
+
       <Tabs defaultValue="json-fields" className="w-full mt-6">
         <TabsList className={`grid w-full h-auto p-1 bg-muted/50 rounded-xl ${isEdit ? 'grid-cols-6' : 'grid-cols-5'}`}>
           <TabsTrigger value="json-fields" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">JSON Fields</TabsTrigger>
@@ -539,7 +539,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
           <TabsTrigger value="documents" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">Documents</TabsTrigger>
           {isEdit && <TabsTrigger value="images" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">Images</TabsTrigger>}
         </TabsList>
-        
+
         <TabsContent value="json-fields" className="space-y-4 pt-4">
           <Label className="text-sm font-medium text-muted-foreground">Values (Icon + Text)</Label>
           <div className="space-y-2 w-full">
@@ -559,10 +559,10 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
                     className="w-full bg-muted/50 border-0 rounded-md"
                   />
                 </div>
-                <Button 
-                  type="button" 
-                  variant="ghost" 
-                  size="icon" 
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => removeValue(index)}
                   className="text-muted-foreground hover:text-destructive shrink-0 ml-auto"
                 >
@@ -596,10 +596,10 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
                     className="w-full bg-muted/50 border-0 rounded-md"
                   />
                 </div>
-                <Button 
-                  type="button" 
-                  variant="ghost" 
-                  size="icon" 
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => removeProgressStep(index)}
                   className="text-muted-foreground hover:text-destructive shrink-0 ml-auto"
                 >
@@ -632,10 +632,10 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
                     className="w-full bg-muted/50 border-0 rounded-md"
                   />
                 </div>
-                <Button 
-                  type="button" 
-                  variant="ghost" 
-                  size="icon" 
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => removeApplicationRequirement(index)}
                   className="text-muted-foreground hover:text-destructive shrink-0 ml-auto"
                 >
@@ -668,10 +668,10 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
                     className="w-full bg-muted/50 border-0 rounded-md"
                   />
                 </div>
-                <Button 
-                  type="button" 
-                  variant="ghost" 
-                  size="icon" 
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => removeDocumentRequirement(index)}
                   className="text-muted-foreground hover:text-destructive shrink-0 ml-auto"
                 >
@@ -693,12 +693,12 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
                 <div className="flex items-center justify-between p-3 border rounded-lg bg-background">
                   <div className="flex items-center gap-2">
                     <span className="text-sm">
-                      <a 
-                        href={program.document_ar_url.startsWith('http') || program.document_ar_url.startsWith('/api/public/file') 
-                          ? program.document_ar_url 
-                          : `/api/public/file?file_url=${encodeURIComponent(program.document_ar_url)}`} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
+                      <a
+                        href={program.document_ar_url.startsWith('http') || program.document_ar_url.startsWith('/api/public/file')
+                          ? program.document_ar_url
+                          : `/api/public/file?file_url=${encodeURIComponent(program.document_ar_url)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-primary hover:underline"
                       >
                         {program.document_ar_url.split('/').pop()}
@@ -738,7 +738,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
               )}
             </div>
           </div>
-          
+
           <div className="space-y-3">
             <Label className="text-sm font-medium text-muted-foreground">English Document</Label>
             <div className="bg-muted/50 rounded-xl p-4">
@@ -746,12 +746,12 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
                 <div className="flex items-center justify-between p-3 border rounded-lg bg-background">
                   <div className="flex items-center gap-2">
                     <span className="text-sm">
-                      <a 
-                        href={program.document_en_url.startsWith('http') || program.document_en_url.startsWith('/api/public/file') 
-                          ? program.document_en_url 
-                          : `/api/public/file?file_url=${encodeURIComponent(program.document_en_url)}`} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
+                      <a
+                        href={program.document_en_url.startsWith('http') || program.document_en_url.startsWith('/api/public/file')
+                          ? program.document_en_url
+                          : `/api/public/file?file_url=${encodeURIComponent(program.document_en_url)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-primary hover:underline"
                       >
                         {program.document_en_url.split('/').pop()}
@@ -806,8 +806,8 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
                       return (
                         <div key={index} className="relative group rounded-xl overflow-hidden bg-muted/50">
                           <img
-                            src={url.startsWith('http') || url.startsWith('/api/public/file') 
-                              ? url 
+                            src={url.startsWith('http') || url.startsWith('/api/public/file')
+                              ? url
                               : `/api/public/file?file_url=${encodeURIComponent(url)}`}
                             alt={`Image ${index + 1}`}
                             className="w-full h-32 object-cover"
@@ -827,13 +827,13 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
                 </div>
               </div>
             )}
-            
+
             <div className="space-y-3">
               <Label className="text-sm font-medium text-muted-foreground">Upload New Images</Label>
               <div className="bg-muted/50 rounded-xl p-4">
                 <ImageUploader
                   multiple={true}
-                  accept="image/*"
+                  accept=".jpg,.jpeg,.png,.gif,.webp,.avif,.bmp,.tiff"
                   maxSize={5 * 1024 * 1024}
                   onChange={(files) => setImageFiles(files)}
                   onError={(error) => toast.error(error)}
@@ -854,26 +854,26 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
             type="button"
             onClick={async (e) => {
               e.preventDefault();
-              
+
               const form = document.getElementById('program-form') as HTMLFormElement;
-              
+
               if (!form) {
                 toast.error('Form not found. Please try again.');
                 return;
               }
-              
+
               try {
                 form.requestSubmit();
               } catch (error) {
                 console.warn('requestSubmit failed, manually collecting form values', error);
-                
+
                 const formData = new FormData(form);
                 const formValues: Record<string, any> = {};
-                
+
                 formData.forEach((value, key) => {
                   formValues[key] = value;
                 });
-                
+
                 const allInputs = form.querySelectorAll('input, select, textarea');
                 allInputs.forEach((input) => {
                   const element = input as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
@@ -885,7 +885,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
                     }
                   }
                 });
-                
+
                 await handleSubmit(formValues);
               }
             }}

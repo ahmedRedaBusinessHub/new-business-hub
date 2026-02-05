@@ -12,7 +12,7 @@ interface ImageUploaderProps {
 }
 
 export const ImageUploader: React.FC<ImageUploaderProps> = ({
-  accept = 'image/*',
+  accept = ".jpg,.jpeg,.png,.gif,.webp,.avif,.bmp,.tiff",
   multiple = false,
   maxSize = 5 * 1024 * 1024,
   onChange,
@@ -93,11 +93,10 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
-        className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-          isDragging
+        className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${isDragging
             ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
             : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500'
-        }`}
+          }`}
       >
         <input
           ref={inputRef}

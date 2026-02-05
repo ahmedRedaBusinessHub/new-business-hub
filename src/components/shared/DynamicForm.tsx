@@ -60,37 +60,37 @@ export type FormField = {
   name: string;
   label: string;
   type:
-    | "text"
-    | "email"
-    | "password"
-    | "number"
-    | "date"
-    | "datetime-local"
-    | "time"
-    | "week"
-    | "month"
-    | "url"
-    | "tel"
-    | "search"
-    | "textarea"
-    | "select"
-    | "checkbox"
-    | "radio"
-    | "switch"
-    | "toggle"
-    | "slider"
-    | "range"
-    | "color"
-    | "file"
-    | "fileuploader"
-    | "imageuploader"
-    | "tags"
-    | "calendar"
-    | "richtext"
-    | "map"
-    | "rating"
-    | "section"
-    | "hidden";
+  | "text"
+  | "email"
+  | "password"
+  | "number"
+  | "date"
+  | "datetime-local"
+  | "time"
+  | "week"
+  | "month"
+  | "url"
+  | "tel"
+  | "search"
+  | "textarea"
+  | "select"
+  | "checkbox"
+  | "radio"
+  | "switch"
+  | "toggle"
+  | "slider"
+  | "range"
+  | "color"
+  | "file"
+  | "fileuploader"
+  | "imageuploader"
+  | "tags"
+  | "calendar"
+  | "richtext"
+  | "map"
+  | "rating"
+  | "section"
+  | "hidden";
   placeholder?: string;
   options?: Array<{ value: string; label: string }>;
   validation: z.ZodTypeAny;
@@ -245,10 +245,10 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
       // onSuccess is NOT called, so:
       // - reset() is NOT called (form data is preserved)
       // - onSuccess callback is NOT called (modal stays open)
-      
+
       // Preserve current form values - do NOT reset
       const currentValues = getValues();
-      
+
       // Set field-specific errors if provided
       if (e.fieldErrors) {
         Object.keys(e.fieldErrors).forEach((fieldName) => {
@@ -258,18 +258,18 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
           });
         });
       }
-      
+
       // Always show error message toast (user requested to show message)
       // Show the original API message if available, otherwise use the error message
       const displayMessage = (e as any).originalMessage || e.message || "An error occurred. Please check the form for details.";
-      
+
       if (onError) {
         onError(e);
       } else {
         // Show toast with error message (prefer original API message)
         toast.error(displayMessage);
       }
-      
+
       // DO NOT reset form here - form data must be preserved
       // DO NOT call onSuccess here - modal must stay open
       // Form values are already preserved in currentValues if needed
@@ -308,8 +308,8 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
         case "search":
           return (
             <FieldWrapper {...wrapperProps}>
-              <Input 
-                {...register(field.name)} 
+              <Input
+                {...register(field.name)}
                 type={field.type}
                 placeholder={field.placeholder}
               />
@@ -330,8 +330,8 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                 name={field.name}
                 control={control}
                 render={({ field: controllerField }) => (
-                  <Select 
-                    {...controllerField} 
+                  <Select
+                    {...controllerField}
                     error={error}
                     value={controllerField.value ?? ""}
                     options={field.options}
@@ -386,7 +386,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                 control={control}
                 render={({ field: controllerField }) => (
                   <ImageUploader
-                    accept={field.accept || "image/*"}
+                    accept={field.accept || ".jpg,.jpeg,.png,.gif,.webp,.avif,.bmp,.tiff"}
                     multiple={field.multiple || false}
                     maxSize={field.maxSize || 5 * 1024 * 1024}
                     onChange={(files) => controllerField.onChange(files)}
@@ -439,7 +439,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
     // Use sm: breakpoint (640px) for 2-column layout to work better with medium modals (max-w-4xl = 896px)
     return "col-span-12 sm:col-span-6";
   };
-  
+
   const handleFormSubmit = async (data: Record<string, any>) => {
     try {
       // Use mutateAsync - if it throws, onError is called, onSuccess is NOT called

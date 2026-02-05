@@ -84,7 +84,7 @@ export function GalleryForm({ gallery, onSubmit, onCancel }: GalleryFormProps) {
     try {
       setIsSubmitting(true);
       const validated = formSchema.parse(data);
-      
+
       await onSubmit({
         title_ar: validated.title_ar,
         title_en: validated.title_en || null,
@@ -194,8 +194,8 @@ export function GalleryForm({ gallery, onSubmit, onCancel }: GalleryFormProps) {
                     return (
                       <div key={index} className="relative group">
                         <img
-                          src={url.startsWith('http') || url.startsWith('/api/public/file') 
-                            ? url 
+                          src={url.startsWith('http') || url.startsWith('/api/public/file')
+                            ? url
                             : `/api/public/file?file_url=${encodeURIComponent(url)}`}
                           alt={`Image ${index + 1}`}
                           className="w-full h-32 object-cover rounded-lg border"
@@ -215,12 +215,12 @@ export function GalleryForm({ gallery, onSubmit, onCancel }: GalleryFormProps) {
               </div>
             </div>
           )}
-          
+
           <div className="space-y-2">
             <Label>Upload New Images</Label>
             <ImageUploader
               multiple={true}
-              accept="image/*"
+              accept=".jpg,.jpeg,.png,.gif,.webp,.avif,.bmp,.tiff"
               maxSize={5 * 1024 * 1024}
               onChange={(files) => setImageFiles(files)}
               onError={(error) => toast.error(error)}
@@ -234,8 +234,8 @@ export function GalleryForm({ gallery, onSubmit, onCancel }: GalleryFormProps) {
 
       {/* Submit Button */}
       <div className="flex justify-end pt-4">
-        <Button 
-          type="button" 
+        <Button
+          type="button"
           disabled={isSubmitting}
           onClick={async () => {
             setIsSubmitting(true);
@@ -245,21 +245,21 @@ export function GalleryForm({ gallery, onSubmit, onCancel }: GalleryFormProps) {
                 toast.error("Form not found");
                 return;
               }
-              
+
               // Try to trigger form submission using requestSubmit
               try {
                 form.requestSubmit();
               } catch (error) {
                 console.warn('requestSubmit failed, manually collecting form values', error);
-                
+
                 // Manually collect form values
                 const formData = new FormData(form);
                 const formValues: Record<string, any> = {};
-                
+
                 formData.forEach((value, key) => {
                   formValues[key] = value;
                 });
-                
+
                 const allInputs = form.querySelectorAll('input, select, textarea');
                 allInputs.forEach((input) => {
                   const element = input as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
@@ -271,7 +271,7 @@ export function GalleryForm({ gallery, onSubmit, onCancel }: GalleryFormProps) {
                     }
                   }
                 });
-                
+
                 await handleFormSubmit(formValues);
               }
             } finally {
