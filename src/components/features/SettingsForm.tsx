@@ -51,14 +51,20 @@ export function SettingsForm({
             required: true,
             helperText: "A descriptive name for this setting",
           },
+
           {
             name: "namespace",
             label: "Namespace",
-            type: "text",
+            type: "select",
             placeholder: "e.g., app.title",
             validation: formSchema.shape.namespace,
             required: true,
             helperText: "Unique identifier for this setting (e.g., app.title, site.name)",
+            options: [
+              { value: "TWO_FACTOR_AUTHENTICATION_FLAG", label: "TWO_FACTOR_AUTHENTICATION_FLAG" },
+              { value: "Unauthorized", label: "Unauthorized" },
+
+            ],
           },
           {
             name: "key_value",

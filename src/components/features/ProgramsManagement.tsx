@@ -106,13 +106,13 @@ export function ProgramsManagement() {
   // Fetch static lists for type, subtype, and status (only once)
   useEffect(() => {
     if (staticListsFetchedRef.current) return;
-    
+
     const fetchStaticLists = async () => {
       try {
         staticListsFetchedRef.current = true;
         const typesConfig = await staticListsCache.getByNamespace('program.types');
         setProgramTypes(typesConfig);
-        
+
         const subtypesConfig = await staticListsCache.getByNamespace('program.subtypes');
         setProgramSubtypes(subtypesConfig);
 
@@ -203,10 +203,10 @@ export function ProgramsManagement() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, pageSize, debouncedSearch]);
 
-  const handleCreate = async (programData: Omit<Program, "id" | "created_at" | "updated_at" | "organization_id"> & { 
-    mainImage?: File[]; 
-    imageIds?: File[]; 
-    document_ar?: File[]; 
+  const handleCreate = async (programData: Omit<Program, "id" | "created_at" | "updated_at" | "organization_id"> & {
+    mainImage?: File[];
+    imageIds?: File[];
+    document_ar?: File[];
     document_en?: File[];
   }) => {
     try {
@@ -262,10 +262,10 @@ export function ProgramsManagement() {
     }
   };
 
-  const handleUpdate = async (programData: Omit<Program, "id" | "created_at" | "updated_at" | "organization_id"> & { 
-    mainImage?: File[]; 
-    imageIds?: File[]; 
-    document_ar?: File[]; 
+  const handleUpdate = async (programData: Omit<Program, "id" | "created_at" | "updated_at" | "organization_id"> & {
+    mainImage?: File[];
+    imageIds?: File[];
+    document_ar?: File[];
     document_en?: File[];
   }) => {
     if (!editingProgram) return;
@@ -655,8 +655,13 @@ export function ProgramsManagement() {
                   <div className="space-y-2">
                     {values.map((item: any, index: number) => (
                       <div key={index} className="flex items-center gap-3 p-3 border rounded-lg bg-muted/50">
-                        {item.icon && <span className="text-lg">{item.icon}</span>}
-                        <span>{item.text}</span>
+                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-medium">
+                          {item.number || index + 1}
+                        </span>
+                        <div className="flex flex-col gap-2">
+                          <span className="text-sm font-medium">{item.text_ar}</span>
+                          <span className="text-sm font-medium">{item.text_en}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -678,7 +683,10 @@ export function ProgramsManagement() {
                         <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-medium">
                           {item.number || index + 1}
                         </span>
-                        <span>{item.text}</span>
+                        <div className="flex flex-col gap-2">
+                          <span className="text-sm font-medium">{item.text_ar}</span>
+                          <span className="text-sm font-medium">{item.text_en}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -697,8 +705,13 @@ export function ProgramsManagement() {
                   <div className="space-y-2">
                     {reqs.map((item: any, index: number) => (
                       <div key={index} className="flex items-center gap-3 p-3 border rounded-lg bg-muted/50">
-                        {item.icon && <span className="text-lg">{item.icon}</span>}
-                        <span>{item.text}</span>
+                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-medium">
+                          {item.number || index + 1}
+                        </span>
+                        <div className="flex flex-col gap-2">
+                          <span className="text-sm font-medium">{item.text_ar}</span>
+                          <span className="text-sm font-medium">{item.text_en}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -717,8 +730,13 @@ export function ProgramsManagement() {
                   <div className="space-y-2">
                     {reqs.map((item: any, index: number) => (
                       <div key={index} className="flex items-center gap-3 p-3 border rounded-lg bg-muted/50">
-                        {item.icon && <span className="text-lg">{item.icon}</span>}
-                        <span>{item.text}</span>
+                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-medium">
+                          {item.number || index + 1}
+                        </span>
+                        <div className="flex flex-col gap-2">
+                          <span className="text-sm font-medium">{item.text_ar}</span>
+                          <span className="text-sm font-medium">{item.text_en}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -739,9 +757,9 @@ export function ProgramsManagement() {
                     {hasDocAr && (
                       <div className="p-4 border rounded-lg bg-muted/50">
                         <p className="text-sm font-medium mb-2">Arabic Document</p>
-                        <a 
-                          href={data.document_ar_url!.startsWith('http') || data.document_ar_url!.startsWith('/api/public/file') 
-                            ? data.document_ar_url! 
+                        <a
+                          href={data.document_ar_url!.startsWith('http') || data.document_ar_url!.startsWith('/api/public/file')
+                            ? data.document_ar_url!
                             : `/api/public/file?file_url=${encodeURIComponent(data.document_ar_url!)}`}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -754,9 +772,9 @@ export function ProgramsManagement() {
                     {hasDocEn && (
                       <div className="p-4 border rounded-lg bg-muted/50">
                         <p className="text-sm font-medium mb-2">English Document</p>
-                        <a 
-                          href={data.document_en_url!.startsWith('http') || data.document_en_url!.startsWith('/api/public/file') 
-                            ? data.document_en_url! 
+                        <a
+                          href={data.document_en_url!.startsWith('http') || data.document_en_url!.startsWith('/api/public/file')
+                            ? data.document_en_url!
                             : `/api/public/file?file_url=${encodeURIComponent(data.document_en_url!)}`}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -785,8 +803,8 @@ export function ProgramsManagement() {
                       <div>
                         <p className="text-sm font-medium mb-2">Main Image</p>
                         <img
-                          src={data.main_image_url!.startsWith('http') || data.main_image_url!.startsWith('/api/public/file') 
-                            ? data.main_image_url! 
+                          src={data.main_image_url!.startsWith('http') || data.main_image_url!.startsWith('/api/public/file')
+                            ? data.main_image_url!
                             : `/api/public/file?file_url=${encodeURIComponent(data.main_image_url!)}`}
                           alt="Main"
                           className="max-w-xs h-auto rounded-lg border"
@@ -800,8 +818,8 @@ export function ProgramsManagement() {
                           {data.image_urls!.filter(url => url != null).map((url, index) => (
                             <img
                               key={index}
-                              src={url.startsWith('http') || url.startsWith('/api/public/file') 
-                                ? url 
+                              src={url.startsWith('http') || url.startsWith('/api/public/file')
+                                ? url
                                 : `/api/public/file?file_url=${encodeURIComponent(url)}`}
                               alt={`Image ${index + 1}`}
                               className="w-full h-32 object-cover rounded-lg border"

@@ -36,7 +36,7 @@ export function ObjectForm({ object, allObjects, onSubmit, onCancel }: ObjectFor
     try {
       setIsSubmitting(true);
       const validated = formSchema.parse(data);
-      
+
       onSubmit({
         name: validated.name,
         namespace: validated.namespace,
@@ -71,12 +71,38 @@ export function ObjectForm({ object, allObjects, onSubmit, onCancel }: ObjectFor
         {
           name: "namespace",
           label: "Namespace",
-          type: "text",
+          type: "select",
           placeholder: "e.g., admin.users, admin.settings",
           validation: formSchema.shape.namespace,
           required: true,
           helperText: "Unique identifier (lowercase, dots, dashes, underscores)",
+          options: [
+
+            { value: "all", label: "all" },
+            { value: "news", label: "news" },
+
+            { value: "programs", label: "programs" },
+            { value: "projects", label: "projects" },
+            { value: "reviews", label: "reviews" },
+            { value: "dashboard", label: "dashboard" },
+            { value: "users", label: "users" },
+            { value: "newsletter-subscriptions", label: "newsletter-subscriptions" },
+            { value: "iso-companies", label: "iso-companies" },
+            { value: "success-partners", label: "success-partners" },
+            { value: "contacts", label: "contacts" },
+            { value: "roles", label: "roles" },
+            { value: "objects", label: "objects" },
+            { value: "galleries", label: "galleries" },
+            { value: "static-lists", label: "static-lists" },
+            { value: "settings", label: "settings" },
+            { value: "cache-management", label: "cache-management" },
+            { value: "permissions", label: "permissions" },
+            { value: "role-permissions", label: "role-permissions" },
+            { value: "user-roles", label: "user-roles" }
+
+          ],
         },
+
         {
           name: "type",
           label: "Type",

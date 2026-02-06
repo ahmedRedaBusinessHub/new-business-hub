@@ -75,9 +75,10 @@ interface StaticListOption {
 }
 
 interface JsonFieldItem {
-  icon?: string;
-  text: string;
-  number?: number;
+
+  text_ar: string;
+  text_en: string;
+  number: number;
 }
 
 export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
@@ -93,10 +94,10 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
   const [documentEnFiles, setDocumentEnFiles] = useState<File[]>([]);
 
   // JSON fields state
-  const [values, setValues] = useState<JsonFieldItem[]>([{ icon: '', text: '' }]);
-  const [progressSteps, setProgressSteps] = useState<JsonFieldItem[]>([{ number: 1, text: '' }]);
-  const [applicationRequirements, setApplicationRequirements] = useState<JsonFieldItem[]>([{ icon: '', text: '' }]);
-  const [documentsRequirements, setDocumentsRequirements] = useState<JsonFieldItem[]>([{ icon: '', text: '' }]);
+  const [values, setValues] = useState<JsonFieldItem[]>([{ number: 1, text_ar: '', text_en: '' }]);
+  const [progressSteps, setProgressSteps] = useState<JsonFieldItem[]>([{ number: 1, text_ar: '', text_en: '' }]);
+  const [applicationRequirements, setApplicationRequirements] = useState<JsonFieldItem[]>([{ number: 1, text_ar: '', text_en: '' }]);
+  const [documentsRequirements, setDocumentsRequirements] = useState<JsonFieldItem[]>([{ number: 1, text_ar: '', text_en: '' }]);
 
   const [deletedImageUrls, setDeletedImageUrls] = useState<string[]>([]);
   const [deletedDocumentAr, setDeletedDocumentAr] = useState(false);
@@ -287,10 +288,10 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
       dataWithJsonFields.document_en = documentEnFiles.length > 0 ? documentEnFiles : undefined;
 
       // Add JSON fields
-      dataWithJsonFields.values = values.filter(v => v.text.trim() !== '');
-      dataWithJsonFields.progress_steps = progressSteps.filter(s => s.text.trim() !== '');
-      dataWithJsonFields.application_requirements = applicationRequirements.filter(r => r.text.trim() !== '');
-      dataWithJsonFields.documents_requirements = documentsRequirements.filter(d => d.text.trim() !== '');
+      dataWithJsonFields.values = values.filter(v => v.text_ar.trim() !== '');
+      dataWithJsonFields.progress_steps = progressSteps.filter(s => s.text_ar.trim() !== '');
+      dataWithJsonFields.application_requirements = applicationRequirements.filter(r => r.text_ar.trim() !== '');
+      dataWithJsonFields.documents_requirements = documentsRequirements.filter(d => d.text_ar.trim() !== '');
 
       if (!formSchema) {
         throw new Error('Form schema is not defined');
@@ -332,7 +333,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
   };
 
   // JSON field handlers
-  const addValue = () => setValues([...values, { icon: '', text: '' }]);
+  const addValue = () => setValues([...values, { number: values.length + 1, text_ar: '', text_en: '' }]);
   const removeValue = (index: number) => setValues(values.filter((_, i) => i !== index));
   const updateValue = (index: number, field: keyof JsonFieldItem, value: string | number) => {
     const updated = [...values];
@@ -340,7 +341,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
     setValues(updated);
   };
 
-  const addProgressStep = () => setProgressSteps([...progressSteps, { number: progressSteps.length + 1, text: '' }]);
+  const addProgressStep = () => setProgressSteps([...progressSteps, { number: progressSteps.length + 1, text_ar: '', text_en: '' }]);
   const removeProgressStep = (index: number) => setProgressSteps(progressSteps.filter((_, i) => i !== index));
   const updateProgressStep = (index: number, field: keyof JsonFieldItem, value: string | number) => {
     const updated = [...progressSteps];
@@ -348,7 +349,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
     setProgressSteps(updated);
   };
 
-  const addApplicationRequirement = () => setApplicationRequirements([...applicationRequirements, { icon: '', text: '' }]);
+  const addApplicationRequirement = () => setApplicationRequirements([...applicationRequirements, { number: applicationRequirements.length + 1, text_ar: '', text_en: '' }]);
   const removeApplicationRequirement = (index: number) => setApplicationRequirements(applicationRequirements.filter((_, i) => i !== index));
   const updateApplicationRequirement = (index: number, field: keyof JsonFieldItem, value: string | number) => {
     const updated = [...applicationRequirements];
@@ -356,7 +357,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
     setApplicationRequirements(updated);
   };
 
-  const addDocumentRequirement = () => setDocumentsRequirements([...documentsRequirements, { icon: '', text: '' }]);
+  const addDocumentRequirement = () => setDocumentsRequirements([...documentsRequirements, { number: documentsRequirements.length + 1, text_ar: '', text_en: '' }]);
   const removeDocumentRequirement = (index: number) => setDocumentsRequirements(documentsRequirements.filter((_, i) => i !== index));
   const updateDocumentRequirement = (index: number, field: keyof JsonFieldItem, value: string | number) => {
     const updated = [...documentsRequirements];
@@ -457,7 +458,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
             helperText: "Program type (optional)",
             options: loadingStaticLists
               ? [{ value: "", label: "Loading..." }]
-              : programTypes.map(opt => ({ value: opt.id.toString(), label: getLocalizedLabel(opt.name_en, opt.name_ar, language) })),
+              : programTypes.map(opt => ({ value: opt.id.toString(), label: getLocalizedLabel(opt.name_en, opt.name_ar, `${language}`) })),
           },
           {
             name: "subtype",
@@ -469,7 +470,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
             helperText: "Program subtype (optional)",
             options: loadingStaticLists
               ? [{ value: "", label: "Loading..." }]
-              : programSubtypes.map(s => ({ value: s.id.toString(), label: getLocalizedLabel(s.name_en, s.name_ar, language) })),
+              : programSubtypes.map(s => ({ value: s.id.toString(), label: getLocalizedLabel(s.name_en, s.name_ar, `${language}`) })),
           },
           {
             name: "promo_video",
@@ -498,7 +499,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
             required: true,
             helperText: "Program status",
             options: programStatuses.length > 0
-              ? programStatuses.map((s) => ({ value: String(s.id), label: getLocalizedLabel(s.name_en, s.name_ar, language) }))
+              ? programStatuses.map((s) => ({ value: String(s.id), label: getLocalizedLabel(s.name_en, s.name_ar, `${language}`) }))
               : [{ value: "1", label: "Active" }, { value: "0", label: "Inactive" }],
           },
           {
@@ -532,7 +533,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
 
       <Tabs defaultValue="json-fields" className="w-full mt-6">
         <TabsList className={`grid w-full h-auto p-1 bg-muted/50 rounded-xl ${isEdit ? 'grid-cols-6' : 'grid-cols-5'}`}>
-          <TabsTrigger value="json-fields" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">JSON Fields</TabsTrigger>
+          <TabsTrigger value="json-fields" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">Values</TabsTrigger>
           <TabsTrigger value="progress" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">Progress Steps</TabsTrigger>
           <TabsTrigger value="app-req" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">App Requirements</TabsTrigger>
           <TabsTrigger value="doc-req" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">Doc Requirements</TabsTrigger>
@@ -546,17 +547,23 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
             {values.map((value, index) => (
               <div key={index} className="flex items-center gap-2 w-full">
                 <Input
-                  placeholder="Icon"
-                  value={value.icon}
-                  onChange={(e) => updateValue(index, 'icon', e.target.value)}
+                  placeholder="Number"
+                  value={value.number}
+                  onChange={(e) => updateValue(index, 'number', e.target.value)}
                   className="w-20 shrink-0 bg-muted/50 border-0 rounded-md"
                 />
                 <div className="flex-1">
                   <Input
-                    placeholder="Text"
-                    value={value.text}
-                    onChange={(e) => updateValue(index, 'text', e.target.value)}
+                    placeholder="Text AR"
+                    value={value.text_ar}
+                    onChange={(e) => updateValue(index, 'text_ar', e.target.value)}
                     className="w-full bg-muted/50 border-0 rounded-md"
+                  />
+                  <Input
+                    placeholder="Text EN"
+                    value={value.text_en}
+                    onChange={(e) => updateValue(index, 'text_en', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md mt-2"
                   />
                 </div>
                 <Button
@@ -590,10 +597,16 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
                 />
                 <div className="flex-1">
                   <Input
-                    placeholder="Step description"
-                    value={step.text}
-                    onChange={(e) => updateProgressStep(index, 'text', e.target.value)}
+                    placeholder="Step description ar"
+                    value={step.text_ar}
+                    onChange={(e) => updateProgressStep(index, 'text_ar', e.target.value)}
                     className="w-full bg-muted/50 border-0 rounded-md"
+                  />
+                  <Input
+                    placeholder="Step description en"
+                    value={step.text_en}
+                    onChange={(e) => updateProgressStep(index, 'text_en', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md mt-2"
                   />
                 </div>
                 <Button
@@ -619,17 +632,23 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
             {applicationRequirements.map((req, index) => (
               <div key={index} className="flex items-center gap-2 w-full">
                 <Input
-                  placeholder="Icon"
-                  value={req.icon}
-                  onChange={(e) => updateApplicationRequirement(index, 'icon', e.target.value)}
+                  placeholder="Number"
+                  value={req.number}
+                  onChange={(e) => updateApplicationRequirement(index, 'number', e.target.value)}
                   className="w-20 shrink-0 bg-muted/50 border-0 rounded-md"
                 />
                 <div className="flex-1">
                   <Input
                     placeholder="Requirement"
-                    value={req.text}
-                    onChange={(e) => updateApplicationRequirement(index, 'text', e.target.value)}
+                    value={req.text_ar}
+                    onChange={(e) => updateApplicationRequirement(index, 'text_ar', e.target.value)}
                     className="w-full bg-muted/50 border-0 rounded-md"
+                  />
+                  <Input
+                    placeholder="Requirement"
+                    value={req.text_en}
+                    onChange={(e) => updateApplicationRequirement(index, 'text_en', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md mt-2"
                   />
                 </div>
                 <Button
@@ -655,17 +674,23 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
             {documentsRequirements.map((req, index) => (
               <div key={index} className="flex items-center gap-2 w-full">
                 <Input
-                  placeholder="Icon"
-                  value={req.icon}
-                  onChange={(e) => updateDocumentRequirement(index, 'icon', e.target.value)}
+                  placeholder="Number"
+                  value={req.number}
+                  onChange={(e) => updateDocumentRequirement(index, 'number', e.target.value)}
                   className="w-20 shrink-0 bg-muted/50 border-0 rounded-md"
                 />
                 <div className="flex-1">
                   <Input
                     placeholder="Requirement"
-                    value={req.text}
-                    onChange={(e) => updateDocumentRequirement(index, 'text', e.target.value)}
+                    value={req.text_ar}
+                    onChange={(e) => updateDocumentRequirement(index, 'text_ar', e.target.value)}
                     className="w-full bg-muted/50 border-0 rounded-md"
+                  />
+                  <Input
+                    placeholder="Requirement"
+                    value={req.text_en}
+                    onChange={(e) => updateDocumentRequirement(index, 'text_en', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md mt-2"
                   />
                 </div>
                 <Button

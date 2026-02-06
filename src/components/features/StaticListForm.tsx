@@ -32,8 +32,8 @@ export function StaticListForm({ staticList, onSubmit, onCancel }: StaticListFor
   useEffect(() => {
     if (staticList?.config) {
       try {
-        const config = typeof staticList.config === 'string' 
-          ? staticList.config 
+        const config = typeof staticList.config === 'string'
+          ? staticList.config
           : JSON.stringify(staticList.config, null, 2);
         setConfigJson(config);
       } catch {
@@ -67,7 +67,7 @@ export function StaticListForm({ staticList, onSubmit, onCancel }: StaticListFor
   const handleFormSubmit = async (data: Record<string, any>) => {
     try {
       setIsSubmitting(true);
-      
+
       // Validate JSON before submitting
       if (configJson.trim() && !validateJson(configJson)) {
         toast.error("Please fix the JSON configuration errors");
@@ -75,7 +75,7 @@ export function StaticListForm({ staticList, onSubmit, onCancel }: StaticListFor
       }
 
       const validated = formSchema.parse(data);
-      
+
       // Parse config JSON
       let config = null;
       if (configJson.trim()) {
@@ -86,7 +86,7 @@ export function StaticListForm({ staticList, onSubmit, onCancel }: StaticListFor
           return;
         }
       }
-      
+
       await onSubmit({
         name: validated.name,
         namespace: validated.namespace,
@@ -117,15 +117,33 @@ export function StaticListForm({ staticList, onSubmit, onCancel }: StaticListFor
             required: true,
             helperText: "Display name for the static list",
           },
+
           {
             name: "namespace",
             label: "Namespace",
-            type: "text",
+            type: "select",
             placeholder: "e.g., program.types, project.categories",
             validation: formSchema.shape.namespace,
             required: true,
             helperText: "Unique identifier (lowercase, dots, dashes, underscores)",
+            options: [
+              { value: "project.categories", label: "Project Categories" },
+              { value: "project.types", label: "Project Types" },
+
+              { value: "program.types", label: "Program Types" },
+
+              { value: "program.subtypes", label: "Program Subtypes" },
+              { value: "user_program.statuses", label: "User Program Statuses" },
+              { value: "contact.types", label: "Contact Types" },
+              { value: "contact_interaction.types", label: "Contact Interaction Types" },
+              { value: "user_project.statuses", label: "User Project Statuses" },
+              { value: "program.statuses", label: "Program Statuses" },
+              { value: "project.statuses", label: "Project Statuses" },
+
+            ],
           },
+
+
           {
             name: "order_no",
             label: "Order",
@@ -190,8 +208,8 @@ export function StaticListForm({ staticList, onSubmit, onCancel }: StaticListFor
 
       {/* Submit Button */}
       <div className="flex justify-end pt-4">
-        <Button 
-          type="button" 
+        <Button
+          type="button"
           disabled={isSubmitting || !!configError}
           onClick={async () => {
             setIsSubmitting(true);
@@ -201,19 +219,19 @@ export function StaticListForm({ staticList, onSubmit, onCancel }: StaticListFor
                 toast.error("Form not found");
                 return;
               }
-              
+
               try {
                 form.requestSubmit();
               } catch (error) {
                 console.warn('requestSubmit failed, manually collecting form values', error);
-                
+
                 const formData = new FormData(form);
                 const formValues: Record<string, any> = {};
-                
+
                 formData.forEach((value, key) => {
                   formValues[key] = value;
                 });
-                
+
                 const allInputs = form.querySelectorAll('input, select, textarea');
                 allInputs.forEach((input) => {
                   const element = input as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
@@ -225,7 +243,7 @@ export function StaticListForm({ staticList, onSubmit, onCancel }: StaticListFor
                     }
                   }
                 });
-                
+
                 await handleFormSubmit(formValues);
               }
             } finally {

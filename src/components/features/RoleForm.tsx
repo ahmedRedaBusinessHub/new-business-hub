@@ -62,14 +62,23 @@ export function RoleForm({ role, onSubmit, onCancel, onErrorStateChange }: RoleF
       required: true,
       helperText: "Name of the role (2+ characters)",
     },
+
+
     {
       name: "namespace",
       label: "Namespace",
-      type: "text",
+      type: "select",
       placeholder: "e.g., admin, manager, user",
       validation: formSchema.shape.namespace,
       required: true,
       helperText: "Unique identifier (lowercase, numbers, hyphens, underscores only)",
+      options: [
+        { value: "admin", label: "Admin" },
+        { value: "user", label: "User" },
+
+        { value: "operation", label: "Operation" }
+
+      ],
     },
     {
       name: "status",
