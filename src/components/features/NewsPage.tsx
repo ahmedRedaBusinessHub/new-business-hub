@@ -70,9 +70,10 @@ export default function NewsPage() {
                 ...(searchQuery && { search: searchQuery }),
             });
 
-            const response = await fetch(`/api/news?${params}`);
+            const response = await fetch(`/api/public/news?${params}`);
             if (response.ok) {
                 const data = await response.json();
+                console.log("🚀 ~ fetchNews ~ data:", data)
                 const newItems = Array.isArray(data.data) ? data.data : [];
 
                 setNews(prev => pagination.page === 1 ? newItems : [...prev, ...newItems]);
