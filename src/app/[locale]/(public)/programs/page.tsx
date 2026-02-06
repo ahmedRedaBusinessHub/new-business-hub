@@ -1,10 +1,11 @@
-import AcceleratorPage from "@/components/features/AcceleratorPage";
+import ProgramsPage from "@/components/features/ProgramsPage";
 
 import { createGenerateMetadata } from "@/lib/geo";
 
-export const generateMetadata = createGenerateMetadata("bookingAccelerator");
-function Accelerator() {
-  return <AcceleratorPage />;
+export const generateMetadata = createGenerateMetadata("allPrograms");
+
+function Programs() {
+  return <ProgramsPage />;
 }
 
-export default Accelerator;
+export default Programs;
