@@ -73,7 +73,7 @@ export default function GalleryPage() {
         </div>
       </section>
 
-      <GallerySection />
+      <GallerySection limit={1000} />
     </div>
   );
 }

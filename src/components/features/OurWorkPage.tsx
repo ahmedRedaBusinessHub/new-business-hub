@@ -76,8 +76,8 @@ export default function OurWorkPage() {
         </div>
       </section>
 
-      <ProjectsSection />
-      <CompaniesSection />
+      <ProjectsSection limit={1000} />
+      <CompaniesSection limit={1000} />
       <ReviewsSection />
       <NewsSection />
     </div>

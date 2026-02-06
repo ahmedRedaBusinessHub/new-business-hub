@@ -20,7 +20,11 @@ interface GalleryItem {
   image_urls: string[];
 }
 
-export default function GallerySection() {
+interface GallerySectionProps {
+  limit?: number;
+}
+
+export default function GallerySection({ limit = 6 }: GallerySectionProps) {
   const { t, language } = useI18n();
   const [galleries, setGalleries] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,7 +40,7 @@ export default function GallerySection() {
   useEffect(() => {
     const fetchGalleries = async () => {
       try {
-        const res = await fetch("/api/public/galleries?limit=6");
+        const res = await fetch(`/api/public/galleries?limit=${limit}`);
         if (res.ok) {
           const data = await res.json();
           setGalleries(data.data || []);
@@ -49,7 +53,7 @@ export default function GallerySection() {
     };
 
     fetchGalleries();
-  }, []);
+  }, [limit]);
 
   const getLocalized = (ar: string, en: string) => {
     return language === "ar" ? ar || en : en || ar;
@@ -181,7 +185,7 @@ export default function GallerySection() {
             );
           })}
         </div>
-        <div className="text-center pt-20 ">
+        {limit <= 6 && <div className="text-center pt-20 ">
           <Link href={"/gallery"}>
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -194,7 +198,7 @@ export default function GallerySection() {
               </span>
             </motion.div>
           </Link>
-        </div>
+        </div>}
       </div>
 
       {/* Gallery Modal */}
