@@ -17,6 +17,11 @@ export async function GET(request: NextRequest) {
             backendParams.append("search_by", "name_ar,name_en,detail_ar,detail_en");
         }
 
+        const type = searchParams.get("type");
+        if (type) {
+            backendParams.append("type", type);
+        }
+
         const res = await apiGet(`/public/programs?${backendParams.toString()}`, {
             requireAuth: false,
         });
