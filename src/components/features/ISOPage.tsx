@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
@@ -27,7 +28,7 @@ import {
 import { useI18n } from "@/hooks/useI18n";
 import DynamicForm from "../shared/DynamicForm";
 import { z } from "zod";
-import { ProductFormPage } from "./TestForm";
+// import { ProductFormPage } from "./TestForm";
 
 const isoValidations = {
   company: z.string(),
@@ -42,6 +43,18 @@ const isoValidations = {
 };
 export default function ISOPage() {
   const { t, language } = useI18n();
+  const [certificates, setCertificates] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/public/iso-companies')
+      .then(res => res.json())
+      .then(data => {
+        if (data?.data) {
+          setCertificates(data.data);
+        }
+      })
+      .catch(err => console.error(err));
+  }, []);
 
   const isoTypes = [
     {
@@ -374,7 +387,7 @@ export default function ISOPage() {
         </div>
       </section>
 
-      {/* ISO Types Section */}
+      {/* Certificates Section */}
       <section className="py-16 sm:py-24 relative">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
@@ -405,33 +418,40 @@ export default function ISOPage() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-            {isoTypes.map((type, index) => (
+            {certificates.map((cert, index) => (
               <motion.div
-                key={index}
+                key={cert.id || index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className="p-8 rounded-2xl glassmorphism group cursor-pointer"
+                className="p-8 rounded-2xl glassmorphism group cursor-pointer flex flex-col items-center text-center"
               >
                 <div
-                  className="w-14 h-14 rounded-xl mb-4 flex items-center justify-center"
+                  className="w-20 h-20 rounded-full mb-6 flex items-center justify-center overflow-hidden border-2 border-white/10"
                   style={{
-                    backgroundImage: `linear-gradient(135deg, var(--theme-primary), var(--theme-accent))`,
+                    backgroundColor: "var(--theme-primary)",
                   }}
                 >
-                  <type.icon className="w-7 h-7 text-white" />
+                  <Award className="w-8 h-8 text-white" />
+
                 </div>
                 <h3
-                  className="text-2xl mb-2"
+                  className="text-xl font-semibold mb-3"
                   style={{ color: "var(--theme-text-primary)" }}
                 >
-                  {type.label}
+                  {cert.certificate_code}
                 </h3>
-                <p style={{ color: "var(--theme-text-secondary)" }}>
-                  {type.desc}
-                </p>
+                <div
+                  className="px-3 py-1 rounded-full text-sm mb-4 bg-white/5"
+                  style={{ color: "var(--theme-accent)" }}
+                >
+                  {language === 'ar' ? cert.certificate_name_ar : cert.certificate_name_en}
+                </div>
+                {/* <p style={{ color: "var(--theme-text-secondary)" }}>
+                  {cert.company_name}
+                </p> */}
               </motion.div>
             ))}
           </div>

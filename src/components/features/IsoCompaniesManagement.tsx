@@ -59,6 +59,9 @@ export interface IsoCompany {
   organization_id: number;
   created_at: string | null;
   updated_at: string | null;
+  certificate_code: string | null;
+  certificate_name_ar: string | null;
+  certificate_name_en: string | null;
 }
 
 export function IsoCompaniesManagement() {
@@ -465,7 +468,7 @@ export function IsoCompaniesManagement() {
             title: (data: IsoCompany) => data.company_name || data.name || "ISO Company",
             subtitle: (data: IsoCompany) => data.position || "",
             imageIdField: "image_id",
-            avatarFallback: (data: IsoCompany) => 
+            avatarFallback: (data: IsoCompany) =>
               data.company_name?.[0] || data.name?.[0] || "I",
             badges: [
               {
@@ -489,6 +492,9 @@ export function IsoCompaniesManagement() {
                 { name: "email", label: "Email", type: "text" },
                 { name: "phone", label: "Phone", type: "text" },
                 { name: "website", label: "Website", type: "text" },
+                { name: "certificate_code", label: "Certificate Code", type: "text" },
+                { name: "certificate_name_ar", label: "Certificate Name (AR)", type: "text" },
+                { name: "certificate_name_en", label: "Certificate Name (EN)", type: "text" },
                 { name: "address", label: "Address", type: "text", colSpan: 12 },
                 { name: "notes", label: "Notes", type: "text", colSpan: 12 },
                 {

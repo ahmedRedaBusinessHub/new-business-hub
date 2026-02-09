@@ -12,6 +12,9 @@ const formSchema = z.object({
   phone: z.string().optional(),
   address: z.string().optional(),
   website: z.union([z.string().url("Invalid URL"), z.literal("")]).optional(),
+  certificate_code: z.string().optional(),
+  certificate_name_ar: z.string().optional(),
+  certificate_name_en: z.string().optional(),
   notes: z.string().optional(),
   status: z.coerce.number().int().min(0).max(1),
   mainImage: z.any().optional(),
@@ -43,7 +46,7 @@ export function IsoCompanyForm({ company, onSubmit, onCancel }: IsoCompanyFormPr
   const handleSubmit = async (data: Record<string, any>) => {
     try {
       const validated = formSchema.parse(data);
-      
+
       onSubmit({
         company_name: validated.company_name || null,
         name: validated.name,
@@ -52,6 +55,9 @@ export function IsoCompanyForm({ company, onSubmit, onCancel }: IsoCompanyFormPr
         phone: validated.phone || null,
         address: validated.address || null,
         website: validated.website || null,
+        certificate_code: validated.certificate_code || null,
+        certificate_name_ar: validated.certificate_name_ar || null,
+        certificate_name_en: validated.certificate_name_en || null,
         notes: validated.notes || null,
         image_id: company?.image_id || null,
         status: validated.status,
@@ -139,6 +145,33 @@ export function IsoCompanyForm({ company, onSubmit, onCancel }: IsoCompanyFormPr
             helperText: "Website URL (optional)",
           },
           {
+            name: "certificate_code",
+            label: "Certificate Code",
+            type: "text",
+            placeholder: "Enter certificate code",
+            validation: formSchema.shape.certificate_code,
+            required: false,
+            helperText: "Certificate code (optional)",
+          },
+          {
+            name: "certificate_name_ar",
+            label: "Certificate Name (Arabic)",
+            type: "text",
+            placeholder: "Enter certificate name in Arabic",
+            validation: formSchema.shape.certificate_name_ar,
+            required: false,
+            helperText: "Certificate name in Arabic (optional)",
+          },
+          {
+            name: "certificate_name_en",
+            label: "Certificate Name (English)",
+            type: "text",
+            placeholder: "Enter certificate name in English",
+            validation: formSchema.shape.certificate_name_en,
+            required: false,
+            helperText: "Certificate name in English (optional)",
+          },
+          {
             name: "address",
             label: "Address",
             type: "textarea",
@@ -188,6 +221,9 @@ export function IsoCompanyForm({ company, onSubmit, onCancel }: IsoCompanyFormPr
           email: company?.email || "",
           phone: company?.phone || "",
           website: company?.website || "",
+          certificate_code: company?.certificate_code || "",
+          certificate_name_ar: company?.certificate_name_ar || "",
+          certificate_name_en: company?.certificate_name_en || "",
           address: company?.address || "",
           notes: company?.notes || "",
           status: company?.status?.toString() || "1",
