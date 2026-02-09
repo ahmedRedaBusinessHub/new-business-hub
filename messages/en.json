@@ -604,6 +604,7 @@
         "mobileNumber": "05xxxxxxxx",
         "email": "example@email.com",
         "inquiryType": "Select inquiry type",
+        "loading": "Loading...",
         "requestDetails": "Write your inquiry details here"
       },
       "validation": {

@@ -1,7 +1,9 @@
 "use client";
 import { motion } from "motion/react";
 import { useI18n } from "@/hooks/useI18n";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { staticListsCache } from "@/lib/staticListsCache";
+import { getLocalizedLabel } from "@/lib/localizedLabel";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
@@ -11,6 +13,12 @@ import {
 } from "@/components/ui/Select";
 import { Mail, Phone, MapPin, Send, User, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
+
+interface ContactTypeConfig {
+  id: number;
+  name_en: string;
+  name_ar: string;
+}
 
 export default function ContactSection() {
   const { t, language } = useI18n("contact");
@@ -22,6 +30,22 @@ export default function ContactSection() {
     details: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contactTypes, setContactTypes] = useState<ContactTypeConfig[]>([]);
+  const [loadingContactTypes, setLoadingContactTypes] = useState(true);
+
+  useEffect(() => {
+    const fetchContactTypes = async () => {
+      try {
+        const types = await staticListsCache.getByNamespace("contact.types");
+        setContactTypes(types);
+      } catch (error) {
+        console.error("Error fetching contact types", error);
+      } finally {
+        setLoadingContactTypes(false);
+      }
+    };
+    fetchContactTypes();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,12 +79,20 @@ export default function ContactSection() {
     setIsSubmitting(true);
 
     try {
+      // const selectedType = contactTypes.find((t) => t.id.toString() === formData.inquiryType);
+      // const inquirySubject = selectedType
+      //   ? getLocalizedLabel(selectedType.name_en, selectedType.name_ar, language as string)
+      //   : formData.inquiryType;
+
       const response = await fetch("/api/public/contact-us", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          // inquiryType: inquirySubject,
+        }),
       });
 
       if (!response.ok) {
@@ -275,24 +307,25 @@ export default function ContactSection() {
                       setFormData({ ...formData, inquiryType: e.target.value })
                     }
                     error={null}
-                    className="glassmorphism border-white/20"
+                    className="glassmorphism border-white/20 appearance-none"
+
                   >
                     <option value="" disabled>
-                      {t("form.placeholders.inquiryType")}
+                      {loadingContactTypes ? t("form.placeholders.loading") : t("form.placeholders.inquiryType")}
                     </option>
-                    {Array.from({ length: 6 }).map((_, index) => (
+                    {contactTypes.map((type) => (
                       <option
-                        key={t(`inquiryTypes.${index}.value`)}
-                        value={t(`inquiryTypes.${index}.value`)}
+                        key={type.id}
+                        value={type.id.toString()}
                         className="text-gray-900"
                       >
-                        {t(`inquiryTypes.${index}.label`)}
+                        {getLocalizedLabel(type.name_en, type.name_ar, language as string)}
                       </option>
                     ))}
                   </Select>
                 </div>
 
-                {/* Request Details Field */}
+                {/* Request details Field */}
                 <div className="space-y-2">
                   <Label
                     htmlFor="details"

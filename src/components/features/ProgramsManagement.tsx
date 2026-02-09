@@ -61,6 +61,7 @@ export interface Program {
   from_datetime: string | null;
   to_datetime: string | null;
   last_registration_date: string | null;
+  price: string | null;
   type: number | null;
   subtype: number | null;
   values: any;
@@ -77,6 +78,7 @@ export interface Program {
   document_en_url?: string | null;
   main_image_url?: string | null;
   main_image_id?: number | null;
+  focusAreas?: any;
   image_urls?: string[];
   image_ids?: number[];
   created_at: string | null;
@@ -131,19 +133,19 @@ export function ProgramsManagement() {
   const getTypeName = (typeId: number | null) => {
     if (typeId === null) return "-";
     const type = programTypes.find(t => t.id === typeId);
-    return type ? getLocalizedLabel(type.name_en, type.name_ar, language) : String(typeId);
+    return type ? getLocalizedLabel(type.name_en, type.name_ar, `${language}`) : String(typeId);
   };
 
   const getSubtypeName = (subtypeId: number | null) => {
     if (subtypeId === null) return "-";
     const subtype = programSubtypes.find(s => s.id === subtypeId);
-    return subtype ? getLocalizedLabel(subtype.name_en, subtype.name_ar, language) : String(subtypeId);
+    return subtype ? getLocalizedLabel(subtype.name_en, subtype.name_ar, `${language}`) : String(subtypeId);
   };
 
   const getStatusName = (statusId: number | null) => {
     if (statusId === null) return "-";
     const status = programStatuses.find(s => s.id === statusId);
-    return status ? getLocalizedLabel(status.name_en, status.name_ar, language) : String(statusId);
+    return status ? getLocalizedLabel(status.name_en, status.name_ar, `${language}`) : String(statusId);
   };
 
   // Debounce search query
@@ -736,6 +738,33 @@ export function ProgramsManagement() {
                         <div className="flex flex-col gap-2">
                           <span className="text-sm font-medium">{item.text_ar}</span>
                           <span className="text-sm font-medium">{item.text_en}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              },
+            },
+            {
+              id: "focus-areas",
+              label: "Focus Areas",
+              customContent: (data: Program) => {
+                const areas = typeof data.focusAreas === 'string' ? JSON.parse(data.focusAreas || '[]') : (data.focusAreas || []);
+                if (!Array.isArray(areas) || areas.length === 0) {
+                  return <p className="text-muted-foreground">No focus areas defined</p>;
+                }
+                return (
+                  <div className="space-y-2">
+                    {areas.map((item: any, index: number) => (
+                      <div key={index} className="flex items-center gap-3 p-3 border rounded-lg bg-muted/50">
+                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-medium">
+                          {item.number || index + 1}
+                        </span>
+                        <div className="flex flex-col gap-2">
+                          <span className="text-sm font-medium">{item.text_ar}</span>
+                          <span className="text-sm font-medium">{item.text_en}</span>
+                          <span className="text-xs text-muted-foreground">{item.desc_ar}</span>
+                          <span className="text-xs text-muted-foreground">{item.desc_en}</span>
                         </div>
                       </div>
                     ))}

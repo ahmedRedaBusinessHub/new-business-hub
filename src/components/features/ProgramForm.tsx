@@ -33,6 +33,7 @@ const baseFormSchema = z.object({
   imageIds: z.any().optional(),
   document_ar: z.any().optional(),
   document_en: z.any().optional(),
+  price: z.string().nullable().optional(),
 });
 
 // For DynamicForm
@@ -53,6 +54,7 @@ const formFieldSchema = z.object({
   imageIds: z.any().optional(),
   document_ar: z.any().optional(),
   document_en: z.any().optional(),
+  price: z.string().optional(),
 });
 
 const formSchema = baseFormSchema;
@@ -78,6 +80,8 @@ interface JsonFieldItem {
 
   text_ar: string;
   text_en: string;
+  desc_ar: string;
+  desc_en: string;
   number: number;
 }
 
@@ -94,10 +98,11 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
   const [documentEnFiles, setDocumentEnFiles] = useState<File[]>([]);
 
   // JSON fields state
-  const [values, setValues] = useState<JsonFieldItem[]>([{ number: 1, text_ar: '', text_en: '' }]);
-  const [progressSteps, setProgressSteps] = useState<JsonFieldItem[]>([{ number: 1, text_ar: '', text_en: '' }]);
-  const [applicationRequirements, setApplicationRequirements] = useState<JsonFieldItem[]>([{ number: 1, text_ar: '', text_en: '' }]);
-  const [documentsRequirements, setDocumentsRequirements] = useState<JsonFieldItem[]>([{ number: 1, text_ar: '', text_en: '' }]);
+  const [values, setValues] = useState<JsonFieldItem[]>([{ number: 1, text_ar: '', text_en: '', desc_ar: '', desc_en: '' }]);
+  const [progressSteps, setProgressSteps] = useState<JsonFieldItem[]>([{ number: 1, text_ar: '', text_en: '', desc_ar: '', desc_en: '' }]);
+  const [applicationRequirements, setApplicationRequirements] = useState<JsonFieldItem[]>([{ number: 1, text_ar: '', text_en: '', desc_ar: '', desc_en: '' }]);
+  const [documentsRequirements, setDocumentsRequirements] = useState<JsonFieldItem[]>([{ number: 1, text_ar: '', text_en: '', desc_ar: '', desc_en: '' }]);
+  const [focusAreas, setFocusAreas] = useState<JsonFieldItem[]>([{ number: 1, text_ar: '', text_en: '', desc_ar: '', desc_en: '' }]);
 
   const [deletedImageUrls, setDeletedImageUrls] = useState<string[]>([]);
   const [deletedDocumentAr, setDeletedDocumentAr] = useState(false);
@@ -219,22 +224,27 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
     if (program) {
       if (program.values) {
         const parsedValues = typeof program.values === 'string' ? JSON.parse(program.values) : program.values;
-        setValues(Array.isArray(parsedValues) && parsedValues.length > 0 ? parsedValues : [{ icon: '', text: '' }]);
+        setValues(Array.isArray(parsedValues) && parsedValues.length > 0 ? parsedValues.map((v: any) => ({ ...v, desc_ar: v.desc_ar || '', desc_en: v.desc_en || '' })) : [{ number: 1, text_ar: '', text_en: '', desc_ar: '', desc_en: '' }]);
       }
 
       if (program.progress_steps) {
         const parsedSteps = typeof program.progress_steps === 'string' ? JSON.parse(program.progress_steps) : program.progress_steps;
-        setProgressSteps(Array.isArray(parsedSteps) && parsedSteps.length > 0 ? parsedSteps : [{ number: 1, text: '' }]);
+        setProgressSteps(Array.isArray(parsedSteps) && parsedSteps.length > 0 ? parsedSteps.map((v: any) => ({ ...v, desc_ar: v.desc_ar || '', desc_en: v.desc_en || '' })) : [{ number: 1, text_ar: '', text_en: '', desc_ar: '', desc_en: '' }]);
       }
 
       if (program.application_requirements) {
         const parsedReqs = typeof program.application_requirements === 'string' ? JSON.parse(program.application_requirements) : program.application_requirements;
-        setApplicationRequirements(Array.isArray(parsedReqs) && parsedReqs.length > 0 ? parsedReqs : [{ icon: '', text: '' }]);
+        setApplicationRequirements(Array.isArray(parsedReqs) && parsedReqs.length > 0 ? parsedReqs.map((v: any) => ({ ...v, desc_ar: v.desc_ar || '', desc_en: v.desc_en || '' })) : [{ number: 1, text_ar: '', text_en: '', desc_ar: '', desc_en: '' }]);
       }
 
       if (program.documents_requirements) {
         const parsedDocs = typeof program.documents_requirements === 'string' ? JSON.parse(program.documents_requirements) : program.documents_requirements;
-        setDocumentsRequirements(Array.isArray(parsedDocs) && parsedDocs.length > 0 ? parsedDocs : [{ icon: '', text: '' }]);
+        setDocumentsRequirements(Array.isArray(parsedDocs) && parsedDocs.length > 0 ? parsedDocs.map((v: any) => ({ ...v, desc_ar: v.desc_ar || '', desc_en: v.desc_en || '' })) : [{ number: 1, text_ar: '', text_en: '', desc_ar: '', desc_en: '' }]);
+      }
+
+      if (program.focusAreas) {
+        const parsedFocus = typeof program.focusAreas === 'string' ? JSON.parse(program.focusAreas) : program.focusAreas;
+        setFocusAreas(Array.isArray(parsedFocus) && parsedFocus.length > 0 ? parsedFocus.map((v: any) => ({ ...v, desc_ar: v.desc_ar || '', desc_en: v.desc_en || '' })) : [{ number: 1, text_ar: '', text_en: '', desc_ar: '', desc_en: '' }]);
       }
     }
   }, [program]);
@@ -266,6 +276,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
         promo_video: data.promo_video || null,
         promo_image: data.promo_image || null,
         status: data.status !== undefined && data.status !== null ? data.status : 1,
+        price: data.price || null,
       };
 
       if (data.type !== undefined && data.type !== null && data.type !== "") {
@@ -292,6 +303,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
       dataWithJsonFields.progress_steps = progressSteps.filter(s => s.text_ar.trim() !== '');
       dataWithJsonFields.application_requirements = applicationRequirements.filter(r => r.text_ar.trim() !== '');
       dataWithJsonFields.documents_requirements = documentsRequirements.filter(d => d.text_ar.trim() !== '');
+      dataWithJsonFields.focusAreas = focusAreas.filter(f => f.text_ar.trim() !== '');
 
       if (!formSchema) {
         throw new Error('Form schema is not defined');
@@ -318,9 +330,11 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
         progress_steps: dataWithJsonFields.progress_steps,
         application_requirements: dataWithJsonFields.application_requirements,
         documents_requirements: dataWithJsonFields.documents_requirements,
+        focusAreas: dataWithJsonFields.focusAreas,
         promo_video: validated.promo_video || null,
         promo_image: validated.promo_image || null,
         status: validated.status,
+        price: validated.price || null,
         mainImage: validated.mainImage,
         imageIds: imageFiles,
         document_ar: documentArFiles,
@@ -333,7 +347,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
   };
 
   // JSON field handlers
-  const addValue = () => setValues([...values, { number: values.length + 1, text_ar: '', text_en: '' }]);
+  const addValue = () => setValues([...values, { number: values.length + 1, text_ar: '', text_en: '', desc_ar: '', desc_en: '' }]);
   const removeValue = (index: number) => setValues(values.filter((_, i) => i !== index));
   const updateValue = (index: number, field: keyof JsonFieldItem, value: string | number) => {
     const updated = [...values];
@@ -341,7 +355,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
     setValues(updated);
   };
 
-  const addProgressStep = () => setProgressSteps([...progressSteps, { number: progressSteps.length + 1, text_ar: '', text_en: '' }]);
+  const addProgressStep = () => setProgressSteps([...progressSteps, { number: progressSteps.length + 1, text_ar: '', text_en: '', desc_ar: '', desc_en: '' }]);
   const removeProgressStep = (index: number) => setProgressSteps(progressSteps.filter((_, i) => i !== index));
   const updateProgressStep = (index: number, field: keyof JsonFieldItem, value: string | number) => {
     const updated = [...progressSteps];
@@ -349,7 +363,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
     setProgressSteps(updated);
   };
 
-  const addApplicationRequirement = () => setApplicationRequirements([...applicationRequirements, { number: applicationRequirements.length + 1, text_ar: '', text_en: '' }]);
+  const addApplicationRequirement = () => setApplicationRequirements([...applicationRequirements, { number: applicationRequirements.length + 1, text_ar: '', text_en: '', desc_ar: '', desc_en: '' }]);
   const removeApplicationRequirement = (index: number) => setApplicationRequirements(applicationRequirements.filter((_, i) => i !== index));
   const updateApplicationRequirement = (index: number, field: keyof JsonFieldItem, value: string | number) => {
     const updated = [...applicationRequirements];
@@ -357,12 +371,20 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
     setApplicationRequirements(updated);
   };
 
-  const addDocumentRequirement = () => setDocumentsRequirements([...documentsRequirements, { number: documentsRequirements.length + 1, text_ar: '', text_en: '' }]);
+  const addDocumentRequirement = () => setDocumentsRequirements([...documentsRequirements, { number: documentsRequirements.length + 1, text_ar: '', text_en: '', desc_ar: '', desc_en: '' }]);
   const removeDocumentRequirement = (index: number) => setDocumentsRequirements(documentsRequirements.filter((_, i) => i !== index));
   const updateDocumentRequirement = (index: number, field: keyof JsonFieldItem, value: string | number) => {
     const updated = [...documentsRequirements];
     updated[index] = { ...updated[index], [field]: value };
     setDocumentsRequirements(updated);
+  };
+
+  const addFocusArea = () => setFocusAreas([...focusAreas, { number: focusAreas.length + 1, text_ar: '', text_en: '', desc_ar: '', desc_en: '' }]);
+  const removeFocusArea = (index: number) => setFocusAreas(focusAreas.filter((_, i) => i !== index));
+  const updateFocusArea = (index: number, field: keyof JsonFieldItem, value: string | number) => {
+    const updated = [...focusAreas];
+    updated[index] = { ...updated[index], [field]: value };
+    setFocusAreas(updated);
   };
 
   return (
@@ -449,6 +471,15 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
             helperText: "Last date for registration",
           },
           {
+            name: "price",
+            label: "Price",
+            type: "text",
+            placeholder: "Enter program price",
+            validation: formFieldSchema.shape.price,
+            required: false,
+            helperText: "Program price (optional)",
+          },
+          {
             name: "type",
             label: "Type",
             type: "select",
@@ -522,6 +553,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
           from_datetime: program?.from_datetime ? new Date(program.from_datetime).toISOString().slice(0, 16) : "",
           to_datetime: program?.to_datetime ? new Date(program.to_datetime).toISOString().slice(0, 16) : "",
           last_registration_date: program?.last_registration_date ? new Date(program.last_registration_date).toISOString().slice(0, 16) : "",
+          price: program?.price || "",
           type: program?.type != null ? program.type.toString() : "",
           subtype: program?.subtype != null ? program.subtype.toString() : "",
           promo_video: program?.promo_video || "",
@@ -532,11 +564,12 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
       />
 
       <Tabs defaultValue="json-fields" className="w-full mt-6">
-        <TabsList className={`grid w-full h-auto p-1 bg-muted/50 rounded-xl ${isEdit ? 'grid-cols-6' : 'grid-cols-5'}`}>
+        <TabsList className={`grid w-full h-auto p-1 bg-muted/50 rounded-xl ${isEdit ? 'grid-cols-7' : 'grid-cols-6'}`}>
           <TabsTrigger value="json-fields" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">Values</TabsTrigger>
           <TabsTrigger value="progress" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">Progress Steps</TabsTrigger>
           <TabsTrigger value="app-req" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">App Requirements</TabsTrigger>
           <TabsTrigger value="doc-req" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">Doc Requirements</TabsTrigger>
+          <TabsTrigger value="focus-areas" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">Focus Areas</TabsTrigger>
           <TabsTrigger value="documents" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">Documents</TabsTrigger>
           {isEdit && <TabsTrigger value="images" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">Images</TabsTrigger>}
         </TabsList>
@@ -563,6 +596,18 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
                     placeholder="Text EN"
                     value={value.text_en}
                     onChange={(e) => updateValue(index, 'text_en', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md mt-2"
+                  />
+                  <Input
+                    placeholder="Description AR"
+                    value={value.desc_ar}
+                    onChange={(e) => updateValue(index, 'desc_ar', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md mt-2"
+                  />
+                  <Input
+                    placeholder="Description EN"
+                    value={value.desc_en}
+                    onChange={(e) => updateValue(index, 'desc_en', e.target.value)}
                     className="w-full bg-muted/50 border-0 rounded-md mt-2"
                   />
                 </div>
@@ -597,15 +642,27 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
                 />
                 <div className="flex-1">
                   <Input
-                    placeholder="Step description ar"
+                    placeholder="Step  ar"
                     value={step.text_ar}
                     onChange={(e) => updateProgressStep(index, 'text_ar', e.target.value)}
                     className="w-full bg-muted/50 border-0 rounded-md"
                   />
                   <Input
-                    placeholder="Step description en"
+                    placeholder="Step  en"
                     value={step.text_en}
                     onChange={(e) => updateProgressStep(index, 'text_en', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md mt-2"
+                  />
+                  <Input
+                    placeholder="Description AR"
+                    value={step.desc_ar}
+                    onChange={(e) => updateProgressStep(index, 'desc_ar', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md mt-2"
+                  />
+                  <Input
+                    placeholder="Description EN"
+                    value={step.desc_en}
+                    onChange={(e) => updateProgressStep(index, 'desc_en', e.target.value)}
                     className="w-full bg-muted/50 border-0 rounded-md mt-2"
                   />
                 </div>
@@ -650,6 +707,18 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
                     onChange={(e) => updateApplicationRequirement(index, 'text_en', e.target.value)}
                     className="w-full bg-muted/50 border-0 rounded-md mt-2"
                   />
+                  <Input
+                    placeholder="Description AR"
+                    value={req.desc_ar}
+                    onChange={(e) => updateApplicationRequirement(index, 'desc_ar', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md mt-2"
+                  />
+                  <Input
+                    placeholder="Description EN"
+                    value={req.desc_en}
+                    onChange={(e) => updateApplicationRequirement(index, 'desc_en', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md mt-2"
+                  />
                 </div>
                 <Button
                   type="button"
@@ -692,6 +761,18 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
                     onChange={(e) => updateDocumentRequirement(index, 'text_en', e.target.value)}
                     className="w-full bg-muted/50 border-0 rounded-md mt-2"
                   />
+                  <Input
+                    placeholder="Description AR"
+                    value={req.desc_ar}
+                    onChange={(e) => updateDocumentRequirement(index, 'desc_ar', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md mt-2"
+                  />
+                  <Input
+                    placeholder="Description EN"
+                    value={req.desc_en}
+                    onChange={(e) => updateDocumentRequirement(index, 'desc_en', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md mt-2"
+                  />
                 </div>
                 <Button
                   type="button"
@@ -707,6 +788,60 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
           </div>
           <Button type="button" variant="outline" size="sm" onClick={addDocumentRequirement} className="mt-2">
             <Plus className="h-4 w-4 mr-2" /> Add Requirement
+          </Button>
+        </TabsContent>
+
+        <TabsContent value="focus-areas" className="space-y-4 pt-4">
+          <Label className="text-sm font-medium text-muted-foreground">Focus Areas (Icon + Text)</Label>
+          <div className="space-y-2 w-full">
+            {focusAreas.map((area, index) => (
+              <div key={index} className="flex items-center gap-2 w-full">
+                <Input
+                  placeholder="Number"
+                  value={area.number}
+                  onChange={(e) => updateFocusArea(index, 'number', e.target.value)}
+                  className="w-20 shrink-0 bg-muted/50 border-0 rounded-md"
+                />
+                <div className="flex-1">
+                  <Input
+                    placeholder="Focus Area AR"
+                    value={area.text_ar}
+                    onChange={(e) => updateFocusArea(index, 'text_ar', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md"
+                  />
+                  <Input
+                    placeholder="Focus Area EN"
+                    value={area.text_en}
+                    onChange={(e) => updateFocusArea(index, 'text_en', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md mt-2"
+                  />
+                  <Input
+                    placeholder="Description AR"
+                    value={area.desc_ar}
+                    onChange={(e) => updateFocusArea(index, 'desc_ar', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md mt-2"
+                  />
+                  <Input
+                    placeholder="Description EN"
+                    value={area.desc_en}
+                    onChange={(e) => updateFocusArea(index, 'desc_en', e.target.value)}
+                    className="w-full bg-muted/50 border-0 rounded-md mt-2"
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeFocusArea(index)}
+                  className="text-muted-foreground hover:text-destructive shrink-0 ml-auto"
+                >
+                  <Trash2 className="h-5 w-5" />
+                </Button>
+              </div>
+            ))}
+          </div>
+          <Button type="button" variant="outline" size="sm" onClick={addFocusArea} className="mt-2">
+            <Plus className="h-4 w-4 mr-2" /> Add Focus Area
           </Button>
         </TabsContent>
 

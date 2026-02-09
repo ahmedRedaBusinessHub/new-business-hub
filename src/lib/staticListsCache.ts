@@ -26,7 +26,7 @@ class StaticListsCache {
     if (!forceRefresh && this.cache.has(namespace)) {
       const entry = this.cache.get(namespace)!;
       const isExpired = Date.now() - entry.timestamp > this.cacheDuration;
-      
+
       if (!isExpired) {
         console.log(`[StaticListsCache] Using cached data for: ${namespace}`);
         return entry.data;
@@ -36,14 +36,14 @@ class StaticListsCache {
     // Fetch from API
     console.log(`[StaticListsCache] Fetching from API: ${namespace}`);
     try {
-      const response = await fetch(`/api/static-lists?namespace=${namespace}`);
+      const response = await fetch(`/api/public/static-lists?namespace=${namespace}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch static list: ${namespace}`);
       }
 
       const result = await response.json();
       const dataList = Array.isArray(result.data) ? result.data : [];
-      
+
       let config: StaticListConfig[] = [];
       if (dataList.length > 0 && dataList[0].config) {
         config = Array.isArray(dataList[0].config) ? dataList[0].config : [];
@@ -58,13 +58,13 @@ class StaticListsCache {
       return config;
     } catch (error) {
       console.error(`[StaticListsCache] Error fetching ${namespace}:`, error);
-      
+
       // Return cached data if available, even if expired
       if (this.cache.has(namespace)) {
         console.log(`[StaticListsCache] Using stale cache for: ${namespace}`);
         return this.cache.get(namespace)!.data;
       }
-      
+
       return [];
     }
   }

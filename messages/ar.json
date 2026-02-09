@@ -605,6 +605,7 @@
         "mobileNumber": "05xxxxxxxx",
         "email": "example@email.com",
         "inquiryType": "اختر نوع الاستفسار",
+        "loading": "جاري التحميل...",
         "requestDetails": "اكتب تفاصيل استفسارك هنا"
       },
       "validation": {

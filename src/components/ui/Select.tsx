@@ -58,7 +58,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           required={required}
           {...props}
         >
-          <option value="">Select {label}</option>
+          {label && <option value="">{label}</option>}
           {options?.map((option: any) => (
             <option key={option.value} value={option.value}>
               {option.label}

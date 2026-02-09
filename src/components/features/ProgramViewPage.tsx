@@ -31,6 +31,8 @@ import {
   Globe,
   Send,
   ArrowRight,
+  Play,
+  Image as ImageIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -42,6 +44,10 @@ import { toast } from "sonner";
 import { ImageWithFallback } from "@/components/figma/ImageWithFallback";
 import { useI18n } from "@/hooks/useI18n";
 import { useParams, useRouter } from "next/navigation";
+import { type Program } from "./ProgramsManagement";
+import { staticListsCache } from "@/lib/staticListsCache";
+import { getLocalizedLabel } from "@/lib/localizedLabel";
+import { Loader2 } from "lucide-react";
 
 // Floating Particle Component
 const FloatingParticle = ({ delay = 0, duration = 20, size = 4 }) => {
@@ -102,7 +108,7 @@ const MagneticButton = ({ children, className, ...props }: any) => {
 };
 
 export default function ProgramViewPage() {
-  const { programId } = useParams();
+  const { id } = useParams();
   const { language } = useI18n();
   const navigate = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -144,330 +150,57 @@ export default function ProgramViewPage() {
     linkedin: "",
   });
 
-  // Mock program data - would come from API/database
-  const programs: { [key: string]: any } = {
-    tech: {
-      id: "tech",
-      nameAr: "برنامج تسريع التقنية",
-      nameEn: "Tech Accelerator Program",
-      descriptionAr:
-        "برنامج متخصص لتسريع نمو شركات التقنية الناشئة التي لديها منتج جاهز وتسعى للتوسع السريع في السوق",
-      descriptionEn:
-        "Specialized program to accelerate growth of tech startups with ready products seeking rapid market expansion",
-      image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c",
-      gradient: "from-[#0D5BDC] to-[#4587F4]",
-      gradientAngle: "135deg",
-      accentColor: "#0D5BDC",
-      type: language === "ar" ? "تسريع أعمال" : "Business Accelerator",
-      duration: language === "ar" ? "6 أشهر" : "6 Months",
-      startDate: "2025-03-01",
-      endDate: "2025-08-31",
-      applicationDeadline: "2025-02-15",
-      funding: language === "ar" ? "حتى 500,000 ر.س" : "Up to 500,000 SAR",
-      equity: "5-10%",
-      batchSize: language === "ar" ? "20 شركة" : "20 Companies",
-      focusAreas: [
-        language === "ar" ? "الذكاء الاصطناعي" : "Artificial Intelligence",
-        language === "ar" ? "الأمن السيبراني" : "Cybersecurity",
-        language === "ar" ? "التقنية المالية" : "FinTech",
-        language === "ar" ? "التعليم التقني" : "EdTech",
-        language === "ar" ? "إنترنت الأشياء" : "IoT",
-      ],
-      values: [
-        {
-          titleAr: "التمويل المباشر",
-          titleEn: "Direct Funding",
-          descAr: "تمويل يصل إلى 500,000 ر.س مقابل حصة من 5-10%",
-          descEn: "Funding up to 500,000 SAR for 5-10% equity stake",
-          icon: DollarSign,
-        },
-        {
-          titleAr: "الإرشاد المتخصص",
-          titleEn: "Expert Mentorship",
-          descAr: "جلسات إرشاد أسبوعية مع خبراء التقنية والأعمال",
-          descEn: "Weekly mentorship sessions with tech and business experts",
-          icon: Target,
-        },
-        {
-          titleAr: "التدريب المكثف",
-          titleEn: "Intensive Training",
-          descAr: "برنامج تدريبي شامل يغطي جميع جوانب نمو الأعمال",
-          descEn:
-            "Comprehensive training program covering all aspects of business growth",
-          icon: Award,
-        },
-        {
-          titleAr: "الوصول للمستثمرين",
-          titleEn: "Investor Access",
-          descAr: "يوم عرض أمام أكثر من 100 مستثمر ومؤسسة تمويلية",
-          descEn: "Demo day with 100+ investors and funding institutions",
-          icon: TrendingUp,
-        },
-      ],
-      requirements: [
-        language === "ar"
-          ? "منتج تقني جاهز (MVP) أو في مرحلة متقدمة"
-          : "Ready tech product (MVP) or advanced stage",
-        language === "ar"
-          ? "فريق تأسيسي متفرغ (2-5 أعضاء)"
-          : "Full-time founding team (2-5 members)",
-        language === "ar"
-          ? "نموذج عمل واضح وقابل للتوسع"
-          : "Clear and scalable business model",
-        language === "ar"
-          ? "سوق مستهدف محدد بوضوح"
-          : "Clearly defined target market",
-        language === "ar"
-          ? "خطة نمو وتوسع واضحة"
-          : "Clear growth and expansion plan",
-        language === "ar"
-          ? "التزام كامل بالبرنامج لمدة 6 أشهر"
-          : "Full commitment to 6-month program",
-      ],
-      documents: [
-        {
-          nameAr: "خطة العمل التفصيلية",
-          nameEn: "Detailed Business Plan",
-          required: true,
-          format: "PDF",
-          key: "businessPlan",
-        },
-        {
-          nameAr: "التوقعات المالية (3 سنوات)",
-          nameEn: "Financial Projections (3 Years)",
-          required: true,
-          format: "PDF/Excel",
-          key: "financialProjections",
-        },
-        {
-          nameAr: "السيرة الذاتية لأعضاء الفريق",
-          nameEn: "Team Members CVs",
-          required: true,
-          format: "PDF",
-          key: "teamCV",
-        },
-        {
-          nameAr: "عرض تقديمي للمشروع (Pitch Deck)",
-          nameEn: "Project Presentation (Pitch Deck)",
-          required: true,
-          format: "PDF/PPT",
-          key: "presentationDeck",
-        },
-      ],
-    },
-    fintech: {
-      id: "fintech",
-      nameAr: "برنامج التقنية المالية",
-      nameEn: "FinTech Accelerator Program",
-      descriptionAr:
-        "برنامج متخصص للحلول المالية الرقمية مع التركيز على الامتثال التنظيمي والابتكار المالي",
-      descriptionEn:
-        "Specialized program for digital financial solutions focusing on regulatory compliance and financial innovation",
-      image: "https://images.unsplash.com/photo-1563986768609-322da13575f3",
-      gradient: "from-[#340F87] to-[#0E3F9F]",
-      gradientAngle: "135deg",
-      accentColor: "#340F87",
-      type: language === "ar" ? "تسريع أعمال" : "Business Accelerator",
-      duration: language === "ar" ? "6 أشهر" : "6 Months",
-      startDate: "2025-04-01",
-      endDate: "2025-09-30",
-      applicationDeadline: "2025-03-15",
-      funding: language === "ar" ? "حتى 750,000 ر.س" : "Up to 750,000 SAR",
-      equity: "7-12%",
-      batchSize: language === "ar" ? "15 شركة" : "15 Companies",
-      focusAreas: [
-        language === "ar" ? "المدفوعات الرقمية" : "Digital Payments",
-        language === "ar" ? "البلوكشين" : "Blockchain",
-        language === "ar" ? "الإقراض التقني" : "Digital Lending",
-        language === "ar" ? "التأمين التقني" : "InsurTech",
-        language === "ar" ? "إدارة الثروات" : "Wealth Management",
-      ],
-      values: [
-        {
-          titleAr: "التمويل المباشر",
-          titleEn: "Direct Funding",
-          descAr: "تمويل يصل إلى 750,000 ر.س مقابل حصة من 7-12%",
-          descEn: "Funding up to 750,000 SAR for 7-12% equity stake",
-          icon: DollarSign,
-        },
-        {
-          titleAr: "الامتثال التنظيمي",
-          titleEn: "Regulatory Compliance",
-          descAr: "دعم كامل للحصول على التراخيص والموافقات التنظيمية",
-          descEn:
-            "Full support for obtaining licenses and regulatory approvals",
-          icon: Award,
-        },
-        {
-          titleAr: "شبكة البنوك",
-          titleEn: "Banking Network",
-          descAr: "وصول مباشر لشبكة من البنوك والمؤسسات المالية",
-          descEn:
-            "Direct access to network of banks and financial institutions",
-          icon: Target,
-        },
-        {
-          titleAr: "خبراء FinTech",
-          titleEn: "FinTech Experts",
-          descAr: "إرشاد من خبراء التقنية المالية والامتثال",
-          descEn: "Mentorship from FinTech and compliance experts",
-          icon: TrendingUp,
-        },
-      ],
-      requirements: [
-        language === "ar"
-          ? "حل مالي رقمي مبتكر"
-          : "Innovative digital financial solution",
-        language === "ar"
-          ? "فهم عميق للوائح المالية"
-          : "Deep understanding of financial regulations",
-        language === "ar"
-          ? "فريق ذو خبرة في المجال المالي"
-          : "Team with financial industry experience",
-        language === "ar"
-          ? "نموذج أعمال متوافق مع اللوائح"
-          : "Regulation-compliant business model",
-        language === "ar"
-          ? "خطة للحصول على التراخيص"
-          : "Plan for obtaining licenses",
-        language === "ar"
-          ? "شراكات محتملة مع مؤسسات مالية"
-          : "Potential partnerships with financial institutions",
-      ],
-      documents: [
-        {
-          nameAr: "خطة العمل التفصيلية",
-          nameEn: "Detailed Business Plan",
-          required: true,
-          format: "PDF",
-          key: "businessPlan",
-        },
-        {
-          nameAr: "تقرير الامتثال التنظيمي",
-          nameEn: "Regulatory Compliance Report",
-          required: true,
-          format: "PDF",
-          key: "financialProjections",
-        },
-        {
-          nameAr: "السيرة الذاتية لأعضاء الفريق",
-          nameEn: "Team Members CVs",
-          required: true,
-          format: "PDF",
-          key: "teamCV",
-        },
-        {
-          nameAr: "عرض تقديمي للمشروع",
-          nameEn: "Project Presentation",
-          required: true,
-          format: "PDF/PPT",
-          key: "presentationDeck",
-        },
-      ],
-    },
-    ecommerce: {
-      id: "ecommerce",
-      nameAr: "برنامج التجارة الإلكترونية",
-      nameEn: "E-Commerce Accelerator Program",
-      descriptionAr:
-        "برنامج متخصص للمتاجر الإلكترونية التي تسعى لزيادة المبيعات والتوسع في السوق",
-      descriptionEn:
-        "Specialized program for online stores seeking sales growth and market expansion",
-      image: "https://images.unsplash.com/photo-1557821552-17105176677c",
-      gradient: "from-[#00B0F0] to-[#007D9B]",
-      gradientAngle: "135deg",
-      accentColor: "#00B0F0",
-      type: language === "ar" ? "تسريع أعمال" : "Business Accelerator",
-      duration: language === "ar" ? "4 أشهر" : "4 Months",
-      startDate: "2025-02-15",
-      endDate: "2025-06-15",
-      applicationDeadline: "2025-02-01",
-      funding: language === "ar" ? "حتى 300,000 ر.س" : "Up to 300,000 SAR",
-      equity: "5-8%",
-      batchSize: language === "ar" ? "25 شركة" : "25 Companies",
-      focusAreas: [
-        language === "ar" ? "التسويق الرقمي" : "Digital Marketing",
-        language === "ar" ? "اللوجستيات والشحن" : "Logistics & Shipping",
-        language === "ar" ? "تجربة المستخدم" : "User Experience",
-        language === "ar" ? "التحليلات والبيانات" : "Analytics & Data",
-        language === "ar" ? "إدارة المخزون" : "Inventory Management",
-      ],
-      values: [
-        {
-          titleAr: "التمويل التسويقي",
-          titleEn: "Marketing Funding",
-          descAr: "تمويل يصل إلى 300,000 ر.س للتسويق والنمو",
-          descEn: "Funding up to 300,000 SAR for marketing and growth",
-          icon: DollarSign,
-        },
-        {
-          titleAr: "خبراء التسويق",
-          titleEn: "Marketing Experts",
-          descAr: "جلسات مع خبراء التسويق الرقمي والتجارة الإلكترونية",
-          descEn: "Sessions with digital marketing and e-commerce experts",
-          icon: Target,
-        },
-        {
-          titleAr: "شبكة اللوجستيات",
-          titleEn: "Logistics Network",
-          descAr: "وصول لشبكة موردي الخدمات اللوجستية",
-          descEn: "Access to logistics service providers network",
-          icon: Award,
-        },
-        {
-          titleAr: "أدوات التحليل",
-          titleEn: "Analytics Tools",
-          descAr: "أدوات تحليل متقدمة لتتبع الأداء والنمو",
-          descEn: "Advanced analytics tools for performance tracking",
-          icon: TrendingUp,
-        },
-      ],
-      requirements: [
-        language === "ar" ? "متجر إلكتروني فعال" : "Active online store",
-        language === "ar"
-          ? "مبيعات شهرية لا تقل عن 50,000 ر.س"
-          : "Monthly sales of at least 50,000 SAR",
-        language === "ar" ? "فريق تشغيلي متفرغ" : "Full-time operational team",
-        language === "ar"
-          ? "استراتيجية تسويق واضحة"
-          : "Clear marketing strategy",
-        language === "ar" ? "نظام إدارة مخزون" : "Inventory management system",
-        language === "ar" ? "خطة توسع جغرافي" : "Geographic expansion plan",
-      ],
-      documents: [
-        {
-          nameAr: "خطة العمل",
-          nameEn: "Business Plan",
-          required: true,
-          format: "PDF",
-          key: "businessPlan",
-        },
-        {
-          nameAr: "تقارير المبيعات (6 أشهر)",
-          nameEn: "Sales Reports (6 Months)",
-          required: true,
-          format: "PDF/Excel",
-          key: "financialProjections",
-        },
-        {
-          nameAr: "استراتيجية التسويق",
-          nameEn: "Marketing Strategy",
-          required: true,
-          format: "PDF",
-          key: "teamCV",
-        },
-        {
-          nameAr: "السجل التجاري",
-          nameEn: "Commercial Registration",
-          required: true,
-          format: "PDF",
-          key: "presentationDeck",
-        },
-      ],
-    },
+  const [program, setProgram] = useState<Program | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [programTypes, setProgramTypes] = useState<any[]>([]);
+  const [programSubtypes, setProgramSubtypes] = useState<any[]>([]);
+
+  // Fetch static lists
+  useEffect(() => {
+    const fetchStaticLists = async () => {
+      try {
+        const typesConfig = await staticListsCache.getByNamespace('program.types');
+        setProgramTypes(typesConfig);
+        const subtypesConfig = await staticListsCache.getByNamespace('program.subtypes');
+        setProgramSubtypes(subtypesConfig);
+      } catch (error) {
+        console.error('Error fetching static lists:', error);
+      }
+    };
+    fetchStaticLists();
+  }, []);
+
+  const getTypeName = (typeId: number | null) => {
+    if (typeId === null) return "";
+    const type = programTypes.find(t => t.id === typeId);
+    return type ? getLocalizedLabel(type.name_en, type.name_ar, `${language}`) : String(typeId);
   };
 
-  const program = programs[programId || "tech"] || programs.tech;
+  const getSubtypeName = (subtypeId: number | null) => {
+    if (subtypeId === null) return "";
+    const subtype = programSubtypes.find(t => t.id === subtypeId);
+    return subtype ? getLocalizedLabel(subtype.name_en, subtype.name_ar, `${language}`) : String(subtypeId);
+  };
+
+  // Fetch program data
+  useEffect(() => {
+    const fetchProgram = async () => {
+      if (!id) return;
+      try {
+        const response = await fetch(`/api/public/programs/${id}`);
+        if (!response.ok) throw new Error("Failed to fetch program");
+        const data = await response.json();
+        setProgram(data);
+      } catch (error) {
+        console.error("Error fetching program:", error);
+        toast.error(language === "ar" ? "فشل تحميل البرنامج" : "Failed to load program");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProgram();
+  }, [id, language]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -477,6 +210,63 @@ export default function ProgramViewPage() {
       [e.target.name]: e.target.value,
     }));
   };
+
+  // Helper to get theme colors based on ID
+  const getTheme = (id: number) => {
+    const themes = [
+      { gradient: "from-[#0D5BDC] to-[#4587F4]", accent: "#0D5BDC" },
+      { gradient: "from-[#340F87] to-[#0E3F9F]", accent: "#340F87" },
+      { gradient: "from-[#00B0F0] to-[#007D9B]", accent: "#00B0F0" },
+      { gradient: "from-[#10B981] to-[#059669]", accent: "#10B981" },
+      { gradient: "from-[#F59E0B] to-[#D97706]", accent: "#F59E0B" },
+    ];
+    return themes[id % themes.length];
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!program) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Program Not Found</h1>
+          <Button onClick={() => navigate.push('/')}>Go Home</Button>
+        </div>
+      </div>
+    );
+  }
+
+  const theme = getTheme(program.id);
+
+  // Parse JSON fields safely
+  const parseJson = (json: any) => {
+    if (!json) return [];
+    if (typeof json === 'string') {
+      try {
+        return JSON.parse(json);
+      } catch (e) {
+        return [];
+      }
+    }
+    return Array.isArray(json) ? json : [];
+  };
+
+  const programValues = parseJson(program.values);
+  const requirements = parseJson(program.application_requirements);
+  const documents = parseJson(program.documents_requirements);
+  const focusAreas = parseJson(program.focusAreas || []);
+  const progressSteps = parseJson(program.progress_steps || []);
+  const galleryImages = program.image_urls || [];
+  const programDoc = language === 'ar' ? program.document_ar_url : program.document_en_url;
+
+  // Icons for values (cycling)
+  const valueIcons = [DollarSign, Target, Award, TrendingUp, Zap, Globe];
 
   const handleFileUpload = (
     documentType: string,
@@ -552,10 +342,10 @@ export default function ProgramViewPage() {
     return language === "ar"
       ? date.toLocaleDateString("ar-SA")
       : date.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
   };
 
   return (
@@ -566,7 +356,7 @@ export default function ProgramViewPage() {
       {/* Animated Cursor Follower */}
       <motion.div
         className="fixed w-6 h-6 rounded-full border-2 pointer-events-none z-50 hidden lg:block"
-        style={{ borderColor: program.accentColor }}
+        style={{ borderColor: theme.accent }}
         animate={{
           x: mousePosition.x - 12,
           y: mousePosition.y - 12,
@@ -574,16 +364,17 @@ export default function ProgramViewPage() {
         transition={{ type: "spring", stiffness: 500, damping: 28 }}
       />
 
+
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <ImageWithFallback
-            src={program.image}
-            alt={language === "ar" ? program.nameAr : program.nameEn}
+            src={program.main_image_url || program.promo_image || "https://images.unsplash.com/photo-1519389950473-47ba0277781c"}
+            alt={language === "ar" ? program.name_ar : (program.name_en || program.name_ar)}
             className="w-full h-full object-cover"
           />
           <div
-            className={`absolute inset-0 bg-gradient-to-br ${program.gradient} opacity-90`}
+            className={`absolute inset-0 bg-gradient-to-br ${theme.gradient} opacity-90`}
           ></div>
 
           {/* Floating Particles */}
@@ -600,9 +391,8 @@ export default function ProgramViewPage() {
           <motion.div
             className="absolute top-0 ltr:left-0 rtl:right-0 w-full h-full opacity-30"
             style={{
-              background: `radial-gradient(circle at ${mousePosition.x / 10}% ${
-                mousePosition.y / 10
-              }%, rgba(255,255,255,0.3) 0%, transparent 50%)`,
+              background: `radial-gradient(circle at ${mousePosition.x / 10}% ${mousePosition.y / 10
+                }%, rgba(255,255,255,0.3) 0%, transparent 50%)`,
             }}
           />
 
@@ -629,7 +419,13 @@ export default function ProgramViewPage() {
             >
               <Sparkles className="w-5 h-5 text-white" />
             </motion.div>
-            <span className="text-white">{program.type}</span>
+            <span className="text-white font-medium">{getTypeName(program.type)}</span>
+            {program.subtype && (
+              <>
+                <div className="w-1.5 h-1.5 rounded-full bg-white/50" />
+                <span className="text-white/90">{getSubtypeName(program.subtype)}</span>
+              </>
+            )}
           </motion.div>
 
           <motion.h1
@@ -651,7 +447,8 @@ export default function ProgramViewPage() {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              {language === "ar" ? program.nameAr : program.nameEn}
+
+              {language === "ar" ? program.name_ar : (program.name_en || program.name_ar)}
             </motion.span>
           </motion.h1>
 
@@ -661,7 +458,8 @@ export default function ProgramViewPage() {
             transition={{ duration: 1, delay: 0.6 }}
             className="text-white/90 text-lg sm:text-xl max-w-3xl mb-12 leading-relaxed"
           >
-            {language === "ar" ? program.descriptionAr : program.descriptionEn}
+
+            {language === "ar" ? program.detail_ar : (program.detail_en || program.detail_ar)}
           </motion.p>
 
           <motion.div
@@ -671,9 +469,9 @@ export default function ProgramViewPage() {
             className="flex flex-wrap gap-4"
           >
             {[
-              { icon: Calendar, text: program.duration },
-              { icon: DollarSign, text: program.funding },
-              { icon: TrendingUp, text: program.equity },
+              { icon: Calendar, text: program.from_datetime ? (language === "ar" ? new Date(program.from_datetime).toLocaleDateString('ar-EG') : new Date(program.from_datetime).toLocaleDateString('en-US')) : '-' },
+              { icon: DollarSign, text: program.price || (language === "ar" ? "مجاني" : "Free") },
+              // { icon: TrendingUp, text: program.equity },
             ].map((item, index) => (
               <motion.div
                 key={index}
@@ -689,6 +487,29 @@ export default function ProgramViewPage() {
               </motion.div>
             ))}
           </motion.div>
+
+          {program.promo_video && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 1 }}
+              className="my-25 flex justify-center"
+            >
+              <a
+                href={program.promo_video}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all group"
+              >
+                <div className="w-10 h-10 rounded-full bg-white text-[#0D5BDC] flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Play className="w-5 h-5 ml-1" />
+                </div>
+                <span className="text-lg font-medium">
+                  {language === "ar" ? "شاهد الفيديو التعريفي" : "Watch Promo Video"}
+                </span>
+              </a>
+            </motion.div>
+          )}
 
           {/* Scroll Indicator */}
           <motion.div
@@ -723,13 +544,13 @@ export default function ProgramViewPage() {
               {
                 icon: Calendar,
                 label: language === "ar" ? "تاريخ البدء" : "Start Date",
-                value: formatDate(program.startDate),
-                color: program.accentColor,
+                value: formatDate(program.from_datetime || ""),
+                color: theme.accent,
               },
               {
                 icon: Calendar,
                 label: language === "ar" ? "تاريخ الانتهاء" : "End Date",
-                value: formatDate(program.endDate),
+                value: formatDate(program.to_datetime || ""),
                 color: "#340F87",
               },
               {
@@ -738,15 +559,15 @@ export default function ProgramViewPage() {
                   language === "ar"
                     ? "آخر موعد للتقديم"
                     : "Application Deadline",
-                value: formatDate(program.applicationDeadline),
+                value: formatDate(program.last_registration_date || ""),
                 color: "#00B0F0",
               },
-              {
-                icon: Rocket,
-                label: language === "ar" ? "حجم الدفعة" : "Batch Size",
-                value: program.batchSize,
-                color: "#4587F4",
-              },
+              // {
+              //   icon: Rocket,
+              //   label: language === "ar" ? "حجم الدفعة" : "Batch Size",
+              //   value: program.batchSize,
+              //   color: "#4587F4",
+              // },
             ].map((item, index) => (
               <motion.div
                 key={index}
@@ -848,58 +669,61 @@ export default function ProgramViewPage() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {program.values.map((value: any, index: number) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{
-                  y: -15,
-                  rotateY: 5,
-                  rotateX: 5,
-                }}
-                style={{ transformStyle: "preserve-3d" }}
-                className="group cursor-pointer"
-              >
-                <div className="relative h-full p-8 rounded-3xl bg-gradient-to-br from-white to-[#F2F2F2] border border-[#F2F2F2] hover:border-transparent transition-all duration-500 overflow-hidden shadow-lg hover:shadow-2xl">
-                  {/* Animated background gradient on hover */}
-                  <motion.div
-                    className={`absolute inset-0 bg-gradient-to-br ${program.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-                    initial={{ scale: 0, borderRadius: "50%" }}
-                    whileHover={{ scale: 2, borderRadius: "0%" }}
-                    transition={{ duration: 0.5 }}
-                  />
-
-                  <div className="relative z-10">
+            {programValues.map((value: any, index: number) => {
+              const Icon = valueIcons[index % valueIcons.length];
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{
+                    y: -15,
+                    rotateY: 5,
+                    rotateX: 5,
+                  }}
+                  style={{ transformStyle: "preserve-3d" }}
+                  className="group cursor-pointer"
+                >
+                  <div className="relative h-full p-8 rounded-3xl bg-gradient-to-br from-white to-[#F2F2F2] border border-[#F2F2F2] hover:border-transparent transition-all duration-500 overflow-hidden shadow-lg hover:shadow-2xl">
+                    {/* Animated background gradient on hover */}
                     <motion.div
-                      whileHover={{ rotate: [0, -15, 15, -15, 0], scale: 1.1 }}
-                      transition={{ duration: 0.6 }}
-                      className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${program.gradient} mb-6 shadow-lg`}
-                    >
-                      <value.icon className="w-8 h-8 text-white" />
-                    </motion.div>
+                      className={`absolute inset-0 bg-gradient-to-br ${theme.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+                      initial={{ scale: 0, borderRadius: "50%" }}
+                      whileHover={{ scale: 2, borderRadius: "0%" }}
+                      transition={{ duration: 0.5 }}
+                    />
 
-                    <h3 className="mb-3 text-xl text-[#262626] group-hover:text-white transition-colors duration-300">
-                      {language === "ar" ? value.titleAr : value.titleEn}
-                    </h3>
+                    <div className="relative z-10">
+                      <motion.div
+                        whileHover={{ rotate: [0, -15, 15, -15, 0], scale: 1.1 }}
+                        transition={{ duration: 0.6 }}
+                        className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${theme.gradient} mb-6 shadow-lg`}
+                      >
+                        <Icon className="w-8 h-8 text-white" />
+                      </motion.div>
 
-                    <p className="text-[#262626]/70 group-hover:text-white/90 transition-colors duration-300">
-                      {language === "ar" ? value.descAr : value.descEn}
-                    </p>
+                      <h3 className="mb-3 text-xl text-[#262626] group-hover:text-white transition-colors duration-300">
+                        {language === "ar" ? value.text_ar : value.text_en}
+                      </h3>
+
+                      <p className="text-[#262626]/70 group-hover:text-white/90 transition-colors duration-300">
+                        {language === "ar" ? value.desc_ar : value.desc_en}
+                      </p>
+                    </div>
+
+                    {/* Corner accent */}
+                    <motion.div
+                      className="absolute top-0 right-0 w-20 h-20 opacity-0 group-hover:opacity-20"
+                      style={{
+                        background: `radial-gradient(circle at top right, white, transparent)`,
+                      }}
+                    />
                   </div>
-
-                  {/* Corner accent */}
-                  <motion.div
-                    className="absolute top-0 right-0 w-20 h-20 opacity-0 group-hover:opacity-20"
-                    style={{
-                      background: `radial-gradient(circle at top right, white, transparent)`,
-                    }}
-                  />
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -943,7 +767,7 @@ export default function ProgramViewPage() {
           </motion.div>
 
           <div className="flex flex-wrap gap-4 justify-center max-w-4xl mx-auto">
-            {program.focusAreas.map((area: string, index: number) => (
+            {focusAreas.map((area: any, index: number) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -953,9 +777,9 @@ export default function ProgramViewPage() {
                 whileHover={{ scale: 1.1, rotate: [0, -3, 3, 0] }}
               >
                 <Badge
-                  className={`px-8 py-4 text-lg bg-gradient-to-r ${program.gradient} text-white border-0 rounded-full shadow-lg hover:shadow-2xl transition-all cursor-pointer`}
+                  className={`px-8 py-4 text-lg bg-gradient-to-r ${theme.gradient} text-white border-0 rounded-full shadow-lg hover:shadow-2xl transition-all cursor-pointer`}
                 >
-                  {area}
+                  {typeof area === 'string' ? area : (language === "ar" ? area.text_ar : area.text_en)}
                 </Badge>
               </motion.div>
             ))}
@@ -963,12 +787,171 @@ export default function ProgramViewPage() {
         </div>
       </section>
 
+      {/* Program Journey / Steps */}
+      {progressSteps.length > 0 && (
+        <section className="py-24 bg-white relative overflow-hidden">
+          <div className="container mx-auto px-6 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", stiffness: 200 }}
+                className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-[#0D5BDC]/10 to-[#340F87]/10 border border-[#0D5BDC]/20 mb-6"
+              >
+                <span className="bg-gradient-to-r from-[#0D5BDC] to-[#340F87] bg-clip-text text-transparent flex items-center gap-2 justify-center">
+                  <TrendingUp className="w-5 h-5 text-[#0D5BDC]" />
+                  {language === "ar" ? "رحلة البرنامج" : "Program Journey"}
+                </span>
+              </motion.div>
+
+              <h2 className="text-4xl sm:text-5xl mb-6">
+                <motion.span
+                  animate={{
+                    backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                  }}
+                  transition={{ duration: 8, repeat: Infinity }}
+                  className="bg-gradient-to-r from-[#262626] via-[#0A2F78] to-[#262626] bg-clip-text text-transparent"
+                  style={{ backgroundSize: "200% auto" }}
+                >
+                  {language === "ar" ? "خطوات البرنامج" : "Program Timeline"}
+                </motion.span>
+              </h2>
+            </motion.div>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="relative">
+                {/* Timeline line */}
+                <div className={`absolute top-0 bottom-0 w-1 bg-gradient-to-b from-[#0D5BDC]/10 via-[#0D5BDC]/30 to-[#0D5BDC]/10 ${language === 'ar' ? 'right-1/2 translate-x-1/2' : 'left-1/2 -translate-x-1/2'} hidden md:block`} />
+
+                {progressSteps.map((step: any, index: number) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className={`relative flex items-center justify-between mb-12 md:mb-24 ${index % 2 === 0 ? (language === 'ar' ? 'md:flex-row-reverse' : 'md:flex-row') : (language === 'ar' ? 'md:flex-row' : 'md:flex-row-reverse')} flex-col gap-8 md:gap-0`}
+                  >
+                    {/* Content */}
+                    <div className={`w-full md:w-[45%] ${index % 2 === 0 ? (language === 'ar' ? 'text-right' : 'text-left') : (language === 'ar' ? 'text-left' : 'text-right text-left-mobile')}`}>
+                      <div className={`p-8 rounded-3xl bg-white border border-[#F2F2F2] shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group`}>
+                        <div className={`absolute top-0 w-2 h-full bg-gradient-to-b ${theme.gradient} ${language === 'ar' ? 'right-0' : 'left-0'}`} />
+
+                        <div className="flex items-center gap-4 mb-4">
+                          <span className={`flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br ${theme.gradient} text-white font-bold text-lg shadow-md`}>
+                            {step.number || index + 1}
+                          </span>
+                          <h3 className="text-xl font-bold text-[#262626]">
+                            {language === "ar" ? step.text_ar : step.text_en}
+                          </h3>
+                        </div>
+
+                        {/* <p className="text-[#262626]/70 leading-relaxed">
+                          {language === "ar" ? step.desc_ar : step.desc_en}
+                        </p> */}
+                      </div>
+                    </div>
+
+                    {/* Center Node */}
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white border-4 border-[#0D5BDC] rounded-full z-10 hidden md:block shadow-[0_0_0_4px_rgba(13,91,220,0.2)]" />
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Gallery Section */}
+      {galleryImages.length > 0 && (
+        <section className="py-24 bg-gradient-to-b from-[#F9FAFB] to-white relative overflow-hidden">
+          <div className="container mx-auto px-6 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <div className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-[#0D5BDC]/10 to-[#340F87]/10 border border-[#0D5BDC]/20 mb-6">
+                <span className="bg-gradient-to-r from-[#0D5BDC] to-[#340F87] bg-clip-text text-transparent flex items-center gap-2 justify-center">
+                  <ImageIcon className="w-5 h-5 text-[#0D5BDC]" />
+                  {language === "ar" ? "معرض الصور" : "Program Gallery"}
+                </span>
+              </div>
+              <h2 className="text-4xl sm:text-5xl mb-6 font-bold">
+                {language === "ar" ? "لحظات من البرنامج" : "Moments from the Program"}
+              </h2>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {galleryImages.map((img: string, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  whileHover={{ scale: 1.03, y: -5 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="group relative aspect-[4/3] rounded-3xl overflow-hidden shadow-lg cursor-pointer"
+                >
+                  <ImageWithFallback
+                    src={img}
+                    alt={`Gallery Image ${index + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Downloadable Resources */}
+      {programDoc && (
+        <section className="py-20 bg-white border-t border-gray-100">
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 p-10 rounded-3xl bg-gradient-to-br from-[#0D5BDC] to-[#340F87] text-white shadow-2xl relative overflow-hidden">
+              {/* Background Pattern */}
+              <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0)", backgroundSize: "32px 32px" }} />
+
+              <div className="relative z-10">
+                <h3 className="text-3xl font-bold mb-2">
+                  {language === "ar" ? "حمل دليل البرنامج" : "Download Program Brochure"}
+                </h3>
+                <p className="text-white/80 text-lg">
+                  {language === "ar" ? "احصل على كافة التفاصيل والمعلومات في ملف واحد" : "Get all the details and information in one file"}
+                </p>
+              </div>
+
+              <div className="relative z-10 w-full md:w-auto">
+                <a
+                  href={programDoc.startsWith('http') || programDoc.startsWith('/api') ? programDoc : `/api/public/file?file_url=${encodeURIComponent(programDoc)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-3 w-full md:w-auto px-8 py-4 bg-white text-[#0D5BDC] rounded-full font-bold hover:bg-gray-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
+                >
+                  <Download className="w-5 h-5" />
+                  {language === "ar" ? "تحميل الملف" : "Download PDF"}
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Application Requirements */}
       <section className="py-24 bg-white relative overflow-hidden">
         {/* Decorative Background */}
         <motion.div
           className="absolute top-1/4 ltr:right-0 rtl:left-0 w-96 h-96 rounded-full blur-3xl"
-          style={{ backgroundColor: `${program.accentColor}20` }}
+          style={{ backgroundColor: `${theme.accent}20` }}
           animate={{
             scale: [1, 1.3, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -1014,7 +997,7 @@ export default function ProgramViewPage() {
 
           <div className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-2 gap-6">
-              {program.requirements.map((req: string, index: number) => (
+              {requirements.map((req: any, index: number) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, x: language === "ar" ? 20 : -20 }}
@@ -1029,7 +1012,7 @@ export default function ProgramViewPage() {
                     <motion.div
                       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                       style={{
-                        background: `radial-gradient(circle at center, ${program.accentColor}20, transparent)`,
+                        background: `radial-gradient(circle at center, ${theme.accent}20, transparent)`,
                       }}
                     />
 
@@ -1040,17 +1023,78 @@ export default function ProgramViewPage() {
                     >
                       <CheckCircle2
                         className="w-7 h-7"
-                        style={{ color: program.accentColor }}
+                        style={{ color: theme.accent }}
                       />
                     </motion.div>
 
-                    <span className="text-[#262626]/80 text-lg leading-relaxed relative z-10">
-                      {req}
-                    </span>
+                    <div className="relative z-10">
+                      <p className="text-[#0D5BDC] font-semibold mb-1">
+                        {language === "ar" ? req.text_ar : req.text_en}
+                      </p>
+                      <p className="text-[#262626]/70 text-sm">
+                        {language === "ar" ? req.desc_ar : req.desc_en}
+                      </p>
+                    </div>
                   </div>
                 </motion.div>
               ))}
             </div>
+
+            {documents.length > 0 && (
+              <>
+                <div className="flex items-center gap-4 my-12">
+                  <div className="h-px bg-gradient-to-r from-transparent via-[#0D5BDC]/20 to-transparent flex-1" />
+                  <span className="text-[#0D5BDC] font-semibold bg-[#F2F2F2]/50 px-4 py-1 rounded-full">
+                    {language === "ar" ? "المستندات المطلوبة" : "Required Documents"}
+                  </span>
+                  <div className="h-px bg-gradient-to-r from-transparent via-[#0D5BDC]/20 to-transparent flex-1" />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  {documents.map((doc: any, index: number) => (
+                    <motion.div
+                      key={`doc-${index}`}
+                      initial={{ opacity: 0, x: language === "ar" ? 20 : -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.05 }}
+                      whileHover={{ x: language === "ar" ? -5 : 5, scale: 1.02 }}
+                      className="group"
+                    >
+                      <div className="flex items-start gap-4 p-6 rounded-2xl bg-gradient-to-br from-[#F2F2F2] to-white border border-[#F2F2F2] hover:border-transparent hover:shadow-xl transition-all relative overflow-hidden">
+                        {/* Hover glow effect */}
+                        <motion.div
+                          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                          style={{
+                            background: `radial-gradient(circle at center, ${theme.accent}20, transparent)`,
+                          }}
+                        />
+
+                        <motion.div
+                          whileHover={{ scale: 1.2, rotate: 360 }}
+                          transition={{ duration: 0.5 }}
+                          className="flex-shrink-0 relative z-10"
+                        >
+                          <FileText
+                            className="w-7 h-7"
+                            style={{ color: theme.accent }}
+                          />
+                        </motion.div>
+
+                        <div className="relative z-10">
+                          <p className="text-[#0D5BDC] font-semibold mb-1">
+                            {language === "ar" ? doc.text_ar : doc.text_en}
+                          </p>
+                          <p className="text-[#262626]/70 text-sm">
+                            {language === "ar" ? doc.desc_ar : doc.desc_en}
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -1119,7 +1163,7 @@ export default function ProgramViewPage() {
               {/* Decorative gradient orbs */}
               <motion.div
                 className="absolute -top-20 -left-20 w-40 h-40 rounded-full opacity-20 blur-3xl"
-                style={{ backgroundColor: program.accentColor }}
+                style={{ backgroundColor: theme.accent }}
                 animate={{
                   scale: [1, 1.2, 1],
                   opacity: [0.2, 0.3, 0.2],
@@ -1128,7 +1172,7 @@ export default function ProgramViewPage() {
               />
               <motion.div
                 className="absolute -bottom-20 -right-20 w-40 h-40 rounded-full opacity-20 blur-3xl"
-                style={{ backgroundColor: program.accentColor }}
+                style={{ backgroundColor: theme.accent }}
                 animate={{
                   scale: [1.2, 1, 1.2],
                   opacity: [0.3, 0.2, 0.3],
@@ -1141,7 +1185,7 @@ export default function ProgramViewPage() {
                 <div>
                   <h3 className="text-2xl text-[#262626] mb-6 flex items-center gap-3">
                     <div
-                      className={`w-10 h-10 rounded-xl bg-gradient-to-br ${program.gradient} flex items-center justify-center`}
+                      className={`w-10 h-10 rounded-xl bg-gradient-to-br ${theme.gradient} flex items-center justify-center`}
                     >
                       <User className="w-5 h-5 text-white" />
                     </div>
@@ -1243,7 +1287,7 @@ export default function ProgramViewPage() {
                 <div>
                   <h3 className="text-2xl text-[#262626] mb-6 flex items-center gap-3">
                     <div
-                      className={`w-10 h-10 rounded-xl bg-gradient-to-br ${program.gradient} flex items-center justify-center`}
+                      className={`w-10 h-10 rounded-xl bg-gradient-to-br ${theme.gradient} flex items-center justify-center`}
                     >
                       <Rocket className="w-5 h-5 text-white" />
                     </div>
@@ -1355,7 +1399,7 @@ export default function ProgramViewPage() {
                 <div>
                   <h3 className="text-2xl text-[#262626] mb-6 flex items-center gap-3">
                     <div
-                      className={`w-10 h-10 rounded-xl bg-gradient-to-br ${program.gradient} flex items-center justify-center`}
+                      className={`w-10 h-10 rounded-xl bg-gradient-to-br ${theme.gradient} flex items-center justify-center`}
                     >
                       <FileText className="w-5 h-5 text-white" />
                     </div>
@@ -1365,7 +1409,7 @@ export default function ProgramViewPage() {
                   </h3>
 
                   <div className="grid md:grid-cols-2 gap-6">
-                    {program.documents.map((doc: any, index: number) => (
+                    {documents.map((doc: any, index: number) => (
                       <motion.div
                         key={index}
                         initial={{ opacity: 0, y: 20 }}
@@ -1375,13 +1419,14 @@ export default function ProgramViewPage() {
                         whileHover={{ scale: 1.02 }}
                         className="space-y-3"
                       >
-                        <Label className="text-[#262626]/80 flex items-center gap-2">
-                          {language === "ar" ? doc.nameAr : doc.nameEn}
-                          {doc.required && (
+                        <Label className="text-[#262626]/80 flex flex-col gap-1">
+                          <span className="font-semibold">{language === "ar" ? doc.text_ar : doc.text_en}</span>
+                          <span className="text-sm text-muted-foreground">{language === "ar" ? doc.desc_ar : doc.desc_en}</span>
+                          {/* {doc.required && (
                             <span className="text-red-500">*</span>
-                          )}
-                          <Badge variant="outline" className="ml-auto">
-                            {doc.format}
+                          )} */}
+                          <Badge variant="outline" className="w-fit">
+                            PDF/Image
                           </Badge>
                         </Label>
 
@@ -1424,7 +1469,7 @@ export default function ProgramViewPage() {
                     type="submit"
                     size="lg"
                     disabled={isSubmitting}
-                    className={`w-full h-16 text-xl rounded-full bg-gradient-to-r ${program.gradient} text-white border-0 hover:scale-105 transition-transform shadow-2xl relative overflow-hidden group`}
+                    className={`w-full h-16 text-xl rounded-full bg-gradient-to-r ${theme.gradient} text-white border-0 hover:scale-105 transition-transform shadow-2xl relative overflow-hidden group`}
                   >
                     <motion.div
                       className="absolute inset-0 bg-white/20"
@@ -1457,9 +1502,8 @@ export default function ProgramViewPage() {
                             ? "تقديم الطلب"
                             : "Submit Application"}
                           <ArrowRight
-                            className={`w-6 h-6 ${
-                              language === "ar" ? "rotate-180" : ""
-                            }`}
+                            className={`w-6 h-6 ${language === "ar" ? "rotate-180" : ""
+                              }`}
                           />
                         </>
                       )}
@@ -1476,9 +1520,8 @@ export default function ProgramViewPage() {
       <motion.div
         className="fixed bottom-8 right-8 w-16 h-16 rounded-full bg-white shadow-2xl flex items-center justify-center z-50 border-4 border-[#F2F2F2]"
         style={{
-          background: `conic-gradient(${program.accentColor} ${
-            scaleProgress.get() * 100
-          }%, #F2F2F2 0%)`,
+          background: `conic-gradient(${theme.accent} ${scaleProgress.get() * 100
+            }%, #F2F2F2 0%)`,
         }}
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
@@ -1492,10 +1535,10 @@ export default function ProgramViewPage() {
         >
           <ArrowRight
             className="w-6 h-6 -rotate-90"
-            style={{ color: program.accentColor }}
+            style={{ color: theme.accent }}
           />
         </motion.div>
       </motion.div>
-    </div>
+    </div >
   );
 }
