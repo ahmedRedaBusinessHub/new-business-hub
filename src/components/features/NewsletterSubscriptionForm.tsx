@@ -1,12 +1,8 @@
 import * as z from "zod";
+import { useMemo } from "react";
 import type { NewsletterSubscription } from "./NewsletterSubscriptionsManagement";
-import DynamicForm from "../shared/DynamicForm";
-
-const formSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  name: z.string().optional(),
-  status: z.coerce.number().int().min(0).max(1),
-});
+import DynamicForm, { type FormField } from "../shared/DynamicForm";
+import { useI18n } from "@/hooks/useI18n";
 
 interface NewsletterSubscriptionFormProps {
   subscription: NewsletterSubscription | null;
@@ -15,14 +11,23 @@ interface NewsletterSubscriptionFormProps {
 }
 
 export function NewsletterSubscriptionForm({ subscription, onSubmit, onCancel }: NewsletterSubscriptionFormProps) {
+  const { t } = useI18n("admin");
+
+  const formSchema = useMemo(() => z.object({
+    email: z.string().email(t("entities.newsletterSubscriptions.emailHelper")),
+    name: z.string().optional(),
+    status: z.coerce.number().int().min(0).max(1),
+  }), [t]);
+
   const handleSubmit = async (data: Record<string, any>) => {
     try {
       const validated = formSchema.parse(data);
-      
+
       onSubmit({
         email: validated.email,
         name: validated.name || null,
         status: validated.status,
+        organization_id: subscription?.organization_id || 1,
       });
     } catch (error) {
       console.error("Form validation error:", error);
@@ -30,44 +35,46 @@ export function NewsletterSubscriptionForm({ subscription, onSubmit, onCancel }:
     }
   };
 
+  const formConfig = useMemo((): FormField[] => [
+    {
+      name: "email",
+      label: t("entities.newsletterSubscriptions.email"),
+      type: "email",
+      placeholder: t("entities.newsletterSubscriptions.emailPlaceholder"),
+      validation: formSchema.shape.email,
+      required: true,
+      helperText: t("entities.newsletterSubscriptions.emailHelper"),
+    },
+    {
+      name: "name",
+      label: t("entities.newsletterSubscriptions.subscriberName"),
+      type: "text",
+      placeholder: t("entities.newsletterSubscriptions.subscriberNamePlaceholder"),
+      validation: formSchema.shape.name,
+      required: false,
+      helperText: t("entities.newsletterSubscriptions.nameHelper"),
+    },
+    {
+      name: "status",
+      label: t("common.status"),
+      type: "select",
+      placeholder: t("common.status"),
+      validation: formSchema.shape.status,
+      required: true,
+      helperText: t("entities.newsletterSubscriptions.statusHelper"),
+      options: [
+        { value: "1", label: t("entities.newsletterSubscriptions.statusActive") },
+        { value: "0", label: t("entities.newsletterSubscriptions.statusInactive") },
+      ],
+    },
+  ], [formSchema, t]);
+
   return (
     <>
       <DynamicForm
-        config={[
-          {
-            name: "email",
-            label: "Email",
-            type: "email",
-            placeholder: "Enter email address",
-            validation: formSchema.shape.email,
-            required: true,
-            helperText: "Email address (required)",
-          },
-          {
-            name: "name",
-            label: "Name",
-            type: "text",
-            placeholder: "Enter name",
-            validation: formSchema.shape.name,
-            required: false,
-            helperText: "Subscriber name (optional)",
-          },
-          {
-            name: "status",
-            label: "Status",
-            type: "select",
-            placeholder: "Select status",
-            validation: formSchema.shape.status,
-            required: true,
-            helperText: "Subscription status",
-            options: [
-              { value: "1", label: "Active" },
-              { value: "0", label: "Inactive" },
-            ],
-          },
-        ]}
+        config={formConfig}
         onSubmit={handleSubmit}
-        submitText={subscription ? "Update Subscription" : "Create Subscription"}
+        submitText={subscription ? t("entities.newsletterSubscriptions.edit") : t("entities.newsletterSubscriptions.createNew")}
         onSuccess={onCancel}
         defaultValues={{
           email: subscription?.email || "",

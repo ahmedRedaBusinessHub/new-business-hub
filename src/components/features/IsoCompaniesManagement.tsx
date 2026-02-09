@@ -218,11 +218,11 @@ export function IsoCompaniesManagement() {
       });
 
       if (!response.ok) {
-        throw new Error(t("entities.news.failedToUploadImage"));
+        throw new Error(t("entities.isoCompanies.failedToUploadImage"));
       }
     } catch (error: any) {
       console.error("Error uploading image:", error);
-      toast.error(t("entities.news.failedToUploadImage"));
+      toast.error(t("entities.isoCompanies.failedToUploadImage"));
     }
   };
 
@@ -269,14 +269,14 @@ export function IsoCompaniesManagement() {
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h2>ISO Companies Management</h2>
+          <h2>{t("entities.isoCompanies.title")}</h2>
           <p className="text-muted-foreground">
-            Manage ISO companies with full CRUD operations
+            {t("entities.isoCompanies.subtitle")}
           </p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
-          Add ISO Company
+          {t("entities.isoCompanies.add")}
         </Button>
       </div>
 
@@ -312,7 +312,7 @@ export function IsoCompaniesManagement() {
           <TableHeader>
             <TableRow>
               <TableHead>{t("common.name")}</TableHead>
-              <TableHead>Contact Person</TableHead>
+              <TableHead>{t("entities.isoCompanies.contactPerson")}</TableHead>
               <TableHead>{t("users.email")}</TableHead>
               <TableHead>{t("users.mobile")}</TableHead>
               <TableHead>{t("common.status")}</TableHead>
@@ -438,8 +438,8 @@ export function IsoCompaniesManagement() {
       )}
 
       <div className="text-sm text-muted-foreground">
-        Showing {isoCompanies.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
-        {Math.min(currentPage * pageSize, total)} of {total} ISO companies
+        {t("table.showing")} {isoCompanies.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} {t("table.of")}{" "}
+        {Math.min(currentPage * pageSize, total)} {t("table.of")} {total} {t("table.results")}
       </div>
 
       <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
@@ -465,7 +465,7 @@ export function IsoCompaniesManagement() {
           title={t("entities.isoCompanies.details")}
           header={{
             type: "avatar",
-            title: (data: IsoCompany) => data.company_name || data.name || "ISO Company",
+            title: (data: IsoCompany) => data.company_name || data.name || t("entities.isoCompanies.details"),
             subtitle: (data: IsoCompany) => data.position || "",
             imageIdField: "image_id",
             avatarFallback: (data: IsoCompany) =>
@@ -474,8 +474,8 @@ export function IsoCompaniesManagement() {
               {
                 field: "status",
                 map: {
-                  1: { label: "Active", variant: "default" },
-                  0: { label: "Inactive", variant: "secondary" },
+                  1: { label: t("common.active"), variant: "default" },
+                  0: { label: t("common.inactive"), variant: "secondary" },
                 },
               },
             ],
@@ -483,31 +483,31 @@ export function IsoCompaniesManagement() {
           tabs={[
             {
               id: "details",
-              label: "Details",
+              label: t("entities.isoCompanies.details"),
               gridCols: 2,
               fields: [
-                { name: "company_name", label: "Company Name", type: "text", colSpan: 12 },
-                { name: "name", label: "Contact Person", type: "text", colSpan: 12 },
-                { name: "position", label: "Position", type: "text" },
-                { name: "email", label: "Email", type: "text" },
-                { name: "phone", label: "Phone", type: "text" },
-                { name: "website", label: "Website", type: "text" },
-                { name: "certificate_code", label: "Certificate Code", type: "text" },
-                { name: "certificate_name_ar", label: "Certificate Name (AR)", type: "text" },
-                { name: "certificate_name_en", label: "Certificate Name (EN)", type: "text" },
-                { name: "address", label: "Address", type: "text", colSpan: 12 },
-                { name: "notes", label: "Notes", type: "text", colSpan: 12 },
+                { name: "company_name", label: t("entities.isoCompanies.companyName"), type: "text", colSpan: 12 },
+                { name: "name", label: t("entities.isoCompanies.contactPerson"), type: "text", colSpan: 12 },
+                { name: "position", label: t("entities.isoCompanies.position"), type: "text" },
+                { name: "email", label: t("entities.isoCompanies.email"), type: "text" },
+                { name: "phone", label: t("entities.isoCompanies.phone"), type: "text" },
+                { name: "website", label: t("entities.isoCompanies.website"), type: "text" },
+                { name: "certificate_code", label: t("entities.isoCompanies.certificateCode"), type: "text" },
+                { name: "certificate_name_ar", label: t("entities.isoCompanies.certificateNameAr"), type: "text" },
+                { name: "certificate_name_en", label: t("entities.isoCompanies.certificateNameEn"), type: "text" },
+                { name: "address", label: t("entities.isoCompanies.address"), type: "text", colSpan: 12 },
+                { name: "notes", label: t("entities.isoCompanies.notes"), type: "text", colSpan: 12 },
                 {
                   name: "status",
-                  label: "Status",
+                  label: t("common.status"),
                   type: "badge",
                   badgeMap: {
-                    1: { label: "Active", variant: "default" },
-                    0: { label: "Inactive", variant: "secondary" },
+                    1: { label: t("common.active"), variant: "default" },
+                    0: { label: t("common.inactive"), variant: "secondary" },
                   },
                 },
-                { name: "created_at", label: "Created At", type: "datetime" },
-                { name: "updated_at", label: "Updated At", type: "datetime" },
+                { name: "created_at", label: t("common.createdAt"), type: "datetime" },
+                { name: "updated_at", label: t("common.updatedAt"), type: "datetime" },
               ],
             },
           ]}

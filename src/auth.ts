@@ -17,6 +17,8 @@ async function getUserFromToken(accessToken: string, identifier: string) {
         name: user.name || user.firstName || user.username || identifier,
         email: user.email || identifier,
         role: role as UserRole,
+        avatar: user.avatar || user.image || user.picture || user.profile_picture || null,
+        bio: user.bio || "",
         accessToken,
       };
     }
@@ -108,8 +110,8 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
                 res.status === 401
                   ? "Invalid email or password"
                   : res.status === 400
-                  ? "Validation error"
-                  : "Authentication failed"
+                    ? "Validation error"
+                    : "Authentication failed"
               );
             }
             throw new Error("Invalid response from server");
@@ -133,7 +135,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
               identifier,
               country_code,
             });
-            
+
             const error = new Error(twoFAData);
             // Set cause to the same JSON string so it's accessible even if NextAuth wraps the error
             (error as any).cause = twoFAData;
@@ -160,7 +162,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
             const encodedError = JSON.stringify({ type: "AUTH_ERROR", message: errorMsg });
             const error = new Error(encodedError);
             (error as any).cause = errorMsg; // Also set cause for NextAuth's internal logging
-            
+
             throw error;
           }
 
@@ -169,8 +171,8 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
               typeof (data as any).message === "string"
                 ? (data as any).message
                 : Array.isArray((data as any).message)
-                ? (data as any).message.join(", ")
-                : "Validation error";
+                  ? (data as any).message.join(", ")
+                  : "Validation error";
             const error = new Error(errorMessage);
             (error as any).cause = errorMessage;
             throw error;
@@ -190,7 +192,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
           throw new Error("Authentication failed");
         } catch (error: any) {
           console.error("Authorization error:", error);
-          
+
           // Re-throw 2FA errors so they can be handled by frontend
           // Check both message and cause for 2FA_REQUIRED
           const errorMessage = error?.message || error?.cause || "";
@@ -201,7 +203,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
             }
             throw error;
           }
-          
+
           // Re-throw errors to preserve the message
           // NextAuth will wrap it but the message should be accessible via res.error
           throw error;
@@ -227,6 +229,8 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
         token.role = user.role;
         token.email = user.email;
         token.name = user.name;
+        token.avatar = user.avatar;
+        token.bio = user.bio;
       }
 
       // Handle session updates
@@ -265,6 +269,12 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
         if (token.name) {
           session.user.name = token.name as string;
         }
+        if (token.avatar) {
+          session.user.image = token.avatar as string;
+        }
+        if (token.bio) {
+          session.user.bio = token.bio as string;
+        }
       }
 
       return session;
@@ -277,7 +287,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
   // Error handling
   events: {
     async signIn({ user }: any) {
-      console.log("user",user);
+      console.log("user", user);
       // Log successful sign-ins
       console.log("User signed in:", user?.email || user?.id);
     },

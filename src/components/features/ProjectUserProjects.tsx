@@ -50,7 +50,7 @@ interface ProjectUserProjectsProps {
 }
 
 export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
-  const { language } = useI18n();
+  const { t, language } = useI18n("admin");
   const [userProjects, setUserProjects] = useState<any[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -102,14 +102,14 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
     try {
       setLoading(true);
       const response = await fetch(`/api/user-project/project/${projectId}?${paramsString}`);
-      if (!response.ok) throw new Error("Failed to fetch user projects");
+      if (!response.ok) throw new Error(t("entities.userProjects.failedToLoad"));
       const data = await response.json();
       setUserProjects(Array.isArray(data.data) ? data.data : []);
       setTotal(data.total || 0);
       setTotalPages(data.totalPages || 0);
     } catch (error: any) {
       console.error("Error fetching user projects:", error);
-      toast.error("Failed to load user projects");
+      toast.error(t("entities.userProjects.failedToLoad"));
       setUserProjects([]);
       setTotal(0);
       setTotalPages(0);
@@ -117,15 +117,15 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
       setLoading(false);
       isFetchingRef.current = false;
     }
-  }, [projectId, currentPage, pageSize, debouncedSearch]);
+  }, [projectId, currentPage, pageSize, debouncedSearch, t]);
 
   useEffect(() => {
     if (projectId) fetchUserProjects();
-  }, [projectId, currentPage, pageSize, debouncedSearch]);
+  }, [projectId, currentPage, pageSize, debouncedSearch, fetchUserProjects]);
 
-  const handleCreate = async (payload: Omit<UserProject, "id" | "project_id" | "created_at" | "updated_at" | "organization_id"> & { files?: File[]; fileNames?: string[] }) => {
+  const handleCreate = async (payload: Omit<UserProject, "id" | "project_id" | "created_at" | "updated_at" | "organization_id" | "upload_documents"> & { files?: File[]; fileNames?: string[]; upload_documents?: any[] }) => {
     try {
-      const { files, fileNames, ...rest } = payload;
+      const { files, fileNames, upload_documents, ...rest } = payload;
       const response = await fetch("/api/user-project", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -133,7 +133,7 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
       });
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create user project");
+        throw new Error(error.message || t("entities.userProjects.failedToCreate"));
       }
       const responseData = await response.json();
       const userProjectId = responseData.id ?? responseData.data?.id;
@@ -146,18 +146,18 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
         formData.append("refColumn", "upload_documents");
         await fetch(`/api/user-project/${userProjectId}/upload`, { method: "POST", body: formData });
       }
-      toast.success("User project created successfully!");
+      toast.success(t("entities.userProjects.created"));
       setIsFormOpen(false);
       fetchUserProjects();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create user project");
+      toast.error(error.message || t("entities.userProjects.failedToCreate"));
     }
   };
 
-  const handleUpdate = async (payload: Omit<UserProject, "id" | "project_id" | "created_at" | "updated_at" | "organization_id"> & { files?: File[]; fileNames?: string[] }) => {
+  const handleUpdate = async (payload: Omit<UserProject, "id" | "project_id" | "created_at" | "updated_at" | "organization_id" | "upload_documents"> & { files?: File[]; fileNames?: string[]; upload_documents?: any[] }) => {
     if (!editingUserProject) return;
     try {
-      const { files, fileNames, ...rest } = payload;
+      const { files, fileNames, upload_documents, ...rest } = payload;
       const response = await fetch(`/api/user-project/${editingUserProject.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -165,7 +165,7 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
       });
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update user project");
+        throw new Error(error.message || t("entities.userProjects.failedToUpdate"));
       }
       if (files && Array.isArray(files) && files.length > 0) {
         const formData = new FormData();
@@ -176,12 +176,12 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
         formData.append("refColumn", "upload_documents");
         await fetch(`/api/user-project/${editingUserProject.id}/upload`, { method: "POST", body: formData });
       }
-      toast.success("User project updated successfully!");
+      toast.success(t("entities.userProjects.updated"));
       setEditingUserProject(null);
       setIsFormOpen(false);
       fetchUserProjects();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update user project");
+      toast.error(error.message || t("entities.userProjects.failedToUpdate"));
     }
   };
 
@@ -190,13 +190,13 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
       const response = await fetch(`/api/user-project/${id}`, { method: "DELETE" });
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete user project");
+        throw new Error(error.message || t("entities.userProjects.failedToDelete"));
       }
-      toast.success("User project deleted successfully!");
+      toast.success(t("entities.userProjects.deleted"));
       setDeletingUserProjectId(null);
       fetchUserProjects();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete user project");
+      toast.error(error.message || t("entities.userProjects.failedToDelete"));
     }
   };
 
@@ -239,19 +239,19 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
     <div className="flex flex-1 flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3>User Projects</h3>
-          <p className="text-sm text-muted-foreground">Manage user project enrollments for this project</p>
+          <h3>{t("entities.userProjects.title")}</h3>
+          <p className="text-sm text-muted-foreground">{t("entities.userProjects.subtitle")}</p>
         </div>
         <Button onClick={() => setIsFormOpen(true)} size="sm">
           <Plus className="mr-2 size-4" />
-          Add User Project
+          {t("entities.userProjects.add")}
         </Button>
       </div>
 
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-          <Input type="search" placeholder="Search user projects..." className="pl-8" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+          <Input type="search" placeholder={t("entities.userProjects.search")} className="pl-8" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
         </div>
         <Select
           error={undefined}
@@ -262,10 +262,10 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
           }}
           className="w-32"
         >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-          <option value="100">100 per page</option>
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
         </Select>
       </div>
 
@@ -273,23 +273,23 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>User</TableHead>
-              <TableHead>Company Name</TableHead>
-              <TableHead>Project Name</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Fund Needed</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("entities.userProjects.user")}</TableHead>
+              <TableHead>{t("entities.userProjects.companyName")}</TableHead>
+              <TableHead>{t("entities.userProjects.projectName")}</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
+              <TableHead>{t("entities.userProjects.fundNeeded")}</TableHead>
+              <TableHead>{t("common.createdAt")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">Loading user projects...</TableCell>
+                <TableCell colSpan={7} className="h-24 text-center">{t("common.loading")}</TableCell>
               </TableRow>
             ) : userProjects.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">No user projects found.</TableCell>
+                <TableCell colSpan={7} className="h-24 text-center">{t("table.noResults")}</TableCell>
               </TableRow>
             ) : (
               userProjects.map((userProject) => (
@@ -302,9 +302,9 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
                   <TableCell>{userProject.created_at ? new Date(userProject.created_at).toLocaleDateString() : "-"}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="icon" onClick={() => handleView(userProject)} title="View"><Eye className="size-4" /></Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(userProject)} title="Edit"><Pencil className="size-4" /></Button>
-                      <Button variant="ghost" size="icon" onClick={() => setDeletingUserProjectId(userProject.id)} title="Delete"><Trash2 className="size-4" /></Button>
+                      <Button variant="ghost" size="icon" onClick={() => handleView(userProject)} title={t("entities.userProjects.viewDetails")}><Eye className="size-4" /></Button>
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(userProject)} title={t("entities.userProjects.editTooltip")}><Pencil className="size-4" /></Button>
+                      <Button variant="ghost" size="icon" onClick={() => setDeletingUserProjectId(userProject.id)} title={t("entities.userProjects.deleteTooltip")}><Trash2 className="size-4" /></Button>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -340,13 +340,13 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
       )}
 
       <div className="text-sm text-muted-foreground">
-        Showing {userProjects.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to {Math.min(currentPage * pageSize, total)} of {total} user projects
+        {t("table.showing")} {userProjects.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} {t("table.of")} {Math.min(currentPage * pageSize, total)} {t("table.of")} {total} {t("table.results")}
       </div>
 
       <Dialog open={isFormOpen} onOpenChange={(open) => !open && (setIsFormOpen(false), setEditingUserProject(null))}>
         <DialogContent className="max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editingUserProject ? "Edit User Project" : "Create New User Project"}</DialogTitle>
+            <DialogTitle>{editingUserProject ? t("entities.userProjects.edit") : t("entities.userProjects.createNew")}</DialogTitle>
           </DialogHeader>
           <UserProjectForm userProject={editingUserProject} projectId={projectId} onSubmit={editingUserProject ? handleUpdate : handleCreate} onCancel={() => (setIsFormOpen(false), setEditingUserProject(null))} />
         </DialogContent>
@@ -357,32 +357,32 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
           data={viewingUserProject}
           open={isViewOpen}
           onOpenChange={() => (setIsViewOpen(false), setViewingUserProject(null))}
-          title="User Project Details"
+          title={t("entities.userProjects.details")}
           tabs={[
             {
               id: "details",
-              label: "Details",
+              label: t("entities.userProjects.details"),
               gridCols: 2,
               fields: [
-                { name: "user", label: "User", type: "text", render: (_: any, data: any) => getUserName(data) },
-                { name: "email", label: "Email", type: "text", render: (_: any, data: any) => getUserEmail(data) },
-                { name: "company_name", label: "Company Name", type: "text" },
-                { name: "project_name", label: "Project Name", type: "text" },
-                { name: "project_description", label: "Project Description", type: "text", colSpan: 12 },
-                { name: "team_size", label: "Team Size", type: "text" },
-                { name: "fund_needed", label: "Fund Needed", type: "text", render: (v: number | null) => (v != null ? `$${v}` : "-") },
-                { name: "why_applying", label: "Why Applying", type: "text", colSpan: 12 },
-                { name: "status", label: "Status", type: "text", render: (v: number | null) => getStatusName(v) },
-                { name: "created_at", label: "Created At", type: "datetime" },
-                { name: "updated_at", label: "Updated At", type: "datetime" },
+                { name: "user", label: t("entities.userProjects.user"), type: "text", render: (_: any, data: any) => getUserName(data) },
+                { name: "email", label: t("users.email"), type: "text", render: (_: any, data: any) => getUserEmail(data) },
+                { name: "company_name", label: t("entities.userProjects.companyName"), type: "text" },
+                { name: "project_name", label: t("entities.userProjects.projectName"), type: "text" },
+                { name: "project_description", label: t("entities.userProjects.projectDescription"), type: "text", colSpan: 12 },
+                { name: "team_size", label: t("entities.userProjects.teamSize"), type: "text" },
+                { name: "fund_needed", label: t("entities.userProjects.fundNeeded"), type: "text", render: (v: number | null) => (v != null ? `$${v}` : "-") },
+                { name: "why_applying", label: t("entities.userProjects.whyApplying"), type: "text", colSpan: 12 },
+                { name: "status", label: t("common.status"), type: "text", render: (v: number | null) => getStatusName(v) },
+                { name: "created_at", label: t("common.createdAt"), type: "datetime" },
+                { name: "updated_at", label: t("common.updatedAt"), type: "datetime" },
               ],
             },
             {
               id: "documents",
-              label: "Documents",
+              label: t("entities.userProjects.uploadDocuments"),
               customContent: (data: any) => {
                 const documents = getDocuments(data);
-                if (documents.length === 0) return <p className="text-muted-foreground">No documents uploaded</p>;
+                if (documents.length === 0) return <p className="text-muted-foreground">{t("entities.userProjects.noDocuments")}</p>;
                 return (
                   <div className="space-y-2">
                     {documents.map((doc) => {
@@ -413,12 +413,12 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
       <AlertDialog open={!!deletingUserProjectId} onOpenChange={(open) => !open && setDeletingUserProjectId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>This action cannot be undone. This will permanently delete the user project.</AlertDialogDescription>
+            <AlertDialogTitle>{t("common.areYouSure")}</AlertDialogTitle>
+            <AlertDialogDescription>{t("common.thisActionCannotBeUndone")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => deletingUserProjectId && handleDelete(deletingUserProjectId)}>Delete</AlertDialogAction>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+            <AlertDialogAction onClick={() => deletingUserProjectId && handleDelete(deletingUserProjectId)}>{t("common.delete")}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

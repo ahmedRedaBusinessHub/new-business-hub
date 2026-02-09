@@ -1,19 +1,9 @@
 import * as z from "zod";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { Review } from "./ReviewsManagement";
-import DynamicForm from "../shared/DynamicForm";
+import DynamicForm, { type FormField } from "../shared/DynamicForm";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
-
-const formSchema = z.object({
-  name_ar: z.string().min(2, "Arabic name must be at least 2 characters"),
-  name_en: z.string().optional(),
-  comment_ar: z.string().optional(),
-  comment_en: z.string().optional(),
-  job_title_ar: z.string().optional(),
-  job_title_en: z.string().optional(),
-  status: z.coerce.number().int().min(0).max(1),
-  profileImage: z.any().optional(),
-});
+import { useI18n } from "@/hooks/useI18n";
 
 interface ReviewFormProps {
   review: Review | null;
@@ -22,8 +12,20 @@ interface ReviewFormProps {
 }
 
 export function ReviewForm({ review, onSubmit, onCancel }: ReviewFormProps) {
+  const { t } = useI18n("admin");
   const isEdit = !!review;
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
+
+  const formSchema = useMemo(() => z.object({
+    name_ar: z.string().min(2, t("entities.reviews.nameArPlaceholder")),
+    name_en: z.string().optional(),
+    comment_ar: z.string().optional(),
+    comment_en: z.string().optional(),
+    job_title_ar: z.string().optional(),
+    job_title_en: z.string().optional(),
+    status: z.coerce.number().int().min(0).max(1),
+    profileImage: z.any().optional(),
+  }), [t]);
 
   // Use image_url from review data instead of fetching
   useEffect(() => {
@@ -43,7 +45,7 @@ export function ReviewForm({ review, onSubmit, onCancel }: ReviewFormProps) {
   const handleSubmit = async (data: Record<string, any>) => {
     try {
       const validated = formSchema.parse(data);
-      
+
       onSubmit({
         name_ar: validated.name_ar,
         name_en: validated.name_en || null,
@@ -52,6 +54,7 @@ export function ReviewForm({ review, onSubmit, onCancel }: ReviewFormProps) {
         job_title_ar: validated.job_title_ar || null,
         job_title_en: validated.job_title_en || null,
         status: validated.status,
+        organization_id: review?.organization_id || 1,
         profileImage: validated.profileImage,
       });
     } catch (error) {
@@ -60,104 +63,106 @@ export function ReviewForm({ review, onSubmit, onCancel }: ReviewFormProps) {
     }
   };
 
+  const formConfig = useMemo((): FormField[] => [
+    {
+      name: "name_ar",
+      label: t("entities.reviews.nameAr"),
+      type: "text",
+      placeholder: t("entities.reviews.nameArPlaceholder"),
+      validation: formSchema.shape.name_ar,
+      required: true,
+      helperText: `${t("entities.reviews.nameAr")} ${t("entities.reviews.helperTextRequired")}`,
+    },
+    {
+      name: "name_en",
+      label: t("entities.reviews.nameEn"),
+      type: "text",
+      placeholder: t("entities.reviews.nameEnPlaceholder"),
+      validation: formSchema.shape.name_en,
+      required: false,
+      helperText: `${t("entities.reviews.nameEn")} ${t("entities.reviews.helperTextOptional")}`,
+    },
+    {
+      name: "job_title_ar",
+      label: t("entities.reviews.jobTitleAr"),
+      type: "text",
+      placeholder: t("entities.reviews.jobTitleArPlaceholder"),
+      validation: formSchema.shape.job_title_ar,
+      required: false,
+      helperText: `${t("entities.reviews.jobTitleAr")} ${t("entities.reviews.helperTextOptional")}`,
+    },
+    {
+      name: "job_title_en",
+      label: t("entities.reviews.jobTitleEn"),
+      type: "text",
+      placeholder: t("entities.reviews.jobTitleEnPlaceholder"),
+      validation: formSchema.shape.job_title_en,
+      required: false,
+      helperText: `${t("entities.reviews.jobTitleEn")} ${t("entities.reviews.helperTextOptional")}`,
+    },
+    {
+      name: "comment_ar",
+      label: t("entities.reviews.commentAr"),
+      type: "textarea",
+      placeholder: t("entities.reviews.commentArPlaceholder"),
+      validation: formSchema.shape.comment_ar,
+      required: false,
+      helperText: `${t("entities.reviews.commentAr")} ${t("entities.reviews.helperTextOptional")}`,
+    },
+    {
+      name: "comment_en",
+      label: t("entities.reviews.commentEn"),
+      type: "textarea",
+      placeholder: t("entities.reviews.commentEnPlaceholder"),
+      validation: formSchema.shape.comment_en,
+      required: false,
+      helperText: `${t("entities.reviews.commentEn")} ${t("entities.reviews.helperTextOptional")}`,
+    },
+    {
+      name: "status",
+      label: t("common.status"),
+      type: "select",
+      placeholder: t("common.status"),
+      validation: formSchema.shape.status,
+      required: true,
+      helperText: t("common.status"),
+      options: [
+        { value: "1", label: t("common.active") },
+        { value: "0", label: t("common.inactive") },
+      ],
+    },
+    {
+      name: "profileImage",
+      label: t("entities.reviews.profileImage"),
+      type: "imageuploader",
+      validation: formSchema.shape.profileImage,
+      required: false,
+      helperText: t("entities.reviews.profileImageHelper"),
+    },
+  ], [formSchema, t]);
+
   return (
     <>
       {isEdit && existingImageUrl && (
         <div className="mb-6 flex items-center gap-4 p-4 border rounded-lg bg-muted/50">
           <Avatar className="size-20">
-            <AvatarImage src={existingImageUrl} alt="Current profile picture" />
+            <AvatarImage src={existingImageUrl} alt={t("entities.reviews.currentImage")} />
             <AvatarFallback>
               {review?.name_ar?.[0] || review?.name_en?.[0] || "R"}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <p className="text-sm font-medium">Current Profile Picture</p>
+            <p className="text-sm font-medium">{t("entities.reviews.currentImage")}</p>
             <p className="text-xs text-muted-foreground">
-              Upload a new image below to replace this one
+              {t("entities.reviews.uploadNewImage")}
             </p>
           </div>
         </div>
       )}
       <DynamicForm
-        config={[
-          {
-            name: "name_ar",
-            label: "Name (Arabic)",
-            type: "text",
-            placeholder: "Enter Arabic name",
-            validation: formSchema.shape.name_ar,
-            required: true,
-            helperText: "Arabic name (required)",
-          },
-          {
-            name: "name_en",
-            label: "Name (English)",
-            type: "text",
-            placeholder: "Enter English name",
-            validation: formSchema.shape.name_en,
-            required: false,
-            helperText: "English name (optional)",
-          },
-          {
-            name: "job_title_ar",
-            label: "Job Title (Arabic)",
-            type: "text",
-            placeholder: "Enter Arabic job title",
-            validation: formSchema.shape.job_title_ar,
-            required: false,
-            helperText: "Arabic job title (optional)",
-          },
-          {
-            name: "job_title_en",
-            label: "Job Title (English)",
-            type: "text",
-            placeholder: "Enter English job title",
-            validation: formSchema.shape.job_title_en,
-            required: false,
-            helperText: "English job title (optional)",
-          },
-          {
-            name: "comment_ar",
-            label: "Comment (Arabic)",
-            type: "textarea",
-            placeholder: "Enter Arabic comment",
-            validation: formSchema.shape.comment_ar,
-            required: false,
-            helperText: "Arabic comment (optional)",
-          },
-          {
-            name: "comment_en",
-            label: "Comment (English)",
-            type: "textarea",
-            placeholder: "Enter English comment",
-            validation: formSchema.shape.comment_en,
-            required: false,
-            helperText: "English comment (optional)",
-          },
-          {
-            name: "status",
-            label: "Status",
-            type: "select",
-            placeholder: "Select status",
-            validation: formSchema.shape.status,
-            required: true,
-            helperText: "Review status",
-            options: [
-              { value: "1", label: "Active" },
-              { value: "0", label: "Inactive" },
-            ],
-          },
-          {
-            name: "profileImage",
-            label: "Profile Image",
-            type: "imageuploader",
-            validation: formSchema.shape.profileImage,
-            required: false,
-            helperText: "Upload profile image (JPG, PNG, WEBP - Max 5MB)",
-          },
-        ]}
+        config={formConfig}
         onSubmit={handleSubmit}
-        submitText={review ? "Update Review" : "Create Review"}
+        submitText={review ? t("entities.reviews.edit") : t("entities.reviews.createNew")}
         onSuccess={onCancel}
         defaultValues={{
           name_ar: review?.name_ar || "",

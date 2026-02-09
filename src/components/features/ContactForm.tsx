@@ -1,7 +1,7 @@
 import * as z from "zod";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import type { Contact } from "./ContactsManagement";
-import DynamicForm from "../shared/DynamicForm";
+import DynamicForm, { type FormField } from "../shared/DynamicForm";
 import { staticListsCache } from "@/lib/staticListsCache";
 import { getLocalizedLabel } from "@/lib/localizedLabel";
 import { useI18n } from "@/hooks/useI18n";
@@ -19,22 +19,6 @@ interface ContactTypeConfig {
   name_ar: string;
 }
 
-const createFormSchema = (isEdit: boolean) => z.object({
-  name: z.string().optional(),
-  email: z.string().email("Invalid email address").optional(),
-  phone: z.string().optional(),
-  contact_type: z.preprocess(
-    (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-    z.number().int().nullable().optional()
-  ),
-  notes: z.string().optional(),
-  status: z.coerce.number().int().min(0).max(1),
-  user_id: z.preprocess(
-    (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-    z.number().int().nullable().optional()
-  ),
-});
-
 interface ContactFormProps {
   contact: Contact | null;
   onSubmit: (data: Omit<Contact, "id" | "created_at" | "updated_at">) => void;
@@ -42,9 +26,8 @@ interface ContactFormProps {
 }
 
 export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
-  const { language } = useI18n();
+  const { t, language } = useI18n("admin");
   const isEdit = !!contact;
-  const formSchema = createFormSchema(isEdit);
   const [users, setUsers] = useState<User[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [contactTypes, setContactTypes] = useState<ContactTypeConfig[]>([]);
@@ -52,10 +35,26 @@ export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
   const usersFetchedRef = useRef(false);
   const contactTypesFetchedRef = useRef(false);
 
+  const formSchema = useMemo(() => z.object({
+    name: z.string().optional(),
+    email: z.string().email(t("entities.contacts.invalidEmail")).optional(),
+    phone: z.string().optional(),
+    contact_type: z.preprocess(
+      (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
+      z.number().int().nullable().optional()
+    ),
+    notes: z.string().optional(),
+    status: z.coerce.number().int().min(0).max(1),
+    user_id: z.preprocess(
+      (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
+      z.number().int().nullable().optional()
+    ),
+  }), [t]);
+
   // Fetch users for dropdown (only once)
   useEffect(() => {
     if (usersFetchedRef.current) return;
-    
+
     const fetchUsers = async () => {
       try {
         usersFetchedRef.current = true;
@@ -79,7 +78,7 @@ export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
   // Fetch contact types from static_lists cache (only once)
   useEffect(() => {
     if (contactTypesFetchedRef.current) return;
-    
+
     const fetchContactTypes = async () => {
       try {
         contactTypesFetchedRef.current = true;
@@ -99,7 +98,7 @@ export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
   const handleSubmit = async (data: Record<string, any>) => {
     try {
       const validated = formSchema.parse(data);
-      
+
       onSubmit({
         name: validated.name || null,
         email: validated.email || null,
@@ -108,6 +107,7 @@ export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
         notes: validated.notes || null,
         status: validated.status,
         user_id: validated.user_id ?? null,
+        organization_id: contact?.organization_id || 1,
       });
     } catch (error) {
       console.error("Form validation error:", error);
@@ -115,94 +115,96 @@ export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
     }
   };
 
+  const formConfig = useMemo((): FormField[] => [
+    {
+      name: "name",
+      label: t("entities.contacts.name"),
+      type: "text",
+      placeholder: t("entities.contacts.namePlaceholder"),
+      validation: formSchema.shape.name,
+      required: false,
+      helperText: t("entities.contacts.nameHelper"),
+    },
+    {
+      name: "email",
+      label: t("entities.contacts.email"),
+      type: "email",
+      placeholder: t("entities.contacts.emailPlaceholder"),
+      validation: formSchema.shape.email,
+      required: false,
+      helperText: t("entities.contacts.emailHelper"),
+    },
+    {
+      name: "phone",
+      label: t("entities.contacts.phone"),
+      type: "tel",
+      placeholder: t("entities.contacts.phonePlaceholder"),
+      validation: formSchema.shape.phone,
+      required: false,
+      helperText: t("entities.contacts.phoneHelper"),
+    },
+    {
+      name: "contact_type",
+      label: t("entities.contacts.contactType"),
+      type: "select",
+      placeholder: loadingContactTypes ? t("entities.contacts.loadingTypes") : t("entities.contacts.contactTypePlaceholder"),
+      validation: formSchema.shape.contact_type,
+      required: false,
+      helperText: t("entities.contacts.contactTypeHelper"),
+      options: [
+        { value: "", label: t("entities.contacts.none") },
+        ...contactTypes.map((type) => ({
+          value: type.id.toString(),
+          label: getLocalizedLabel(type.name_en, type.name_ar, language),
+        })),
+      ],
+    },
+    {
+      name: "notes",
+      label: t("entities.contacts.notes"),
+      type: "textarea",
+      placeholder: t("entities.contacts.notesPlaceholder"),
+      validation: formSchema.shape.notes,
+      required: false,
+      helperText: t("entities.contacts.notesHelper"),
+    },
+    {
+      name: "status",
+      label: t("common.status"),
+      type: "select",
+      placeholder: t("common.status"),
+      validation: formSchema.shape.status,
+      required: true,
+      helperText: t("entities.contacts.statusHelper"),
+      options: [
+        { value: "1", label: t("entities.contacts.statusActive") },
+        { value: "0", label: t("entities.contacts.statusInactive") },
+      ],
+    },
+    {
+      name: "user_id",
+      label: t("entities.contacts.user"),
+      type: "select",
+      placeholder: loadingUsers ? t("entities.contacts.loadingUsers") : t("entities.contacts.userPlaceholder"),
+      validation: formSchema.shape.user_id,
+      required: false,
+      helperText: t("entities.contacts.userHelper"),
+      options: [
+        { value: "", label: t("entities.contacts.none") },
+        ...users.map((user) => ({
+          value: user.id.toString(),
+          label: `${user.first_name}${user.last_name ? ` ${user.last_name}` : ""} (${user.email})`,
+        })),
+      ],
+    },
+  ], [formSchema, t, language, loadingContactTypes, contactTypes, loadingUsers, users]);
+
   return (
     <>
       <DynamicForm
-        config={[
-          {
-            name: "name",
-            label: "Name",
-            type: "text",
-            placeholder: "Enter contact name",
-            validation: formSchema.shape.name,
-            required: false,
-            helperText: "Contact name (optional)",
-          },
-          {
-            name: "email",
-            label: "Email",
-            type: "email",
-            placeholder: "Enter email address",
-            validation: formSchema.shape.email,
-            required: false,
-            helperText: "Email address (optional)",
-          },
-          {
-            name: "phone",
-            label: "Phone",
-            type: "tel",
-            placeholder: "Enter phone number",
-            validation: formSchema.shape.phone,
-            required: false,
-            helperText: "Phone number (optional)",
-          },
-          {
-            name: "contact_type",
-            label: "Contact Type",
-            type: "select",
-            placeholder: loadingContactTypes ? "Loading types..." : "Select contact type (optional)",
-            validation: formSchema.shape.contact_type,
-            required: false,
-            helperText: "Contact type (optional)",
-            options: [
-              { value: "", label: "None" },
-              ...contactTypes.map((type) => ({
-                value: type.id.toString(),
-                label: getLocalizedLabel(type.name_en, type.name_ar, language),
-              })),
-            ],
-          },
-          {
-            name: "notes",
-            label: "Notes",
-            type: "textarea",
-            placeholder: "Enter notes",
-            validation: formSchema.shape.notes,
-            required: false,
-            helperText: "Additional notes (optional)",
-          },
-          {
-            name: "status",
-            label: "Status",
-            type: "select",
-            placeholder: "Select status",
-            validation: formSchema.shape.status,
-            required: true,
-            helperText: "Contact status",
-            options: [
-              { value: "1", label: "Active" },
-              { value: "0", label: "Inactive" },
-            ],
-          },
-          {
-            name: "user_id",
-            label: "User",
-            type: "select",
-            placeholder: loadingUsers ? "Loading users..." : "Select user (optional)",
-            validation: formSchema.shape.user_id,
-            required: false,
-            helperText: "Link to user (optional)",
-            options: [
-              { value: "", label: "None" },
-              ...users.map((user) => ({
-                value: user.id.toString(),
-                label: `${user.first_name}${user.last_name ? ` ${user.last_name}` : ""} (${user.email})`,
-              })),
-            ],
-          },
-        ]}
+        config={formConfig}
         onSubmit={handleSubmit}
-        submitText={contact ? "Update Contact" : "Create Contact"}
+        submitText={contact ? t("entities.contacts.edit") : t("entities.contacts.createNew")}
         onSuccess={onCancel}
         defaultValues={{
           name: contact?.name || "",

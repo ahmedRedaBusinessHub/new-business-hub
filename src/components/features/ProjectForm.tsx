@@ -1,7 +1,7 @@
 import * as z from "zod";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import type { Project } from "./ProjectsManagement";
-import DynamicForm from "../shared/DynamicForm";
+import DynamicForm, { type FormField } from "../shared/DynamicForm";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { ImageUploader } from "@/components/ui/ImageUploader";
@@ -15,42 +15,6 @@ import { Send, Trash2 } from "lucide-react";
 import { staticListsCache } from "@/lib/staticListsCache";
 import { getLocalizedLabel } from "@/lib/localizedLabel";
 import { useI18n } from "@/hooks/useI18n";
-
-// Base schema for form fields (used in DynamicForm config)
-// Using simpler schema without preprocess to avoid Zod v4 compatibility issues
-const baseFormSchema = z.object({
-  title_ar: z.string().min(2, "Arabic title must be at least 2 characters"),
-  title_en: z.string().optional(),
-  detail_ar: z.string().optional(),
-  detail_en: z.string().optional(),
-  type: z.number().int().nullable().optional(),
-  category_ids: z.array(z.number()).optional(),
-  link: z.string().optional(),
-  social_media: z.record(z.string(), z.string()).optional(),
-  status: z.number().int().min(0).max(1),
-  mainImage: z.any().optional(), // Can be File or string
-  imageIds: z.any().optional(), // Can be File[] or string[]
-  fileIds: z.any().optional(), // Can be File[] or string[]
-});
-
-// For DynamicForm, we need a schema where type is just a string/number for the select
-const formFieldSchema = z.object({
-  title_ar: z.string().min(2, "Arabic title must be at least 2 characters"),
-  title_en: z.string().optional(),
-  detail_ar: z.string().optional(),
-  detail_en: z.string().optional(),
-  type: z.union([z.string(), z.number()]).optional(),
-  category_ids: z.any().optional(),
-  link: z.union([z.string().url("Invalid URL"), z.literal("")]).optional(),
-  social_media: z.any().optional(),
-  status: z.coerce.number().int().min(0).max(1),
-  mainImage: z.any().optional(),
-  imageIds: z.any().optional(),
-  fileIds: z.any().optional(),
-});
-
-// Full validation schema (used in handleSubmit)
-const formSchema = baseFormSchema;
 
 interface ProjectFormProps {
   project: Project | null;
@@ -69,7 +33,7 @@ interface StaticListOption {
 }
 
 export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
-  const { language } = useI18n();
+  const { t, language } = useI18n("admin");
   const isEdit = !!project;
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const [projectTypes, setProjectTypes] = useState<StaticListOption[]>([]);
@@ -84,9 +48,23 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
   const [deletedFileUrls, setDeletedFileUrls] = useState<string[]>([]);
   const staticListsFetchedRef = useRef(false);
 
+  const formSchema = useMemo(() => z.object({
+    title_ar: z.string().min(2, t("entities.projects.titleArPlaceholder")),
+    title_en: z.string().optional(),
+    detail_ar: z.string().optional(),
+    detail_en: z.string().optional(),
+    type: z.union([z.string(), z.number()]).optional(),
+    category_ids: z.any().optional(),
+    link: z.union([z.string().url(t("entities.projects.linkPlaceholder")), z.literal("")]).optional(),
+    social_media: z.any().optional(),
+    status: z.coerce.number().int().min(0).max(1),
+    mainImage: z.any().optional(),
+    imageIds: z.any().optional(),
+    fileIds: z.any().optional(),
+  }), [t]);
+
   const handleDeleteImage = async (url: string, imageId?: number) => {
     if (!project?.id || !imageId) {
-      // For new projects or if no imageId, just remove from display
       setDeletedImageUrls(prev => [...prev, url]);
       toast.success("Image marked for deletion");
       return;
@@ -122,7 +100,6 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
 
   const handleDeleteFile = async (url: string, fileId?: number) => {
     if (!project?.id || !fileId) {
-      // For new projects or if no fileId, just remove from display
       setDeletedFileUrls(prev => [...prev, url]);
       toast.success("File marked for deletion");
       return;
@@ -165,12 +142,10 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
         staticListsFetchedRef.current = true;
         setLoadingStaticLists(true);
 
-        // Fetch project types using cache
         const typesConfig = await staticListsCache.getByNamespace('project.types');
         if (typesConfig.length > 0) {
           setProjectTypes(typesConfig);
         } else {
-          // Insert dummy data if not exists
           await fetch('/api/static-lists', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -185,7 +160,6 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
               status: 1,
             }),
           });
-          // Force refresh cache and get new data
           const newTypes = await staticListsCache.getByNamespace('project.types', true);
           setProjectTypes(newTypes.length > 0 ? newTypes : [
             { id: 1, name_en: 'Type 1', name_ar: 'نوع 1' },
@@ -194,12 +168,10 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
           ]);
         }
 
-        // Fetch project categories using cache
         const categoriesConfig = await staticListsCache.getByNamespace('project.categories');
         if (categoriesConfig.length > 0) {
           setProjectCategories(categoriesConfig);
         } else {
-          // Insert dummy data
           await fetch('/api/static-lists', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -214,7 +186,6 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
               status: 1,
             }),
           });
-          // Force refresh cache and get new data
           const newCategories = await staticListsCache.getByNamespace('project.categories', true);
           setProjectCategories(newCategories.length > 0 ? newCategories : [
             { id: 1, name_en: 'Category 1', name_ar: 'فئة 1' },
@@ -228,7 +199,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
       } catch (error) {
         console.error('Error fetching static lists:', error);
         toast.error('Failed to load project types and categories');
-        staticListsFetchedRef.current = false; // Reset on error to allow retry
+        staticListsFetchedRef.current = false;
       } finally {
         setLoadingStaticLists(false);
       }
@@ -262,8 +233,6 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
   // Use main_image_url from project data instead of fetching
   useEffect(() => {
     if (project?.main_image_url) {
-      // If main_image_url is already a full URL, use it directly
-      // If it's a file path, prepend the public file endpoint
       if (project.main_image_url.startsWith('http') || project.main_image_url.startsWith('/api/public/file')) {
         setExistingImageUrl(project.main_image_url);
       } else {
@@ -276,14 +245,9 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
 
   const handleSubmit = async (data: Record<string, any>) => {
     try {
-      // Always use current state values for social media and categories
-      // These are managed outside the form, so we always use the latest state
       const currentSocialMedia = socialMediaLinks || {};
       const currentCategoryIds = selectedCategoryIds || [];
 
-      // Merge social media links into data for validation
-      // Ensure all required fields are present with defaults
-      // Only include fields that exist in the schema
       const dataWithSocialMedia: Record<string, any> = {
         title_ar: data.title_ar ?? "",
         title_en: data.title_en ?? "",
@@ -292,8 +256,6 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
         status: data.status !== undefined && data.status !== null ? data.status : 1,
       };
 
-      // Add optional fields only if they exist
-      // Convert type to number if it's a string (from form select)
       if (data.type !== undefined && data.type !== null && data.type !== "") {
         const typeValue = typeof data.type === 'string' ? Number(data.type) : data.type;
         dataWithSocialMedia.type = isNaN(typeValue) ? null : typeValue;
@@ -301,19 +263,16 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
         dataWithSocialMedia.type = null;
       }
 
-      // Handle link - ensure it's a string (empty string if null/undefined)
       if (data.link !== undefined && data.link !== null && data.link !== "") {
         dataWithSocialMedia.link = String(data.link);
       } else {
         dataWithSocialMedia.link = "";
       }
 
-      // Always include optional fields explicitly (even if undefined) to avoid Zod schema issues
       dataWithSocialMedia.mainImage = data.mainImage;
       dataWithSocialMedia.imageIds = imageFiles.length > 0 ? imageFiles : undefined;
       dataWithSocialMedia.fileIds = fileFiles.length > 0 ? fileFiles : undefined;
 
-      // Always include these as they're managed by state (use current state values)
       dataWithSocialMedia.social_media = currentSocialMedia;
       dataWithSocialMedia.category_ids = currentCategoryIds;
 
@@ -333,11 +292,12 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
         title_en: validated.title_en || null,
         detail_ar: validated.detail_ar || null,
         detail_en: validated.detail_en || null,
-        type: validated.type ?? null,
+        type: validated.type ? Number(validated.type) : null,
         category_ids: currentCategoryIds,
         link: validated.link || null,
         social_media: currentSocialMedia,
         status: validated.status,
+        organization_id: project?.organization_id || 1,
         mainImage: validated.mainImage,
         imageIds: imageFiles,
         fileIds: fileFiles,
@@ -355,110 +315,112 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
     }));
   };
 
+  const formConfig = useMemo((): FormField[] => [
+    {
+      name: "title_ar",
+      label: t("entities.projects.titleAr"),
+      type: "text",
+      placeholder: t("entities.projects.titleArPlaceholder"),
+      validation: formSchema.shape.title_ar,
+      required: true,
+      helperText: `${t("entities.projects.titleAr")} ${t("entities.projects.helperTextRequired")}`,
+    },
+    {
+      name: "title_en",
+      label: t("entities.projects.titleEn"),
+      type: "text",
+      placeholder: t("entities.projects.titleEnPlaceholder"),
+      validation: formSchema.shape.title_en,
+      required: false,
+      helperText: `${t("entities.projects.titleEn")} ${t("entities.projects.helperTextOptional")}`,
+    },
+    {
+      name: "detail_ar",
+      label: t("entities.projects.detailAr"),
+      type: "textarea",
+      placeholder: t("entities.projects.detailArPlaceholder"),
+      validation: formSchema.shape.detail_ar,
+      required: false,
+      helperText: `${t("entities.projects.detailAr")} ${t("entities.projects.helperTextOptional")}`,
+    },
+    {
+      name: "detail_en",
+      label: t("entities.projects.detailEn"),
+      type: "textarea",
+      placeholder: t("entities.projects.detailEnPlaceholder"),
+      validation: formSchema.shape.detail_en,
+      required: false,
+      helperText: `${t("entities.projects.detailEn")} ${t("entities.projects.helperTextOptional")}`,
+    },
+    {
+      name: "type",
+      label: t("entities.projects.type"),
+      type: "select",
+      placeholder: t("entities.projects.selectType"),
+      validation: formSchema.shape.type,
+      required: false,
+      helperText: `${t("entities.projects.type")} ${t("entities.projects.helperTextOptional")}`,
+      options: loadingStaticLists
+        ? [{ value: "", label: t("entities.projects.loadingCategories") }]
+        : projectTypes.map(tOption => ({ value: tOption.id.toString(), label: getLocalizedLabel(tOption.name_en, tOption.name_ar, language) })),
+    },
+    {
+      name: "link",
+      label: t("entities.projects.link"),
+      type: "url",
+      placeholder: t("entities.projects.linkPlaceholder"),
+      validation: formSchema.shape.link,
+      required: false,
+      helperText: `${t("entities.projects.link")} ${t("entities.projects.helperTextOptional")}`,
+    },
+    {
+      name: "status",
+      label: t("common.status"),
+      type: "select",
+      placeholder: t("common.status"),
+      validation: formSchema.shape.status,
+      required: true,
+      helperText: t("common.status"),
+      options: projectStatuses.length > 0
+        ? projectStatuses.map((s) => ({ value: String(s.id), label: getLocalizedLabel(s.name_en, s.name_ar, language) }))
+        : [
+          { value: "1", label: t("entities.projects.statusActive") },
+          { value: "0", label: t("entities.projects.statusInactive") },
+        ],
+    },
+    {
+      name: "mainImage",
+      label: t("entities.projects.mainImage"),
+      type: "imageuploader",
+      validation: formSchema.shape.mainImage,
+      required: false,
+      helperText: t("entities.projects.mainImageHelper"),
+    },
+  ], [formSchema, t, language, loadingStaticLists, projectTypes, projectStatuses]);
+
   return (
     <>
       {isEdit && existingImageUrl && (
         <div className="mb-6 flex items-center gap-4 p-4 border rounded-lg bg-muted/50">
           <Avatar className="size-20">
-            <AvatarImage src={existingImageUrl} alt="Current main image" />
+            <AvatarImage src={existingImageUrl} alt={t("entities.projects.currentMainImage")} />
             <AvatarFallback>
               {project?.title_ar?.[0] || project?.title_en?.[0] || "P"}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <p className="text-sm font-medium">Current Main Image</p>
+            <p className="text-sm font-medium">{t("entities.projects.currentMainImage")}</p>
             <p className="text-xs text-muted-foreground">
-              Upload a new image below to replace this one
+              {t("entities.projects.uploadNewImage")}
             </p>
           </div>
         </div>
       )}
-      {/* Form wrapper - always in DOM regardless of active tab */}
+
       <DynamicForm
         formId="project-form"
         className="w-full"
-        config={[
-          {
-            name: "title_ar",
-            label: "Title (Arabic)",
-            type: "text",
-            placeholder: "Enter Arabic title",
-            validation: formFieldSchema.shape.title_ar,
-            required: true,
-            helperText: "Arabic title (required)",
-          },
-          {
-            name: "title_en",
-            label: "Title (English)",
-            type: "text",
-            placeholder: "Enter English title",
-            validation: formFieldSchema.shape.title_en,
-            required: false,
-            helperText: "English title (optional)",
-          },
-          {
-            name: "detail_ar",
-            label: "Detail (Arabic)",
-            type: "textarea",
-            placeholder: "Enter Arabic detail",
-            validation: formFieldSchema.shape.detail_ar,
-            required: false,
-            helperText: "Arabic detail (optional)",
-          },
-          {
-            name: "detail_en",
-            label: "Detail (English)",
-            type: "textarea",
-            placeholder: "Enter English detail",
-            validation: formFieldSchema.shape.detail_en,
-            required: false,
-            helperText: "English detail (optional)",
-          },
-          {
-            name: "type",
-            label: "Type",
-            type: "select",
-            placeholder: "Select project type",
-            validation: formFieldSchema.shape.type,
-            required: false,
-            helperText: "Project type (optional)",
-            options: loadingStaticLists
-              ? [{ value: "", label: "Loading..." }]
-              : projectTypes.map(t => ({ value: t.id.toString(), label: getLocalizedLabel(t.name_en, t.name_ar, language) })),
-          },
-          {
-            name: "link",
-            label: "Link",
-            type: "url",
-            placeholder: "https://example.com",
-            validation: formFieldSchema.shape.link,
-            required: false,
-            helperText: "Project link (optional)",
-          },
-          {
-            name: "status",
-            label: "Status",
-            type: "select",
-            placeholder: "Select status",
-            validation: formFieldSchema.shape.status,
-            required: true,
-            helperText: "Project status",
-            options: projectStatuses.length > 0
-              ? projectStatuses.map((s) => ({ value: String(s.id), label: getLocalizedLabel(s.name_en, s.name_ar, language) }))
-              : [
-                { value: "1", label: "Active" },
-                { value: "0", label: "Inactive" },
-              ],
-          },
-          {
-            name: "mainImage",
-            label: "Main Image",
-            type: "imageuploader",
-            validation: formFieldSchema.shape.mainImage,
-            required: false,
-            helperText: "Upload main image (JPG, PNG, WEBP - Max 5MB)",
-          },
-        ]}
+        config={formConfig}
         onSubmit={handleSubmit}
         submitText=""
         onSuccess={onCancel}
@@ -478,21 +440,20 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
 
       <Tabs defaultValue="details" className="w-full">
         <TabsList className={`grid w-full ${isEdit ? 'grid-cols-4' : 'grid-cols-2'}`}>
-          <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="social">Social Media</TabsTrigger>
-          {isEdit && <TabsTrigger value="images">Images</TabsTrigger>}
-          {isEdit && <TabsTrigger value="files">Files</TabsTrigger>}
+          <TabsTrigger value="details">{t("entities.projects.details")}</TabsTrigger>
+          <TabsTrigger value="social">{t("entities.projects.socialMedia")}</TabsTrigger>
+          {isEdit && <TabsTrigger value="images">{t("entities.projects.images")}</TabsTrigger>}
+          {isEdit && <TabsTrigger value="files">{t("entities.projects.files")}</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="details" className="space-y-4">
-          {/* Category IDs - Multi-select using checkboxes */}
           <div className="space-y-2">
-            <Label>Categories</Label>
+            <Label>{t("entities.projects.categories")}</Label>
             <div className="grid grid-cols-2 gap-4 p-4 border rounded-lg">
               {loadingStaticLists ? (
-                <p className="text-sm text-muted-foreground">Loading categories...</p>
+                <p className="text-sm text-muted-foreground">{t("entities.projects.loadingCategories")}</p>
               ) : projectCategories.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No categories available</p>
+                <p className="text-sm text-muted-foreground">{t("entities.projects.noCategories")}</p>
               ) : (
                 projectCategories.map((category) => (
                   <div key={category.id} className="flex items-center space-x-2">
@@ -517,14 +478,13 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
                 ))
               )}
             </div>
-            <p className="text-xs text-muted-foreground">Select one or more categories</p>
+            <p className="text-xs text-muted-foreground">{t("entities.projects.selectCategories")}</p>
           </div>
         </TabsContent>
 
         <TabsContent value="social" className="space-y-4">
-          {/* Social Media Links */}
           <div className="space-y-2">
-            <Label>Social Media Links</Label>
+            <Label>{t("entities.projects.socialMediaLinks")}</Label>
             <div className="space-y-3 p-4 border rounded-lg">
               {['facebook', 'twitter', 'instagram', 'linkedin', 'youtube'].map((platform) => (
                 <div key={platform} className="flex items-center gap-2">
@@ -538,16 +498,15 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
                 </div>
               ))}
             </div>
-            <p className="text-xs text-muted-foreground">Enter social media URLs (optional)</p>
+            <p className="text-xs text-muted-foreground">{t("entities.projects.socialMediaHelper")}</p>
           </div>
         </TabsContent>
 
         {isEdit && (
           <TabsContent value="images" className="space-y-4">
-            {/* Display existing images */}
             {project?.image_urls && project.image_urls.length > 0 && (
               <div className="space-y-2 mb-4">
-                <Label>Existing Images</Label>
+                <Label>{t("entities.projects.existingImages")}</Label>
                 <div className="grid grid-cols-3 gap-4">
                   {project.image_urls
                     .filter(url => url != null && !deletedImageUrls.includes(url))
@@ -579,17 +538,16 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
             )}
 
             <div className="space-y-2">
-              <Label>Upload New Images</Label>
+              <Label>{t("entities.projects.uploadNewImages")}</Label>
               <ImageUploader
                 multiple={true}
-
                 accept=".jpg,.jpeg,.png,.gif,.webp,.avif,.bmp,.tiff"
                 maxSize={5 * 1024 * 1024}
                 onChange={(files) => setImageFiles(files)}
                 onError={(error) => toast.error(error)}
               />
               <p className="text-xs text-muted-foreground">
-                Upload multiple images (JPG, PNG, WEBP - Max 5MB each)
+                {t("entities.projects.uploadMultipleHelper")}
               </p>
             </div>
           </TabsContent>
@@ -597,10 +555,9 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
 
         {isEdit && (
           <TabsContent value="files" className="space-y-4">
-            {/* Display existing files */}
             {project?.file_urls && project.file_urls.length > 0 && (
               <div className="space-y-2 mb-4">
-                <Label>Existing Files</Label>
+                <Label>{t("entities.projects.existingFiles")}</Label>
                 <div className="space-y-2">
                   {project.file_urls
                     .filter(url => url != null && !deletedFileUrls.includes(url))
@@ -638,7 +595,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
             )}
 
             <div className="space-y-2">
-              <Label>Upload New Files</Label>
+              <Label>{t("entities.projects.uploadNewFiles")}</Label>
               <FileUploader
                 multiple={true}
                 accept="*/*"
@@ -647,14 +604,13 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
                 onError={(error) => toast.error(error)}
               />
               <p className="text-xs text-muted-foreground">
-                Upload multiple files (Max 10MB each)
+                {t("entities.projects.uploadFilesHelper")}
               </p>
             </div>
           </TabsContent>
         )}
       </Tabs>
 
-      {/* Static Footer with Submit Button - Always visible across all tabs */}
       <div className="border-t pt-4 mt-6 bg-background">
         <div className="flex justify-end">
           <Button
@@ -662,7 +618,6 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
             onClick={async (e) => {
               e.preventDefault();
 
-              // Find the form - now it should always be in DOM (moved outside TabsContent)
               const form = document.getElementById('project-form') as HTMLFormElement;
 
               if (!form) {
@@ -670,24 +625,18 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
                 return;
               }
 
-              // Try to trigger form submission using requestSubmit
-              // This will trigger react-hook-form's handleSubmit which validates and calls our handleSubmit
               try {
                 form.requestSubmit();
               } catch (error) {
-                // If requestSubmit fails (e.g., form is hidden), manually collect values and submit
                 console.warn('requestSubmit failed, manually collecting form values', error);
 
-                // Manually collect form values
                 const formData = new FormData(form);
                 const formValues: Record<string, any> = {};
 
-                // Collect from FormData
                 formData.forEach((value, key) => {
                   formValues[key] = value;
                 });
 
-                // Also collect from all inputs, selects, textareas (in case FormData missed some)
                 const allInputs = form.querySelectorAll('input, select, textarea');
                 allInputs.forEach((input) => {
                   const element = input as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
@@ -700,13 +649,11 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
                   }
                 });
 
-                // Call handleSubmit directly with collected values
-                // handleSubmit will merge in state values (socialMediaLinks, etc.)
                 await handleSubmit(formValues);
               }
             }}
           >
-            {project ? "Update Project" : "Create Project"}
+            {project ? t("entities.projects.edit") : t("entities.projects.createNew")}
             <Send className="ml-2 h-4 w-4" />
           </Button>
         </div>

@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useI18n } from "@/hooks/useI18n";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,6 +40,7 @@ import {
   Mail,
   Moon,
   Sun,
+  LayoutGrid,
 } from "lucide-react";
 import { toast } from "sonner";
 import { signOut } from "next-auth/react";
@@ -53,6 +56,7 @@ interface UserProfile {
 
 export function ProfileMenu() {
   const router = useRouter();
+  const { t } = useI18n("profile_menu");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
@@ -60,18 +64,34 @@ export function ProfileMenu() {
   const [pushNotifications, setPushNotifications] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  const { data: session } = useSession(); // Access session data
+
   const [profile, setProfile] = useState<UserProfile>({
-    name: "Admin User",
-    email: "admin@example.com",
-    role: "Administrator",
-    avatar: "https://github.com/shadcn.png",
-    bio: "System administrator with full access privileges",
+    name: session?.user?.name || "Admin User",
+    email: session?.user?.email || "admin@example.com",
+    role: session?.user?.role || "Administrator",
+    avatar: session?.user?.image || "https://github.com/shadcn.png",
+    bio: session?.user?.bio || "",
   });
+
+  // Update profile when session loads
+  useEffect(() => {
+    if (session?.user) {
+      setProfile((prev) => ({
+        ...prev,
+        name: session.user.name || prev.name,
+        email: session.user.email || prev.email,
+        role: session.user.role || prev.role,
+        avatar: session.user.image || prev.avatar,
+        bio: session.user.bio || prev.bio,
+      }));
+    }
+  }, [session]);
 
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
-      
+
       // Call logout API first to invalidate token on backend
       const res = await fetch("/api/auth/logout", {
         method: "POST",
@@ -89,8 +109,8 @@ export function ProfileMenu() {
         redirect: false,
       });
 
-      toast.success("Logged out successfully");
-      
+      toast.success(t("logout_success"));
+
       // Redirect to home page
       router.push("/");
     } catch (error) {
@@ -99,7 +119,7 @@ export function ProfileMenu() {
       await signOut({
         redirect: false,
       });
-    toast.success("Logged out successfully");
+      toast.success(t("logout_success"));
       router.push("/");
     } finally {
       setIsLoggingOut(false);
@@ -108,12 +128,12 @@ export function ProfileMenu() {
 
   const handleSaveProfile = () => {
     setIsProfileOpen(false);
-    toast.success("Profile updated successfully");
+    toast.success(t("edit_profile.success"));
   };
 
   const handleSaveSettings = () => {
     setIsSettingsOpen(false);
-    toast.success("Settings saved successfully");
+    toast.success(t("settings_modal.success"));
   };
 
   return (
@@ -155,22 +175,26 @@ export function ProfileMenu() {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem onClick={() => setIsProfileOpen(true)}>
+            <DropdownMenuItem onClick={() => router.push("/my-programs")}>
+              <LayoutGrid className="mr-2 size-4" />
+              <span>{t("my_programs")}</span>
+            </DropdownMenuItem>
+            {/* <DropdownMenuItem onClick={() => setIsProfileOpen(true)}>
               <User className="mr-2 size-4" />
               <span>Profile</span>
               <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setIsSettingsOpen(true)}>
+            </DropdownMenuItem> */}
+            <DropdownMenuItem onClick={() => router.push("/admin")}>
               <Settings className="mr-2 size-4" />
-              <span>Settings</span>
+              <span>{t("settings")}</span>
               <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            {/* <DropdownMenuItem>
               <CreditCard className="mr-2 size-4" />
               <span>Billing</span>
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuGroup>
-          <DropdownMenuSeparator />
+          {/* <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <Users className="mr-2 size-4" />
@@ -193,15 +217,15 @@ export function ProfileMenu() {
           <DropdownMenuItem disabled>
             <Mail className="mr-2 size-4" />
             <span>Contact</span>
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuSeparator />
-          <DropdownMenuItem 
-            onClick={handleLogout} 
+          <DropdownMenuItem
+            onClick={handleLogout}
             className="text-red-600"
             disabled={isLoggingOut}
           >
             <LogOut className="mr-2 size-4" />
-            <span>{isLoggingOut ? "Logging out..." : "Log out"}</span>
+            <span>{isLoggingOut ? t("logging_out") : t("logout")}</span>
             {!isLoggingOut && <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>}
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -211,9 +235,9 @@ export function ProfileMenu() {
       <Dialog open={isProfileOpen} onOpenChange={setIsProfileOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Edit Profile</DialogTitle>
+            <DialogTitle>{t("edit_profile.title")}</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when you're done.
+              {t("edit_profile.description")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -233,7 +257,7 @@ export function ProfileMenu() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name">{t("edit_profile.full_name")}</Label>
               <Input
                 id="name"
                 value={profile.name}
@@ -244,7 +268,7 @@ export function ProfileMenu() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t("edit_profile.email")}</Label>
               <Input
                 id="email"
                 type="email"
@@ -256,7 +280,7 @@ export function ProfileMenu() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
+              <Label htmlFor="role">{t("edit_profile.role")}</Label>
               <Input
                 id="role"
                 value={profile.role}
@@ -267,7 +291,7 @@ export function ProfileMenu() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="bio">Bio</Label>
+              <Label htmlFor="bio">{t("edit_profile.bio")}</Label>
               <Textarea
                 id="bio"
                 value={profile.bio}
@@ -280,9 +304,9 @@ export function ProfileMenu() {
           </div>
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={() => setIsProfileOpen(false)}>
-              Cancel
+              {t("edit_profile.cancel")}
             </Button>
-            <Button onClick={handleSaveProfile}>Save Changes</Button>
+            <Button onClick={handleSaveProfile}>{t("edit_profile.save")}</Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -291,22 +315,22 @@ export function ProfileMenu() {
       <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Settings</DialogTitle>
+            <DialogTitle>{t("settings_modal.title")}</DialogTitle>
             <DialogDescription>
-              Manage your account settings and preferences.
+              {t("settings_modal.description")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-6 py-4">
             <div>
               <h4 className="mb-4 flex items-center gap-2">
                 <Palette className="size-4" />
-                Appearance
+                {t("settings_modal.appearance")}
               </h4>
               <div className="flex items-center justify-between rounded-lg border p-3">
                 <div className="space-y-0.5">
-                  <Label>Dark Mode</Label>
+                  <Label>{t("settings_modal.dark_mode")}</Label>
                   <p className="text-sm text-muted-foreground">
-                    Toggle dark mode theme
+                    {t("settings_modal.dark_mode_desc")}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -325,14 +349,14 @@ export function ProfileMenu() {
             <div>
               <h4 className="mb-4 flex items-center gap-2">
                 <Bell className="size-4" />
-                Notifications
+                {t("settings_modal.notifications")}
               </h4>
               <div className="space-y-3">
                 <div className="flex items-center justify-between rounded-lg border p-3">
                   <div className="space-y-0.5">
-                    <Label>Email Notifications</Label>
+                    <Label>{t("settings_modal.email_notifications")}</Label>
                     <p className="text-sm text-muted-foreground">
-                      Receive email updates
+                      {t("settings_modal.email_notifications_desc")}
                     </p>
                   </div>
                   <Switch
@@ -343,9 +367,9 @@ export function ProfileMenu() {
 
                 <div className="flex items-center justify-between rounded-lg border p-3">
                   <div className="space-y-0.5">
-                    <Label>Push Notifications</Label>
+                    <Label>{t("settings_modal.push_notifications")}</Label>
                     <p className="text-sm text-muted-foreground">
-                      Receive push notifications
+                      {t("settings_modal.push_notifications_desc")}
                     </p>
                   </div>
                   <Switch
@@ -361,25 +385,25 @@ export function ProfileMenu() {
             <div>
               <h4 className="mb-4 flex items-center gap-2">
                 <Shield className="size-4" />
-                Security
+                {t("settings_modal.security")}
               </h4>
               <div className="space-y-2">
                 <Button variant="outline" className="w-full justify-start">
                   <KeyRound className="mr-2 size-4" />
-                  Change Password
+                  {t("settings_modal.change_password")}
                 </Button>
                 <Button variant="outline" className="w-full justify-start">
                   <Shield className="mr-2 size-4" />
-                  Two-Factor Authentication
+                  {t("settings_modal.two_factor")}
                 </Button>
               </div>
             </div>
           </div>
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={() => setIsSettingsOpen(false)}>
-              Cancel
+              {t("settings_modal.cancel")}
             </Button>
-            <Button onClick={handleSaveSettings}>Save Settings</Button>
+            <Button onClick={handleSaveSettings}>{t("settings_modal.save")}</Button>
           </div>
         </DialogContent>
       </Dialog>

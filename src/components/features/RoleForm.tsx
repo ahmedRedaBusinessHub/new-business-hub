@@ -2,10 +2,11 @@ import * as z from "zod";
 import { useMemo } from "react";
 import type { Role } from "./RoleManagement";
 import DynamicForm, { type FormField } from "../shared/DynamicForm";
+import { useI18n } from "@/hooks/useI18n";
 
-const createFormSchema = (isEdit: boolean) => z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  namespace: z.string().min(2, "Namespace must be at least 2 characters").regex(/^[a-z0-9_-]+$/, "Namespace must contain only lowercase letters, numbers, hyphens, and underscores"),
+const createFormSchema = (isEdit: boolean, t: (key: string) => string) => z.object({
+  name: z.string().min(2, t("roles.roleNameHelper")),
+  namespace: z.string().min(2, t("roles.namespaceHelper")).regex(/^[a-z0-9_-]+$/, t("roles.namespaceHelper")),
   status: z.coerce.number().int().min(0).max(1),
 });
 
@@ -17,8 +18,9 @@ interface RoleFormProps {
 }
 
 export function RoleForm({ role, onSubmit, onCancel, onErrorStateChange }: RoleFormProps) {
+  const { t } = useI18n("admin");
   const isEdit = !!role;
-  const formSchema = useMemo(() => createFormSchema(isEdit), [isEdit]);
+  const formSchema = useMemo(() => createFormSchema(isEdit, t), [isEdit, t]);
 
   const handleSubmit = async (data: Record<string, any>) => {
     try {
@@ -55,51 +57,47 @@ export function RoleForm({ role, onSubmit, onCancel, onErrorStateChange }: RoleF
   const formConfig = useMemo((): FormField[] => [
     {
       name: "name",
-      label: "Role Name",
+      label: t("roles.roleName"),
       type: "text",
-      placeholder: "Enter role name",
+      placeholder: t("roles.roleNamePlaceholder"),
       validation: formSchema.shape.name,
       required: true,
-      helperText: "Name of the role (2+ characters)",
+      helperText: t("roles.roleNameHelper"),
     },
-
-
     {
       name: "namespace",
-      label: "Namespace",
+      label: t("roles.namespace"),
       type: "select",
-      placeholder: "e.g., admin, manager, user",
+      placeholder: t("roles.namespacePlaceholder"),
       validation: formSchema.shape.namespace,
       required: true,
-      helperText: "Unique identifier (lowercase, numbers, hyphens, underscores only)",
+      helperText: t("roles.namespaceHelper"),
       options: [
         { value: "admin", label: "Admin" },
         { value: "user", label: "User" },
-
         { value: "operation", label: "Operation" }
-
       ],
     },
     {
       name: "status",
-      label: "Status",
+      label: t("common.status"),
       type: "select",
       validation: formSchema.shape.status,
       required: true,
-      helperText: "Role status",
+      helperText: t("common.status"),
       options: [
-        { value: "1", label: "Active" },
-        { value: "0", label: "Inactive" },
+        { value: "1", label: t("common.active") },
+        { value: "0", label: t("common.inactive") },
       ],
     },
-  ], [formSchema]);
+  ], [formSchema, t]);
 
   return (
     <DynamicForm
       config={formConfig}
       defaultValues={defaultValuesMemo}
       onSubmit={handleSubmit}
-      submitText={isEdit ? "Update Role" : "Create Role"}
+      submitText={isEdit ? t("roles.editRole") : t("roles.createNewRole")}
       onSuccess={() => {
         onErrorStateChange?.(false);
         onCancel();

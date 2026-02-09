@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/Button";
-import { Globe, Menu, X, ChevronDown, Phone, Mail, User, LogOut } from "lucide-react";
+import { Globe, Menu, X, ChevronDown, Phone, Mail, User, LogOut, LayoutGrid } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import Logo from "../../features/Logo";
 import { useState, useEffect } from "react";
@@ -26,10 +26,11 @@ import {
 } from "@/components/ui/Dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { signOut } from "next-auth/react";
+import { ProfileMenu } from "@/components/features/ProfileMenu";
 
-interface NavbarProps {}
+interface NavbarProps { }
 
-export default function Navbar({}: NavbarProps) {
+export default function Navbar({ }: NavbarProps) {
   const pathname = usePathname();
   const { user, status } = useUser();
 
@@ -94,17 +95,15 @@ export default function Navbar({}: NavbarProps) {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: [0.6, 0.05, 0.01, 0.9] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isScrolled ? "py-2 sm:py-3" : "py-4 sm:py-6"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "py-2 sm:py-3" : "py-4 sm:py-6"
+          }`}
       >
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
-            className={`rounded-2xl sm:rounded-3xl px-4 sm:px-8 py-4 sm:py-5 transition-all duration-500 ${
-              isScrolled
-                ? "glassmorphism"
-                : "bg-white/10 dark:bg-black/10 backdrop-blur-xl"
-            }`}
+            className={`rounded-2xl sm:rounded-3xl px-4 sm:px-8 py-4 sm:py-5 transition-all duration-500 ${isScrolled
+              ? "glassmorphism"
+              : "bg-white/10 dark:bg-black/10 backdrop-blur-xl"
+              }`}
             style={{
               borderWidth: "1px",
               borderColor: isScrolled
@@ -209,7 +208,24 @@ export default function Navbar({}: NavbarProps) {
                     </span>
                   </a>
                 </div> */}
-
+                {/* CTA Button - Hidden on small screens */}
+                <Button
+                  onClick={() => {
+                    router.push("/contact-us");
+                  }}
+                  className="hidden md:inline-flex transition-all duration-300 text-white border-0 relative overflow-hidden group"
+                  style={{
+                    backgroundImage: `linear-gradient(to right, var(--theme-gradient-start), var(--theme-gradient-mid))`,
+                  }}
+                >
+                  <motion.div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{
+                      backgroundImage: `linear-gradient(to right, var(--theme-gradient-mid), var(--theme-gradient-end))`,
+                    }}
+                  />
+                  <span className="relative z-10">{t("nav_contact")}</span>
+                </Button>
                 {/* Language Switcher */}
                 <motion.div
                   whileHover={{ scale: 1.1 }}
@@ -241,6 +257,7 @@ export default function Navbar({}: NavbarProps) {
                     />
                   </Button>
                 </motion.div>
+
                 {/* User Menu - Conditional Rendering */}
                 {user && user.role?.toString?.()?.toLowerCase() === USER_ROLE ? (
                   // Show avatar with dropdown for user role only
@@ -271,11 +288,11 @@ export default function Navbar({}: NavbarProps) {
                           >
                             {user.name
                               ? user.name
-                                  .split(" ")
-                                  .map((n: string) => n[0])
-                                  .join("")
-                                  .toUpperCase()
-                                  .slice(0, 2)
+                                .split(" ")
+                                .map((n: string) => n[0])
+                                .join("")
+                                .toUpperCase()
+                                .slice(0, 2)
                               : user.email
                                 ? user.email[0].toUpperCase()
                                 : "U"}
@@ -317,6 +334,13 @@ export default function Navbar({}: NavbarProps) {
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
+                        onClick={() => router.push("/my-programs")}
+                        className="cursor-pointer"
+                      >
+                        <LayoutGrid className="mr-2 h-4 w-4" />
+                        <span>{language === "ar" ? "برامجي" : "My Programs"}</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
                         onClick={() => router.push("/profile")}
                         className="cursor-pointer"
                       >
@@ -339,29 +363,30 @@ export default function Navbar({}: NavbarProps) {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ) : user && user.role ? (
+                  <ProfileMenu />
                   // Show Control button for all other roles (admin, operation, data-entry, client, store, guest, etc.)
-                  <Button
-                    onClick={() => {
-                      router.push("/admin");
-                    }}
-                    variant="outline"
-                    className="hidden sm:inline-flex gap-2 px-5 py-2.5 text-sm font-medium transition-all duration-300 relative overflow-hidden group"
-                    style={{
-                      borderWidth: "2px",
-                      borderColor: isScrolled
-                        ? "var(--theme-primary)"
-                        : "rgba(255, 255, 255, 0.9)",
-                      color: isScrolled ? "var(--theme-primary)" : "white",
-                      backgroundColor: isScrolled
-                        ? "transparent"
-                        : "rgba(255, 255, 255, 0.1)",
-                      fontSize: "14px",
-                    }}
-                  >
-                    <span className="relative z-10">
-                      {language === "ar" ? "لوحة التحكم" : "Control"}
-                    </span>
-                  </Button>
+                  // <Button
+                  //   onClick={() => {
+                  //     router.push("/admin");
+                  //   }}
+                  //   variant="outline"
+                  //   className="hidden sm:inline-flex gap-2 px-5 py-2.5 text-sm font-medium transition-all duration-300 relative overflow-hidden group"
+                  //   style={{
+                  //     borderWidth: "2px",
+                  //     borderColor: isScrolled
+                  //       ? "var(--theme-primary)"
+                  //       : "rgba(255, 255, 255, 0.9)",
+                  //     color: isScrolled ? "var(--theme-primary)" : "white",
+                  //     backgroundColor: isScrolled
+                  //       ? "transparent"
+                  //       : "rgba(255, 255, 255, 0.1)",
+                  //     fontSize: "14px",
+                  //   }}
+                  // >
+                  //   <span className="relative z-10">
+                  //     {language === "ar" ? "لوحة التحكم" : "Control"}
+                  //   </span>
+                  // </Button>
                 ) : (
                   // Show Login button when no user
                   <Button
@@ -387,24 +412,7 @@ export default function Navbar({}: NavbarProps) {
                     </span>
                   </Button>
                 )}
-                {/* CTA Button - Hidden on small screens */}
-                <Button
-                  onClick={() => {
-                    router.push("/contact-us");
-                  }}
-                  className="hidden md:inline-flex transition-all duration-300 text-white border-0 relative overflow-hidden group"
-                  style={{
-                    backgroundImage: `linear-gradient(to right, var(--theme-gradient-start), var(--theme-gradient-mid))`,
-                  }}
-                >
-                  <motion.div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    style={{
-                      backgroundImage: `linear-gradient(to right, var(--theme-gradient-mid), var(--theme-gradient-end))`,
-                    }}
-                  />
-                  <span className="relative z-10">{t("nav_contact")}</span>
-                </Button>
+
 
                 {/* Mobile Menu Button */}
                 <Button
@@ -459,9 +467,8 @@ export default function Navbar({}: NavbarProps) {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: language === "ar" ? -300 : 300, opacity: 0 }}
               transition={{ duration: 0.4, ease: [0.6, 0.05, 0.01, 0.9] }}
-              className={`fixed top-0 ${
-                language === "ar" ? "left-0" : "right-0"
-              } h-full w-80 max-w-[85vw] z-50 lg:hidden`}
+              className={`fixed top-0 ${language === "ar" ? "left-0" : "right-0"
+                } h-full w-80 max-w-[85vw] z-50 lg:hidden`}
               style={{ backgroundColor: "var(--theme-bg-primary)" }}
             >
               <div className="p-6 h-full flex flex-col">
@@ -553,11 +560,11 @@ export default function Navbar({}: NavbarProps) {
                             >
                               {user.name
                                 ? user.name
-                                    .split(" ")
-                                    .map((n: string) => n[0])
-                                    .join("")
-                                    .toUpperCase()
-                                    .slice(0, 2)
+                                  .split(" ")
+                                  .map((n: string) => n[0])
+                                  .join("")
+                                  .toUpperCase()
+                                  .slice(0, 2)
                                 : user.email
                                   ? user.email[0].toUpperCase()
                                   : "U"}

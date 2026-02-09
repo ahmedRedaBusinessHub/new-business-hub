@@ -1,7 +1,7 @@
 "use client";
 import * as z from "zod";
-import { useState, useEffect, useRef } from "react";
-import DynamicForm from "../shared/DynamicForm";
+import { useState, useEffect, useRef, useMemo } from "react";
+import DynamicForm, { type FormField } from "../shared/DynamicForm";
 import { FileUploader } from "@/components/ui/FileUploader";
 import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";
@@ -37,34 +37,10 @@ export interface UserProject {
   updated_at: string | null;
 }
 
-const formSchema = z.object({
-  user_id: z.preprocess(
-    (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-    z.number().int().min(1, "User is required")
-  ),
-  company_name: z.string().optional(),
-  project_name: z.string().optional(),
-  project_description: z.string().optional(),
-  team_size: z.preprocess(
-    (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-    z.number().int().positive().nullable().optional()
-  ),
-  fund_needed: z.preprocess(
-    (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-    z.number().positive().nullable().optional()
-  ),
-  why_applying: z.string().optional(),
-  status: z.preprocess(
-    (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-    z.number().int().nullable().optional()
-  ),
-  files: z.any().optional(),
-});
-
 interface UserProjectFormProps {
   userProject: UserProject | null;
   projectId: number;
-  onSubmit: (data: Omit<UserProject, "id" | "project_id" | "created_at" | "updated_at" | "organization_id"> & { files?: File[]; fileNames?: string[] }) => void;
+  onSubmit: (data: Omit<UserProject, "id" | "project_id" | "created_at" | "updated_at" | "organization_id" | "upload_documents"> & { files?: File[]; fileNames?: string[]; upload_documents?: any[] }) => void;
   onCancel: () => void;
 }
 
@@ -75,7 +51,7 @@ interface StatusOption {
 }
 
 export function UserProjectForm({ userProject, projectId, onSubmit, onCancel }: UserProjectFormProps) {
-  const { language } = useI18n();
+  const { t, language } = useI18n("admin");
   const isEdit = !!userProject;
   const [users, setUsers] = useState<User[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
@@ -85,6 +61,30 @@ export function UserProjectForm({ userProject, projectId, onSubmit, onCancel }: 
   const [fileFiles, setFileFiles] = useState<Array<{ file: File; name: string }>>([]);
   const usersFetchedRef = useRef(false);
   const statusesFetchedRef = useRef(false);
+
+  const formSchema = useMemo(() => z.object({
+    user_id: z.preprocess(
+      (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
+      z.number().int().min(1, t("entities.userProjects.helperTextRequired"))
+    ),
+    company_name: z.string().optional(),
+    project_name: z.string().optional(),
+    project_description: z.string().optional(),
+    team_size: z.preprocess(
+      (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
+      z.number().int().positive().nullable().optional()
+    ),
+    fund_needed: z.preprocess(
+      (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
+      z.number().positive().nullable().optional()
+    ),
+    why_applying: z.string().optional(),
+    status: z.preprocess(
+      (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
+      z.number().int().nullable().optional()
+    ),
+    files: z.any().optional(),
+  }), [t]);
 
   useEffect(() => {
     if (usersFetchedRef.current) return;
@@ -198,47 +198,91 @@ export function UserProjectForm({ userProject, projectId, onSubmit, onCancel }: 
       }));
   };
 
+  const formConfig = useMemo((): FormField[] => [
+    {
+      name: "user_id",
+      label: t("entities.userProjects.user"),
+      type: "select",
+      placeholder: loadingUsers ? t("entities.userProjects.loadingUsers") : t("entities.userProjects.selectUser"),
+      validation: formSchema.shape.user_id,
+      required: true,
+      helperText: t("entities.userProjects.selectUser"),
+      options: [
+        { value: "", label: t("entities.userProjects.selectUser") },
+        ...users.map((u) => ({
+          value: u.id.toString(),
+          label: `${u.first_name} ${u.last_name || ""} (${u.email})`,
+        })),
+      ],
+    },
+    {
+      name: "company_name",
+      label: t("entities.userProjects.companyName"),
+      type: "text",
+      placeholder: t("entities.userProjects.companyNamePlaceholder"),
+      validation: formSchema.shape.company_name,
+      required: false,
+    },
+    {
+      name: "project_name",
+      label: t("entities.userProjects.projectName"),
+      type: "text",
+      placeholder: t("entities.userProjects.projectNamePlaceholder"),
+      validation: formSchema.shape.project_name,
+      required: false,
+    },
+    {
+      name: "project_description",
+      label: t("entities.userProjects.projectDescription"),
+      type: "textarea",
+      placeholder: t("entities.userProjects.projectDescriptionPlaceholder"),
+      validation: formSchema.shape.project_description,
+      required: false,
+    },
+    {
+      name: "team_size",
+      label: t("entities.userProjects.teamSize"),
+      type: "number",
+      placeholder: t("entities.userProjects.teamSizePlaceholder"),
+      validation: formSchema.shape.team_size,
+      required: false,
+    },
+    {
+      name: "fund_needed",
+      label: t("entities.userProjects.fundNeeded"),
+      type: "number",
+      placeholder: t("entities.userProjects.fundNeededPlaceholder"),
+      validation: formSchema.shape.fund_needed,
+      required: false,
+    },
+    {
+      name: "why_applying",
+      label: t("entities.userProjects.whyApplying"),
+      type: "textarea",
+      placeholder: t("entities.userProjects.whyApplyingPlaceholder"),
+      validation: formSchema.shape.why_applying,
+      required: false,
+    },
+    {
+      name: "status",
+      label: t("common.status"),
+      type: "select",
+      placeholder: loadingStatuses ? "Loading..." : t("common.status"),
+      validation: formSchema.shape.status,
+      required: false,
+      options: [
+        { value: "", label: t("common.none") },
+        ...statuses.map((s) => ({ value: s.id.toString(), label: getLocalizedLabel(s.name_en, s.name_ar, language) })),
+      ],
+    },
+  ], [formSchema, t, users, loadingUsers, statuses, loadingStatuses, language]);
+
   return (
     <>
       <DynamicForm
-        config={[
-          {
-            name: "user_id",
-            label: "User",
-            type: "select",
-            placeholder: loadingUsers ? "Loading users..." : "Select user",
-            validation: formSchema.shape.user_id,
-            required: true,
-            helperText: "Select the user for this project",
-            options: [
-              { value: "", label: "Select a user" },
-              ...users.map((u) => ({
-                value: u.id.toString(),
-                label: `${u.first_name} ${u.last_name || ""} (${u.email})`,
-              })),
-            ],
-          },
-          { name: "company_name", label: "Company Name", type: "text", placeholder: "Enter company name", validation: formSchema.shape.company_name, required: false },
-          { name: "project_name", label: "Project Name", type: "text", placeholder: "Enter project name", validation: formSchema.shape.project_name, required: false },
-          { name: "project_description", label: "Project Description", type: "textarea", placeholder: "Enter description", validation: formSchema.shape.project_description, required: false },
-          { name: "team_size", label: "Team Size", type: "number", placeholder: "Enter team size", validation: formSchema.shape.team_size, required: false },
-          { name: "fund_needed", label: "Fund Needed", type: "number", placeholder: "Enter fund needed", validation: formSchema.shape.fund_needed, required: false },
-          { name: "why_applying", label: "Why Applying", type: "textarea", placeholder: "Enter reason", validation: formSchema.shape.why_applying, required: false },
-          {
-            name: "status",
-            label: "Status",
-            type: "select",
-            placeholder: loadingStatuses ? "Loading statuses..." : "Select status",
-            validation: formSchema.shape.status,
-            required: false,
-            options: [
-              { value: "", label: "None" },
-              ...statuses.map((s) => ({ value: s.id.toString(), label: getLocalizedLabel(s.name_en, s.name_ar, language) })),
-            ],
-          },
-        ]}
+        config={formConfig}
         onSubmit={handleSubmit}
-        submitText={userProject ? "Update User Project" : "Create User Project"}
+        submitText={userProject ? t("entities.userProjects.edit") : t("entities.userProjects.createNew")}
         onSuccess={onCancel}
         defaultValues={{
           user_id: userProject?.user_id?.toString() || "",
@@ -254,14 +298,14 @@ export function UserProjectForm({ userProject, projectId, onSubmit, onCancel }: 
       />
       {!isEdit && (
         <div className="mt-4 space-y-4 border-t pt-4">
-          <Label className="text-sm font-medium">Upload Documents</Label>
+          <Label className="text-sm font-medium">{t("entities.userProjects.uploadDocuments")}</Label>
           <div className="bg-muted/50 rounded-xl p-4">
             <FileUploader multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" maxSize={10 * 1024 * 1024} onChange={handleFileChange} onError={(e) => toast.error(e)} />
             {fileFiles.length > 0 && (
               <div className="mt-4 space-y-3">
                 {fileFiles.map((fw, index) => (
                   <div key={index} className="flex items-center gap-3 p-3 border rounded-lg bg-background">
-                    <Input className="flex-1" placeholder="Document name" value={fw.name} onChange={(e) => handleFileNameChange(index, e.target.value)} />
+                    <Input className="flex-1" placeholder={t("entities.userProjects.documentName")} value={fw.name} onChange={(e) => handleFileNameChange(index, e.target.value)} />
                     <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => handleRemoveFile(index)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -274,7 +318,7 @@ export function UserProjectForm({ userProject, projectId, onSubmit, onCancel }: 
       )}
       {isEdit && getDocuments().length > 0 && (
         <div className="mt-6 space-y-4 border-t pt-4">
-          <Label className="text-sm font-medium">Existing Documents</Label>
+          <Label className="text-sm font-medium">{t("entities.userProjects.existingDocuments")}</Label>
           <div className="space-y-2">
             {getDocuments().map((doc) => {
               const fileUrl = doc.file_url
@@ -302,14 +346,14 @@ export function UserProjectForm({ userProject, projectId, onSubmit, onCancel }: 
       )}
       {isEdit && (
         <div className="mt-4 space-y-4 border-t pt-4">
-          <Label className="text-sm font-medium">Upload Additional Documents</Label>
+          <Label className="text-sm font-medium">{t("entities.userProjects.uploadAdditionalDocuments")}</Label>
           <div className="bg-muted/50 rounded-xl p-4">
             <FileUploader multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" maxSize={10 * 1024 * 1024} onChange={handleFileChange} onError={(e) => toast.error(e)} />
             {fileFiles.length > 0 && (
               <div className="mt-4 space-y-3">
                 {fileFiles.map((fw, index) => (
                   <div key={index} className="flex items-center gap-3 p-3 border rounded-lg bg-background">
-                    <Input className="flex-1" placeholder="Document name" value={fw.name} onChange={(e) => handleFileNameChange(index, e.target.value)} />
+                    <Input className="flex-1" placeholder={t("entities.userProjects.documentName")} value={fw.name} onChange={(e) => handleFileNameChange(index, e.target.value)} />
                     <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => handleRemoveFile(index)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>

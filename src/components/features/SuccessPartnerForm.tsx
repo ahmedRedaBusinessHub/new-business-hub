@@ -1,15 +1,9 @@
 import * as z from "zod";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { SuccessPartner } from "./SuccessPartnersManagement";
-import DynamicForm from "../shared/DynamicForm";
+import DynamicForm, { type FormField } from "../shared/DynamicForm";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
-
-const formSchema = z.object({
-  name_ar: z.string().min(2, "Arabic name must be at least 2 characters"),
-  name_en: z.string().optional(),
-  status: z.coerce.number().int().min(0).max(1),
-  mainImage: z.any().optional(),
-});
+import { useI18n } from "@/hooks/useI18n";
 
 interface SuccessPartnerFormProps {
   partner: SuccessPartner | null;
@@ -18,8 +12,16 @@ interface SuccessPartnerFormProps {
 }
 
 export function SuccessPartnerForm({ partner, onSubmit, onCancel }: SuccessPartnerFormProps) {
+  const { t } = useI18n("admin");
   const isEdit = !!partner;
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
+
+  const formSchema = useMemo(() => z.object({
+    name_ar: z.string().min(2, t("entities.successPartners.nameArPlaceholder")),
+    name_en: z.string().optional(),
+    status: z.coerce.number().int().min(0).max(1),
+    mainImage: z.any().optional(),
+  }), [t]);
 
   // Use image_url from partner data
   useEffect(() => {
@@ -37,7 +39,7 @@ export function SuccessPartnerForm({ partner, onSubmit, onCancel }: SuccessPartn
   const handleSubmit = async (data: Record<string, any>) => {
     try {
       const validated = formSchema.parse(data);
-      
+
       onSubmit({
         name_ar: validated.name_ar,
         name_en: validated.name_en || null,
@@ -52,68 +54,70 @@ export function SuccessPartnerForm({ partner, onSubmit, onCancel }: SuccessPartn
     }
   };
 
+  const formConfig = useMemo((): FormField[] => [
+    {
+      name: "name_ar",
+      label: t("entities.successPartners.nameAr"),
+      type: "text",
+      placeholder: t("entities.successPartners.nameArPlaceholder"),
+      validation: formSchema.shape.name_ar,
+      required: true,
+      helperText: `${t("entities.successPartners.nameAr")} ${t("entities.successPartners.helperTextRequired")}`,
+    },
+    {
+      name: "name_en",
+      label: t("entities.successPartners.nameEn"),
+      type: "text",
+      placeholder: t("entities.successPartners.nameEnPlaceholder"),
+      validation: formSchema.shape.name_en,
+      required: false,
+      helperText: `${t("entities.successPartners.nameEn")} ${t("entities.successPartners.helperTextOptional")}`,
+    },
+    {
+      name: "status",
+      label: t("common.status"),
+      type: "select",
+      placeholder: t("common.status"),
+      validation: formSchema.shape.status,
+      required: true,
+      helperText: t("common.status"),
+      options: [
+        { value: "1", label: t("entities.successPartners.statusActive") },
+        { value: "0", label: t("entities.successPartners.statusInactive") },
+      ],
+    },
+    {
+      name: "mainImage",
+      label: t("entities.successPartners.partnerImage"),
+      type: "imageuploader",
+      validation: formSchema.shape.mainImage,
+      required: false,
+      helperText: t("entities.successPartners.partnerImageHelper"),
+    },
+  ], [formSchema, t]);
+
   return (
     <>
       {isEdit && existingImageUrl && (
         <div className="mb-6 flex items-center gap-4 p-4 border rounded-lg bg-muted/50">
           <Avatar className="size-20">
-            <AvatarImage src={existingImageUrl} alt="Current image" />
+            <AvatarImage src={existingImageUrl} alt={t("entities.successPartners.currentImage")} />
             <AvatarFallback>
               {partner?.name_ar?.[0] || partner?.name_en?.[0] || "S"}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <p className="text-sm font-medium">Current Image</p>
+            <p className="text-sm font-medium">{t("entities.successPartners.currentImage")}</p>
             <p className="text-xs text-muted-foreground">
-              Upload a new image below to replace this one
+              {t("entities.successPartners.uploadNewImage")}
             </p>
           </div>
         </div>
       )}
       <DynamicForm
-        config={[
-          {
-            name: "name_ar",
-            label: "Name (Arabic)",
-            type: "text",
-            placeholder: "Enter name in Arabic",
-            validation: formSchema.shape.name_ar,
-            required: true,
-            helperText: "Partner name in Arabic (required)",
-          },
-          {
-            name: "name_en",
-            label: "Name (English)",
-            type: "text",
-            placeholder: "Enter name in English",
-            validation: formSchema.shape.name_en,
-            required: false,
-            helperText: "Partner name in English (optional)",
-          },
-          {
-            name: "status",
-            label: "Status",
-            type: "select",
-            placeholder: "Select status",
-            validation: formSchema.shape.status,
-            required: true,
-            helperText: "Partner status",
-            options: [
-              { value: "1", label: "Active" },
-              { value: "0", label: "Inactive" },
-            ],
-          },
-          {
-            name: "mainImage",
-            label: "Partner Logo/Image",
-            type: "imageuploader",
-            validation: formSchema.shape.mainImage,
-            required: false,
-            helperText: "Upload partner logo or image (JPG, PNG, WEBP - Max 5MB)",
-          },
-        ]}
+        config={formConfig}
         onSubmit={handleSubmit}
-        submitText={partner ? "Update Success Partner" : "Create Success Partner"}
+        submitText={partner ? t("entities.successPartners.edit") : t("entities.successPartners.createNew")}
         onSuccess={onCancel}
         defaultValues={{
           name_ar: partner?.name_ar || "",

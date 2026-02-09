@@ -1,20 +1,9 @@
 import * as z from "zod";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { ThirdParty } from "./ThirdPartiesManagement";
-import DynamicForm from "../shared/DynamicForm";
+import DynamicForm, { type FormField } from "../shared/DynamicForm";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
-
-const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  namespace: z.string().min(2, "Namespace must be at least 2 characters"),
-  website: z.string().url("Invalid URL").optional().or(z.literal("")),
-  status: z.coerce.number().int().min(0).max(1),
-  order_no: z.preprocess(
-    (val) => (val === "" || val === null || val === undefined ? undefined : Number(val)),
-    z.number().int().positive().optional()
-  ),
-  profileImage: z.any().optional(),
-});
+import { useI18n } from "@/hooks/useI18n";
 
 interface ThirdPartyFormProps {
   thirdParty: ThirdParty | null;
@@ -23,14 +12,25 @@ interface ThirdPartyFormProps {
 }
 
 export function ThirdPartyForm({ thirdParty, onSubmit, onCancel }: ThirdPartyFormProps) {
+  const { t } = useI18n("admin");
   const isEdit = !!thirdParty;
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
+
+  const formSchema = useMemo(() => z.object({
+    name: z.string().min(2, t("entities.thirdParties.nameHelper")),
+    namespace: z.string().min(2, t("entities.thirdParties.namespaceHelper")),
+    website: z.string().url(t("entities.thirdParties.websitePlaceholder")).optional().or(z.literal("")),
+    status: z.coerce.number().int().min(0).max(1),
+    order_no: z.preprocess(
+      (val) => (val === "" || val === null || val === undefined ? undefined : Number(val)),
+      z.number().int().positive().optional()
+    ),
+    profileImage: z.any().optional(),
+  }), [t]);
 
   // Use image_url from thirdParty data instead of fetching
   useEffect(() => {
     if (thirdParty?.image_url) {
-      // If image_url is already a full URL, use it directly
-      // If it's a file path, prepend the public file endpoint
       if (thirdParty.image_url.startsWith('http') || thirdParty.image_url.startsWith('/api/public/file')) {
         setExistingImageUrl(thirdParty.image_url);
       } else {
@@ -44,13 +44,14 @@ export function ThirdPartyForm({ thirdParty, onSubmit, onCancel }: ThirdPartyFor
   const handleSubmit = async (data: Record<string, any>) => {
     try {
       const validated = formSchema.parse(data);
-      
+
       onSubmit({
         name: validated.name,
         namespace: validated.namespace,
         website: validated.website || null,
         status: validated.status,
         order_no: validated.order_no ?? null,
+        organization_id: thirdParty?.organization_id || 1,
         profileImage: validated.profileImage,
       });
     } catch (error) {
@@ -59,86 +60,88 @@ export function ThirdPartyForm({ thirdParty, onSubmit, onCancel }: ThirdPartyFor
     }
   };
 
+  const formConfig = useMemo((): FormField[] => [
+    {
+      name: "name",
+      label: t("entities.thirdParties.name"),
+      type: "text",
+      placeholder: t("entities.thirdParties.namePlaceholder"),
+      validation: formSchema.shape.name,
+      required: true,
+      helperText: t("entities.thirdParties.nameHelper"),
+    },
+    {
+      name: "namespace",
+      label: t("entities.thirdParties.namespace"),
+      type: "text",
+      placeholder: t("entities.thirdParties.namespacePlaceholder"),
+      validation: formSchema.shape.namespace,
+      required: true,
+      helperText: t("entities.thirdParties.namespaceHelper"),
+    },
+    {
+      name: "website",
+      label: t("entities.thirdParties.website"),
+      type: "url",
+      placeholder: t("entities.thirdParties.websitePlaceholder"),
+      validation: formSchema.shape.website,
+      required: false,
+      helperText: `${t("entities.thirdParties.website")} ${t("entities.thirdParties.helperTextOptional")}`,
+    },
+    {
+      name: "status",
+      label: t("common.status"),
+      type: "select",
+      placeholder: t("common.status"),
+      validation: formSchema.shape.status,
+      required: true,
+      helperText: t("entities.thirdParties.statusHelper"),
+      options: [
+        { value: "1", label: t("entities.thirdParties.statusActive") },
+        { value: "0", label: t("entities.thirdParties.statusInactive") },
+      ],
+    },
+    {
+      name: "order_no",
+      label: t("entities.thirdParties.orderNo"),
+      type: "number",
+      placeholder: t("entities.thirdParties.orderNoPlaceholder"),
+      validation: formSchema.shape.order_no,
+      required: false,
+      helperText: t("entities.thirdParties.orderNoHelper"),
+    },
+    {
+      name: "profileImage",
+      label: t("entities.thirdParties.profileImage"),
+      type: "imageuploader",
+      validation: formSchema.shape.profileImage,
+      required: false,
+      helperText: t("entities.thirdParties.profileImageHelper"),
+    },
+  ], [formSchema, t]);
+
   return (
     <>
       {isEdit && existingImageUrl && (
         <div className="mb-6 flex items-center gap-4 p-4 border rounded-lg bg-muted/50">
           <Avatar className="size-20">
-            <AvatarImage src={existingImageUrl} alt="Current profile picture" />
+            <AvatarImage src={existingImageUrl} alt={t("entities.thirdParties.currentImage")} />
             <AvatarFallback>
               {thirdParty?.name?.[0] || "T"}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <p className="text-sm font-medium">Current Profile Picture</p>
+            <p className="text-sm font-medium">{t("entities.thirdParties.currentImage")}</p>
             <p className="text-xs text-muted-foreground">
-              Upload a new image below to replace this one
+              {t("entities.thirdParties.uploadNewImage")}
             </p>
           </div>
         </div>
       )}
       <DynamicForm
-        config={[
-          {
-            name: "name",
-            label: "Name",
-            type: "text",
-            placeholder: "Enter third party name",
-            validation: formSchema.shape.name,
-            required: true,
-            helperText: "Third party name (required)",
-          },
-          {
-            name: "namespace",
-            label: "Namespace",
-            type: "text",
-            placeholder: "Enter unique namespace",
-            validation: formSchema.shape.namespace,
-            required: true,
-            helperText: "Unique namespace identifier (required)",
-          },
-          {
-            name: "website",
-            label: "Website",
-            type: "url",
-            placeholder: "https://example.com",
-            validation: formSchema.shape.website,
-            required: false,
-            helperText: "Website URL (optional)",
-          },
-          {
-            name: "status",
-            label: "Status",
-            type: "select",
-            placeholder: "Select status",
-            validation: formSchema.shape.status,
-            required: true,
-            helperText: "Third party status",
-            options: [
-              { value: "1", label: "Active" },
-              { value: "0", label: "Inactive" },
-            ],
-          },
-          {
-            name: "order_no",
-            label: "Order Number",
-            type: "number",
-            placeholder: "Enter order number",
-            validation: formSchema.shape.order_no,
-            required: false,
-            helperText: "Display order (optional)",
-          },
-          {
-            name: "profileImage",
-            label: "Profile Image",
-            type: "imageuploader",
-            validation: formSchema.shape.profileImage,
-            required: false,
-            helperText: "Upload profile image (JPG, PNG, WEBP - Max 5MB)",
-          },
-        ]}
+        config={formConfig}
         onSubmit={handleSubmit}
-        submitText={thirdParty ? "Update Third Party" : "Create Third Party"}
+        submitText={thirdParty ? t("entities.thirdParties.edit") : t("entities.thirdParties.createNew")}
         onSuccess={onCancel}
         defaultValues={{
           name: thirdParty?.name || "",

@@ -2,6 +2,7 @@
 import DynamicView, { type ViewHeader, type ViewTab } from "../shared/DynamicView";
 import { Badge } from "@/components/ui/Badge";
 import type { User } from "./UserManagement";
+import { useI18n } from "@/hooks/useI18n";
 
 interface UserViewModalProps {
   user: User | null;
@@ -10,19 +11,15 @@ interface UserViewModalProps {
 }
 
 export function UserViewModal({ user, open, onOpenChange }: UserViewModalProps) {
+  const { t } = useI18n("admin");
+
   const fetchUserImage = async (data: User): Promise<string | null> => {
-    // Use image_url from user data if available (no need to make API call)
     if (data?.image_url) {
-      // If image_url is already a full URL, use it directly
-      // If it's a file path, prepend the public file endpoint
       if (data.image_url.startsWith('http') || data.image_url.startsWith('/api/public/file')) {
         return data.image_url;
       }
       return `/api/public/file?file_url=${encodeURIComponent(data.image_url)}`;
     }
-    
-    // Fallback: if image_url is not available, return null
-    // (The image should be available in the users list response)
     return null;
   };
 
@@ -32,15 +29,15 @@ export function UserViewModal({ user, open, onOpenChange }: UserViewModalProps) 
     subtitle: (data: User) => data.email,
     imageIdField: "image_id",
     fetchImageUrl: fetchUserImage,
-    avatarFallback: (data: User) => 
+    avatarFallback: (data: User) =>
       `${data.first_name?.[0] || ""}${data.last_name?.[0] || ""}`,
     badges: [
       {
         field: "status",
         variant: "default",
         map: {
-          1: { label: "Active", variant: "default" },
-          0: { label: "Inactive", variant: "secondary" },
+          1: { label: t("common.active"), variant: "default" },
+          0: { label: t("common.inactive"), variant: "secondary" },
         },
       },
     ],
@@ -49,70 +46,69 @@ export function UserViewModal({ user, open, onOpenChange }: UserViewModalProps) 
   const tabs: ViewTab[] = [
     {
       id: "details",
-      label: "Details",
+      label: t("users.detailsTab"),
       gridCols: 2,
       fields: [
-        { name: "username", label: "Username", type: "text" },
-        { name: "email", label: "Email", type: "text" },
-        { name: "country_code", label: "Country Code", type: "text" },
+        { name: "username", label: t("users.username"), type: "text" },
+        { name: "email", label: t("users.email"), type: "text" },
+        { name: "country_code", label: t("users.countryCode"), type: "text" },
         {
           name: "mobile",
-          label: "Mobile Number",
+          label: t("users.mobile"),
           type: "text",
           format: (value: string, data: User) =>
             data.country_code && value ? `${data.country_code} ${value}` : value || "-",
         },
-        { name: "first_name", label: "First Name", type: "text" },
-        { name: "last_name", label: "Last Name", type: "text" },
-        { name: "dob", label: "Date of Birth", type: "date" },
+        { name: "first_name", label: t("users.firstName"), type: "text" },
+        { name: "last_name", label: t("users.lastName"), type: "text" },
+        { name: "dob", label: t("users.dob"), type: "date" },
         {
           name: "gender",
-          label: "Gender",
+          label: t("users.gender"),
           type: "text",
           format: (value: number | null) => {
             if (value === null || value === undefined) return "-";
             switch (value) {
-              case 0: return "Male";
-              case 1: return "Female";
-              case 2: return "Other";
+              case 1: return t("users.male");
+              case 2: return t("users.female");
               default: return "-";
             }
           },
         },
-        { name: "national_id", label: "National ID", type: "text" },
+        { name: "national_id", label: t("users.nationalId"), type: "text" },
         {
           name: "status",
-          label: "Status",
+          label: t("common.status"),
           type: "badge",
           badgeMap: {
-            1: { label: "Active", variant: "default" },
-            0: { label: "Inactive", variant: "secondary" },
+            1: { label: t("common.active"), variant: "default" },
+            0: { label: t("common.inactive"), variant: "secondary" },
           },
         },
       ],
     },
     {
       id: "additional",
-      label: "Additional Info",
+      label: t("users.additionalInfoTab"),
       gridCols: 2,
       fields: [
-        { name: "id", label: "User ID", type: "number" },
+        { name: "id", label: t("users.userId"), type: "number" },
         {
           name: "user_access_tokens_count",
-          label: "Access Tokens",
+          label: t("users.accessTokens"),
           type: "badge",
           badgeVariant: "outline",
           format: (value: number | undefined) => value ?? 0,
         },
         {
           name: "user_roles_count",
-          label: "Roles",
+          label: t("users.userRoles"),
           type: "badge",
           badgeVariant: "outline",
           format: (value: number | undefined) => value ?? 0,
         },
-        { name: "created_at", label: "Created At", type: "datetime" },
-        { name: "updated_at", label: "Updated At", type: "datetime" },
+        { name: "created_at", label: t("common.createdAt"), type: "datetime" },
+        { name: "updated_at", label: t("common.updatedAt"), type: "datetime" },
       ],
     },
   ];
@@ -122,7 +118,7 @@ export function UserViewModal({ user, open, onOpenChange }: UserViewModalProps) 
       data={user}
       open={open}
       onOpenChange={onOpenChange}
-      title="User Details"
+      title={t("users.userDetails")}
       header={header}
       tabs={tabs}
       maxWidth="4xl"

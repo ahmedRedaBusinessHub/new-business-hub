@@ -1,3 +1,4 @@
+"use client";
 import {
   Card,
   CardContent,
@@ -10,88 +11,59 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import {
   ArrowUpRight,
-  DollarSign,
+  Briefcase,
   Users,
-  ShoppingCart,
-  TrendingUp,
+  Layers,
+  FileClock,
 } from "lucide-react";
-
-const stats = [
-  {
-    title: "Total Revenue",
-    value: "$45,231.89",
-    change: "+20.1%",
-    icon: DollarSign,
-  },
-  {
-    title: "Active Users",
-    value: "2,350",
-    change: "+180.1%",
-    icon: Users,
-  },
-  {
-    title: "Sales",
-    value: "12,234",
-    change: "+19%",
-    icon: ShoppingCart,
-  },
-  {
-    title: "Growth",
-    value: "+573",
-    change: "+201%",
-    icon: TrendingUp,
-  },
-];
-
-const recentSales = [
-  {
-    name: "Olivia Martin",
-    email: "olivia.martin@email.com",
-    amount: "+$1,999.00",
-    avatar: "OM",
-  },
-  {
-    name: "Jackson Lee",
-    email: "jackson.lee@email.com",
-    amount: "+$39.00",
-    avatar: "JL",
-  },
-  {
-    name: "Isabella Nguyen",
-    email: "isabella.nguyen@email.com",
-    amount: "+$299.00",
-    avatar: "IN",
-  },
-  {
-    name: "William Kim",
-    email: "will@email.com",
-    amount: "+$99.00",
-    avatar: "WK",
-  },
-  {
-    name: "Sofia Davis",
-    email: "sofia.davis@email.com",
-    amount: "+$39.00",
-    avatar: "SD",
-  },
-];
+import { useDashboardStats } from "@/hooks/useDashboardStats";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { useTranslations } from "next-intl";
 
 export function DashboardContent() {
+  const t = useTranslations("dashboard");
+  const { stats, recentUsers, isLoading } = useDashboardStats();
+
+  const statCards = [
+    {
+      title: t("totalProjects"),
+      value: stats.projectsCount,
+      icon: Briefcase,
+    },
+    {
+      title: t("totalPrograms"),
+      value: stats.programsCount,
+      icon: Layers,
+    },
+    {
+      title: t("totalUsers"),
+      value: stats.usersCount,
+      icon: Users,
+    },
+    {
+      title: t("pendingApplications"),
+      value: stats.pendingApplicationsCount,
+      icon: FileClock,
+    },
+  ];
+
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
+        {statCards.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle>{stat.title}</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {stat.title}
+              </CardTitle>
               <stat.icon className="size-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-muted-foreground">
-                <span className="text-green-600">{stat.change}</span> from last
-                month
-              </p>
+              {isLoading ? (
+                <Skeleton className="h-8 w-20" />
+              ) : (
+                <div className="text-2xl font-bold">{stat.value}</div>
+              )}
             </CardContent>
           </Card>
         ))}
@@ -100,39 +72,65 @@ export function DashboardContent() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
           <CardHeader>
-            <CardTitle>Overview</CardTitle>
-            <CardDescription>Monthly revenue overview for 2024</CardDescription>
+            <CardTitle>{t("overview.title")}</CardTitle>
+            <CardDescription>
+              {t("overview.description")}
+            </CardDescription>
           </CardHeader>
           <CardContent className="pl-2">
             <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-              Chart visualization would go here
+              {t("overview.chartPlaceholder")}
             </div>
           </CardContent>
         </Card>
 
         <Card className="col-span-3">
           <CardHeader>
-            <CardTitle>Recent Sales</CardTitle>
-            <CardDescription>You made 265 sales this month.</CardDescription>
+            <CardTitle>{t("recentUsers.title")}</CardTitle>
+            <CardDescription>
+              {t("recentUsers.description")}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-8">
-              {recentSales.map((sale) => (
-                <div key={sale.email} className="flex items-center">
-                  <Avatar className="size-9">
-                    <AvatarImage
-                      src={`/avatars/${sale.avatar}.png`}
-                      alt={sale.name}
-                    />
-                    <AvatarFallback>{sale.avatar}</AvatarFallback>
-                  </Avatar>
-                  <div className="ml-4 space-y-1">
-                    <p className="leading-none">{sale.name}</p>
-                    <p className="text-muted-foreground">{sale.email}</p>
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    <Skeleton className="h-9 w-9 rounded-full" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-[150px]" />
+                      <Skeleton className="h-4 w-[100px]" />
+                    </div>
                   </div>
-                  <div className="ml-auto">{sale.amount}</div>
+                ))
+              ) : recentUsers.length > 0 ? (
+                recentUsers.map((user) => (
+                  <div key={user.email} className="flex items-center">
+                    <Avatar className="size-9">
+                      <AvatarImage
+                        src={user.image_url || undefined}
+                        alt={`${user.first_name} ${user.last_name}`}
+                      />
+                      <AvatarFallback>
+                        {user.first_name?.[0]}
+                        {user.last_name?.[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="ml-4 space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {user.first_name} {user.last_name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center text-muted-foreground">
+                  {t("recentUsers.noUsersFound")}
                 </div>
-              ))}
+              )}
             </div>
           </CardContent>
         </Card>
@@ -141,40 +139,16 @@ export function DashboardContent() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle>Active Now</CardTitle>
-            <Badge>Live</Badge>
+            <CardTitle className="text-sm font-medium">{t("pendingApplications")}</CardTitle>
+            <Badge variant="outline">{stats.pendingApplicationsCount}</Badge>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">573</div>
-            <p className="text-muted-foreground">+201 from last hour</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle>Pending Orders</CardTitle>
-            <Badge variant="outline">24</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">24</div>
-            <p className="text-muted-foreground">8 require immediate action</p>
+            <div className="text-2xl font-bold">{stats.pendingApplicationsCount}</div>
+            <p className="text-xs text-muted-foreground">
+              {t("pendingAppsCard.requireReview")}
+            </p>
             <Button className="w-full mt-4" variant="outline" size="sm">
-              View All
-              <ArrowUpRight className="ml-2 size-4" />
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle>Inventory Status</CardTitle>
-            <Badge variant="secondary">Updated</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">89%</div>
-            <p className="text-muted-foreground">12 items low in stock</p>
-            <Button className="w-full mt-4" variant="outline" size="sm">
-              Manage Stock
+              {t("pendingAppsCard.viewAll")}
               <ArrowUpRight className="ml-2 size-4" />
             </Button>
           </CardContent>

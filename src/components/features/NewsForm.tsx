@@ -1,7 +1,7 @@
 import * as z from "zod";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { News } from "./NewsManagement";
-import DynamicForm from "../shared/DynamicForm";
+import DynamicForm, { type FormField } from "../shared/DynamicForm";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { ImageUploader } from "@/components/ui/ImageUploader";
@@ -10,30 +10,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { Send, Trash2 } from "lucide-react";
-
-const baseFormSchema = z.object({
-  title_ar: z.string().min(2, "Arabic title must be at least 2 characters"),
-  title_en: z.string().nullable().optional(),
-  detail_ar: z.string().nullable().optional(),
-  detail_en: z.string().nullable().optional(),
-  social_media: z.record(z.string(), z.string()).optional(),
-  status: z.number().int().min(0).max(1),
-  mainImage: z.any().optional(),
-  imageIds: z.any().optional(),
-});
-
-const formFieldSchema = z.object({
-  title_ar: z.string().min(2, "Arabic title must be at least 2 characters"),
-  title_en: z.string().optional(),
-  detail_ar: z.string().optional(),
-  detail_en: z.string().optional(),
-  social_media: z.any().optional(),
-  status: z.coerce.number().int().min(0).max(1),
-  mainImage: z.any().optional(),
-  imageIds: z.any().optional(),
-});
-
-const formSchema = baseFormSchema;
+import { useI18n } from "@/hooks/useI18n";
 
 interface NewsFormProps {
   news: News | null;
@@ -45,11 +22,23 @@ interface NewsFormProps {
 }
 
 export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
+  const { t } = useI18n("admin");
   const isEdit = !!news;
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const [socialMediaLinks, setSocialMediaLinks] = useState<Record<string, string>>({});
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [deletedImageUrls, setDeletedImageUrls] = useState<string[]>([]);
+
+  const formSchema = useMemo(() => z.object({
+    title_ar: z.string().min(2, t("entities.news.titleArPlaceholder")),
+    title_en: z.string().optional(),
+    detail_ar: z.string().optional(),
+    detail_en: z.string().optional(),
+    social_media: z.any().optional(),
+    status: z.coerce.number().int().min(0).max(1),
+    mainImage: z.any().optional(),
+    imageIds: z.any().optional(),
+  }), [t]);
 
   const handleDeleteImage = async (url: string, imageId?: number) => {
     if (!news?.id || !imageId) {
@@ -149,6 +138,7 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
         detail_en: validated.detail_en || null,
         social_media: currentSocialMedia,
         status: validated.status,
+        organization_id: news?.organization_id || 1,
         mainImage: validated.mainImage,
         imageIds: imageFiles,
       });
@@ -165,20 +155,80 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
     }));
   };
 
+  const formConfig = useMemo((): FormField[] => [
+    {
+      name: "title_ar",
+      label: t("entities.news.titleAr"),
+      type: "text",
+      placeholder: t("entities.news.titleArPlaceholder"),
+      validation: formSchema.shape.title_ar,
+      required: true,
+      helperText: `${t("entities.news.titleAr")} ${t("entities.news.helperTextRequired")}`,
+    },
+    {
+      name: "title_en",
+      label: t("entities.news.titleEn"),
+      type: "text",
+      placeholder: t("entities.news.titleEnPlaceholder"),
+      validation: formSchema.shape.title_en,
+      required: false,
+      helperText: `${t("entities.news.titleEn")} ${t("entities.news.helperTextOptional")}`,
+    },
+    {
+      name: "detail_ar",
+      label: t("entities.news.detailAr"),
+      type: "textarea",
+      placeholder: t("entities.news.detailArPlaceholder"),
+      validation: formSchema.shape.detail_ar,
+      required: false,
+      helperText: `${t("entities.news.detailAr")} ${t("entities.news.helperTextOptional")}`,
+    },
+    {
+      name: "detail_en",
+      label: t("entities.news.detailEn"),
+      type: "textarea",
+      placeholder: t("entities.news.detailEnPlaceholder"),
+      validation: formSchema.shape.detail_en,
+      required: false,
+      helperText: `${t("entities.news.detailEn")} ${t("entities.news.helperTextOptional")}`,
+    },
+    {
+      name: "status",
+      label: t("common.status"),
+      type: "select",
+      placeholder: t("common.status"),
+      validation: formSchema.shape.status,
+      required: true,
+      helperText: t("common.status"),
+      options: [
+        { value: "1", label: t("entities.news.statusActive") },
+        { value: "0", label: t("entities.news.statusInactive") },
+      ],
+    },
+    {
+      name: "mainImage",
+      label: t("entities.news.mainImage"),
+      type: "imageuploader",
+      validation: formSchema.shape.mainImage,
+      required: false,
+      helperText: t("entities.news.mainImageHelper"),
+    },
+  ], [formSchema, t]);
+
   return (
     <>
       {isEdit && existingImageUrl && (
         <div className="mb-6 flex items-center gap-4 p-4 border rounded-lg bg-muted/50">
           <Avatar className="size-20">
-            <AvatarImage src={existingImageUrl} alt="Current main image" />
+            <AvatarImage src={existingImageUrl} alt={t("entities.news.currentMainImage")} />
             <AvatarFallback>
               {news?.title_ar?.[0] || news?.title_en?.[0] || "N"}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <p className="text-sm font-medium">Current Main Image</p>
+            <p className="text-sm font-medium">{t("entities.news.currentMainImage")}</p>
             <p className="text-xs text-muted-foreground">
-              Upload a new image below to replace this one
+              {t("entities.news.uploadNewImage")}
             </p>
           </div>
         </div>
@@ -187,65 +237,7 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
       <DynamicForm
         formId="news-form"
         className="w-full"
-        config={[
-          {
-            name: "title_ar",
-            label: "Title (Arabic)",
-            type: "text",
-            placeholder: "Enter Arabic title",
-            validation: formFieldSchema.shape.title_ar,
-            required: true,
-            helperText: "Arabic title (required)",
-          },
-          {
-            name: "title_en",
-            label: "Title (English)",
-            type: "text",
-            placeholder: "Enter English title",
-            validation: formFieldSchema.shape.title_en,
-            required: false,
-            helperText: "English title (optional)",
-          },
-          {
-            name: "detail_ar",
-            label: "Detail (Arabic)",
-            type: "textarea",
-            placeholder: "Enter Arabic detail",
-            validation: formFieldSchema.shape.detail_ar,
-            required: false,
-            helperText: "Arabic detail (optional)",
-          },
-          {
-            name: "detail_en",
-            label: "Detail (English)",
-            type: "textarea",
-            placeholder: "Enter English detail",
-            validation: formFieldSchema.shape.detail_en,
-            required: false,
-            helperText: "English detail (optional)",
-          },
-          {
-            name: "status",
-            label: "Status",
-            type: "select",
-            placeholder: "Select status",
-            validation: formFieldSchema.shape.status,
-            required: true,
-            helperText: "News status",
-            options: [
-              { value: "1", label: "Active" },
-              { value: "0", label: "Inactive" },
-            ],
-          },
-          {
-            name: "mainImage",
-            label: "Main Image",
-            type: "imageuploader",
-            validation: formFieldSchema.shape.mainImage,
-            required: false,
-            helperText: "Upload main image (JPG, PNG, WEBP - Max 5MB)",
-          },
-        ]}
+        config={formConfig}
         onSubmit={handleSubmit}
         submitText=""
         onSuccess={onCancel}
@@ -261,12 +253,18 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
 
       <Tabs defaultValue="social" className="w-full mt-6">
         <TabsList className={`grid w-full h-auto p-1 bg-muted/50 rounded-xl ${isEdit ? 'grid-cols-2' : 'grid-cols-1'}`}>
-          <TabsTrigger value="social" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">Social Media</TabsTrigger>
-          {isEdit && <TabsTrigger value="images" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">Images</TabsTrigger>}
+          <TabsTrigger value="social" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">
+            {t("entities.news.socialMedia")}
+          </TabsTrigger>
+          {isEdit && (
+            <TabsTrigger value="images" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5">
+              {t("entities.news.images")}
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="social" className="space-y-4 pt-4">
-          <Label className="text-sm font-medium text-muted-foreground">Social Media Links</Label>
+          <Label className="text-sm font-medium text-muted-foreground">{t("entities.news.socialMediaLinks")}</Label>
           <div className="space-y-2">
             {['facebook', 'twitter', 'instagram', 'linkedin', 'youtube'].map((platform) => (
               <div key={platform} className="flex items-center gap-2 w-full">
@@ -283,14 +281,14 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
               </div>
             ))}
           </div>
-          <p className="text-xs text-muted-foreground">Enter social media URLs (optional)</p>
+          <p className="text-xs text-muted-foreground">{t("entities.news.socialMediaHelper")}</p>
         </TabsContent>
 
         {isEdit && (
           <TabsContent value="images" className="space-y-6 pt-4">
             {news?.image_urls && news.image_urls.length > 0 && (
               <div className="space-y-3">
-                <Label className="text-sm font-medium text-muted-foreground">Existing Images</Label>
+                <Label className="text-sm font-medium text-muted-foreground">{t("entities.news.existingImages")}</Label>
                 <div className="grid grid-cols-3 gap-4">
                   {news.image_urls
                     .filter(url => url != null && !deletedImageUrls.includes(url))
@@ -322,7 +320,7 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
             )}
 
             <div className="space-y-3">
-              <Label className="text-sm font-medium text-muted-foreground">Upload New Images</Label>
+              <Label className="text-sm font-medium text-muted-foreground">{t("entities.news.uploadNewImages")}</Label>
               <div className="bg-muted/50 rounded-xl p-4">
                 <ImageUploader
                   multiple={true}
@@ -332,7 +330,7 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
                   onError={(error) => toast.error(error)}
                 />
                 <p className="text-xs text-muted-foreground mt-2">
-                  Upload multiple images (JPG, PNG, WEBP - Max 5MB each)
+                  {t("entities.news.uploadMultipleHelper")}
                 </p>
               </div>
             </div>
@@ -383,7 +381,7 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
               }
             }}
           >
-            {news ? "Update News" : "Create News"}
+            {news ? t("entities.news.edit") : t("entities.news.createNew")}
             <Send className="ml-2 h-4 w-4" />
           </Button>
         </div>
