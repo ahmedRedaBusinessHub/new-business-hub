@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { useI18n } from "@/hooks/useI18n";
-import { ProgramsList } from "./ProgramsList";
+import { ProgramsList, Program } from "./ProgramsList";
 
 // Floating Particle Component
 const FloatingParticle = ({ delay = 0, duration = 20, size = 4 }) => {
@@ -72,7 +72,14 @@ const MagneticButton = ({ children, className, ...props }: any) => {
     );
 };
 
-export default function ProgramsPage() {
+interface ProgramsPageProps {
+    initialData?: {
+        data: Program[];
+        total: number;
+    };
+}
+
+export default function ProgramsPage({ initialData }: ProgramsPageProps) {
     const { language: locale } = useI18n();
     const language = (typeof locale === 'string' ? locale : locale?.[0]) || 'ar';
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -192,7 +199,7 @@ export default function ProgramsPage() {
             </section>
 
             {/* Programs List Section */}
-            <ProgramsList />
+            <ProgramsList initialData={initialData} />
         </div>
     );
 }

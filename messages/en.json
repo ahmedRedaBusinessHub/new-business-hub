@@ -113,6 +113,12 @@
       "description": "Latest updates and news from Business Hub",
       "keywords": "news, business hub, updates, entrepreneurship, saudi arabia",
       "authors": "Business Hub Team"
+    },
+    "allPrograms": {
+      "title": "Our Programs | Business Hub - Accelerate Your Success",
+      "description": "Explore our business incubation and acceleration programs designed to support entrepreneurs and startups in Saudi Arabia.",
+      "keywords": "business programs, startup accelerator, business incubator, entrepreneurship programs, Saudi Arabia",
+      "authors": "Business Hub Team"
     }
   },
   "nav_home": "Home",

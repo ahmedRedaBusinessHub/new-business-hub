@@ -107,7 +107,11 @@ const MagneticButton = ({ children, className, ...props }: any) => {
   );
 };
 
-export default function ProgramViewPage() {
+interface ProgramViewPageProps {
+  initialData?: Program | null;
+}
+
+export default function ProgramViewPage({ initialData }: ProgramViewPageProps) {
   const { id } = useParams();
   const { language } = useI18n();
   const navigate = useRouter();
@@ -150,8 +154,8 @@ export default function ProgramViewPage() {
     linkedin: "",
   });
 
-  const [program, setProgram] = useState<Program | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [program, setProgram] = useState<Program | null>(initialData || null);
+  const [loading, setLoading] = useState(!initialData);
   const [programTypes, setProgramTypes] = useState<any[]>([]);
   const [programSubtypes, setProgramSubtypes] = useState<any[]>([]);
 
@@ -186,7 +190,11 @@ export default function ProgramViewPage() {
   useEffect(() => {
     const fetchProgram = async () => {
       if (!id) return;
+      // If we have initialData and it matches the current ID (or we just loaded), skip fetch
+      if (initialData && program?.id.toString() === id.toString()) return;
+
       try {
+        setLoading(true);
         const response = await fetch(`/api/public/programs/${id}`);
         if (!response.ok) throw new Error("Failed to fetch program");
         const data = await response.json();
@@ -199,8 +207,10 @@ export default function ProgramViewPage() {
       }
     };
 
-    fetchProgram();
-  }, [id, language]);
+    if (!initialData) {
+      fetchProgram();
+    }
+  }, [id, language, initialData]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

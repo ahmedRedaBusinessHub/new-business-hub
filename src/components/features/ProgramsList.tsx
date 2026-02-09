@@ -17,7 +17,7 @@ interface StaticListOption {
     name_ar: string;
 }
 
-interface Program {
+export interface Program {
     id: number;
     name_ar: string;
     name_en: string | null;
@@ -29,17 +29,24 @@ interface Program {
     type: number | null;
 }
 
-export function ProgramsList() {
+interface ProgramsListProps {
+    initialData?: {
+        data: Program[];
+        total: number;
+    };
+}
+
+export function ProgramsList({ initialData }: ProgramsListProps) {
     const { language: locale, t } = useI18n();
     const language = (typeof locale === 'string' ? locale : locale?.[0]) || 'ar';
-    const [programs, setPrograms] = useState<Program[]>([]);
+    const [programs, setPrograms] = useState<Program[]>(initialData?.data || []);
     const [programTypes, setProgramTypes] = useState<StaticListOption[]>([]);
     const [selectedType, setSelectedType] = useState<number | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(!initialData);
     const [loadingMore, setLoadingMore] = useState(false);
     const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
     const limit = 9; // Grid 3x3
+    const [hasMore, setHasMore] = useState(initialData ? initialData.data.length < initialData.total : true);
 
     const fetchPrograms = async (pageNum: number, isLoadMore: boolean = false, typeId: number | null = selectedType) => {
         try {
@@ -77,7 +84,9 @@ export function ProgramsList() {
     };
 
     useEffect(() => {
-        fetchPrograms(1, false, null);
+        if (!initialData) {
+            fetchPrograms(1, false, null);
+        }
 
         getTypes();
     }, []);
