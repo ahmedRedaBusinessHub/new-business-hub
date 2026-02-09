@@ -12,7 +12,7 @@ import {
   Rocket,
   Calendar,
   Clock,
-  DollarSign,
+  SaudiRiyal,
   FileText,
   Download,
   CheckCircle2,
@@ -44,6 +44,7 @@ import { toast } from "sonner";
 import { ImageWithFallback } from "@/components/figma/ImageWithFallback";
 import { useI18n } from "@/hooks/useI18n";
 import { useParams, useRouter } from "next/navigation";
+import { useUser } from "@/hooks/useUser";
 import { type Program } from "./ProgramsManagement";
 import { staticListsCache } from "@/lib/staticListsCache";
 import { getLocalizedLabel } from "@/lib/localizedLabel";
@@ -76,37 +77,6 @@ const FloatingParticle = ({ delay = 0, duration = 20, size = 4 }) => {
   );
 };
 
-// Magnetic Button Component
-const MagneticButton = ({ children, className, ...props }: any) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-
-  const handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { clientX, clientY } = e;
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    const { left, top, width, height } = rect;
-    const x = (clientX - (left + width / 2)) * 0.3;
-    const y = (clientY - (top + height / 2)) * 0.3;
-    setPosition({ x, y });
-  };
-
-  const reset = () => setPosition({ x: 0, y: 0 });
-
-  return (
-    <motion.div
-      ref={ref}
-      onMouseMove={handleMouse}
-      onMouseLeave={reset}
-      animate={position}
-      transition={{ type: "spring", stiffness: 150, damping: 15 }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-};
-
 interface ProgramViewPageProps {
   initialData?: Program | null;
 }
@@ -115,6 +85,7 @@ export default function ProgramViewPage({ initialData }: ProgramViewPageProps) {
   const { id } = useParams();
   const { language } = useI18n();
   const navigate = useRouter();
+  const { user } = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const { scrollYProgress } = useScroll();
@@ -131,28 +102,7 @@ export default function ProgramViewPage({ initialData }: ProgramViewPageProps) {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  const [uploadedFiles, setUploadedFiles] = useState<{
-    [key: string]: File | null;
-  }>({
-    businessPlan: null,
-    financialProjections: null,
-    teamCV: null,
-    presentationDeck: null,
-  });
 
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    company: "",
-    position: "",
-    projectName: "",
-    projectDescription: "",
-    funding: "",
-    teamSize: "",
-    website: "",
-    linkedin: "",
-  });
 
   const [program, setProgram] = useState<Program | null>(initialData || null);
   const [loading, setLoading] = useState(!initialData);
@@ -212,14 +162,7 @@ export default function ProgramViewPage({ initialData }: ProgramViewPageProps) {
     }
   }, [id, language, initialData]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+
 
   // Helper to get theme colors based on ID
   const getTheme = (id: number) => {
@@ -276,75 +219,69 @@ export default function ProgramViewPage({ initialData }: ProgramViewPageProps) {
   const programDoc = language === 'ar' ? program.document_ar_url : program.document_en_url;
 
   // Icons for values (cycling)
-  const valueIcons = [DollarSign, Target, Award, TrendingUp, Zap, Globe];
+  const valueIcons = [SaudiRiyal, Target, Award, TrendingUp, Zap, Globe];
 
-  const handleFileUpload = (
-    documentType: string,
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setUploadedFiles((prev) => ({
-        ...prev,
-        [documentType]: file,
-      }));
-      toast.success(
-        language === "ar"
-          ? `تم رفع الملف: ${file.name}`
-          : `File uploaded: ${file.name}`
-      );
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (
-      !formData.fullName ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.projectName
-    ) {
+
+    if (!user?.id) {
       toast.error(
         language === "ar"
-          ? "يرجى ملء جميع الحقول المطلوبة"
-          : "Please fill in all required fields"
+          ? "يجب تسجيل الدخول أولاً للتقديم"
+          : "You must be logged in to apply"
       );
       return;
     }
 
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const payload = {
+        company_name: null,
+        fund_needed: null,
+        project_description: null,
+        project_name: null,
+        status: null,
+        team_size: null,
+        why_applying: null,
+        user_id: Number(user.id),
+        program_id: Number(id),
+      };
+
+      const response = await fetch("/api/user-program", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to submit application");
+      }
+
+      const responseData = await response.json();
+
       toast.success(
         language === "ar"
           ? "تم تقديم الطلب بنجاح! سنتواصل معك قريباً"
           : "Application submitted successfully! We will contact you soon"
       );
 
-      // Reset form
-      setFormData({
-        fullName: "",
-        email: "",
-        phone: "",
-        company: "",
-        position: "",
-        projectName: "",
-        projectDescription: "",
-        funding: "",
-        teamSize: "",
-        website: "",
-        linkedin: "",
-      });
-      setUploadedFiles({
-        businessPlan: null,
-        financialProjections: null,
-        teamCV: null,
-        presentationDeck: null,
-      });
-    }, 2000);
+
+    } catch (error: any) {
+      console.log("Error submitting application:", error.message);
+      toast.error(
+        error.message ? error.message : language === "ar"
+          ? "حدث خطأ أثناء تقديم الطلب. يرجى المحاولة مرة أخرى"
+          : "Failed to submit application. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -480,7 +417,7 @@ export default function ProgramViewPage({ initialData }: ProgramViewPageProps) {
           >
             {[
               { icon: Calendar, text: program.from_datetime ? (language === "ar" ? new Date(program.from_datetime).toLocaleDateString('ar-EG') : new Date(program.from_datetime).toLocaleDateString('en-US')) : '-' },
-              { icon: DollarSign, text: program.price || (language === "ar" ? "مجاني" : "Free") },
+              { icon: SaudiRiyal, text: program.price || (language === "ar" ? "مجاني" : "Free") },
               // { icon: TrendingUp, text: program.equity },
             ].map((item, index) => (
               <motion.div
@@ -680,7 +617,7 @@ export default function ProgramViewPage({ initialData }: ProgramViewPageProps) {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {programValues.map((value: any, index: number) => {
-              const Icon = valueIcons[index % valueIcons.length];
+              const Icon = Target //valueIcons[index % valueIcons.length];
               return (
                 <motion.div
                   key={index}
@@ -1106,425 +1043,57 @@ export default function ProgramViewPage({ initialData }: ProgramViewPageProps) {
               </>
             )}
           </div>
-        </div>
-      </section>
-
-      {/* Application Form */}
-      <section className="py-24 bg-gradient-to-b from-[#F2F2F2] to-white relative overflow-hidden">
-        {/* Decorative Elements */}
-        <div className="absolute inset-0 opacity-5">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 1px 1px, rgb(13 91 220 / 0.15) 1px, transparent 0)",
-              backgroundSize: "40px 40px",
-            }}
-          />
-        </div>
-
-        <div className="container mx-auto px-6 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              whileInView={{ scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 200 }}
-              className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-[#0D5BDC]/10 to-[#340F87]/10 border border-[#0D5BDC]/20 mb-6"
+          <div className="flex justify-center">
+            <Button
+              onClick={handleSubmit}
+              size="lg"
+              disabled={isSubmitting}
+              className={` h-16 mt-20   text-xl rounded-full bg-gradient-to-r ${theme.gradient} text-white border-0 hover:scale-105 transition-transform shadow-2xl relative overflow-hidden group`}
             >
-              <span className="bg-gradient-to-r from-[#0D5BDC] to-[#340F87] bg-clip-text text-transparent flex items-center gap-2 justify-center">
-                <Send className="w-5 h-5 text-[#0D5BDC]" />
-                {language === "ar" ? "تقديم الطلب" : "Submit Application"}
-              </span>
-            </motion.div>
-
-            <h2 className="text-4xl sm:text-5xl mb-6">
-              <motion.span
-                animate={{
-                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                }}
-                transition={{ duration: 8, repeat: Infinity }}
-                className="bg-gradient-to-r from-[#262626] via-[#0A2F78] to-[#262626] bg-clip-text text-transparent"
-                style={{ backgroundSize: "200% auto" }}
-              >
-                {language === "ar" ? "قدم الآن" : "Apply Now"}
-              </motion.span>
-            </h2>
-
-            <p className="text-xl text-[#262626]/70 max-w-2xl mx-auto">
-              {language === "ar"
-                ? "املأ النموذج أدناه وسنتواصل معك في أقرب وقت"
-                : "Fill out the form below and we will contact you shortly"}
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-5xl mx-auto"
-          >
-            <div className="relative p-10 lg:p-16 rounded-3xl bg-white border-2 border-[#F2F2F2] shadow-2xl overflow-hidden">
-              {/* Decorative gradient orbs */}
               <motion.div
-                className="absolute -top-20 -left-20 w-40 h-40 rounded-full opacity-20 blur-3xl"
-                style={{ backgroundColor: theme.accent }}
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.2, 0.3, 0.2],
-                }}
-                transition={{ duration: 5, repeat: Infinity }}
-              />
-              <motion.div
-                className="absolute -bottom-20 -right-20 w-40 h-40 rounded-full opacity-20 blur-3xl"
-                style={{ backgroundColor: theme.accent }}
-                animate={{
-                  scale: [1.2, 1, 1.2],
-                  opacity: [0.3, 0.2, 0.3],
-                }}
-                transition={{ duration: 5, repeat: Infinity }}
+                className="absolute inset-0 bg-white/20"
+                initial={{ x: "-100%", skewX: -20 }}
+                whileHover={{ x: "200%" }}
+                transition={{ duration: 0.6 }}
               />
 
-              <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
-                {/* Personal Information */}
-                <div>
-                  <h3 className="text-2xl text-[#262626] mb-6 flex items-center gap-3">
-                    <div
-                      className={`w-10 h-10 rounded-xl bg-gradient-to-br ${theme.gradient} flex items-center justify-center`}
+              <span className="relative z-10 flex items-center justify-center gap-3">
+                {isSubmitting ? (
+                  <>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
                     >
-                      <User className="w-5 h-5 text-white" />
-                    </div>
+                      <Zap className="w-6 h-6" />
+                    </motion.div>
                     {language === "ar"
-                      ? "المعلومات الشخصية"
-                      : "Personal Information"}
-                  </h3>
+                      ? "جاري الإرسال..."
+                      : "Submitting..."}
+                  </>
+                ) : (
+                  <>
 
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <motion.div
-                      whileFocus={{ scale: 1.02 }}
-                      className="space-y-2"
-                    >
-                      <Label htmlFor="fullName" className="text-[#262626]/80">
-                        {language === "ar" ? "الاسم الكامل" : "Full Name"} *
-                      </Label>
-                      <Input
-                        id="fullName"
-                        name="fullName"
-                        value={formData.fullName}
-                        onChange={handleChange}
-                        required
-                        className="h-14 rounded-xl border-2 border-[#F2F2F2] focus:border-[#0D5BDC] transition-colors"
-                        placeholder={
-                          language === "ar"
-                            ? "أدخل اسمك الكامل"
-                            : "Enter your full name"
-                        }
-                      />
-                    </motion.div>
-
-                    <motion.div
-                      whileFocus={{ scale: 1.02 }}
-                      className="space-y-2"
-                    >
-                      <Label htmlFor="email" className="text-[#262626]/80">
-                        {language === "ar" ? "البريد الإلكتروني" : "Email"} *
-                      </Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        className="h-14 rounded-xl border-2 border-[#F2F2F2] focus:border-[#0D5BDC] transition-colors"
-                        placeholder={
-                          language === "ar"
-                            ? "البريد الإلكتروني"
-                            : "your@email.com"
-                        }
-                      />
-                    </motion.div>
-
-                    <motion.div
-                      whileFocus={{ scale: 1.02 }}
-                      className="space-y-2"
-                    >
-                      <Label htmlFor="phone" className="text-[#262626]/80">
-                        {language === "ar" ? "رقم الهاتف" : "Phone Number"} *
-                      </Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        required
-                        className="h-14 rounded-xl border-2 border-[#F2F2F2] focus:border-[#0D5BDC] transition-colors"
-                        placeholder={
-                          language === "ar" ? "رقم الهاتف" : "+966 XX XXX XXXX"
-                        }
-                      />
-                    </motion.div>
-
-                    <motion.div
-                      whileFocus={{ scale: 1.02 }}
-                      className="space-y-2"
-                    >
-                      <Label htmlFor="company" className="text-[#262626]/80">
-                        {language === "ar" ? "اسم الشركة" : "Company Name"}
-                      </Label>
-                      <Input
-                        id="company"
-                        name="company"
-                        value={formData.company}
-                        onChange={handleChange}
-                        className="h-14 rounded-xl border-2 border-[#F2F2F2] focus:border-[#0D5BDC] transition-colors"
-                        placeholder={
-                          language === "ar" ? "اسم الشركة" : "Company name"
-                        }
-                      />
-                    </motion.div>
-                  </div>
-                </div>
-
-                <Separator className="my-8" />
-
-                {/* Project Information */}
-                <div>
-                  <h3 className="text-2xl text-[#262626] mb-6 flex items-center gap-3">
-                    <div
-                      className={`w-10 h-10 rounded-xl bg-gradient-to-br ${theme.gradient} flex items-center justify-center`}
-                    >
-                      <Rocket className="w-5 h-5 text-white" />
-                    </div>
                     {language === "ar"
-                      ? "معلومات المشروع"
-                      : "Project Information"}
-                  </h3>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <motion.div
-                      whileFocus={{ scale: 1.02 }}
-                      className="space-y-2 md:col-span-2"
-                    >
-                      <Label
-                        htmlFor="projectName"
-                        className="text-[#262626]/80"
-                      >
-                        {language === "ar" ? "اسم المشروع" : "Project Name"} *
-                      </Label>
-                      <Input
-                        id="projectName"
-                        name="projectName"
-                        value={formData.projectName}
-                        onChange={handleChange}
-                        required
-                        className="h-14 rounded-xl border-2 border-[#F2F2F2] focus:border-[#0D5BDC] transition-colors"
-                        placeholder={
-                          language === "ar" ? "اسم المشروع" : "Project name"
-                        }
-                      />
-                    </motion.div>
-
-                    <motion.div
-                      whileFocus={{ scale: 1.02 }}
-                      className="space-y-2 md:col-span-2"
-                    >
-                      <Label
-                        htmlFor="projectDescription"
-                        className="text-[#262626]/80"
-                      >
-                        {language === "ar"
-                          ? "وصف المشروع"
-                          : "Project Description"}{" "}
-                        *
-                      </Label>
-                      <Textarea
-                        id="projectDescription"
-                        name="projectDescription"
-                        value={formData.projectDescription}
-                        onChange={handleChange}
-                        required
-                        rows={5}
-                        className="rounded-xl border-2 border-[#F2F2F2] focus:border-[#0D5BDC] transition-colors"
-                        placeholder={
-                          language === "ar"
-                            ? "اكتب وصفاً تفصيلياً لمشروعك..."
-                            : "Write a detailed description of your project..."
-                        }
-                      />
-                    </motion.div>
-
-                    <motion.div
-                      whileFocus={{ scale: 1.02 }}
-                      className="space-y-2"
-                    >
-                      <Label htmlFor="teamSize" className="text-[#262626]/80">
-                        {language === "ar" ? "حجم الفريق" : "Team Size"}
-                      </Label>
-                      <Input
-                        id="teamSize"
-                        name="teamSize"
-                        value={formData.teamSize}
-                        onChange={handleChange}
-                        className="h-14 rounded-xl border-2 border-[#F2F2F2] focus:border-[#0D5BDC] transition-colors"
-                        placeholder={
-                          language === "ar"
-                            ? "عدد أعضاء الفريق"
-                            : "Number of team members"
-                        }
-                      />
-                    </motion.div>
-
-                    <motion.div
-                      whileFocus={{ scale: 1.02 }}
-                      className="space-y-2"
-                    >
-                      <Label htmlFor="funding" className="text-[#262626]/80">
-                        {language === "ar"
-                          ? "التمويل المطلوب"
-                          : "Funding Needed"}
-                      </Label>
-                      <Input
-                        id="funding"
-                        name="funding"
-                        value={formData.funding}
-                        onChange={handleChange}
-                        className="h-14 rounded-xl border-2 border-[#F2F2F2] focus:border-[#0D5BDC] transition-colors"
-                        placeholder={
-                          language === "ar" ? "المبلغ المطلوب" : "Amount needed"
-                        }
-                      />
-                    </motion.div>
-                  </div>
-                </div>
-
-                <Separator className="my-8" />
-
-                {/* Documents */}
-                <div>
-                  <h3 className="text-2xl text-[#262626] mb-6 flex items-center gap-3">
-                    <div
-                      className={`w-10 h-10 rounded-xl bg-gradient-to-br ${theme.gradient} flex items-center justify-center`}
-                    >
-                      <FileText className="w-5 h-5 text-white" />
-                    </div>
-                    {language === "ar"
-                      ? "المستندات المطلوبة"
-                      : "Required Documents"}
-                  </h3>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {documents.map((doc: any, index: number) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: index * 0.05 }}
-                        whileHover={{ scale: 1.02 }}
-                        className="space-y-3"
-                      >
-                        <Label className="text-[#262626]/80 flex flex-col gap-1">
-                          <span className="font-semibold">{language === "ar" ? doc.text_ar : doc.text_en}</span>
-                          <span className="text-sm text-muted-foreground">{language === "ar" ? doc.desc_ar : doc.desc_en}</span>
-                          {/* {doc.required && (
-                            <span className="text-red-500">*</span>
-                          )} */}
-                          <Badge variant="outline" className="w-fit">
-                            PDF/Image
-                          </Badge>
-                        </Label>
-
-                        <div className="relative group">
-                          <Input
-                            type="file"
-                            onChange={(e) => handleFileUpload(doc.key, e)}
-                            className="h-14 rounded-xl border-2 border-dashed border-[#F2F2F2] hover:border-[#0D5BDC] transition-colors cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:bg-[#0D5BDC] file:text-white hover:file:bg-[#0D5BDC]/90"
-                          />
-
-                          {uploadedFiles[doc.key] && (
-                            <motion.div
-                              initial={{ opacity: 0, scale: 0 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              className="absolute top-2 right-2"
-                            >
-                              <CheckCircle2 className="w-6 h-6 text-green-500" />
-                            </motion.div>
-                          )}
-                        </div>
-
-                        {uploadedFiles[doc.key] && (
-                          <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="text-sm text-green-600 flex items-center gap-2"
-                          >
-                            <CheckCircle2 className="w-4 h-4" />
-                            {uploadedFiles[doc.key]?.name}
-                          </motion.p>
-                        )}
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Submit Button */}
-                <MagneticButton className="w-full mt-12">
-                  <Button
-                    type="submit"
-                    size="lg"
-                    disabled={isSubmitting}
-                    className={`w-full h-16 text-xl rounded-full bg-gradient-to-r ${theme.gradient} text-white border-0 hover:scale-105 transition-transform shadow-2xl relative overflow-hidden group`}
-                  >
-                    <motion.div
-                      className="absolute inset-0 bg-white/20"
-                      initial={{ x: "-100%", skewX: -20 }}
-                      whileHover={{ x: "200%" }}
-                      transition={{ duration: 0.6 }}
+                      ? "اشترك الان"
+                      : "Subscribe Now"}
+                    <ArrowRight
+                      className={`w-6 h-6 ${language === "ar" ? "rotate-180" : ""
+                        }`}
                     />
+                  </>
+                )}
+              </span>
+            </Button>
+          </div>
 
-                    <span className="relative z-10 flex items-center justify-center gap-3">
-                      {isSubmitting ? (
-                        <>
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{
-                              duration: 1,
-                              repeat: Infinity,
-                              ease: "linear",
-                            }}
-                          >
-                            <Zap className="w-6 h-6" />
-                          </motion.div>
-                          {language === "ar"
-                            ? "جاري الإرسال..."
-                            : "Submitting..."}
-                        </>
-                      ) : (
-                        <>
-                          <Send className="w-6 h-6" />
-                          {language === "ar"
-                            ? "تقديم الطلب"
-                            : "Submit Application"}
-                          <ArrowRight
-                            className={`w-6 h-6 ${language === "ar" ? "rotate-180" : ""
-                              }`}
-                          />
-                        </>
-                      )}
-                    </span>
-                  </Button>
-                </MagneticButton>
-              </form>
-            </div>
-          </motion.div>
         </div>
+
       </section>
+
 
       {/* Scroll Progress Indicator */}
       <motion.div
