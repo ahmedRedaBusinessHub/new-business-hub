@@ -1761,7 +1761,8 @@
       "management": "الإدارة",
       "settings": "الإعدادات",
       "businessHub": "Business Hub",
-      "businessHubAr": "بيزنس هب"
+      "businessHubAr": "بيزنس هب",
+      "isoRequests": "طلبات ISO"
     },
     "header": {
       "dashboard": "لوحة التحكم",
@@ -2327,6 +2328,25 @@
         "statusInactive": "غير نشط",
         "helperTextOptional": "(اختياري)",
         "helperTextRequired": "(مطلوب)"
+      },
+      "isoRequests": {
+        "title": "إدارة طلبات ISO",
+        "subtitle": "مراجعة وإدارة طلبات شهادات ISO",
+        "search": "البحث عن الطلبات...",
+        "failedToLoad": "فشل في تحميل الطلبات",
+        "failedToUpdate": "فشل في تحديث الطلب",
+        "failedToDelete": "فشل في حذف الطلب",
+        "updated": "تم تحديث الطلب بنجاح!",
+        "deleted": "تم حذف الطلب بنجاح!",
+        "viewDetails": "عرض تفاصيل الطلب",
+        "markAsCompleted": "تم الإنجاز",
+        "completed": "مكتمل",
+        "new": "جديد",
+        "certificateType": "نوع الشهادة",
+        "employeesCount": "عدد الموظفين",
+        "industry": "القطاع",
+        "message": "الرسالة",
+        "deleteTooltip": "حذف الطلب"
       },
       "thirdParties": {
         "title": "إدارة الأطراف الثالثة",

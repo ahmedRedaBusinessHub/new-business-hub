@@ -252,6 +252,7 @@
   "iso_booking_message": "Additional Notes",
   "iso_booking_submit": "Submit Request",
   "iso_booking_success": "Your request was sent successfully! We will contact you soon.",
+  "iso_booking_error": "Something went wrong. Please try again later.",
   "follow_hero_badge": "Stay Connected",
   "follow_hero_title": "Follow Us on Social Media",
   "follow_hero_subtitle": "Stay up to date with news, events, and our partners’ success stories",
@@ -1772,7 +1773,8 @@
       "management": "Management",
       "settings": "Settings",
       "businessHub": "Business Hub",
-      "businessHubAr": "بيزنس هب"
+      "businessHubAr": "بيزنس هب",
+      "isoRequests": "ISO Requests"
     },
     "header": {
       "dashboard": "Dashboard",
@@ -2350,6 +2352,25 @@
         "statusInactive": "Inactive",
         "helperTextOptional": "(optional)",
         "helperTextRequired": "(required)"
+      },
+      "isoRequests": {
+        "title": "ISO Requests Management",
+        "subtitle": "Review and manage ISO certificate requests",
+        "search": "Search requests...",
+        "failedToLoad": "Failed to load requests",
+        "failedToUpdate": "Failed to update request",
+        "failedToDelete": "Failed to delete request",
+        "updated": "Request updated successfully!",
+        "deleted": "Request deleted successfully!",
+        "viewDetails": "View request details",
+        "markAsCompleted": "Mark as Completed",
+        "completed": "Completed",
+        "new": "New",
+        "certificateType": "Certificate Type",
+        "employeesCount": "Employees",
+        "industry": "Industry",
+        "message": "Message",
+        "deleteTooltip": "Delete request"
       },
       "thirdParties": {
         "title": "Third Parties Management",

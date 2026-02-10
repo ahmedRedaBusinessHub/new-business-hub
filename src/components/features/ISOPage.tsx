@@ -746,7 +746,10 @@ export default function ISOPage() {
                     type: "select",
                     placeholder: t("iso_booking_isoType"),
                     validation: isoValidations.isoType,
-                    options: isoTypes,
+                    options: certificates.map(cert => ({
+                      value: language === 'ar' ? cert.certificate_name_ar : cert.certificate_name_en,
+                      label: language === 'ar' ? cert.certificate_name_ar : cert.certificate_name_en
+                    })),
                     required: true,
 
                     colSize: {
