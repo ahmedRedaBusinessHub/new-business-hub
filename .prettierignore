@@ -1,0 +1,16 @@
+node_modules
+.next
+out
+coverage
+.turbo
+.swc
+dist
+build
+*.min.js
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+tsconfig.json
+next.config.*.js
+vitest.config.*
+eslint.config.*
