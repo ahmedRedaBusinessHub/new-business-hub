@@ -1,0 +1,17 @@
+# Environments
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Test scripts
+test-*.js
+
+# Specific tests or mock scripts
+fix-translations.js
