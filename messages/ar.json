@@ -1,0 +1,3402 @@
+{
+  "loading": "جاري التحميل...",
+  "metadata": {
+    "home": {
+      "title": "بيزنس هب - تمكين رواد الأعمال والمشاريع المبتكرة في السعودية",
+      "description": "اكتشف بيزنس هب، شريكك في تحويل الأفكار إلى شركات ناجحة. تعرف على خدمات الاحتضان، المسرعات، والدعم المتكامل لرواد الأعمال في المملكة العربية السعودية.",
+      "keywords": "ريادة الأعمال, بيزنس هب, دعم الشركات الناشئة, احتضان, مسرعات, تطوير الأعمال, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "faq": {
+      "title": "الاسلئلة الشائعة | بيزنس هب – الرؤية، الرسالة والفريق",
+      "description": "تعرف على قصة بيزنس هب، رؤيتنا، رسالتنا، قيمنا وفريقنا الذي يقود الابتكار ونجاح رواد الأعمال في السعودية.",
+      "keywords": "عن بيزنس هب, رؤية الشركة, الرسالة, الفريق, ريادة الأعمال, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "about": {
+      "title": "من نحن | بيزنس هب – الرؤية، الرسالة والفريق",
+      "description": "تعرف على قصة بيزنس هب، رؤيتنا، رسالتنا، قيمنا وفريقنا الذي يقود الابتكار ونجاح رواد الأعمال في السعودية.",
+      "keywords": "عن بيزنس هب, رؤية الشركة, الرسالة, الفريق, ريادة الأعمال, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "bookingISO": {
+      "title": "احصل على شهادة الأيزو – احجز استشارتك | بيزنس هب",
+      "description": "ابدأ رحلتك نحو شهادة الأيزو! احجز استشارة مع خبراء بيزنس هب وارتق بجودة منشأتك ومكانتها العالمية.",
+      "keywords": "شهادة الأيزو, حجز أيزو, استشارات الأيزو, إدارة الجودة, خبراء الأيزو, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "bookingAccelerator": {
+      "title": "احجز برنامج المسرعات | انطلق بنمو شركتك",
+      "description": "احجز مكانك في برامج المسرعات لدينا وعزز نمو مشروعك عبر التوجيه المكثف والموارد من بيزنس هب.",
+      "keywords": "برنامج المسرعات, حجز مسرع أعمال, نمو المشاريع, الإرشاد, ريادة الأعمال, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "bookingIncubation": {
+      "title": "احجز احتضان الأعمال | حوّل فكرتك إلى نجاح",
+      "description": "تقدم للاحتضان في بيزنس هب، واحصل على بيئة داعمة لتحويل فكرتك المبتكرة إلى شركة ناجحة.",
+      "keywords": "احتضان الأعمال, حاضنة أعمال, حجز احتضان, فكرة ناشئة, ريادة الأعمال, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "contactUs": {
+      "title": "اتصل بنا | بيزنس هب – دعم لرواد الأعمال والشركات الناشئة",
+      "description": "تواصل مع بيزنس هب للاستفسارات والدعم أو فرص الشراكة. نحن هنا لدعم رحلتك الريادية.",
+      "keywords": "اتصل بيزنس هب, دعم رواد الأعمال, مساعدة الشركات الناشئة, استفسار الأعمال, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "followUs": {
+      "title": "تابع بيزنس هب – آخر الأخبار وقصص النجاح",
+      "description": "انضم لبيزنس هب على وسائل التواصل واكتشف آخر الأخبار والفعاليات وقصص النجاح الملهمة.",
+      "keywords": "تابع بيزنس هب, أخبار, فعاليات, التواصل الاجتماعي, مجتمع الريادة, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "gallery": {
+      "title": "المعرض | بيزنس هب – إنجازات وفعاليات",
+      "description": "استعرض صور وملامح فعاليات وإنجازات بيزنس هب وقصص نجاح رواد الأعمال.",
+      "keywords": "معرض بيزنس هب, صور الفعاليات, قصص النجاح, ريادة الأعمال, إنجازات",
+      "authors": "يوسف عودة البلادي"
+    },
+    "projects": {
+      "title": "المشاريع | نجاحات مدعومة من بيزنس هب",
+      "description": "تعرف على المشاريع والشركات الناشئة التي ساهم بيزنس هب في انطلاقها، وشاهد الابتكار والنجاح.",
+      "keywords": "مشاريع بيزنس هب, شركات ناجحة, ابتكار الأعمال, ريادة الأعمال, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "teams": {
+      "title": "فريق العمل | تعرّف على خبراء بيزنس هب",
+      "description": "تعرف على نخبة الخبراء وأعضاء الفريق الذين يقودون بيزنس هب لتحقيق نجاح رواد الأعمال.",
+      "keywords": "فريق بيزنس هب, خبراء الأعمال, ريادة أعمال, مستشارون, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "workspaces": {
+      "title": "مساحات العمل | حلول مكتبية مرنة واحترافية – بيزنس هب",
+      "description": "اختر مساحة العمل المثالية لشركتك في بيزنس هب، بخطط مرنة وخدمات مميزة وبيئة تعاونية.",
+      "keywords": "مساحات عمل بيزنس هب, مكاتب مشتركة, حلول مكتبية, بيئة عمل, السعودية",
+      "authors": "يوسف عودة البلادي"
+    },
+    "privacy": {
+      "title": "سياسة الخصوصية | بيزنس هب",
+      "description": "اطلع على سياسة الخصوصية الخاصة ببيزنس هب وكيفية حماية بياناتك واحترام خصوصيتك.",
+      "keywords": "سياسة الخصوصية, حماية البيانات, خصوصية المستخدم, بيزنس هب",
+      "authors": "يوسف عودة البلادي"
+    },
+    "refund": {
+      "title": "سياسة الاسترجاع | بيزنس هب",
+      "description": "تعرّف على سياسة الاسترجاع لدى بيزنس هب لمعلومات حول إعادة الدفعات والإلغاء وشروط الخدمة.",
+      "keywords": "سياسة الاسترجاع, إعادة الدفعات, الإلغاء, بيزنس هب",
+      "authors": "يوسف عودة البلادي"
+    },
+    "terms": {
+      "title": "الشروط والأحكام | بيزنس هب",
+      "description": "تعرف على الشروط والأحكام لاستخدام خدمات وموقع بيزنس هب.",
+      "keywords": "الشروط والأحكام, سياسة الخدمة, بيزنس هب, قانوني",
+      "authors": "يوسف عودة البلادي"
+    },
+    "login": {
+      "title": "تسجيل الدخول | بيزنس هب – دخول آمن لحسابك",
+      "description": "سجّل الدخول بأمان إلى حسابك في بيزنس هب لإدارة خدماتك وحجوزاتك وموارد ريادة الأعمال. وصول سريع وآمن للشركاء والعملاء.",
+      "keywords": "تسجيل الدخول, دخول العملاء, دخول الحساب, بيزنس هب, دخول آمن, إدارة الأعمال, الشركاء",
+      "authors": "يوسف عودة البلادي"
+    },
+    "register": {
+      "title": "انشاء حساب | بيزنس هب – دخول آمن لحسابك",
+      "description": "سجّل الدخول بأمان إلى حسابك في بيزنس هب لإدارة خدماتك وحجوزاتك وموارد ريادة الأعمال. وصول سريع وآمن للشركاء والعملاء.",
+      "keywords": "انشاء حساب, دخول العملاء, دخول الحساب, بيزنس هب, دخول آمن, إدارة الأعمال, الشركاء",
+      "authors": "يوسف عودة البلادي"
+    },
+    "forgot-password": {
+      "title": "استرجاع الحساب | بيزنس هب – دخول آمن لحسابك",
+      "description": "سجّل الدخول بأمان إلى حسابك في بيزنس هب لإدارة خدماتك وحجوزاتك وموارد ريادة الأعمال. وصول سريع وآمن للشركاء والعملاء.",
+      "keywords": "استرجاع الحساب, دخول العملاء, دخول الحساب, بيزنس هب, دخول آمن, إدارة الأعمال, الشركاء",
+      "authors": "يوسف عودة البلادي"
+    },
+    "news": {
+      "title": "الأخبار | بيزنس هب",
+      "description": "آخر الأخبار والتحديثات من بيزنس هب",
+      "keywords": "أخبار, بيزنس هب, تحديثات, ريادة الأعمال, السعودية",
+      "authors": "فريق بيزنس هب"
+    },
+    "allPrograms": {
+      "title": "برامجنا | بيزنس هب - سرّع نجاحك",
+      "description": "اكتشف برامج حاضنات ومسرعات الأعمال المصممة لدعم رواد الأعمال والشركات الناشئة في المملكة العربية السعودية.",
+      "keywords": "برامج الأعمال, مسرعة أعمال, حاضنة أعمال, برامج ريادة الأعمال, السعودية",
+      "authors": "فريق بيزنس هب"
+    }
+  },
+  "nav_home": "الرئيسية",
+  "nav_reports": "التقارير",
+  "status_pending": "قيد الانتظار",
+  "status_approved": "تمت الموافقة",
+  "my_programs": "برامجي",
+  "my_programs_desc": "إدارة وعرض البرامج التي اشتركت فيها.",
+  "my_programs_hero_badge": "رحلتك التعليمية",
+  "my_programs_hero_title": "برامجي",
+  "my_programs_hero_desc": "إدارة البرامج المسجلة الخاصة بك، وتتبع تقدمك، والوصول إلى مواردك الحصرية في مكان واحد.",
+  "status_unknown": "غير معروف",
+  "no_programs_yet": "لا توجد برامج",
+  "no_programs_desc": "لم تقم بالاشتراك في أي برنامج بعد.",
+  "browse_programs": "تصفح البرامج",
+  "view_details": "عرض التفاصيل",
+  "nav_services": "الخدمات",
+  "nav_about": "من نحن",
+  "nav_workspaces": "مساحات العمل",
+  "nav_getISO": "احصل على الأيزو",
+  "nav_follow": "تابعنا",
+  "admin_dashboard_title": "العودة إلى لوحة التحكم",
+  "nav_contact": "اتصل بنا",
+  "hero_cta_discover": "اكتشف المزيد",
+  "partners_title": "شركاؤنا",
+  "values_badge": "قيمنا",
+  "values_title": "قيم بيزنس هب",
+  "values_subtitle": "نؤمن بمجموعة من القيم الأساسية التي توجه عملنا وتعكس التزامنا تجاه عملائنا",
+  "stats_projects": "مشروع ناجح",
+  "services_badge": "خدماتنا",
+  "companies_badge": "قصص النجاح",
+  "companies_title": "الشركات التي ساعدناها",
+  "companies_subtitle": "فخورون بإنجازات شركائنا",
+  "about_badge": "من نحن",
+  "about_title": "بيزنس هب - شريكك في النجاح",
+  "about_description": "بيزنس هب هو مركز رائد في مجال احتضان وتسريع الأعمال في المملكة العربية السعودية_ نوفر بيئة داعمة ومتكاملة لرواد الأعمال وأصحاب المشاريع الناشئة، حيث نساعدهم على تحويل أفكارهم إلى مشاريع ناجحة ومستدامة_",
+  "about_feature1_title": "خبرة واسعة",
+  "about_feature1_desc": "أكثر من 10 سنوات في دعم رواد الأعمال",
+  "about_feature2_title": "فريق محترف",
+  "about_feature2_desc": "نخبة من الخبراء والمستشارين",
+  "about_feature3_title": "شبكة واسعة",
+  "about_feature3_desc": "شراكات استراتيجية مع كبرى الشركات",
+  "about_feature4_title": "دعم متكامل",
+  "about_feature4_desc": "من الفكرة إلى النجاح والتوسع",
+  "mission_badge": "رسالتنا",
+  "mission_title": "الرسالة والأهداف",
+  "mission_missionTitle": "رسالتنا",
+  "mission_missionText": "تمكين رواد الأعمال وأصحاب المشاريع الناشئة من تحويل أفكارهم إلى مشاريع ناجحة ومستدامة، من خلال توفير بيئة حاضنة متكاملة تجمع بين الخبرة والابتكار والدعم المستمر_",
+  "mission_visionTitle": "رؤيتنا",
+  "mission_visionText": "أن نكون المنصة الأولى لاحتضان وتسريع الأعمال في المملكة العربية السعودية والمنطقة، ونساهم في بناء اقتصاد مزدهر قائم على الابتكار وريادة الأعمال_",
+  "mission_objective1": "دعم 500+ مشروع ناشئ بحلول 2030",
+  "mission_objective2": "خلق 5000+ فرصة عمل جديدة",
+  "mission_objective3": "تحقيق قيمة سوقية تتجاوز 2 مليار ريال",
+  "mission_objective4": "بناء شبكة من 100+ شريك استراتيجي",
+  "seo_badge": "كلمات مفتاحية",
+  "seo_title": "تحسين محركات البحث",
+  "seo_subtitle": "نساعدك على الظهور في نتائج البحث",
+  "seo_keyword1": "احتضان الأعمال",
+  "seo_keyword2": "تسريع الأعمال",
+  "seo_keyword3": "ريادة الأعمال",
+  "seo_keyword4": "المشاريع الناشئة",
+  "seo_keyword5": "شهادات الأيزو",
+  "seo_keyword6": "استشارات الأعمال",
+  "seo_keyword7": "تطوير الأعمال",
+  "seo_keyword8": "الابتكار",
+  "reviews_badge": "آراء العملاء",
+  "reviews_title": "ماذا يقول عملاؤنا",
+  "reviews_subtitle": "تجارب حقيقية من رواد الأعمال الذين نجحوا معنا",
+  "news_badge": "آخر الأخبار",
+  "news_title": "أحدث الأخبار والفعاليات",
+  "news_subtitle": "تابع آخر المستجدات والفعاليات في بيزنس هب",
+  "news_readMore": "اقرأ المزيد",
+  "footer_contact": "تواصل معنا",
+  "iso_hero_badge": "شهادات الأيزو",
+  "iso_hero_title": "احصل على شهادة الأيزو لمؤسستك",
+  "iso_hero_subtitle": "نساعدك في الحصول على شهادات الأيزو العالمية لتعزيز جودة وكفاءة أعمالك",
+  "iso_what_badge": "ما هو الأيزو؟",
+  "iso_what_title": "فهم الأيزو وأهميته",
+  "iso_what_desc": "الأيزو (ISO) هي المنظمة الدولية للمعايير التي تضع معايير عالمية لضمان الجودة والسلامة والكفاءة في مختلف المجالات_ تساعد شهادات الأيزو المؤسسات على تحسين عملياتها وزيادة ثقة العملاء والمنافسة في الأسواق العالمية_",
+  "iso_importance_badge": "الأهمية",
+  "iso_importance_title": "لماذا تحتاج شهادة الأيزو؟",
+  "iso_importance_companies_title": "للشركات",
+  "iso_importance_companies_desc": "تحسين الكفاءة التشغيلية، زيادة رضا العملاء، والحصول على ميزة تنافسية في السوق",
+  "iso_importance_institutions_title": "للمؤسسات",
+  "iso_importance_institutions_desc": "تعزيز المصداقية، تحسين الإدارة، والامتثال للمعايير الدولية",
+  "iso_importance_individuals_title": "للأفراد",
+  "iso_importance_individuals_desc": "تطوير المهارات المهنية، زيادة فرص التوظيف، والنمو الوظيفي",
+  "iso_importance_market_title": "للسوق التجاري",
+  "iso_importance_market_desc": "رفع مستوى الجودة، تعزيز الثقة، وتحفيز الابتكار والتطوير",
+  "iso_types_badge": "أنواع الشهادات",
+  "iso_types_title": "شهادات الأيزو المتاحة",
+  "iso_types_9001_title": "ISO 9001",
+  "iso_types_9001_desc": "إدارة الجودة",
+  "iso_types_14001_title": "ISO 14001",
+  "iso_types_14001_desc": "الإدارة البيئية",
+  "iso_types_45001_title": "ISO 45001",
+  "iso_types_45001_desc": "الصحة والسلامة المهنية",
+  "iso_types_27001_title": "ISO 27001",
+  "iso_types_27001_desc": "أمن المعلومات",
+  "iso_types_22000_title": "ISO 22000",
+  "iso_types_22000_desc": "سلامة الغذاء",
+  "iso_types_50001_title": "ISO 50001",
+  "iso_types_50001_desc": "إدارة الطاقة",
+  "iso_benefits_1": "تحسين جودة المنتجات والخدمات",
+  "iso_benefits_2": "زيادة رضا العملاء والاحتفاظ بهم",
+  "iso_benefits_3": "تقليل التكاليف وزيادة الكفاءة",
+  "iso_benefits_4": "تعزيز سمعة الشركة ومصداقيتها",
+  "iso_benefits_5": "فتح أسواق جديدة محلياً ودولياً",
+  "iso_benefits_6": "الامتثال للمتطلبات القانونية والتنظيمية",
+  "iso_process_badge": "العملية",
+  "iso_process_title": "خطوات الحصول على شهادة الأيزو",
+  "iso_process_step1_title": "التقييم الأولي",
+  "iso_process_step1_desc": "تقييم الوضع الحالي وتحديد المتطلبات",
+  "iso_process_step2_title": "التخطيط",
+  "iso_process_step2_desc": "وضع خطة عمل وتحديد الأهداف",
+  "iso_process_step3_title": "التنفيذ",
+  "iso_process_step3_desc": "تطبيق المعايير والإجراءات المطلوبة",
+  "iso_process_step4_title": "المراجعة الداخلية",
+  "iso_process_step4_desc": "فحص الامتثال وتحديد نقاط التحسين",
+  "iso_process_step5_title": "الشهادة",
+  "iso_process_step5_desc": "التدقيق الخارجي والحصول على الشهادة",
+  "iso_booking_badge": "احجز استشارة",
+  "iso_booking_title": "ابدأ رحلتك للحصول على شهادة الأيزو",
+  "iso_booking_subtitle": "املأ النموذج وسيتواصل معك أحد مستشارينا",
+  "iso_booking_company": "اسم الشركة / المؤسسة",
+  "iso_booking_name": "اسم المسؤول",
+  "iso_booking_position": "المنصب",
+  "iso_booking_email": "البريد الإلكتروني",
+  "iso_booking_phone": "رقم الهاتف",
+  "iso_booking_isoType": "نوع شهادة الأيزو المطلوبة",
+  "iso_booking_employees": "عدد الموظفين",
+  "iso_booking_industry": "القطاع",
+  "iso_booking_message": "ملاحظات إضافية",
+  "iso_booking_submit": "إرسال الطلب",
+  "iso_booking_success": "تم إرسال طلبك بنجاح! سنتواصل معك قريباً",
+  "iso_booking_error": "حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.",
+  "follow_hero_badge": "ابقَ على تواصل",
+  "follow_hero_title": "تابعنا على وسائل التواصل",
+  "follow_hero_subtitle": "ابقَ على اطلاع دائم بآخر الأخبار والفعاليات وقصص النجاح من بيزنس هب",
+  "follow_social_badge": "وسائل التواصل",
+  "follow_social_title": "تواصل معنا",
+  "follow_social_subtitle": "انضم إلى مجتمعنا عبر جميع المنصات",
+  "follow_social_followers": "متابع",
+  "follow_social_follow": "تابعنا الآن",
+  "follow_profile_badge": "الملف التعريفي",
+  "follow_profile_title": "تحميل الملف التعريفي للشركة",
+  "follow_profile_subtitle": "احصل على معلومات تفصيلية عن خدماتنا وإنجازاتنا",
+  "follow_profile_arabic": "تحميل الملف بالعربية",
+  "follow_profile_english": "تحميل الملف بالإنجليزية",
+  "follow_profile_both": "تحميل النسختين",
+  "follow_profile_size": "ملف PDF",
+  "follow_newsletter_badge": "النشرة الإخبارية",
+  "follow_newsletter_title": "اشترك في نشرتنا الإخبارية",
+  "follow_newsletter_subtitle": "احصل على آخر التحديثات والنصائح والمحتوى الحصري مباشرة إلى بريدك",
+  "follow_newsletter_email": "البريد الإلكتروني",
+  "follow_newsletter_subscribe": "اشترك الآن",
+  "follow_newsletter_success": "تم الاشتراك في النشرة الإخبارية بنجاح!",
+  "follow_contact_badge": "تواصل معنا",
+  "follow_contact_title": "لديك استفسارات؟",
+  "follow_contact_subtitle": "فريقنا جاهز لمساعدتك",
+  "follow_contact_button": "اتصل بنا الآن",
+  "workspaces_hero_badge": "مساحات العمل",
+  "workspaces_hero_title": "مساحات عمل مصممة للنجاح",
+  "workspaces_hero_subtitle": "اختر مساحة العمل المثالية لعملك مع خدمات متكاملة وبيئة احترافية",
+  "workspaces_hero_description": "اكتشف مساحات العمل المشتركة المتميزة لدينا والمصممة لتعزيز الابتكار والتعاون والإنتاجية.",
+  "workspaces_services_badge": "خدماتنا",
+  "workspaces_services_title": "حلول مساحات العمل",
+  "workspaces_services_subtitle": "نقدم مجموعة متنوعة من خيارات مساحات العمل لتناسب احتياجاتك",
+  "workspaces_service1_name": "المساحة المشتركة",
+  "workspaces_service1_subtitle": "باقة مرنة",
+  "workspaces_service1_desc": "مساحة عمل مشتركة مرنة مثالية لرواد الأعمال والفرق الصغيرة الذين يبحثون عن بيئة عمل تعاونية وديناميكية",
+  "workspaces_service1_ideal": "مثالي للمستقلين والفرق الصغيرة",
+  "workspaces_service2_name": "المكتب الافتراضي",
+  "workspaces_service2_subtitle": "حضور احترافي",
+  "workspaces_service2_desc": "عنوان تجاري محترف وخدمات مكتبية بدون الحاجة لمساحة فعلية، مثالي للشركات الناشئة والعاملين عن بُعد",
+  "workspaces_service2_ideal": "مثالي للعمل عن بُعد",
+  "workspaces_service3_name": "مكتب شركات صغير",
+  "workspaces_service3_subtitle": "مساحة خاصة",
+  "workspaces_service3_desc": "مكتب خاص مجهز بالكامل للفرق الصغيرة والشركات الناشئة التي تحتاج إلى خصوصية وهوية مستقلة",
+  "workspaces_service3_ideal": "مثالي للفرق 3-8 أشخاص",
+  "workspaces_service4_name": "مكتب شركات كبير",
+  "workspaces_service4_subtitle": "حلول متقدمة",
+  "workspaces_service4_desc": "مساحات واسعة ومجهزة بأحدث التقنيات للشركات المتوسطة والكبيرة التي تحتاج إلى بيئة عمل احترافية متكاملة",
+  "workspaces_service4_ideal": "مثالي للفرق 10+ أشخاص",
+  "workspaces_features_badge": "المميزات",
+  "workspaces_features_title": "خدمات ومميزات إضافية",
+  "workspaces_features_subtitle": "نوفر كل ما تحتاجه لتجربة عمل مريحة ومنتجة",
+  "workspaces_feature1_name": "خزنة آمنة",
+  "workspaces_feature1_desc": "خزنة شخصية لحفظ مستنداتك وأغراضك الثمينة بأمان تام",
+  "workspaces_feature2_name": "مياه وضيافة",
+  "workspaces_feature2_desc": "خدمات ضيافة متكاملة من مياه وقهوة ومشروبات طوال اليوم",
+  "workspaces_feature3_name": "وصول 24 ساعة",
+  "workspaces_feature3_desc": "إمكانية الوصول لمكتبك في أي وقت على مدار الساعة طوال أيام الأسبوع",
+  "workspaces_feature4_name": "إنترنت فائق السرعة",
+  "workspaces_feature4_desc": "اتصال إنترنت بتقنية الألياف الضوئية بسرعات عالية جداً",
+  "workspaces_feature5_name": "خدمات مكتبية",
+  "workspaces_feature5_desc": "طباعة، نسخ، مسح ضوئي، وخدمات سكرتارية احترافية",
+  "workspaces_feature6_name": "أدراج تخزين",
+  "workspaces_feature6_desc": "أدراج تخزين كبيرة ومتوسطة الحجم لتنظيم ملفاتك ومستلزماتك",
+  "workspaces_feature7_name": "لافتة خارجية",
+  "workspaces_feature7_desc": "طباعة لافتة خارجية تحمل اسم وشعار شركتك بتصميم احترافي",
+  "workspaces_feature8_name": "بصمة الأصابع",
+  "workspaces_feature8_desc": "إمكانية إضافة نظام بصمة للعملاء غير المشتركين في خدمة الوصول 24 ساعة",
+  "workspaces_pricing_badge": "الأسعار",
+  "workspaces_pricing_title": "اختر الباقة المناسبة",
+  "workspaces_pricing_subtitle": "خطط مرنة تناسب جميع احتياجاتك وميزانيتك",
+  "workspaces_pricing_monthly": "شهرياً",
+  "workspaces_pricing_popular": "الأكثر شيوعاً",
+  "workspaces_pricing_cta": "احجز الآن",
+  "workspaces_pricing_contact": "اتصل للسعر",
+  "workspaces_comparison_badge": "المقارنة",
+  "workspaces_comparison_title": "قارن بين الباقات",
+  "workspaces_comparison_subtitle": "اكتشف الفروقات بين خيارات مساحات العمل المختلفة",
+  "workspaces_cta_badge": "ابدأ الآن",
+  "workspaces_cta_title": "جاهز لبدء رحلتك؟",
+  "workspaces_cta_subtitle": "انضم إلى مئات الشركات الناجحة التي اختارت بيزنس هب",
+  "workspaces_cta_button": "احجز جولة مجانية",
+  "workspaces_cta_call": "أو اتصل بنا",
+  "service_category_label": "الفئة",
+  "service_book_cta": "إضافة للحجز",
+  "service_price_label": "السعر",
+  "added": "تمت الإضافة",
+  "services_title": "خدمات إضافية",
+  "services_hero_title": "خدمات إضافية",
+  "services_hero_description": "عزز تجربة عملك مع خدماتنا الإضافية الاحترافية.",
+  "services_no_services": "لا توجد خدمات إضافية متاحة حالياً.",
+  "ceo": {
+    "name": "يوسف البلادي",
+    "title": "الرئيس التنفيذي للشركة",
+    "quote": "مرحبًا بكم في مركز الأعمال، حيث نؤمن بقوة الأفراد والأفكار والمؤسسات في الريادة بالابتكار والتميز والهدف. مهمتنا بسيطة لكنها عميقة - تحويل الإمكانات إلى تقدم. من الشركات الناشئة إلى الشركات القائمة، نربط الطموح بالفرصة من خلال الاستشارات والحضانة والتسريع والتمكين. نفخر ببناء أنظمة بيئية تُمكّن النمو والتعاون في كل مرحلة من مراحل رحلة ريادة الأعمال. يمتد عملنا إلى مساحات العمل المشتركة وبرامج التدريب والمبادرات على المستوى الوطني التي تترجم الرؤية إلى تأثير قابل للقياس. نؤمن إيمانًا راسخًا بإمكانيات القيادة في المملكة العربية السعودية، ونحن ملتزمون بتشكيل اقتصاد لا ينافس عالميًا فحسب: بل يقود أيضًا. يوسف البلادي الرئيس التنفيذي، بيزنس هب",
+    "bio": "قائد رؤيوي مع أكثر من 15 عاماً من الخبرة في دعم وتمكين المشاريع الناشئة. تحت قيادته، ساعد بيزنس هب أكثر من 500 مشروع على النمو والازدهار.",
+    "experience": "سنة خبرة",
+    "successful_projects": "مشروع ناجح",
+    "strategic_partners": "شريك استراتيجي"
+  },
+  "linkedin": "لنكدان",
+  "twitter": "تويتير",
+  "email": "البريد الالكتروني",
+  "leadership": "القيادة",
+  "CEO_message": "كلمة الرئيس التنفيذي ",
+  "contact_us": "تواصل معنا",
+  "Pleasefillallfields": "الرجاء ملء جميع الحقول",
+  "Invalidemailaddress": "البريد الإلكتروني غير صحيح",
+  "Invalidmobilenumber": "رقم الجوال غير صحيح",
+  "Yourmessagehasbeensentsuccessfully": "تم إرسال رسالتك بنجاح!",
+  "WereHeretoHelp": "نحن هنا لمساعدتك",
+  "Enteryourfullname": "أدخل اسمك الكامل",
+  "MobileNumber": "رقم الجوال",
+  "InquiryType": "نوع الاستفسار",
+  "FullName": "الاسم الكامل",
+  "Join Our Team": "انضم إلى فريقنا",
+  "Our Team": "فريق العمل",
+  "Contact": "تواصل",
+  "Sending": "جارٍ الإرسا,ل...",
+  "We are always looking for exceptional talent to join our growing team": "نحن دائماً نبحث عن المواهب المتميزة للانضمام إلى فريقنا المتنامي",
+  "Browse Open Positions": "تصفح الوظائف المتاحة",
+  "SendMessage": "إرسال الرسالة",
+  "CallUs": "اتصل بنا",
+  "VisitUs": "زورنا",
+  "Madinah": "المدينة المنورة",
+  "Closed": "مغلق",
+  "Weekly Updates": "تحديثات أسبوعية",
+  "Exclusive Tips": "نصائح حصرية",
+  "Premium Content": "محتوى مميز",
+  "Subscribing": "جارٍ الاشتراك...",
+  "Invalid email address": "البريد الإلكتروني غير صحيح",
+  "Please enter your email": "الرجاء إدخال البريد الإلكتروني",
+  "Watch short content on TikTok": "شاهد المحتوى القصير على تيك توك",
+  "Join our channel on Telegram": "انضم إلى قناتنا على تيليجرام",
+  "Chat with us directly on WhatsApp": "تواصل معنا مباشرة عبر واتساب",
+  "Watch educational videos on YouTube": "شاهد الفيديوهات التعليمية على يوتيوب",
+  "Connect with us professionally on LinkedIn": "تواصل معنا مهنياً على لينكد إن",
+  "See our success stories on Instagram": "شاهد قصص نجاحنا على إنستجرام",
+  "Join our conversations on Twitter": "انضم إلى محادثاتنا على تويتر",
+  "Follow us on Facebook for latest news and updates": "تابعنا على فيسبوك لآخر الأخبار والتحديثات",
+  "FridaySaturday": "الجمعة - السبت",
+  "SundayThursday": "الأحد - الخميس",
+  "WorkingHours": "ساعات العمل",
+  "SaudiArabia": "المملكة العربية السعودية",
+  "Wereplywithin24hours": "نرد على الرسائل خلال 24 ساعة",
+  "EmailUs": "راسلنا",
+  "workTime": "الأحد - الخميس، 9 صباحاً - 6 مساءً",
+  "RequestDetails": "تفاصيل الطلب",
+  "Writeyourinquirydetailshere": "اكتب تفاصيل استفسارك هنا...",
+  "Selectinquirytype": "اختر نوع الاستفسار",
+  "HavequestioninquiryContactandwillhappyhelpyou": "لديك سؤال أو استفسار؟ تواصل معنا وسنكون سعداء بمساعدتك",
+  "Innovation & Entrepreneurship Hub": "مركز الابتكار وريادة الأعمال",
+  "They Trust Us": "يثقون بنا",
+  "Our Partners": "شركاؤنا",
+  "Collaboration and Adaptation": "التعاون والتكيف",
+  "Collaboration and Adaptation doc": "نعمل معًا لتحقيق أهدافكم",
+  "Reliability": "الموثوقية",
+  "Reliability doc": "شريك موثوق في رحلة نجاحك",
+  "Capability and Excellence": "القدرة والتميز",
+  "Capability and Excellence doc": "نقدم حلولاً مبتكرة ومتميزة",
+  "Sustainable Growth": "النمو المستدام",
+  "Sustainable Growth doc": "نساعدك على النمو المستمر",
+  "Responsiveness and Availability": "الاستجابة والإتاحة",
+  "Responsiveness and Availability doc": "دائمًا متاحون لخدمتك",
+  "Venture Market Capitalization": "القيمة السوقية للمشاريع",
+  "Subscriber": "مشترك",
+  "Investment Value": "قيمة الاستثمارات",
+  "Advisor": "مستشار ومرشد",
+  "Our Achievements": "إنجازاتنا",
+  "withnumbers": "بيزنس هب بالأرقام",
+  "withnumbersdoc": "أرقام تعكس نجاحنا وإنجازاتنا في دعم رواد الأعمال",
+  "Business Accelerators": "مسرعات الأعمال",
+  "Intensive programs to accelerate your projects growth and professional development": "برامج مكثفة لتسريع نمو مشروعك وتطويره بشكل احترافي",
+  "Business Incubation": "احتضان الأعمال",
+  "We provide a supportive environment to incubate your project from idea to implementation": "نوفر بيئة داعمة لاحتضان مشروعك من الفكرة حتى التنفيذ",
+  "ISO Certifications": "شهادات الأيزو",
+  "We help you obtain internationally recognized ISO certifications": "نساعدك في الحصول على شهادات الأيزو المعترف بها دوليًا",
+  "Workspaces": "مساحات العمل",
+  "Shared workspaces equipped with the latest technologies and facilities": "مساحات عمل مشتركة مجهزة بأحدث التقنيات والمرافق",
+  "companyService": "  خدمات بيزنس هب",
+  "companyServiceDoc": " نقدم مجموعة متكاملة من الخدمات لدعم رواد الأعمال في رحلتهم",
+  "Saudi National": "سعودي الجنسية",
+  "+18 Suitable Age for Application": "+18 السن المناسب للتقديم",
+  "From Medina": "من المدينة المنورة",
+  "Has an Idea to Implement": "لديه فكرة للتنفيذ",
+  "Requirements": "المتطلبات",
+  "What you should know before applying to the program": "ما يجب أن تعرفه قبل التقديم على البرنامج",
+  "Make sure you meet these requirements before applying to our programs": "            تأكد من استيفاء هذه المتطلبات قبل التقديم على برامجنا",
+  "Submission and Screening": "التقديم والفرز",
+  "Submitting applications and reviewing proposed ideas": "تقديم الطلب ومراجعة الأفكار المقترحة",
+  "Evaluation and Selection": "التقييم والاختيار",
+  "Evaluating ideas and selecting the most suitable for the program": "تقييم الأفكار واختيار الأنسب للبرنامج",
+  "Training and Development": "التدريب والتطوير",
+  "Intensive training programs to develop skills": "برامج تدريبية مكثفة لتطوير المهارات",
+  "Implementation and Follow-up": "التنفيذ والمتابعة",
+  "Project implementation with continuous follow-up": "تنفيذ المشروع مع متابعة مستمرة",
+  "Launch and Growth": "الإطلاق والنمو",
+  "Project Launch and Supporting Sustainable Growth": "إطلاق المشروع ودعم النمو المستدام",
+  "Stages": "المراحل",
+  "Stages of turning an idea into a project": "مراحل تنفيذ الفكرة إلى مشروع",
+  "We accompany you every step of the way in your journey to transforming your idea into a successful project": "نرافقك في كل خطوة من رحلة تحويل فكرتك إلى مشروع ناجح",
+  "E-Learning Platform": "منصة التعليم الإلكتروني",
+  "An integrated educational platform offering courses in various fields": "منصة تعليمية متكاملة تقدم دورات في مختلف المجالات",
+  "Education": "تعليم",
+  "Technology": "تكنولوجيا",
+  "Application Express Delivery": "تطبيق التوصيل السريع",
+  "An express delivery app that connects customers with service providers": "تطبيق توصيل سريع يربط العملاء بمقدمي الخدمات",
+  "Services": "خدمات",
+  "Apps": "تطبيقات",
+  "Inventory Management System": "نظام إدارة المخزون",
+  "An intelligent inventory and sales management system for small businesses": "نظام ذكي لإدارة المخزون والمبيعات للشركات الصغيرة",
+  "Management": "إدارة",
+  "Software": "برمجيات",
+  "Smart Booking Platform": "منصة الحجز الذكية",
+  "A platform for easily booking appointments and services": "منصة لحجز المواعيد والخدمات بكل سهولة",
+  "Booking": "حجز",
+  "Health and Fitness App": "تطبيق الصحة واللياقة",
+  "A comprehensive app for tracking health and fitness": "تطبيق شامل لمتابعة الصحة واللياقة البدنية",
+  "Health": "صحة",
+  "Applications": "تطبيقات",
+  "Electronic Payment System": "نظام الدفع الإلكتروني",
+  "Secure and easy-to-use electronic payment solutions": "حلول دفع إلكترونية آمنة وسهلة الاستخدام",
+  "Finance": "مالية",
+  "Our Work": "أعمالنا",
+  "Our Projects": "مشاريعنا",
+  "A collection of successful projects that we helped develop and launch": " مجموعة من المشاريع الناجحة التي ساعدنا في تطويرها وإطلاقها",
+  "Team": "فريق العمل",
+  "Successful Partnerships": "شراكات ناجحة",
+  "The building": "المبنى",
+  "Growth and Development": "النمو والتطور",
+  "Entrepreneurs": "رواد أعمال",
+  "Our Gallery": "معرضنا",
+  "The Exhibition": "المعرض",
+  "Highlights of our journey and achievements with our partners": "لمحات من رحلتنا وإنجازاتنا مع شركائنا",
+  "More Images": "المزيد من الصور",
+  "accelerator": {
+    "badge": "مسرع الأعمال",
+    "hero": {
+      "title": "برنامج تسريع الأعمال",
+      "description": "برنامج مكثف لتسريع نمو شركتك الناشئة من خلال الإرشاد المتخصص والتمويل والتدريب",
+      "applyButton": "قدم طلبك الآن",
+      "downloadGuide": "تحميل دليل البرنامج"
+    },
+    "stats": {
+      "companiesAccelerated": "شركة تم تسريعها",
+      "marketValue": "قيمة سوقية",
+      "successRate": "معدل النجاح",
+      "expertMentors": "مرشد خبير"
+    },
+    "benefits": {
+      "title": "مزايا البرنامج",
+      "items": {
+        "growth": {
+          "title": "تسريع النمو",
+          "description": "برنامج مكثف لمدة 3-6 أشهر لتسريع نمو مشروعك"
+        },
+        "mentorship": {
+          "title": "إرشاد متخصص",
+          "description": "توجيه من خبراء الصناعة ورواد الأعمال الناجحين"
+        },
+        "funding": {
+          "title": "فرص التمويل",
+          "description": "الوصول إلى شبكة من المستثمرين والتمويل الأولي"
+        },
+        "training": {
+          "title": "تدريب مكثف",
+          "description": "ورش عمل ودورات تدريبية متخصصة"
+        }
+      }
+    },
+    "timeline": {
+      "title": "مراحل البرنامج",
+      "phases": {
+        "phase1": {
+          "label": "المرحلة الأولى",
+          "title": "التقييم والقبول",
+          "duration": "أسبوعان",
+          "activities": {
+            "application": "تقديم الطلب",
+            "review": "مراجعة الأعمال",
+            "interviews": "المقابلات",
+            "acceptance": "القبول"
+          }
+        },
+        "phase2": {
+          "label": "المرحلة الثانية",
+          "title": "التطوير والتدريب",
+          "duration": "8-12 أسبوع",
+          "activities": {
+            "workshops": "ورش عمل",
+            "mentoring": "جلسات إرشاد",
+            "development": "تطوير المنتج",
+            "teamBuilding": "بناء الفريق"
+          }
+        },
+        "phase3": {
+          "label": "المرحلة الثالثة",
+          "title": "التوسع والتمويل",
+          "duration": "4-8 أسابيع",
+          "activities": {
+            "scaling": "استراتيجية التوسع",
+            "pitch": "عرض المستثمرين",
+            "funding": "جولة التمويل",
+            "launch": "الإطلاق"
+          }
+        }
+      }
+    },
+    "requirements": {
+      "title": "شروط القبول",
+      "items": {
+        "businessModel": {
+          "title": "نموذج عمل واضح",
+          "description": "يجب أن يكون لديك نموذج عمل محدد وقابل للتوسع"
+        },
+        "team": {
+          "title": "فريق ملتزم",
+          "description": "فريق مؤسسين متفرغين وملتزمين بالبرنامج"
+        },
+        "mvp": {
+          "title": "منتج أولي",
+          "description": "منتج أولي أو نموذج قابل للعرض والاختبار"
+        },
+        "growth": {
+          "title": "إمكانية النمو",
+          "description": "إمكانية نمو سريع وقابلية للتوسع في السوق"
+        }
+      }
+    },
+    "cta": {
+      "title": "جاهز لتسريع نمو شركتك؟",
+      "description": "انضم إلى الدفعة القادمة من برنامج التسريع وابدأ رحلتك نحو النجاح",
+      "button": "قدم الآن"
+    }
+  },
+  "companies": {
+    "badge": "شركاتنا",
+    "title": "الشركات في شبكتنا",
+    "subtitle": "اكتشف الشركات المبتكرة التي نمت من خلال برامجنا وشراكاتنا",
+    "items": [
+      {
+        "name": "شركة الابتكار التقني",
+        "category": "تكنولوجيا",
+        "description": "شركة متخصصة في تطوير الحلول التقنية المبتكرة"
+      },
+      {
+        "name": "مؤسسة التجارة الإلكترونية",
+        "category": "تجارة",
+        "description": "منصة تجارة إلكترونية متطورة تخدم السوق المحلي"
+      },
+      {
+        "name": "شركة الحلول الذكية",
+        "category": "استشارات",
+        "description": "استشارات إدارية وحلول ذكية للشركات الناشئة"
+      },
+      {
+        "name": "مجموعة الإبداع الرقمي",
+        "category": "تسويق",
+        "description": "وكالة تسويق رقمي متكاملة للعلامات التجارية"
+      }
+    ],
+    "viewMore": "اكتشف جميع المشاريع"
+  },
+  "contact": {
+    "badge": "اتصل بنا",
+    "title": "نحن هنا للمساعدة",
+    "subtitle": "هل لديك سؤال أو استفسار؟ اتصل بنا وسنكون سعداء بمساعدتك",
+    "form": {
+      "labels": {
+        "fullName": "الاسم الكامل",
+        "mobileNumber": "رقم الجوال",
+        "email": "البريد الإلكتروني",
+        "inquiryType": "نوع الاستفسار",
+        "requestDetails": "تفاصيل الطلب"
+      },
+      "placeholders": {
+        "fullName": "أدخل اسمك الكامل",
+        "mobileNumber": "05xxxxxxxx",
+        "email": "example@email.com",
+        "inquiryType": "اختر نوع الاستفسار",
+        "loading": "جاري التحميل...",
+        "requestDetails": "اكتب تفاصيل استفسارك هنا"
+      },
+      "validation": {
+        "allFieldsRequired": "يرجى ملء جميع الحقول",
+        "invalidEmail": "عنوان البريد الإلكتروني غير صحيح",
+        "invalidMobile": "رقم الجوال غير صحيح (يجب أن يكون بالصيغة السعودية: 05xxxxxxxx)"
+      },
+      "buttons": {
+        "send": "إرسال الرسالة",
+        "sending": "جارٍ الإرسال..."
+      },
+      "success": "تم إرسال رسالتك بنجاح"
+    },
+    "inquiryTypes": [
+      {
+        "value": "business-incubation",
+        "label": "احتضان الأعمال"
+      },
+      {
+        "value": "business-acceleration",
+        "label": "تسريع الأعمال"
+      },
+      {
+        "value": "iso-certification",
+        "label": "شهادات الأيزو"
+      },
+      {
+        "value": "consulting",
+        "label": "الاستشارات"
+      },
+      {
+        "value": "workspace",
+        "label": "مساحات العمل"
+      },
+      {
+        "value": "other",
+        "label": "أخرى"
+      }
+    ],
+    "info": {
+      "phone": {
+        "title": "اتصل بنا",
+        "hours": "الأحد - الخميس، 9:00 صباحاً - 6:00 مساءً"
+      },
+      "email": {
+        "title": "راسلنا",
+        "response": "نرد خلال 24 ساعة"
+      },
+      "location": {
+        "title": "زُرنا",
+        "city": "المدينة المنورة",
+        "country": "المملكة العربية السعودية"
+      },
+      "workingHours": {
+        "title": "ساعات العمل",
+        "weekdays": "الأحد - الخميس",
+        "weekdaysTime": "9:00 صباحاً - 6:00 مساءً",
+        "weekend": "الجمعة - السبت",
+        "closed": "مغلق"
+      }
+    }
+  },
+  "footer": {
+    "brand": {
+      "name": "Business Hub",
+      "nameAr": "بيزنس هب",
+      "tagline": "نبدأ معك من الفكرة إلى النجاح. شريكك في تحويل الأفكار إلى مشاريع ناجحة ومبتكرة."
+    },
+    "newsletter": {
+      "title": "اشترك في النشرة الإخبارية",
+      "placeholder": "بريدك الإلكتروني"
+    },
+    "sections": {
+      "services": {
+        "title": "الخدمات",
+        "links": [
+          {
+            "text": "مسرعات الأعمال",
+            "href": "/programs"
+          },
+          {
+            "text": "احتضان الأعمال",
+            "href": "/incubation"
+          },
+          {
+            "text": "شهادات الأيزو",
+            "href": "/iso"
+          },
+          {
+            "text": "مساحات العمل",
+            "href": "/spaces"
+          },
+          {
+            "text": "الأسئلة الشائعة",
+            "href": "/faq"
+          }
+        ]
+      },
+      "company": {
+        "title": "الشركة",
+        "links": [
+          {
+            "text": "من نحن",
+            "href": "/about-us"
+          },
+          {
+            "text": "فريقنا",
+            "href": "/team"
+          },
+          {
+            "text": "المعرض",
+            "href": "/gallery"
+          },
+          {
+            "text": "تابعنا",
+            "href": "/follow-us"
+          },
+          {
+            "text": "اتصل بنا",
+            "href": "/contact-us"
+          }
+        ]
+      },
+      "legal": {
+        "title": "قانوني",
+        "links": [
+          {
+            "text": "الشروط والأحكام",
+            "href": "/terms"
+          },
+          {
+            "text": "سياسة الخصوصية",
+            "href": "/privacy"
+          },
+          {
+            "text": "سياسة الاسترجاع",
+            "href": "/refund"
+          }
+        ]
+      },
+      "contact": {
+        "title": "تواصل معنا",
+        "address": "المدينة المنورة، المملكة العربية السعودية"
+      }
+    },
+    "copyright": "© 2025 بيزنس هب. جميع الحقوق محفوظة."
+  },
+  "gallery": {
+    "badge": "المعرض",
+    "title": "معرض الصور",
+    "subtitle": "استكشف مساحاتنا وفعالياتنا من خلال معرض الصور"
+  },
+  "incubation": {
+    "badge": "احتضان الأعمال",
+    "hero": {
+      "title": "برنامج احتضان الأعمال",
+      "description": "بيئة داعمة لتحويل فكرتك إلى مشروع ناجح من خلال الموارد والإرشاد والتدريب",
+      "ctaButton": "ابدأ رحلتك"
+    },
+    "features": {
+      "title": "ما نقدمه لك",
+      "items": [
+        {
+          "title": "مساحات عمل مجهزة",
+          "description": "مكاتب ومساحات عمل مشتركة مجهزة بالكامل"
+        },
+        {
+          "title": "إرشاد مستمر",
+          "description": "دعم وإرشاد مستمر من خبراء الصناعة"
+        },
+        {
+          "title": "تدريب متخصص",
+          "description": "برامج تدريبية وورش عمل متخصصة"
+        },
+        {
+          "title": "دعم التمويل",
+          "description": "مساعدة في الوصول للتمويل والمستثمرين"
+        }
+      ]
+    },
+    "cta": {
+      "title": "انضم إلى حاضنة الأعمال",
+      "description": "ابدأ رحلتك الريادية معنا واحصل على كل الدعم الذي تحتاجه",
+      "button": "تواصل معنا"
+    }
+  },
+  "login": {
+    "backToHome": "العودة للرئيسية",
+    "brand": {
+      "name": "Business Hub",
+      "nameAr": "بيزنس هب",
+      "tagline": "نبدأ معك من الفكرة إلى النجاح"
+    },
+    "features": [
+      {
+        "title": "الوصول الكامل",
+        "description": "وصول كامل لجميع الموارد والبرامج"
+      },
+      {
+        "title": "تتبع التقدم",
+        "description": "تابع تقدم مشروعك بسهولة"
+      },
+      {
+        "title": "دعم مباشر",
+        "description": "تواصل مباشر مع فريق الدعم"
+      }
+    ],
+    "stats": [
+      {
+        "value": "500+",
+        "label": "مشروع"
+      },
+      {
+        "value": "1000+",
+        "label": "عميل"
+      },
+      {
+        "value": "95%",
+        "label": "رضا"
+      }
+    ],
+    "header": {
+      "badge": "تسجيل الدخول",
+      "title": "مرحباً بعودتك",
+      "subtitle": "سجل دخولك للوصول إلى حسابك"
+    },
+    "social": {
+      "google": "متابعة بواسطة Google",
+      "facebook": "Facebook",
+      "linkedin": "LinkedIn",
+      "divider": "أو"
+    },
+    "form": {
+      "mode": {
+        "email": "البريد الإلكتروني / اسم المستخدم",
+        "mobile": "الجوال"
+      },
+      "email": {
+        "label": "البريد الإلكتروني",
+        "placeholder": "name@example.com"
+      },
+      "mobile": {
+        "label": "رقم الجوال",
+        "placeholder": "580629187"
+      },
+      "password": {
+        "label": "كلمة المرور",
+        "placeholder": "••••••••"
+      },
+      "rememberMe": "تذكرني",
+      "forgotPassword": "نسيت كلمة المرور؟",
+      "submit": "تسجيل الدخول",
+      "submitting": "جاري تسجيل الدخول..."
+    },
+    "signup": {
+      "text": "ليس لديك حساب؟",
+      "link": "سجل الآن"
+    },
+    "validation": {
+      "allFieldsRequired": "يرجى ملء جميع الحقول المطلوبة",
+      "invalidEmail": "يرجى إدخال بريد إلكتروني صحيح"
+    },
+    "messages": {
+      "loginSuccess": "تم تسجيل الدخول بنجاح!",
+      "loginFailed": "تسجيل دخول خطا",
+      "socialLogin": "جاري تسجيل الدخول عبر {provider}..."
+    },
+    "otp": {
+      "header": {
+        "badge": "المصادقة الثنائية",
+        "title": "تحقق من هويتك",
+        "subtitleEmail": "لقد أرسلنا رمز التحقق إلى {email}",
+        "subtitleSms": "لقد أرسلنا رمز التحقق إلى {phone}"
+      },
+      "validation": {
+        "incomplete": "يرجى إدخال رمز التحقق المكون من 6 أرقام كاملاً"
+      },
+      "messages": {
+        "success": "تم التحقق بنجاح!",
+        "failed": "فشل التحقق من الرمز",
+        "wait": "يرجى الانتظار {time} قبل طلب رمز جديد",
+        "resendError": "تعذر إعادة إرسال الرمز. يرجى العودة والمحاولة مرة أخرى.",
+        "countdown": "إعادة الإرسال متاحة خلال {time}"
+      },
+      "button": {
+        "verifying": "جاري التحقق...",
+        "verify": "تحقق من الرمز",
+        "back": "رجوع",
+        "resend": "إعادة إرسال الرمز"
+      }
+    }
+  },
+  "ourWork": {
+    "badge": "أعمالنا",
+    "title": "أعمالنا وإنجازاتنا",
+    "subtitle": "تعرف على المشاريع والشركات التي ساعدناها على تحقيق النجاح"
+  },
+  "privacy": {
+    "badge": "سياسة الخصوصية",
+    "title": "سياسة الخصوصية",
+    "subtitle": "نحن ملتزمون بحماية خصوصيتك وأمان معلوماتك الشخصية",
+    "lastUpdated": "آخر تحديث: نوفمبر 2025",
+    "sections": [
+      {
+        "title": "جمع المعلومات",
+        "content": "نقوم بجمع المعلومات التي تقدمها لنا مباشرة عند التسجيل أو استخدام خدماتنا، بما في ذلك الاسم، البريد الإلكتروني، رقم الهاتف، والمعلومات المتعلقة بمشروعك. كما نجمع معلومات تلقائياً عن استخدامك للموقع مثل عنوان IP، نوع المتصفح، وسجل التصفح لتحسين تجربتك."
+      },
+      {
+        "title": "استخدام المعلومات",
+        "content": "نستخدم المعلومات المجمعة لتقديم وتحسين خدماتنا، التواصل معك بشأن برامجنا وفعالياتنا، معالجة طلباتك ومعاملاتك، وتخصيص تجربتك على منصتنا. كما قد نستخدم المعلومات لأغراض تحليلية وتطوير خدمات جديدة تلبي احتياجاتك."
+      },
+      {
+        "title": "حماية المعلومات",
+        "content": "نتخذ إجراءات أمنية صارمة لحماية معلوماتك الشخصية من الوصول غير المصرح به أو الاستخدام غير السليم. نستخدم تقنيات التشفير المتقدمة، جدران الحماية، وأنظمة المراقبة المستمرة. يتم تخزين بياناتك على خوادم آمنة ويتم الوصول إليها فقط من قبل موظفين مصرح لهم."
+      },
+      {
+        "title": "مشاركة المعلومات",
+        "content": "لا نقومببيع أو تأجير معلوماتك الشخصية لأطراف ثالثة. قد نشارك معلوماتك مع شركاء موثوقين يساعدوننا في تقديم خدماتنا، أو عندما يكون ذلك مطلوباً قانونياً. جميع الأطراف الثالثة ملزمة بحماية معلوماتك والحفاظ على سريتها وفقاً لأعلى المعايير."
+      },
+      {
+        "title": "حقوقك",
+        "content": "لديك الحق في الوصول إلى معلوماتك الشخصية، طلب تصحيحها أو حذفها، الاعتراض على معالجتها، وطلب نقل بياناتك. يمكنك أيضاً سحب موافقتك على معالجة بياناتك في أي وقت. للممارسة أي من هذه الحقوق، يرجى التواصل معنا عبر قنوات الاتصال المتاحة."
+      },
+      {
+        "title": "ملفات تعريف الارتباط",
+        "content": "نستخدم ملفات تعريف الارتباط (Cookies) لتحسين تجربتك على موقعنا، تذكر تفضيلاتك، وتحليل استخدام الموقع. يمكنك التحكم في إعدادات ملفات تعريف الارتباط من خلال متصفحك، لكن تعطيلها قد يؤثر على بعض وظائف الموقع."
+      }
+    ],
+    "dataTypes": {
+      "title": "أنواع البيانات المجمعة",
+      "categories": [
+        {
+          "title": "معلومات التعريف الشخصية",
+          "items": [
+            "الاسم الكامل",
+            "البريد الإلكتروني",
+            "رقم الهاتف",
+            "العنوان"
+          ]
+        },
+        {
+          "title": "معلومات المشروع",
+          "items": [
+            "اسم المشروع",
+            "مجال العمل",
+            "مرحلة المشروع",
+            "متطلبات التمويل"
+          ]
+        },
+        {
+          "title": "بيانات الاستخدام",
+          "items": [
+            "عنوان IP",
+            "نوع المتصفح",
+            "سجل التصفح",
+            "الصفحات المزارة"
+          ]
+        }
+      ]
+    },
+    "cta": {
+      "title": "هل لديك استفسارات حول الخصوصية؟",
+      "description": "نحن هنا للإجابة على جميع أسئلتك حول كيفية حماية بياناتك",
+      "button": "تواصل معنا"
+    }
+  },
+  "refund": {
+    "badge": "سياسة الاسترجاع",
+    "title": "سياسة الاسترجاع والاستبدال",
+    "subtitle": "شروط وإجراءات استرجاع المدفوعات والإلغاء",
+    "lastUpdated": "آخر تحديث: نوفمبر 2025",
+    "conditions": {
+      "eligible": {
+        "title": "حالات قبول الاسترجاع",
+        "items": [
+          "إلغاء الخدمة قبل بدئها بـ 7 أيام على الأقل",
+          "عدم تقديم الخدمة المتفق عليها",
+          "مشاكل تقنية من طرفنا تمنع استخدام الخدمة",
+          "خطأ في الفوترة أو الدفع المزدوج"
+        ]
+      },
+      "nonEligible": {
+        "title": "حالات رفض الاسترجاع",
+        "items": [
+          "الإلغاء بعد بدء تقديم الخدمة",
+          "عدم الالتزام بشروط وأحكام الخدمة",
+          "الخدمات المخصصة التي تم إنجازها بالفعل",
+          "الإلغاء خلال 48 ساعة من بدء الخدمة"
+        ]
+      }
+    },
+    "process": {
+      "title": "خطوات عملية الاسترجاع",
+      "steps": [
+        {
+          "step": "01",
+          "title": "تقديم الطلب",
+          "description": "قدم طلب الاسترجاع عبر نموذج التواصل أو البريد الإلكتروني مع ذكر رقم المعاملة"
+        },
+        {
+          "step": "02",
+          "title": "المراجعة",
+          "description": "يتم مراجعة طلبك خلال 3-5 أيام عمل والتحقق من استيفاء الشروط"
+        },
+        {
+          "step": "03",
+          "title": "الموافقة",
+          "description": "سيتم إخطارك بقرار الموافقة أو الرفض مع توضيح الأسباب"
+        },
+        {
+          "step": "04",
+          "title": "الاسترجاع",
+          "description": "يتم إرجاع المبلغ خلال 7-14 يوم عمل إلى نفس طريقة الدفع الأصلية"
+        }
+      ]
+    },
+    "partialRefunds": {
+      "title": "نسب الاسترجاع الجزئي",
+      "subtitle": "تعتمد نسبة الاسترجاع على وقت تقديم طلب الإلغاء",
+      "rates": [
+        {
+          "percentage": "100%",
+          "condition": "الإلغاء قبل 7 أيام من البدء"
+        },
+        {
+          "percentage": "50%",
+          "condition": "الإلغاء قبل 3-6 أيام من البدء"
+        },
+        {
+          "percentage": "25%",
+          "condition": "الإلغاء قبل 1-2 يوم من البدء"
+        },
+        {
+          "percentage": "0%",
+          "condition": "الإلغاء بعد البدء أو في نفس اليوم"
+        }
+      ]
+    },
+    "notes": {
+      "title": "ملاحظات هامة",
+      "items": [
+        "يتم الاسترجاع إلى نفس طريقة الدفع المستخدمة في الدفع الأصلي",
+        "قد تستغرق عملية الاسترجاع من 7 إلى 14 يوم عمل حسب البنك",
+        "رسوم المعاملات البنكية غير قابلة للاسترجاع",
+        "في حالة الاسترجاع الجزئي، يتم خصم رسوم إدارية بنسبة 5%",
+        "للحصول على استرجاع كامل، يجب أن يكون الطلب قبل بدء الخدمة بـ 7 أيام على الأقل"
+      ]
+    },
+    "cta": {
+      "title": "بحاجة للمساعدة؟",
+      "description": "فريق خدمة العملاء جاهز لمساعدتك في عملية الاسترجاع",
+      "button": "تواصل معنا"
+    }
+  },
+  "team": {
+    "badge": "فريقنا",
+    "title": "تعرف على فريقنا",
+    "subtitle": "فريق من الخبراء والمتخصصين ملتزمون بدعم رواد الأعمال وتحويل الأفكار إلى واقع",
+    "stats": [
+      {
+        "value": "50+",
+        "label": "موظف متفاني"
+      },
+      {
+        "value": "15+",
+        "label": "عام خبرة"
+      },
+      {
+        "value": "500+",
+        "label": "مشروع ناجح"
+      },
+      {
+        "value": "10+",
+        "label": "قسم متخصص"
+      }
+    ],
+    "executive": {
+      "title": "الإدارة التنفيذية",
+      "subtitle": "قادة رؤيويون يقودون المؤسسة نحو التميز والابتكار",
+      "members": [
+        {
+          "name": "يوسف البلادي",
+          "position": "الرئيس التنفيذي",
+          "bio": "قائد رؤيوي مع أكثر من 15 عاماً من الخبرة في مجال ريادة الأعمال والابتكار",
+          "email": "ahmed.ali@businesshub.sa",
+          "phone": "+966 50 123 4567",
+          "specialties": [
+            "إدارة المواسسات",
+            "ريادة الأعمال",
+            "الابتكار"
+          ]
+        },
+        {
+          "name": "طارق زياد",
+          "position": "المدير الاستراتيجية",
+          "bio": "متخصص في تطوير الاستراتيجية وتحسين الكفاءة التشغيلية للمؤسسات",
+          "email": "khaled.harthi@businesshub.sa",
+          "phone": "+966 50 345 6789",
+          "specialties": [
+            "القيادة الاستراتيجية",
+            "تحسين الكفاءة",
+            "الجودة"
+          ]
+        }
+      ]
+    },
+    "management": {
+      "title": "فريق الإدارة",
+      "subtitle": "مديرون متخصصون يديرون العمليات اليومية بكفاءة وفعالية",
+      "members": [
+        {
+          "name": "محمد المطيري",
+          "position": "مدير تطوير الاعمال",
+          "department": "تطوير الاعمال",
+          "email": "noura.qahtani@businesshub.sa",
+          "specialties": [
+            "إدارة المواسسات",
+            "ريادة الأعمال",
+            "الابتكار"
+          ]
+        },
+        {
+          "name": "احمد جمعة",
+          "position": "مدير التسويق",
+          "department": "التسويق",
+          "email": "mohammed.shamri@businesshub.sa",
+          "specialties": [
+            "التسويق الرقمي",
+            "العلامة التجارية",
+            "وسائل التواصل"
+          ]
+        },
+        {
+          "name": "احمد رضا",
+          "position": "مدير البرامج",
+          "department": "البرامج والتدريب",
+          "email": "sarah.otaibi@businesshub.sa",
+          "specialties": [
+            "إدارة البرامج",
+            "التدريب",
+            "التطوير"
+          ]
+        },
+        {
+          "name": "ابراهيم بخش",
+          "position": "مدير التقنية",
+          "department": "التقنية والابتكار",
+          "email": "abdulaziz.dosari@businesshub.sa",
+          "specialties": [
+            "التحول الرقمي",
+            "الأمن السيبراني",
+            "البنية التحتية"
+          ]
+        }
+      ]
+    },
+    "departmentHeads": {
+      "title": "رؤساء الأقسام",
+      "subtitle": "قادة الأقسام المتخصصة الذين يضمنون التميز في كل مجال",
+      "members": [
+        {
+          "name": "يوسف حمزة شيخ",
+          "position": "مدير نجاح العملاء",
+          "department": "العملاء",
+          "email": "reem.mutairi@businesshub.sa"
+        },
+        {
+          "name": "عيسي بزاري",
+          "position": "مدير الموارد البشرية",
+          "department": "الموارد البشرية",
+          "email": "yasser.zahrani@businesshub.sa"
+        },
+        {
+          "name": "سماح الترجمي",
+          "position": "رئيس قسم الحسابات",
+          "department": "الحسابات",
+          "email": "amal.omari@businesshub.sa"
+        },
+        {
+          "name": "صفية باسورة",
+          "position": "مديرة الفعاليات",
+          "department": "الجودة والتميز",
+          "email": "talal.ghamdi@businesshub.sa"
+        },
+        {
+          "name": "ندي مصطفي",
+          "position": "مشرفة المشاريع",
+          "department": "ادارة المشروعات",
+          "email": "mona.shehri@businesshub.sa"
+        },
+        {
+          "name": "عهود المحمدي",
+          "position": "مدير خدمة العملاء",
+          "department": "خدمة العملاء",
+          "email": "omar.anzi@businesshub.sa"
+        }
+      ]
+    },
+    "cta": {
+      "title": "انضم إلى فريقنا",
+      "subtitle": "نحن دائماً نبحث عن مواهب استثنائية للانضمام إلى فريقنا المتنامي",
+      "button": "تصفح الوظائف المتاحة"
+    },
+    "contact": "تواصل"
+  },
+  "terms": {
+    "badge": "الشروط والأحكام",
+    "title": "الشروط والأحكام",
+    "subtitle": "يرجى قراءة هذه الشروط والأحكام بعناية قبل استخدام خدماتنا",
+    "lastUpdated": "آخر تحديث: نوفمبر 2025",
+    "sections": [
+      {
+        "title": "الشروط العامة",
+        "content": "مرحباً بك في بيزنس هب. باستخدامك لخدماتنا، فإنك توافق على الالتزام بهذه الشروط والأحكام. يرجى قراءتها بعناية قبل استخدام أي من خدماتنا. نحتفظ بالحق في تعديل هذه الشروط في أي وقت، وسيتم إخطارك بأي تغييرات جوهرية."
+      },
+      {
+        "title": "حقوق والتزامات المستخدم",
+        "content": "كمستخدم لخدماتنا، لديك الحق في الوصول إلى جميع الموارد والبرامج المتاحة. يجب عليك تقديم معلومات دقيقة وكاملة عند التسجيل، والحفاظ على سرية بيانات حسابك. يُمنع استخدام خدماتنا لأي أغراض غير قانونية أو غير أخلاقية. نحتفظ بالحق في إيقاف أو إلغاء حسابك في حالة انتهاك هذه الشروط."
+      },
+      {
+        "title": "الملكية الفكرية",
+        "content": "جميع المحتويات والمواد المتاحة على منصتنا، بما في ذلك النصوص والصور والشعارات والبرامج، محمية بموجب قوانين الملكية الفكرية. لا يجوز نسخ أو توزيع أو تعديل أي محتوى دون الحصول على إذن كتابي مسبق من بيزنس هب. يحتفظ بيزنس هب بجميع حقوق الملكية الفكرية للمحتوى المقدم."
+      },
+      {
+        "title": "إخلاء المسؤولية",
+        "content": "يتم توفير خدماتنا \"كما هي\" دون أي ضمانات صريحة أو ضمنية. بيزنس هب غير مسؤول عن أي أضرار مباشرة أو غير مباشرة قد تنتج عن استخدام أو عدم القدرة على استخدام خدماتنا. نبذل قصارى جهدنا لضمان دقة المعلومات المقدمة، لكننا لا نضمن خلوها من الأخطاء. يتحمل المستخدم المسؤولية الكاملة عن القرارات المتخذة بناءً على المعلومات المقدمة."
+      }
+    ],
+    "additionalTerms": {
+      "title": "شروط إضافية",
+      "categories": [
+        {
+          "title": "الرسوم والدفع",
+          "points": [
+            "جميع الرسوم المذكورة بالريال السعودي وتشمل ضريبة القيمة المضافة",
+            "الدفع مطلوب مقدماً قبل بدء الخدمة",
+            "لا يتم رد الرسوم إلا في حالات استثنائية وفقاً لسياسة الاسترجاع",
+            "نحتفظ بالحق في تعديل الأسعار مع إشعار مسبق"
+          ]
+        },
+        {
+          "title": "إنهاء الخدمة",
+          "points": [
+            "يمكن لأي من الطرفين إنهاء الخدمة بإشعار مسبق 30 يوماً",
+            "نحتفظ بالحق في إنهاء الخدمة فوراً في حالة انتهاك الشروط",
+            "عند إنهاء الخدمة، يجب تسوية جميع المستحقات المالية",
+            "يتم الاحتفاظ بالبيانات لمدة 90 يوماً بعد إنهاء الخدمة"
+          ]
+        },
+        {
+          "title": "القانون الحاكم",
+          "points": [
+            "تخضع هذه الشروط لقوانين المملكة العربية السعودية",
+            "يتم حل أي نزاعات من خلال المحاكم المختصة في المدينة المنورة",
+            "اللغة العربية هي اللغة الرسمية للعقود والاتفاقيات",
+            "في حالة التعارض بين النسخة العربية والإنجليزية، تسود النسخة العربية"
+          ]
+        }
+      ]
+    },
+    "cta": {
+      "title": "هل لديك أسئلة؟",
+      "description": "فريقنا جاهز للإجابة على جميع استفساراتك",
+      "button": "تواصل معنا"
+    }
+  },
+  "workspaces": {
+    "hero": {
+      "badge": "مساحات العمل",
+      "title": "مساحات عمل احترافية",
+      "subtitle": "مساحات مكتبية مرنة مصممة للإنتاجية والنجاح"
+    },
+    "stats": [
+      {
+        "value": "500+",
+        "label": "مكتب"
+      },
+      {
+        "value": "1000+",
+        "label": "عميل"
+      },
+      {
+        "value": "95%",
+        "label": "رضا العملاء"
+      }
+    ],
+    "services": {
+      "badge": "خدماتنا",
+      "title": "اختر مساحة عملك",
+      "subtitle": "حلول مرنة تناسب احتياجاتك",
+      "pricing": {
+        "monthly": "/شهرياً",
+        "contact": "تواصل معنا",
+        "popular": "الأكثر طلباً",
+        "cta": "احجز الآن"
+      },
+      "items": [
+        {
+          "name": "مساحة عمل مشتركة",
+          "subtitle": "للأفراد والعاملين المستقلين",
+          "description": "مساحة عمل مشتركة مع جميع التسهيلات الأساسية للأفراد الباحثين عن بيئة عمل احترافية",
+          "ideal": "مثالي لـ: العاملين المستقلين والأفراد",
+          "price": "500 ريال"
+        },
+        {
+          "name": "قاعة اجتماعات",
+          "subtitle": "بالساعة",
+          "description": "قاعات اجتماعات مجهزة بالكامل متاحة للإيجار بالساعة لاجتماعاتك وتدريباتك",
+          "ideal": "مثالي لـ: الاجتماعات والتدريب",
+          "price": "300 ريال"
+        },
+        {
+          "name": "مكتب خاص",
+          "subtitle": "للفرق",
+          "description": "مكتب خاص مع جميع التسهيلات والخدمات للفرق الصغيرة والمتوسطة",
+          "ideal": "مثالي لـ: الفرق الصغيرة والمتوسطة",
+          "price": "1,500 ريال"
+        },
+        {
+          "name": "طابق كامل",
+          "subtitle": "للشركات الكبيرة",
+          "description": "طابق كامل مخصص بالكامل حسب احتياجات شركتك مع جميع التسهيلات",
+          "ideal": "مثالي لـ: الشركات الكبيرة",
+          "price": "تواصل معنا"
+        }
+      ]
+    },
+    "features": {
+      "badge": "مميزات مميزة",
+      "title": "كل ما تحتاجه",
+      "subtitle": "مرافق وخدمات عالمية لراحتك",
+      "items": [
+        {
+          "name": "أمن على مدار الساعة",
+          "description": "أنظمة أمنية متقدمة مع مراقبة على مدار الساعة"
+        },
+        {
+          "name": "قهوة وشاي",
+          "description": "قهوة وشاي مجانية غير محدودة طوال اليوم"
+        },
+        {
+          "name": "دخول على مدار الساعة",
+          "description": "الوصول إلى مساحة عملك في أي وقت، أي يوم"
+        },
+        {
+          "name": "إنترنت فائق السرعة",
+          "description": "اتصال إنترنت فائق السرعة حتى 1 جيجابت في الثانية"
+        },
+        {
+          "name": "خدمات الطباعة",
+          "description": "خدمات الطباعة والمسح الضوئي والنسخ"
+        },
+        {
+          "name": "مساحة تخزين",
+          "description": "مساحة تخزين آمنة لملفاتك ومعداتك"
+        },
+        {
+          "name": "خدمات الاستقبال",
+          "description": "استقبال احترافي لاستقبال ضيوفك"
+        },
+        {
+          "name": "دخول ذكي",
+          "description": "نظام دخول إلكتروني عبر البصمة أو البطاقة"
+        }
+      ]
+    },
+    "comparison": {
+      "badge": "قارن الخدمات",
+      "title": "مقارنة الخدمات",
+      "subtitle": "اعثر على مساحة العمل المثالية لاحتياجاتك",
+      "tableHeaders": {
+        "feature": "الميزة"
+      }
+    },
+    "cta": {
+      "badge": "جاهز للبدء؟",
+      "title": "ابدأ رحلتك اليوم",
+      "subtitle": "احجز جولة مجانية لزيارة مساحات عملنا واختيار ما يناسبك",
+      "button": "احجز جولة مجانية",
+      "call": "أو اتصل بنا:",
+      "location": "الرياض، المملكة العربية السعودية"
+    },
+    "details": {
+      "show": "عرض التفاصيل",
+      "hide": "إخفاء التفاصيل",
+      "included": "المميزات المتضمنة:"
+    }
+  },
+  "reviews": {
+    "badge": "آراء العملاء",
+    "title": "ماذا يقول عملاؤنا",
+    "subtitle": "قصص نجاح من رواد الأعمال والشركات التي دعمناها في رحلتهم",
+    "items": [
+      {
+        "name": "فاطمة علي",
+        "position": "مديرة مشروع ناشئ",
+        "review": "فريق محترف وداعم جداً. حصلت على كل ما احتاجه لإطلاق مشروعي بنجاح. أنصح بهم بشدة لكل رائد أعمال.",
+        "avatar": "https://i.pravatar.cc/150?img=45",
+        "rating": 5
+      },
+      {
+        "name": "خالد السعيد",
+        "position": "رائد أعمال",
+        "review": "تجربة رائعة! البيئة الحاضنة والدعم الفني والاستشاري ساعدني على تجاوز التحديات وتحقيق أهدافي.",
+        "avatar": "https://i.pravatar.cc/150?img=33",
+        "rating": 5
+      },
+      {
+        "name": "سارة عبدالله",
+        "position": "مؤسسة شركة تسويق",
+        "review": "شكراً لبيزنس هب على الدعم المتواصل. حصلت على شهادة الأيزو بفضل مساعدتهم المتميزة والاحترافية.",
+        "avatar": "https://i.pravatar.cc/150?img=25",
+        "rating": 5
+      },
+      {
+        "name": "محمد الحارثي",
+        "position": "مؤسس شركة ناشئة",
+        "review": "الخدمات المقدمة من بيزنس هب متميزة ومهنية. ساعدوني في بناء خطة عمل قوية وتأمين التمويل اللازم.",
+        "avatar": "https://i.pravatar.cc/150?img=68",
+        "rating": 5
+      }
+    ]
+  },
+  "news": {
+    "badge": "آخر الأخبار",
+    "title": "الأخبار والتحديثات",
+    "subtitle": "ابق على اطلاع بآخر الأخبار والتطورات في عالم ريادة الأعمال",
+    "readMore": "اقرأ المزيد",
+    "meta": {
+      "minutes": "دقيقة",
+      "previous": "السابق",
+      "next": "التالي",
+      "loadMore": "عرض المزيد"
+    },
+    "items": [
+      {
+        "title": "إطلاق برنامج جديد لدعم المشاريع الناشئة",
+        "excerpt": "أعلن بيزنس هب عن إطلاق برنامج جديد لدعم 100 مشروع ناشئ خلال العام القادم بتمويل يصل إلى 50 مليون ريال.",
+        "date": "15 يناير 2025",
+        "readTime": "5 دقائق",
+        "category": "برامج",
+        "image": "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80"
+      },
+      {
+        "title": "ورشة عمل حول ريادة الأعمال الرقمية",
+        "excerpt": "ينظم بيزنس هب ورشة عمل مجانية حول ريادة الأعمال الرقمية والتحول الرقمي للمشاريع الصغيرة والمتوسطة.",
+        "date": "10 يناير 2025",
+        "readTime": "3 دقائق",
+        "category": "فعاليات",
+        "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80"
+      },
+      {
+        "title": "توقيع اتفاقية شراكة استراتيجية",
+        "excerpt": "وقع بيزنس هب اتفاقية شراكة استراتيجية مع أكبر شركات الاستثمار لدعم رواد الأعمال بحلول مبتكرة.",
+        "date": "5 يناير 2025",
+        "readTime": "4 دقائق",
+        "category": "شراكات",
+        "image": "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80"
+      }
+    ]
+  },
+  "faq": {
+    "hero": {
+      "badge": "الأسئلة الشائعة",
+      "title": "كيف يمكننا مساعدتك؟",
+      "subtitle": "ابحث عن إجابات للأسئلة الأكثر شيوعاً حول خدماتنا وبرامجنا",
+      "searchPlaceholder": "ابحث عن سؤالك..."
+    },
+    "categories": [
+      {
+        "id": "all",
+        "name": "الكل"
+      },
+      {
+        "id": "incubation",
+        "name": "الحضانة"
+      },
+      {
+        "id": "accelerator",
+        "name": "التسريع"
+      },
+      {
+        "id": "workspace",
+        "name": "مساحات العمل"
+      },
+      {
+        "id": "iso",
+        "name": "الأيزو"
+      },
+      {
+        "id": "general",
+        "name": "عام"
+      }
+    ],
+    "noResults": "لم يتم العثور على نتائج",
+    "items": [
+      {
+        "category": "incubation",
+        "question": "ما هي خدمة الحضانة التي تقدمونها؟",
+        "answer": "نقدم برنامج حضانة شامل يشمل الإرشاد، التدريب، الاستشارات، مساحات العمل، والوصول إلى شبكة واسعة من المستثمرين والشركاء. نساعد رواد الأعمال على تحويل أفكارهم إلى مشاريع ناجحة من خلال الدعم المتكامل."
+      },
+      {
+        "category": "incubation",
+        "question": "ما هي مدة برنامج الحضانة؟",
+        "answer": "تتراوح مدة برنامج الحضانة من 6 إلى 18 شهراً، حسب طبيعة المشروع واحتياجاته. نقدم برامج مرنة قابلة للتخصيص لتناسب كل مشروع."
+      },
+      {
+        "category": "incubation",
+        "question": "ما هي شروط القبول في برنامج الحضانة؟",
+        "answer": "نبحث عن أفكار مبتكرة لديها إمكانية نمو كبيرة. يجب أن يكون لديك فكرة واضحة، فريق ملتزم، والاستعداد للعمل بجد. نقيّم المشاريع بناءً على الابتكار، جدوى السوق، وإمكانية التوسع."
+      },
+      {
+        "category": "accelerator",
+        "question": "ما الفرق بين الحضانة والتسريع؟",
+        "answer": "برنامج الحضانة موجه للمشاريع في مراحلها الأولى (الفكرة والنموذج الأولي)، بينما برنامج التسريع يستهدف الشركات الناشئة التي لديها منتج جاهز وتسعى للنمو السريع والتوسع."
+      },
+      {
+        "category": "accelerator",
+        "question": "كم تبلغ مدة برنامج التسريع؟",
+        "answer": "عادة ما يستمر برنامج التسريع من 3 إلى 6 أشهر، وهو مصمم بكثافة عالية للمساعدة في تحقيق نمو سريع وملحوظ."
+      },
+      {
+        "category": "accelerator",
+        "question": "هل تأخذون نسبة من الشركة الناشئة؟",
+        "answer": "يختلف ذلك حسب البرنامج. بعض البرامج مجانية بالكامل، وبعضها يتطلب نسبة صغيرة من حقوق الملكية مقابل الاستثمار والدعم المقدم. نناقش التفاصيل خلال عملية التقديم."
+      },
+      {
+        "category": "workspace",
+        "question": "ما هي أنواع مساحات العمل المتوفرة؟",
+        "answer": "نوفر مساحات عمل مشتركة، مكاتب خاصة صغيرة، مكاتب شركات كبيرة، ومكاتب افتراضية. جميعها مجهزة بأحدث التقنيات وخدمات متكاملة."
+      },
+      {
+        "category": "workspace",
+        "question": "هل يمكن الوصول للمكتب في أي وقت؟",
+        "answer": "نعم، نوفر خدمة الوصول 24 ساعة طوال أيام الأسبوع لجميع المشتركين في باقات المكاتب الخاصة. المساحات المشتركة متاحة من 8 صباحاً حتى 10 مساءً."
+      },
+      {
+        "category": "iso",
+        "question": "كم تستغرق عملية الحصول على شهادة الأيزو؟",
+        "answer": "عادة ما تستغرق العملية من 3 إلى 6 أشهر، حسب جاهزية الشركة ومدى التزامها بتطبيق المعايير المطلوبة."
+      },
+      {
+        "category": "iso",
+        "question": "ما هي تكلفة الحصول على شهادة الأيزو؟",
+        "answer": "تختلف التكلفة حسب نوع الشهادة، حجم الشركة، وعدد الموظفين. نقدم استشارة مجانية لتقييم احتياجاتك وتقديم عرض مخصص."
+      },
+      {
+        "category": "general",
+        "question": "هل تقدمون تمويل للمشاريع؟",
+        "answer": "نعم، نوفر فرص تمويل مباشرة لبعض المشاريع المختارة، كما نساعد في ربط رواد الأعمال بشبكة واسعة من المستثمرين وصناديق الاستثمار."
+      },
+      {
+        "category": "general",
+        "question": "كيف يمكنني التقديم للانضمام لبرامجكم؟",
+        "answer": "يمكنك التقديم عبر موقعنا الإلكتروني بملء نموذج التقديم. سيقوم فريقنا بمراجعة طلبك والتواصل معك خلال 5-7 أيام عمل."
+      },
+      {
+        "category": "general",
+        "question": "هل تقدمون خدمات استشارية؟",
+        "answer": "نعم، نقدم خدمات استشارية شاملة في مجالات تطوير الأعمال، التسويق، التخطيط المالي، إدارة العمليات، والتحول الرقمي."
+      }
+    ],
+    "contact": {
+      "title": "لم تجد ما تبحث عنه؟",
+      "subtitle": "فريق الدعم لدينا جاهز لمساعدتك",
+      "methods": [
+        {
+          "title": "الدردشة المباشرة",
+          "description": "تحدث مع فريق الدعم مباشرة"
+        },
+        {
+          "title": "اتصل بنا",
+          "description": "+966 XX XXX XXXX"
+        },
+        {
+          "title": "البريد الإلكتروني",
+          "description": "info@businesshub.sa"
+        }
+      ]
+    }
+  },
+  "register": {
+    "hero": {
+      "badge": "ابدأ رحلتك معنا",
+      "title": "انضم إلى بيزنس هب",
+      "subtitle": "ابدأ رحلتك نحو النجاح مع منصة الأعمال الرائدة"
+    },
+    "features": [
+      {
+        "title": "الوصول الكامل",
+        "description": "وصول كامل لجميع البرامج والموارد"
+      },
+      {
+        "title": "الدعم المخصص",
+        "description": "فريق دعم متخصص لمساعدتك"
+      },
+      {
+        "title": "شبكة واسعة",
+        "description": "انضم لشبكة رواد الأعمال"
+      }
+    ],
+    "form": {
+      "title": "إنشاء حساب",
+      "subtitle": "قم بإنشاء حسابك الآن وابدأ رحلتك",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "phone": "رقم الهاتف",
+      "company": "اسم الشركة",
+      "companyPlaceholder": "اختياري",
+      "password": "كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "termsPrefix": "أوافق على ",
+      "termsLink": "الشروط والأحكام",
+      "termsAnd": " و ",
+      "privacyLink": "سياسة الخصوصية",
+      "submitButton": "إنشاء حساب",
+      "submitting": "جاري الإنشاء...",
+      "divider": "أو",
+      "loginPrompt": "لديك حساب بالفعل؟ ",
+      "loginLink": "تسجيل الدخول"
+    },
+    "validation": {
+      "requiredFields": "يرجى ملء جميع الحقول المطلوبة",
+      "invalidEmail": "يرجى إدخال بريد إلكتروني صحيح",
+      "passwordLength": "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+      "passwordMismatch": "كلمات المرور غير متطابقة",
+      "termsRequired": "يجب الموافقة على الشروط والأحكام"
+    },
+    "messages": {
+      "success": "تم إنشاء الحساب بنجاح!",
+      "socialRegister": "جاري التسجيل عبر "
+    }
+  },
+  "forgotPassword": {
+    "hero": {
+      "title": "استعادة كلمة المرور",
+      "subtitle": "اتبع الخطوات البسيطة لاستعادة الوصول إلى حسابك"
+    },
+    "steps": [
+      {
+        "title": "أدخل بريدك الإلكتروني",
+        "description": "أدخل البريد المسجل في حسابك"
+      },
+      {
+        "title": "تحقق من بريدك",
+        "description": "سنرسل لك رابط إعادة التعيين"
+      },
+      {
+        "title": "أعد تعيين كلمة المرور",
+        "description": "اتبع التعليمات لإنشاء كلمة مرور جديدة"
+      }
+    ],
+    "form": {
+      "title": "نسيت كلمة المرور؟",
+      "subtitle": "لا تقلق، سنساعدك على استعادتها",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "emailHelp": "سنرسل رابط إعادة تعيين كلمة المرور إلى هذا البريد",
+      "submitButton": "إرسال رابط الاستعادة",
+      "submitting": "جاري الإرسال...",
+      "backToLogin": "العودة إلى تسجيل الدخول"
+    },
+    "success": {
+      "title": "تحقق من بريدك!",
+      "subtitle": "تم إرسال رابط إعادة تعيين كلمة المرور إلى:",
+      "nextStepsTitle": "📧 ماذا بعد؟",
+      "nextSteps": [
+        "افتح بريدك الإلكتروني",
+        "ابحث عن رسالة من بيزنس هب",
+        "اضغط على رابط إعادة التعيين",
+        "أنشئ كلمة مرور جديدة"
+      ],
+      "notReceived": "لم تستلم الرسالة؟ تحقق من مجلد البريد المزعج أو",
+      "tryAgain": "أعد المحاولة",
+      "backToLogin": "العودة إلى تسجيل الدخول"
+    },
+    "validation": {
+      "emailRequired": "يرجى إدخال البريد الإلكتروني",
+      "invalidEmail": "يرجى إدخال بريد إلكتروني صحيح"
+    },
+    "messages": {
+      "linkSent": "تم إرسال رابط إعادة تعيين كلمة المرور"
+    },
+    "help": {
+      "prefix": "تحتاج مساعدة؟ ",
+      "link": "اتصل بالدعم"
+    },
+    "reset": {
+      "title": "إعادة تعيين كلمة المرور",
+      "subtitle": "أدخل رمز التحقق (OTP) المرسل إليك وكلمة المرور الجديدة",
+      "otpLabel": "رمز التحقق (OTP)",
+      "otpPlaceholder": "أدخل رمز التحقق",
+      "newPasswordLabel": "كلمة المرور الجديدة",
+      "newPasswordPlaceholder": "أدخل كلمة المرور الجديدة",
+      "confirmPasswordLabel": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "أعد إدخال كلمة المرور",
+      "submitButton": "إعادة تعيين",
+      "backButton": "رجوع",
+      "successTitle": "تم إعادة تعيين كلمة المرور بنجاح",
+      "successSubtitle": "تم تغيير كلمة المرور الخاصة بك بنجاح. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.",
+      "backToLogin": "العودة لتسجيل الدخول",
+      "validation": {
+        "fillAll": "يرجى ملء جميع الحقول",
+        "match": "كلمات المرور غير متطابقة"
+      }
+    }
+  },
+  "newsDetailPage": {
+    "navigation": {
+      "backToHome": "العودة للرئيسية"
+    },
+    "meta": {
+      "readTime": "دقائق قراءة",
+      "minutes": "دقائق"
+    },
+    "share": {
+      "title": "مشاركة",
+      "toast": "تم نسخ رابط المشاركة عبر "
+    },
+    "relatedNews": {
+      "title": "أخبار ذات صلة",
+      "subtitle": "اكتشف المزيد من الأخبار والتحديثات",
+      "readMore": "اقرأ المزيد"
+    },
+    "cta": {
+      "title": "ابقَ على اطلاع دائم",
+      "subtitle": "اشترك في نشرتنا الإخبارية لتصلك آخر الأخبار والتحديثات",
+      "button": "اشترك الآن"
+    }
+  },
+  "admin": {
+    "sidebar": {
+      "mainMenu": "القائمة الرئيسية",
+      "management": "الإدارة",
+      "settings": "الإعدادات",
+      "businessHub": "Business Hub",
+      "businessHubAr": "بيزنس هب",
+      "isoRequests": "طلبات ISO",
+      "reports": "التقارير"
+    },
+    "nav_reports": "التقارير",
+    "header": {
+      "dashboard": "لوحة التحكم",
+      "overview": "نظرة عامة",
+      "search": "بحث...",
+      "searchPlaceholder": "بحث..."
+    },
+    "common": {
+      "add": "إضافة",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "view": "عرض",
+      "save": "حفظ",
+      "cancel": "إلغاء",
+      "close": "إغلاق",
+      "search": "بحث",
+      "filter": "تصفية",
+      "actions": "الإجراءات",
+      "status": "الحالة",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "name": "الاسم",
+      "description": "الوصف",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "تاريخ التحديث",
+      "loading": "جاري التحميل...",
+      "noData": "لا توجد بيانات متاحة",
+      "confirm": "تأكيد",
+      "areYouSure": "هل أنت متأكد؟",
+      "thisActionCannotBeUndone": "لا يمكن التراجع عن هذا الإجراء.",
+      "success": "نجح",
+      "error": "خطأ",
+      "failed": "فشل",
+      "accessForbidden": "الوصول محظور",
+      "youDoNotHavePermission": "ليس لديك صلاحية للوصول إلى هذا المورد.",
+      "resourceLabel": "المورد:",
+      "contactAdmin": "يرجى التواصل مع المسؤول إذا كنت تعتقد أن هذا خطأ."
+    },
+    "roles": {
+      "title": "إدارة الأدوار",
+      "subtitle": "إدارة الأدوار وتعيين الصلاحيات",
+      "addRole": "إضافة دور",
+      "editRole": "تعديل دور",
+      "createNewRole": "إنشاء دور جديد",
+      "roleDetails": "تفاصيل الدور",
+      "searchRoles": "البحث عن الأدوار...",
+      "namespace": "المساحة الاسمية",
+      "details": "التفاصيل",
+      "permissions": "الصلاحيات",
+      "viewRoleDetails": "عرض تفاصيل الدور",
+      "editRoleTooltip": "تعديل الدور",
+      "deleteRoleTooltip": "حذف الدور",
+      "roleCreated": "تم إنشاء الدور بنجاح!",
+      "roleUpdated": "تم تحديث الدور بنجاح!",
+      "roleDeleted": "تم حذف الدور بنجاح!",
+      "failedToLoad": "فشل تحميل الأدوار",
+      "failedToCreate": "فشل إنشاء الدور",
+      "failedToUpdate": "فشل تحديث الدور",
+      "failedToDelete": "فشل حذف الدور",
+      "namespaceExists": "المساحة الاسمية موجودة بالفعل",
+      "accessForbidden": "الوصول محظور",
+      "roleName": "اسم الدور",
+      "roleNamePlaceholder": "أدخل اسم الدور",
+      "roleNameHelper": "اسم الدور (2+ أحرف)",
+      "namespacePlaceholder": "مثال: admin, manager, user",
+      "namespaceHelper": "معرف فريد (أحرف صغيرة، أرقام، واصلات، شرطات سفلية فقط)"
+    },
+    "objects": {
+      "title": "إدارة الكائنات",
+      "subtitle": "إدارة الكائنات والصلاحيات",
+      "addObject": "إضافة كائن",
+      "editObject": "تعديل كائن",
+      "createNewObject": "إنشاء كائن جديد",
+      "objectDetails": "تفاصيل الكائن",
+      "searchObjects": "البحث عن الكائنات...",
+      "type": "النوع",
+      "icon": "الأيقونة",
+      "parent": "الأصل",
+      "orderNo": "رقم الترتيب",
+      "menu": "قائمة",
+      "module": "وحدة",
+      "permission": "صلاحية",
+      "page": "صفحة",
+      "action": "إجراء",
+      "details": "التفاصيل",
+      "viewObjectDetails": "عرض تفاصيل الكائن",
+      "editObjectTooltip": "تعديل الكائن",
+      "deleteObjectTooltip": "حذف الكائن",
+      "objectCreated": "تم إنشاء الكائن بنجاح!",
+      "objectUpdated": "تم تحديث الكائن بنجاح!",
+      "objectDeleted": "تم حذف الكائن بنجاح!",
+      "failedToLoad": "فشل تحميل الكائنات",
+      "failedToCreate": "فشل إنشاء الكائن",
+      "failedToUpdate": "فشل تحديث الكائن",
+      "failedToDelete": "فشل حذف الكائن",
+      "namespace": "المساحة الاسمية",
+      "copyNamespace": "نسخ المساحة الاسمية",
+      "namespaceCopied": "تم نسخ المساحة الاسمية إلى الحافظة!"
+    },
+    "users": {
+      "title": "إدارة المستخدمين",
+      "subtitle": "إدارة المستخدمين ووصولهم",
+      "addUser": "إضافة مستخدم",
+      "editUser": "تعديل مستخدم",
+      "createNewUser": "إنشاء مستخدم جديد",
+      "userDetails": "تفاصيل المستخدم",
+      "searchUsers": "البحث عن المستخدمين...",
+      "email": "البريد الإلكتروني",
+      "username": "اسم المستخدم",
+      "mobile": "الجوال",
+      "fullName": "الاسم الكامل",
+      "userCreated": "تم إنشاء المستخدم بنجاح!",
+      "userUpdated": "تم تحديث المستخدم بنجاح!",
+      "userDeleted": "تم حذف المستخدم بنجاح!",
+      "failedToLoad": "فشل تحميل المستخدمين",
+      "failedToCreate": "فشل إنشاء المستخدم",
+      "failedToUpdate": "فشل تحديث المستخدم",
+      "failedToDelete": "فشل حذف المستخدم",
+      "failedToUploadImage": "فشل رفع الصورة",
+      "viewUserDetails": "عرض تفاصيل المستخدم",
+      "editUserTooltip": "تعديل المستخدم",
+      "deleteUserTooltip": "حذف المستخدم",
+      "deleteConfirmDescription": "لا يمكن التراجع عن هذا الإجراء. سيؤدي ذلك إلى حذف حساب المستخدم وبياناته نهائياً.",
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "mobileNumber": "رقم الجوال",
+      "emailVerifiedAt": "تاريخ التحقق من البريد",
+      "firstNamePlaceholder": "أدخل الاسم الأول",
+      "firstNameHelper": "اسم المستخدم الأول",
+      "lastNamePlaceholder": "أدخل اسم العائلة",
+      "lastNameHelper": "اسم عائلة المستخدم (اختياري)",
+      "usernamePlaceholder": "أدخل اسم المستخدم",
+      "usernameHelper": "اسم مستخدم فريد (3+ أحرف)",
+      "emailPlaceholder": "أدخل البريد الإلكتروني",
+      "emailHelper": "بريد إلكتروني صالح",
+      "countryCode": "رمز الدولة",
+      "countryCodePlaceholder": "مثال: +966",
+      "countryCodeHelper": "رمز الاتصال بالدولة",
+      "mobilePlaceholder": "أدخل رقم الجوال",
+      "mobileHelper": "رقم الهاتف الجوال",
+      "password": "كلمة المرور",
+      "newPassword": "كلمة المرور الجديدة",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "newPasswordPlaceholder": "اترك الحقل فارغاً للاحتفاظ بكلمة المرور الحالية",
+      "passwordHelper": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
+      "newPasswordHelper": "أدخل كلمة مرور جديدة للتغيير (اختياري، 6 أحرف على الأقل)",
+      "dob": "تاريخ الميلاد",
+      "dobPlaceholder": "اختر تاريخ الميلاد",
+      "dobHelper": "تاريخ الميلاد (اختياري)",
+      "gender": "الجنس",
+      "genderPlaceholder": "اختر الجنس",
+      "genderHelper": "الجنس (اختياري)",
+      "male": "ذكر",
+      "female": "أنثى",
+      "nationalId": "رقم الهوية",
+      "nationalIdPlaceholder": "أدخل رقم الهوية",
+      "nationalIdHelper": "رقم الهوية الوطنية (اختياري)",
+      "profileImage": "صورة الملف الشخصي",
+      "profileImageHelper": "ارفع صورة للملف الشخصي (JPG, PNG, WEBP - الحد الأقصى 5MB)",
+      "currentProfilePicture": "صورة الملف الشخصي الحالية",
+      "uploadNewImage": "ارفع صورة جديدة أدناه لاستبدال هذه الصورة",
+      "detailsTab": "التفاصيل",
+      "additionalInfoTab": "معلومات إضافية",
+      "userId": "معرف المستخدم",
+      "accessTokens": "رموز الوصول",
+      "userRoles": "الأدوار"
+    },
+    "permissions": {
+      "title": "صلاحيات الدور",
+      "failedToLoad": "فشل تحميل الصلاحيات",
+      "failedToSave": "فشل حفظ الصلاحيات",
+      "saveChanges": "حفظ التغييرات",
+      "noPermissions": "لا توجد صلاحيات متاحة",
+      "loadingPermissions": "جاري تحميل الصلاحيات...",
+      "permissionUnassigned": "تم إلغاء تعيين الصلاحية بنجاح",
+      "permissionAssigned": "تم تعيين الصلاحية بنجاح",
+      "failedToUnassign": "فشل إلغاء تعيين الصلاحية",
+      "failedToAssign": "فشل تعيين الصلاحية",
+      "failedToUpdate": "فشل تحديث الصلاحية",
+      "assignedCount": "{count} من {total} صلاحية معينة",
+      "assignAll": "تعيين الكل",
+      "unassignAll": "إلغاء تعيين الكل",
+      "assigned": "معين",
+      "noPermissionsForObject": "لا توجد صلاحيات متاحة لهذا الكائن."
+    },
+    "table": {
+      "itemsPerPage": "عناصر في الصفحة",
+      "showing": "عرض",
+      "of": "من",
+      "results": "نتائج",
+      "noResults": "لم يتم العثور على نتائج",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "entities": {
+      "news": {
+        "title": "إدارة الأخبار",
+        "subtitle": "إدارة الأخبار والتحديثات",
+        "add": "إضافة خبر",
+        "edit": "تعديل خبر",
+        "createNew": "إنشاء خبر جديد",
+        "details": "تفاصيل الخبر",
+        "search": "البحث عن الأخبار...",
+        "failedToLoad": "فشل تحميل الأخبار",
+        "failedToCreate": "فشل إنشاء الخبر",
+        "failedToUpdate": "فشل تحديث الخبر",
+        "failedToDelete": "فشل حذف الخبر",
+        "failedToUploadImage": "فشل رفع الصورة",
+        "failedToUploadFiles": "فشل رفع الملفات",
+        "created": "تم إنشاء الخبر بنجاح!",
+        "updated": "تم تحديث الخبر بنجاح!",
+        "deleted": "تم حذف الخبر بنجاح!",
+        "viewDetails": "عرض تفاصيل الخبر",
+        "editTooltip": "تعديل الخبر",
+        "deleteTooltip": "حذف الخبر",
+        "titleAr": "العنوان (عربي)",
+        "titleEn": "العنوان (إنجليزي)",
+        "titleArPlaceholder": "أدخل العنوان بالعربية",
+        "titleEnPlaceholder": "أدخل العنوان بالإنجليزية",
+        "detailAr": "التفاصيل (عربي)",
+        "detailEn": "التفاصيل (إنجليزي)",
+        "detailArPlaceholder": "أدخل التفاصيل بالعربية",
+        "detailEnPlaceholder": "أدخل التفاصيل بالإنجليزية",
+        "mainImage": "الصورة الرئيسية",
+        "mainImageHelper": "ارفع الصورة الرئيسية (JPG, PNG, WEBP - الحد الأقصى 5MB)",
+        "currentMainImage": "الصورة الحالية",
+        "uploadNewImage": "ارفع صورة جديدة أدناه لاستبدال هذه الصورة",
+        "socialMedia": "وسائل التواصل الاجتماعي",
+        "socialMediaLinks": "روابط وسائل التواصل الاجتماعي",
+        "socialMediaHelper": "أدخل روابط وسائل التواصل الاجتماعي (اختياري)",
+        "images": "الصور",
+        "existingImages": "الصور الموجودة",
+        "uploadNewImages": "رفع صور جديدة",
+        "uploadMultipleHelper": "ارفع صور متعددة (JPG, PNG, WEBP - الحد الأقصى 5MB لكل صورة)",
+        "statusActive": "نشط",
+        "statusInactive": "غير نشط",
+        "helperTextOptional": "(اختياري)",
+        "helperTextRequired": "(مطلوب)"
+      },
+      "galleries": {
+        "title": "إدارة المعارض",
+        "subtitle": "إدارة المعارض والصور",
+        "add": "إضافة معرض",
+        "edit": "تعديل معرض",
+        "createNew": "إنشاء معرض جديد",
+        "details": "تفاصيل المعرض",
+        "search": "البحث عن المعارض...",
+        "failedToLoad": "فشل تحميل المعارض",
+        "failedToCreate": "فشل إنشاء المعرض",
+        "failedToUpdate": "فشل تحديث المعرض",
+        "failedToDelete": "فشل حذف المعرض",
+        "created": "تم إنشاء المعرض بنجاح!",
+        "updated": "تم تحديث المعرض بنجاح!",
+        "deleted": "تم حذف المعرض بنجاح!",
+        "viewDetails": "عرض تفاصيل المعرض",
+        "editTooltip": "تعديل المعرض",
+        "deleteTooltip": "حذف المعرض"
+      },
+      "userProjects": {
+        "title": "مشاريع المستخدمين",
+        "subtitle": "إدارة تسجيل مشاريع المستخدمين",
+        "add": "إضافة مشروع مستخدم",
+        "edit": "تعديل مشروع مستخدم",
+        "createNew": "إنشاء مشروع مستخدم جديد",
+        "details": "تفاصيل مشروع المستخدم",
+        "search": "البحث في مشاريع المستخدمين...",
+        "user": "المستخدم",
+        "selectUser": "اختر مستخدم",
+        "loadingUsers": "جاري تحميل المستخدمين...",
+        "companyName": "اسم الشركة",
+        "companyNamePlaceholder": "أدخل اسم الشركة",
+        "projectName": "اسم المشروع",
+        "projectNamePlaceholder": "أدخل اسم المشروع",
+        "projectDescription": "وصف المشروع",
+        "projectDescriptionPlaceholder": "أدخل وصف المشروع",
+        "teamSize": "حجم الفريق",
+        "teamSizePlaceholder": "أدخل حجم الفريق",
+        "fundNeeded": "التمويل المطلوب",
+        "fundNeededPlaceholder": "أدخل التمويل المطلوب",
+        "whyApplying": "سبب التقديم",
+        "whyApplyingPlaceholder": "أدخل سبب التقديم",
+        "uploadDocuments": "رفع المستندات",
+        "existingDocuments": "المستندات الموجودة",
+        "uploadAdditionalDocuments": "رفع مستندات إضافية",
+        "documentName": "اسم المستند",
+        "noDocuments": "لا توجد مستندات مرفوعة",
+        "failedToLoad": "فشل تحميل مشاريع المستخدمين",
+        "failedToCreate": "فشل إنشاء مشروع المستخدم",
+        "failedToUpdate": "فشل تحديث مشروع المستخدم",
+        "failedToDelete": "فشل حذف مشروع المستخدم",
+        "created": "تم إنشاء مشروع المستخدم بنجاح!",
+        "updated": "تم تحديث مشروع المستخدم بنجاح!",
+        "deleted": "تم حذف مشروع المستخدم بنجاح!",
+        "viewDetails": "عرض التفاصيل",
+        "editTooltip": "تعديل مشروع المستخدم",
+        "deleteTooltip": "حذف مشروع المستخدم"
+      },
+      "programs": {
+        "title": "إدارة البرامج",
+        "subtitle": "إدارة البرامج والعروض",
+        "add": "إضافة برنامج",
+        "edit": "تعديل برنامج",
+        "createNew": "إنشاء برنامج جديد",
+        "details": "تفاصيل البرنامج",
+        "search": "البحث عن البرامج...",
+        "failedToLoad": "فشل تحميل البرامج",
+        "failedToCreate": "فشل إنشاء البرنامج",
+        "failedToUpdate": "فشل تحديث البرنامج",
+        "failedToDelete": "فشل حذف البرنامج",
+        "failedToUploadImage": "فشل رفع الصورة",
+        "failedToUploadFiles": "فشل رفع الملفات",
+        "failedToUploadDocument": "فشل رفع المستند",
+        "created": "تم إنشاء البرنامج بنجاح!",
+        "updated": "تم تحديث البرنامج بنجاح!",
+        "deleted": "تم حذف البرنامج بنجاح!",
+        "viewDetails": "عرض تفاصيل البرنامج",
+        "editTooltip": "تعديل البرنامج",
+        "deleteTooltip": "حذف البرنامج"
+      },
+      "projects": {
+        "title": "إدارة المشاريع",
+        "subtitle": "إدارة المشاريع",
+        "add": "إضافة مشروع",
+        "edit": "تعديل مشروع",
+        "createNew": "إنشاء مشروع جديد",
+        "details": "تفاصيل المشروع",
+        "search": "البحث عن المشاريع...",
+        "failedToLoad": "فشل تحميل المشاريع",
+        "failedToCreate": "فشل إنشاء المشروع",
+        "failedToUpdate": "فشل تحديث المشروع",
+        "failedToDelete": "فشل حذف المشروع",
+        "created": "تم إنشاء المشروع بنجاح!",
+        "updated": "تم تحديث المشروع بنجاح!",
+        "deleted": "تم حذف المشروع بنجاح!",
+        "viewDetails": "عرض تفاصيل المشروع",
+        "editTooltip": "تعديل المشروع",
+        "deleteTooltip": "حذف المشروع",
+        "titleAr": "العنوان (عربي)",
+        "titleEn": "العنوان (إنجليزي)",
+        "titleArPlaceholder": "أدخل العنوان بالعربية",
+        "titleEnPlaceholder": "أدخل العنوان بالإنجليزية",
+        "detailAr": "التفاصيل (عربي)",
+        "detailEn": "التفاصيل (إنجليزي)",
+        "detailArPlaceholder": "أدخل التفاصيل بالعربية",
+        "detailEnPlaceholder": "أدخل التفاصيل بالإنجليزية",
+        "type": "النوع",
+        "selectType": "اختر نوع المشروع",
+        "link": "الرابط",
+        "linkPlaceholder": "https://example.com",
+        "mainImage": "الصورة الرئيسية",
+        "mainImageHelper": "ارفع الصورة الرئيسية (JPG, PNG, WEBP - الحد الأقصى 5MB)",
+        "currentMainImage": "الصورة الحالية",
+        "uploadNewImage": "ارفع صورة جديدة أدناه لاستبدال هذه الصورة",
+        "categories": "الفئات",
+        "selectCategories": "اختر فئة واحدة أو أكثر",
+        "loadingCategories": "تحميل الفئات...",
+        "noCategories": "لا توجد فئات متاحة",
+        "socialMedia": "وسائل التواصل الاجتماعي",
+        "socialMediaLinks": "روابط وسائل التواصل الاجتماعي",
+        "socialMediaHelper": "أدخل روابط وسائل التواصل الاجتماعي (اختياري)",
+        "images": "الصور",
+        "existingImages": "الصور الموجودة",
+        "uploadNewImages": "رفع صور جديدة",
+        "uploadMultipleHelper": "ارفع صور متعددة (JPG, PNG, WEBP - الحد الأقصى 5MB لكل صورة)",
+        "files": "الملفات",
+        "existingFiles": "الملفات الموجودة",
+        "uploadNewFiles": "رفع ملفات جديدة",
+        "uploadFilesHelper": "ارفع ملفات متعددة (الحد الأقصى 10MB لكل ملف)",
+        "statusActive": "نشط",
+        "statusInactive": "غير نشط",
+        "helperTextOptional": "(اختياري)",
+        "helperTextRequired": "(مطلوب)"
+      },
+      "contacts": {
+        "title": "إدارة جهات الاتصال",
+        "subtitle": "إدارة جهات الاتصال",
+        "add": "إضافة جهة اتصال",
+        "edit": "تعديل جهة اتصال",
+        "createNew": "إنشاء جهة اتصال جديدة",
+        "details": "تفاصيل جهة الاتصال",
+        "search": "البحث عن جهات الاتصال...",
+        "failedToLoad": "فشل تحميل جهات الاتصال",
+        "failedToCreate": "فشل إنشاء جهة الاتصال",
+        "failedToUpdate": "فشل تحديث جهة الاتصال",
+        "failedToDelete": "فشل حذف جهة الاتصال",
+        "created": "تم إنشاء جهة الاتصال بنجاح!",
+        "updated": "تم تحديث جهة الاتصال بنجاح!",
+        "deleted": "تم حذف جهة الاتصال بنجاح!",
+        "viewDetails": "عرض تفاصيل جهة الاتصال",
+        "editTooltip": "تعديل جهة الاتصال",
+        "deleteTooltip": "حذف جهة الاتصال",
+        "name": "الاسم",
+        "namePlaceholder": "أدخل اسم جهة الاتصال",
+        "email": "البريد الإلكتروني",
+        "emailPlaceholder": "أدخل البريد الإلكتروني",
+        "phone": "رقم الهاتف",
+        "phonePlaceholder": "أدخل رقم الهاتف",
+        "contactType": "نوع جهة الاتصال",
+        "contactTypePlaceholder": "اختر نوع جهة الاتصال (اختياري)",
+        "loadingTypes": "تحميل الأنواع...",
+        "notes": "ملاحظات",
+        "notesPlaceholder": "أدخل ملاحظات",
+        "user": "المستخدم",
+        "userPlaceholder": "اختر مستخدم (اختياري)",
+        "loadingUsers": "تحميل المستخدمين...",
+        "nameHelper": "اسم جهة الاتصال (اختياري)",
+        "emailHelper": "البريد الإلكتروني (اختياري)",
+        "phoneHelper": "رقم الهاتف (اختياري)",
+        "contactTypeHelper": "نوع جهة الاتصال (اختياري)",
+        "notesHelper": "ملاحظات إضافية (اختياري)",
+        "statusHelper": "حالة جهة الاتصال",
+        "userHelper": "رابط للمستخدم (اختياري)",
+        "none": "لا يوجد",
+        "statusActive": "نشط",
+        "statusInactive": "غير نشط",
+        "invalidEmail": "البريد الإلكتروني غير صالح"
+      },
+      "reviews": {
+        "title": "إدارة التقييمات",
+        "subtitle": "إدارة التقييمات",
+        "add": "إضافة تقييم",
+        "edit": "تعديل تقييم",
+        "createNew": "إنشاء تقييم جديد",
+        "details": "تفاصيل التقييم",
+        "search": "البحث عن التقييمات...",
+        "failedToLoad": "فشل تحميل التقييمات",
+        "failedToCreate": "فشل إنشاء التقييم",
+        "failedToUpdate": "فشل تحديث التقييم",
+        "failedToDelete": "فشل حذف التقييم",
+        "created": "تم إنشاء التقييم بنجاح!",
+        "updated": "تم تحديث التقييم بنجاح!",
+        "deleted": "تم حذف التقييم بنجاح!",
+        "viewDetails": "عرض تفاصيل التقييم",
+        "editTooltip": "تعديل التقييم",
+        "deleteTooltip": "حذف التقييم",
+        "nameAr": "الاسم (عربي)",
+        "nameEn": "الاسم (إنجليزي)",
+        "nameArPlaceholder": "أدخل الاسم بالعربية",
+        "nameEnPlaceholder": "أدخل الاسم بالإنجليزية",
+        "jobTitleAr": "المسمى الوظيفي (عربي)",
+        "jobTitleEn": "المسمى الوظيفي (إنجليزي)",
+        "jobTitleArPlaceholder": "أدخل المسمى الوظيفي بالعربية",
+        "jobTitleEnPlaceholder": "أدخل المسمى الوظيفي بالإنجليزية",
+        "commentAr": "التعليق (عربي)",
+        "commentEn": "التعليق (إنجليزي)",
+        "commentArPlaceholder": "أدخل التعليق بالعربية",
+        "commentEnPlaceholder": "أدخل التعليق بالإنجليزية",
+        "profileImage": "صورة الملف الشخصي",
+        "profileImageHelper": "ارفع صورة الملف الشخصي (JPG, PNG, WEBP - الحد الأقصى 5MB)",
+        "currentImage": "الصورة الحالية",
+        "uploadNewImage": "ارفع صورة جديدة أدناه لاستبدال هذه الصورة",
+        "helperTextOptional": "(اختياري)",
+        "helperTextRequired": "(مطلوب)",
+        "failedToUploadImage": "فشل رفع الصورة"
+      },
+      "organizations": {
+        "title": "إدارة المنظمات",
+        "subtitle": "إدارة المنظمات",
+        "add": "إضافة منظمة",
+        "edit": "تعديل منظمة",
+        "createNew": "إنشاء منظمة جديدة",
+        "details": "تفاصيل المنظمة",
+        "search": "البحث عن المنظمات...",
+        "failedToLoad": "فشل تحميل المنظمات",
+        "failedToCreate": "فشل إنشاء المنظمة",
+        "failedToUpdate": "فشل تحديث المنظمة",
+        "failedToDelete": "فشل حذف المنظمة",
+        "created": "تم إنشاء المنظمة بنجاح!",
+        "updated": "تم تحديث المنظمة بنجاح!",
+        "deleted": "تم حذف المنظمة بنجاح!",
+        "viewDetails": "عرض تفاصيل المنظمة",
+        "editTooltip": "تعديل المنظمة",
+        "deleteTooltip": "حذف المنظمة",
+        "orgName": "اسم المنظمة",
+        "orgNamePlaceholder": "أدخل اسم المنظمة",
+        "orgNameHelper": "اسم المنظمة (مطلوب)",
+        "orgNamespace": "المساحة الاسمية",
+        "orgNamespacePlaceholder": "أدخل مساحة اسمية فريدة",
+        "orgNamespaceHelper": "معرف مساحة اسمية فريدة (مطلوب)",
+        "categoryId": "معرف الفئة",
+        "categoryIdPlaceholder": "أدخل معرف الفئة",
+        "categoryIdHelper": "معرف الفئة (اختياري)",
+        "orgProfileImage": "صورة المنظمة",
+        "orgProfileImageHelper": "ارفع صورة المنظمة (JPG, PNG, WEBP - الحد الأقصى 5MB)"
+      },
+      "successPartners": {
+        "title": "إدارة شركاء النجاح",
+        "subtitle": "إدارة شركاء النجاح",
+        "add": "إضافة شريك نجاح",
+        "edit": "تعديل شريك النجاح",
+        "createNew": "إنشاء شريك نجاح جديد",
+        "details": "تفاصيل شريك النجاح",
+        "search": "البحث عن شركاء النجاح...",
+        "failedToLoad": "فشل تحميل شركاء النجاح",
+        "failedToCreate": "فشل إنشاء شريك النجاح",
+        "failedToUpdate": "فشل تحديث شريك النجاح",
+        "failedToDelete": "فشل حذف شريك النجاح",
+        "created": "تم إنشاء شريك النجاح بنجاح!",
+        "updated": "تم تحديث شريك النجاح بنجاح!",
+        "deleted": "تم حذف شريك النجاح بنجاح!",
+        "viewDetails": "عرض تفاصيل شريك النجاح",
+        "editTooltip": "تعديل شريك النجاح",
+        "deleteTooltip": "حذف شريك النجاح",
+        "nameAr": "الاسم (عربي)",
+        "nameEn": "الاسم (إنجليزي)",
+        "nameArPlaceholder": "أدخل الاسم بالعربية",
+        "nameEnPlaceholder": "أدخل الاسم بالإنجليزية",
+        "partnerImage": "صورة الشريك",
+        "partnerImageHelper": "ارفع شعار الشريك (JPG, PNG, WEBP - الحد الأقصى 5MB)",
+        "currentImage": "الصورة الحالية",
+        "uploadNewImage": "ارفع صورة جديدة أدناه لاستبدال هذه الصورة",
+        "statusActive": "نشط",
+        "statusInactive": "غير نشط",
+        "helperTextOptional": "(اختياري)",
+        "helperTextRequired": "(مطلوب)",
+        "failedToUploadImage": "فشل رفع الصورة"
+      },
+      "isoCompanies": {
+        "title": "إدارة شركات الأيزو",
+        "subtitle": "إدارة شركات الأيزو",
+        "add": "إضافة شركة أيزو",
+        "edit": "تعديل شركة الأيزو",
+        "createNew": "إنشاء شركة أيزو جديدة",
+        "details": "تفاصيل شركة الأيزو",
+        "search": "البحث عن شركات الأيزو...",
+        "failedToLoad": "فشل تحميل شركات الأيزو",
+        "failedToCreate": "فشل إنشاء شركة الأيزو",
+        "failedToUpdate": "فشل تحديث شركة الأيزو",
+        "failedToDelete": "فشل حذف شركة الأيزو",
+        "created": "تم إنشاء شركة الأيزو بنجاح!",
+        "updated": "تم تحديث شركة الأيزو بنجاح!",
+        "deleted": "تم حذف شركة الأيزو بنجاح!",
+        "viewDetails": "عرض تفاصيل شركة الأيزو",
+        "editTooltip": "تعديل شركة الأيزو",
+        "deleteTooltip": "حذف شركة الأيزو",
+        "companyName": "اسم الشركة",
+        "companyNamePlaceholder": "أدخل اسم الشركة",
+        "contactPerson": "الشخص المسؤول",
+        "contactPersonPlaceholder": "أدخل اسم الشخص المسؤول",
+        "position": "المسمى الوظيفي",
+        "positionPlaceholder": "أدخل المسمى الوظيفي",
+        "email": "البريد الإلكتروني",
+        "emailPlaceholder": "أدخل البريد الإلكتروني",
+        "phone": "رقم الهاتف",
+        "phonePlaceholder": "أدخل رقم الهاتف",
+        "website": "الموقع الإلكتروني",
+        "websitePlaceholder": "أدخل رابط الموقع الإلكتروني",
+        "certificateCode": "رمز الشهادة",
+        "certificateCodePlaceholder": "أدخل رمز الشهادة",
+        "certificateNameAr": "اسم الشهادة (عربي)",
+        "certificateNameArPlaceholder": "أدخل اسم الشهادة (عربي)",
+        "certificateNameEn": "اسم الشهادة (إنجليزي)",
+        "certificateNameEnPlaceholder": "أدخل اسم الشهادة (إنجليزي)",
+        "address": "العنوان",
+        "addressPlaceholder": "أدخل العنوان",
+        "notes": "ملاحظات",
+        "notesPlaceholder": "أدخل ملاحظات",
+        "companyImage": "صورة الشركة",
+        "companyImageHelper": "ارفع شعار الشركة (JPG, PNG, WEBP - الحد الأقصى 5MB)",
+        "currentImage": "الصورة الحالية",
+        "uploadNewImage": "ارفع صورة جديدة أدناه لاستبدال هذه الصورة",
+        "failedToUploadImage": "فشل رفع صورة الشركة",
+        "statusActive": "نشط",
+        "statusInactive": "غير نشط",
+        "helperTextOptional": "(اختياري)",
+        "helperTextRequired": "(مطلوب)"
+      },
+      "isoRequests": {
+        "title": "إدارة طلبات ISO",
+        "subtitle": "مراجعة وإدارة طلبات شهادات ISO",
+        "search": "البحث عن الطلبات...",
+        "failedToLoad": "فشل في تحميل الطلبات",
+        "failedToUpdate": "فشل في تحديث الطلب",
+        "failedToDelete": "فشل في حذف الطلب",
+        "updated": "تم تحديث الطلب بنجاح!",
+        "deleted": "تم حذف الطلب بنجاح!",
+        "viewDetails": "عرض تفاصيل الطلب",
+        "markAsCompleted": "تم الإنجاز",
+        "completed": "مكتمل",
+        "new": "جديد",
+        "certificateType": "نوع الشهادة",
+        "employeesCount": "عدد الموظفين",
+        "industry": "القطاع",
+        "message": "الرسالة",
+        "deleteTooltip": "حذف الطلب"
+      },
+      "thirdParties": {
+        "title": "إدارة الأطراف الثالثة",
+        "subtitle": "إدارة الأطراف الثالثة",
+        "add": "إضافة طرف ثالث",
+        "edit": "تعديل طرف ثالث",
+        "createNew": "إنشاء طرف ثالث جديد",
+        "details": "تفاصيل الطرف الثالث",
+        "search": "البحث عن الأطراف الثالثة...",
+        "failedToLoad": "فشل تحميل الأطراف الثالثة",
+        "failedToCreate": "فشل إنشاء الطرف الثالث",
+        "failedToUpdate": "فشل تحديث الطرف الثالث",
+        "failedToDelete": "فشل حذف الطرف الثالث",
+        "created": "تم إنشاء الطرف الثالث بنجاح!",
+        "updated": "تم تحديث الطرف الثالث بنجاح!",
+        "deleted": "تم حذف الطرف الثالث بنجاح!",
+        "viewDetails": "عرض تفاصيل الطرف الثالث",
+        "editTooltip": "تعديل الطرف الثالث",
+        "deleteTooltip": "حذف الطرف الثالث",
+        "name": "الاسم",
+        "namePlaceholder": "أدخل اسم الطرف الثالث",
+        "namespace": "المساحة الاسمية",
+        "namespacePlaceholder": "أدخل مساحة اسمية فريدة",
+        "website": "الموقع الإلكتروني",
+        "websitePlaceholder": "أدخل رابط الموقع الإلكتروني",
+        "orderNo": "رقم الترتيب",
+        "orderNoPlaceholder": "أدخل رقم الترتيب",
+        "profileImage": "صورة الملف الشخصي",
+        "profileImageHelper": "ارفع صورة الملف الشخصي (JPG, PNG, WEBP - الحد الأقصى 5MB)",
+        "currentImage": "الصورة الحالية",
+        "uploadNewImage": "ارفع صورة جديدة أدناه لاستبدال هذه الصورة",
+        "statusActive": "نشط",
+        "statusInactive": "غير نشط",
+        "nameHelper": "اسم الطرف الثالث (مطلوب)",
+        "namespaceHelper": "معرف مساحة اسمية فريدة (مطلوب)",
+        "orderNoHelper": "ترتيب العرض (اختياري)",
+        "statusHelper": "حالة الطرف الثالث",
+        "failedToUploadImage": "فشل رفع الصورة"
+      },
+      "newsletterSubscriptions": {
+        "title": "إدارة اشتراكات النشرة",
+        "subtitle": "إدارة اشتراكات النشرة الإخبارية",
+        "add": "إضافة اشتراك",
+        "edit": "تعديل الاشتراك",
+        "createNew": "إنشاء اشتراك جديد",
+        "details": "تفاصيل الاشتراك",
+        "search": "البحث عن الاشتراكات...",
+        "failedToLoad": "فشل تحميل الاشتراكات",
+        "failedToCreate": "فشل إنشاء الاشتراك",
+        "failedToUpdate": "فشل تحديث الاشتراك",
+        "failedToDelete": "فشل حذف الاشتراك",
+        "created": "تم إنشاء الاشتراك بنجاح!",
+        "updated": "تم تحديث الاشتراك بنجاح!",
+        "deleted": "تم حذف الاشتراك بنجاح!",
+        "viewDetails": "عرض تفاصيل الاشتراك",
+        "editTooltip": "تعديل الاشتراك",
+        "deleteTooltip": "حذف الاشتراك",
+        "email": "البريد الإلكتروني",
+        "emailPlaceholder": "أدخل البريد الإلكتروني",
+        "subscriberName": "الاسم",
+        "subscriberNamePlaceholder": "أدخل الاسم",
+        "statusActive": "نشط",
+        "statusInactive": "غير نشط",
+        "emailHelper": "البريد الإلكتروني (مطلوب)",
+        "nameHelper": "اسم المشترك (اختياري)",
+        "statusHelper": "حالة الاشتراك"
+      },
+      "staticLists": {
+        "title": "إدارة القوائم الثابتة",
+        "subtitle": "إدارة القوائم الثابتة",
+        "add": "إضافة قائمة ثابتة",
+        "edit": "تعديل القائمة الثابتة",
+        "createNew": "إنشاء قائمة ثابتة جديدة",
+        "details": "تفاصيل القائمة الثابتة",
+        "search": "البحث عن القوائم الثابتة...",
+        "failedToLoad": "فشل تحميل القوائم الثابتة",
+        "failedToCreate": "فشل إنشاء القائمة الثابتة",
+        "failedToUpdate": "فشل تحديث القائمة الثابتة",
+        "failedToDelete": "فشل حذف القائمة الثابتة",
+        "created": "تم إنشاء القائمة الثابتة بنجاح!",
+        "updated": "تم تحديث القائمة الثابتة بنجاح!",
+        "deleted": "تم حذف القائمة الثابتة بنجاح!",
+        "viewDetails": "عرض تفاصيل القائمة الثابتة",
+        "editTooltip": "تعديل القائمة الثابتة",
+        "deleteTooltip": "حذف القائمة الثابتة"
+      },
+      "settings": {
+        "title": "إدارة الإعدادات",
+        "subtitle": "إدارة إعدادات النظام",
+        "add": "إضافة إعداد",
+        "edit": "تعديل الإعداد",
+        "createNew": "إنشاء إعداد جديد",
+        "details": "تفاصيل الإعداد",
+        "search": "البحث عن الإعدادات...",
+        "failedToLoad": "فشل تحميل الإعدادات",
+        "failedToCreate": "فشل إنشاء الإعداد",
+        "failedToUpdate": "فشل تحديث الإعداد",
+        "failedToDelete": "فشل حذف الإعداد",
+        "created": "تم إنشاء الإعداد بنجاح!",
+        "updated": "تم تحديث الإعداد بنجاح!",
+        "deleted": "تم حذف الإعداد بنجاح!",
+        "viewDetails": "عرض تفاصيل الإعداد",
+        "editTooltip": "تعديل الإعداد",
+        "deleteTooltip": "حذف الإعداد"
+      },
+      "cache": {
+        "title": "إدارة الذاكرة المؤقتة",
+        "subtitle": "إدارة ذاكرة التطبيق المؤقتة",
+        "clearAll": "مسح كل الذاكرة المؤقتة",
+        "cleared": "تم مسح الذاكرة المؤقتة بنجاح!"
+      },
+      "thirdPartyServices": {
+        "title": "خدمات الأطراف الثالثة",
+        "subtitle": "إدارة خدمات الأطراف الثالثة",
+        "add": "إضافة خدمة",
+        "edit": "تعديل الخدمة",
+        "createNew": "إنشاء خدمة جديدة",
+        "details": "تفاصيل الخدمة",
+        "search": "البحث عن الخدمات...",
+        "failedToLoad": "فشل تحميل الخدمات",
+        "failedToCreate": "فشل إنشاء الخدمة",
+        "failedToUpdate": "فشل تحديث الخدمة",
+        "failedToDelete": "فشل حذف الخدمة",
+        "created": "تم إنشاء الخدمة بنجاح!",
+        "updated": "تم تحديث الخدمة بنجاح!",
+        "deleted": "تم حذف الخدمة بنجاح!",
+        "viewDetails": "عرض تفاصيل الخدمة",
+        "editTooltip": "تعديل الخدمة",
+        "deleteTooltip": "حذف الخدمة"
+      },
+      "contactInteractions": {
+        "title": "تفاعلات جهات الاتصال",
+        "subtitle": "إدارة تفاعلات جهات الاتصال",
+        "add": "إضافة تفاعل",
+        "edit": "تعديل التفاعل",
+        "createNew": "إنشاء تفاعل جديد",
+        "details": "تفاصيل التفاعل",
+        "search": "البحث عن التفاعلات...",
+        "failedToLoad": "فشل تحميل التفاعلات",
+        "failedToCreate": "فشل إنشاء التفاعل",
+        "failedToUpdate": "فشل تحديث التفاعل",
+        "failedToDelete": "فشل حذف التفاعل",
+        "created": "تم إنشاء التفاعل بنجاح!",
+        "updated": "تم تحديث التفاعل بنجاح!",
+        "deleted": "تم حذف التفاعل بنجاح!",
+        "viewDetails": "عرض تفاصيل التفاعل",
+        "editTooltip": "تعديل التفاعل",
+        "deleteTooltip": "حذف التفاعل"
+      },
+      "thirdPartyLogs": {
+        "title": "سجلات الأطراف الثالثة",
+        "subtitle": "عرض سجلات خدمات الأطراف الثالثة",
+        "failedToLoad": "فشل تحميل السجلات",
+        "noLogs": "لا توجد سجلات متاحة"
+      }
+    }
+  },
+  "profile_menu": {
+    "my_programs": "برامجي",
+    "background_check": "فحص الخلفية",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج",
+    "logging_out": "جاري تسجيل الخروج...",
+    "edit_profile": {
+      "title": "تعديل الملف الشخصي",
+      "description": "قم بإجراء تغييرات على ملفك الشخصي هنا. انقر فوق حفظ عند الانتهاء.",
+      "change_avatar": "تغيير الصورة الرمزية",
+      "full_name": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "role": "الدور",
+      "bio": "نبذة شخصية",
+      "cancel": "إلغاء",
+      "save": "حفظ التغييرات",
+      "success": "تم تحديث الملف الشخصي بنجاح"
+    },
+    "settings_modal": {
+      "title": "الإعدادات",
+      "description": "إدارة إعدادات حسابك وتفضيلاتك.",
+      "appearance": "المظهر",
+      "dark_mode": "الوضع الداكن",
+      "dark_mode_desc": "تبديل سمة الوضع الداكن",
+      "notifications": "الإشعارات",
+      "email_notifications": "إشعارات البريد الإلكتروني",
+      "email_notifications_desc": "استقبال تحديثات البريد الإلكتروني",
+      "push_notifications": "الإشعارات المنبثقة",
+      "push_notifications_desc": "استقبال الإشعارات المنبثقة",
+      "security": "الأمان",
+      "change_password": "تغيير كلمة المرور",
+      "two_factor": "المصادقة الثنائية",
+      "cancel": "إلغاء",
+      "save": "حفظ الإعدادات",
+      "success": "تم حفظ الإعدادات بنجاح"
+    },
+    "logout_success": "تم تسجيل الخروج بنجاح",
+    "logout_error": "خطأ في تسجيل الخروج:"
+  },
+  "dashboard": {
+    "totalProjects": "إجمالي المشاريع",
+    "totalPrograms": "إجمالي البرامج",
+    "totalUsers": "إجمالي المستخدمين",
+    "pendingApplications": "طلبات معلقة",
+    "overview": {
+      "title": "نظرة عامة",
+      "description": "نظرة عامة على نشاط المنصة",
+      "chartPlaceholder": "تصور الرسم البياني قريبا"
+    },
+    "recentUsers": {
+      "title": "أحدث المستخدمين",
+      "description": "أحدث الأعضاء المنضمين للمنصة",
+      "noUsersFound": "لا يوجد مستخدمين جدد"
+    },
+    "pendingAppsCard": {
+      "requireReview": "تتطلب المراجعة",
+      "viewAll": "عرض الكل"
+    }
+  },
+  "workspaces_filter_branch": "الفرع",
+  "workspaces_filter_type": "نوع المساحة",
+  "workspaces_filter_capacity": "السعة الدنيا",
+  "workspaces_filter_price": "نطاق السعر",
+  "workspaces_filter_amenities": "المرافق",
+  "workspaces_search_placeholder": "البحث عن مساحات...",
+  "workspaces_sort_label": "ترتيب حسب",
+  "workspaces_results_count": "مساحات تم العثور عليها",
+  "workspaces_no_results": "لم يتم العثور على مساحات تطابق بحثك",
+  "subscriptions_title": "العضويات",
+  "subscriptions_plans_title": "خطط العضوية",
+  "subscriptions_plan_price": "{price} ر.س/شهرياً",
+  "subscriptions_plan_benefits": "المزايا",
+  "subscriptions_subscribe_cta": "اشترك الآن",
+  "subscriptions_cancel_confirm_title": "إلغاء الاشتراك",
+  "subscriptions_cancel_confirm_message": "هل أنت متأكد من إلغاء الاشتراك؟ سيتوقف التجديد التلقائي في نهاية الفترة الحالية.",
+  "subscriptions_status_active": "نشط",
+  "subscriptions_status_cancelled": "ملغي",
+  "subscriptions_status_expired": "منتهي",
+  "subscriptions_status_1": "نشط",
+  "subscriptions_status_2": "ملغي",
+  "subscriptions_status_3": "منتهي",
+  "subscriptions_renewal_date": "تاريخ التجديد: {date}",
+  "subscriptions_my_subscriptions": "اشتراكاتي",
+  "subscriptions_no_subscriptions": "ليس لديك أي اشتراكات نشطة.",
+  "subscriptions_select_plan": "اختر الخطة",
+  "subscriptions_current_plan": "الخطة الحالية",
+  "subscriptions_hero_subtitle": "اختر خطة العضوية المناسبة لأسلوب عملك.",
+  "subscription_benefits_applied_label": "مزايا عضويتك المطبّقة",
+  "subscription_auto_renew_label": "التجديد التلقائي",
+  "subscription_keep_cta": "الاحتفاظ بالاشتراك",
+  "subscription_price_unit": "ر.س/شهرياً",
+  "cancellation_policy": "سياسة الإلغاء",
+  "confirm_cancel": "نعم، إلغاء",
+  "past_subscriptions": "الاشتراكات السابقة",
+  "free_hours_month": "ساعة اجتماع مجانية / شهرياً",
+  "booking_discount": "خصم على الحجوزات",
+  "priority_booking": "الأولوية في الحجز",
+  "subscription_cancellation_policy_access": "ستظل تتمتع بالوصول حتى نهاية دورة الفوترة الحالية.",
+  "subscription_cancellation_policy_refund": "لا يوجد استرداد نسبي للأشهر الجزئية.",
+  "subscription_cancellation_policy_autorenewal": "سيتم تعطيل التجديد التلقائي فوراً.",
+  "workspaces_type_desk": "مكتب مشترك",
+  "workspaces_type_unknown": "مساحة",
+  "workspaces_type_office": "مكتب خاص",
+  "workspaces_type_meeting_room": "غرفة اجتماعات",
+  "workspaces_type_event_space": "مساحة فعاليات",
+  "workspaces_filter_branch_all": "جميع الفروع",
+  "workspaces_filter_type_all": "جميع الأنواع",
+  "workspaces_filter_capacity_all": "أي سعة",
+  "workspaces_filters": "التصفيات",
+  "workspaces_filter_clear": "مسح الكل",
+  "space_capacity_label": "حتى {capacity} أشخاص",
+  "space_starting_from": "تبدأ من",
+  "space_pricing_hourly": "ساعة",
+  "space_view_details": "عرض التفاصيل",
+  "workspaces_filter_capacity_min_people": "{n}+ أشخاص",
+  "workspaces_error_title": "خطأ في تحميل المساحات",
+  "workspaces_error_description": "واجهنا مشكلة في جلب مساحات العمل المشتركة. يرجى المحاولة مرة أخرى.",
+  "workspaces_error_retry": "إعادة المحاولة",
+  "workspaces_empty_description": "حاول تغيير عوامل التصفية أو البحث عن شيء آخر.",
+  "workspaces_meta_title": "مساحات العمل المشتركة | BusinessHub",
+  "workspaces_meta_description": "تصفح وأحجز مساحات العمل المشتركة عبر فروعنا.",
+  "error_generic_title": "حدث خطأ ما!",
+  "error_generic_desc": "واجهنا مشكلة في تحميل مساحات العمل المشتركة.",
+  "action_try_again": "حاول مرة أخرى",
+  "space_detail_gallery_label": "معرض الصور",
+  "space_detail_amenities_title": "المرافق",
+  "space_availability_title": "التوفر",
+  "space_book_now_cta": "احجز الآن",
+  "space_pricing_daily": "يوم",
+  "space_pricing_weekly": "أسبوع",
+  "space_pricing_monthly": "شهر",
+  "space_pricing_title": "الأسعار",
+  "space_pricing_unavailable": "معلومات التسعير غير متوفرة في الوقت الحالي.",
+  "space_amenities_empty": "لا توجد مرافق مسجلة لهذه المساحة.",
+  "space_availability_status_label": "الحالة للتواريخ المحددة",
+  "space_time_start": "وقت البدء",
+  "space_time_end": "وقت الانتهاء",
+  "space_checking": "جاري التحقق من التوفر...",
+  "space_select_dates_times": "حدد التاريخ والوقت للتحقق من التوفر",
+  "space_sidebar_help_title": "هل تحتاج مساعدة في الحجز؟",
+  "space_sidebar_help_desc": "فريقنا متاح لمساعدتكم.",
+  "space_pricing_best_value": "أفضل خيارات القيمة",
+  "space_pricing_best_value_label": "أفضل قيمة",
+  "space_pricing_hourly_desc": "وصول مرن",
+  "space_pricing_daily_desc": "يوم كامل",
+  "space_pricing_weekly_desc": "أسبوع عمل",
+  "space_pricing_monthly_desc": "شهر كامل",
+  "space_pricing_select_plan": "اختر هذه الخطة",
+  "space_about_title": "تفاصيل ",
+  "space_operating_hours_label": "ساعات العمل",
+  "space_booking_trust_badge": "حجز آمن وموثوق • تأكيد فوري",
+  "space_available": "الفترة متاح",
+  "space_unavailable": "الفترة غير متاح",
+  "space_select_available_dates_first": "اختر التواريخ المتاحة أولاً",
+  "dates": "التواريخ",
+  "times": "الأوقات",
+  "book": "احجز",
+  "cal_prev_year": "السنة السابقة",
+  "validation_NO_CONFLICTS": "لا توجد حجوزات متعارضة",
+  "validation_CONFLICTS_FOUND": "المساحة محجوزة بالفعل في هذا الوقت",
+  "validation_START_DATE_PAST": "يجب أن يكون وقت البدء في المستقبل",
+  "validation_END_DATE_PAST": "يجب أن يكون وقت الانتهاء في المستقبل",
+  "validation_FUTURE_DATES_VALID": "التواريخ في المستقبل",
+  "validation_START_AFTER_END": "يجب أن يكون وقت البدء قبل وقت الانتهاء",
+  "validation_MIN_DURATION_NOT_MET": "الحد الأدنى لمدة الحجز هو 30 دقيقة",
+  "validation_VALID_DURATION": "مدة الحجز صالحة",
+  "validation_CAPACITY_EXCEEDED": "عدد الحضور يتجاوز سعة المساحة",
+  "validation_CAPACITY_VALID": "ضمن سعة المساحة",
+  "validation_CLOSED_SPECIAL_HOURS": "المساحة مغلقة في هذا التاريخ (ساعات عمل خاصة)",
+  "validation_WITHIN_SPECIAL_HOURS": "ضمن ساعات العمل الخاصة",
+  "validation_OUTSIDE_SPECIAL_HOURS": "الوقت المطلوب خارج ساعات العمل الخاصة",
+  "validation_OUTSIDE_OPERATING_HOURS": "الوقت المطلوب خارج ساعات العمل",
+  "validation_WITHIN_OPERATING_HOURS": "ضمن ساعات العمل",
+  "cal_prev_month": "الشهر السابق",
+  "cal_next_month": "الشهر القادم",
+  "cal_next_year": "السنة القادمة",
+  "cal_prev_year_aria_label": "الذهاب للسنة السابقة",
+  "cal_prev_month_aria_label": "الذهاب للشهر السابق",
+  "cal_next_month_aria_label": "الذهاب للشهر القادم",
+  "cal_next_year_aria_label": "الذهاب للسنة القادمة",
+  "operating_hours_title": "ساعات العمل",
+  "operating_hours_open_now": "مفتوح الآن",
+  "operating_hours_closed": "مغلق",
+  "operating_hours_open_24_7": "مفتوح 24/7",
+  "operating_hours_permanently_closed": "مغلق نهائياً",
+  "operating_hours_permanently_closed_desc": "هذه المساحة لم تعد متاحة.",
+  "operating_hours_special_hours": "ساعات خاصة",
+  "operating_hours_special_hours_count": "ساعات خاصة ({count})",
+  "operating_hours_every_day": "كل يوم",
+  "operating_hours_mon_fri": "الأحد - الخميس",
+  "operating_hours_sat_sun": "الجمعة - السبت",
+  "operating_hours_24_7": "24/7",
+  "mon": "أحد",
+  "tue": "اثنين",
+  "wed": "ثلاثاء",
+  "thu": "أربعاء",
+  "fri": "خميس",
+  "sat": "جمعة",
+  "sun": "سبت",
+  "booking_form_date_label": "التاريخ",
+  "booking_form_duration_label": "المدة",
+  "booking_form_start_time": "وقت البدء",
+  "booking_form_start_date": "تاريخ البدء",
+  "booking_form_end_time": "وقت الانتهاء",
+  "booking_form_end_date": "تاريخ الانتهاء",
+  "booking_price_total": "السعر الإجمالي",
+  "booking_price_base": "السعر الأساسي",
+  "booking_price_tax": "ضريبة القيمة المضافة",
+  "booking_confirm_title": "تأكيد الحجز",
+  "booking_payment_title": "تفاصيل الدفع",
+  "booking_success_message": "تم تأكيد حجزك بنجاح.",
+  "booking_created_toast": "تم إنشاء الحجز بنجاح.",
+  "booking_cancelled_toast": "تم إلغاء الحجز بنجاح.",
+  "booking_modified_toast": "تم تحديث الحجز بنجاح.",
+  "booking_create_error": "فشل إنشاء الحجز.",
+  "booking_cancel_error": "فشل إلغاء الحجز.",
+  "booking_modify_error": "فشل تحديث الحجز.",
+  "booking_price_estimate_error": "فشل الحصول على تقدير السعر.",
+  "recurring_booking_created_toast": "تم إنشاء الحجز المتكرر بنجاح.",
+  "recurring_booking_create_error": "فشل إنشاء الحجز المتكرر.",
+  "recurring_series_cancelled_toast": "تم إلغاء السلسلة المتكررة بنجاح.",
+  "recurring_series_cancel_error": "فشل إلغاء السلسلة المتكررة.",
+  "booking_tenant_discount_label": "خصم المستأجر",
+  "booking_free_hours_label": "استخدام الساعات المجانية",
+  "booking_success_title": "تم الحجز بنجاح!",
+  "booking_return_home_cta": "العودة للرئيسية",
+  "booking_view_my_bookings_cta": "عرض حجوزاتي",
+  "payment_card_name_label": "الاسم على البطاقة",
+  "payment_card_number_label": "رقم البطاقة",
+  "payment_expiry_label": "تاريخ الانتهاء",
+  "payment_pay_now_cta": "ادفع الآن",
+  "payment_processing_label": "جاري المعالجة...",
+  "payment_secure_label": "معالجة دفع آمنة",
+  "booking_confirm_code_label": "رمز التأكيد",
+  "booking_total_paid_label": "إجمالي المدفوع",
+  "booking_person_label": "شخص",
+  "booking_people_label": "أشخاص",
+  "booking_my_bookings_title": "حجوزاتي",
+  "booking_status_confirmed": "مؤكد",
+  "booking_status_pending": "قيد الانتظار",
+  "booking_status_cancelled": "ملغي",
+  "booking_status_completed": "مكتمل",
+  "booking_view_details": "عرض التفاصيل",
+  "booking_cancel_cta": "إلغاء الحجز",
+  "booking_modify_cta": "تعديل الحجز",
+  "booking_cancel_confirm_title": "إلغاء الحجز؟",
+  "booking_cancel_confirm_message": "هل أنت متأكد من رغبتك في إلغاء هذا الحجز؟ لا يمكن التراجع عن هذا الإجراء.",
+  "booking_cancel_policy_title": "سياسة الإلغاء",
+  "booking_cancel_policy_full_refund": "استرداد كامل في حال الإلغاء قبل 24 ساعة فأكثر من الموعد.",
+  "booking_cancel_policy_partial_refund": "استرداد 50% في حال الإلغاء بين 12-24 ساعة من الموعد.",
+  "booking_cancel_policy_no_refund": "لا يوجد استرداد في حال الإلغاء قبل أقل من 12 ساعة من الموعد.",
+  "booking_details_title": "تفاصيل الحجز",
+  "booking_summary_title": "ملخص",
+  "booking_no_bookings_found": "لم يتم العثور على حجوزات.",
+  "booking_modify_title": "تعديل الحجز",
+  "booking_modify_description": "قم بتحديث تفاصيل حجزك أدناه. قد يؤثر تغيير التاريخ أو المدة على السعر النهائي.",
+  "booking_actions_title": "الإجراءات",
+  "booking_filters_all": "جميع الحجوزات",
+  "error_loading_bookings": "فشل تحميل الحجوزات.",
+  "go_back": "رجوع",
+  "try_again": "حاول مجدداً",
+  "back_to_bookings": "العودة إلى حجوزاتي",
+  "no_bookings_desc": "لم تقم بأي حجوزات بعد. تصفح المساحات للبدء.",
+  "max_capacity_label": "الطاقة الاستيعابية: {capacity}",
+  "additional_services": "الخدمات الإضافية",
+  "cancelled_at": "تم الإلغاء في",
+  "reason": "السبب",
+  "to": "إلى",
+  "online": "أونلاين",
+  "plan": "الخطة",
+  "booking_cancel_refund_full": "يحق لك استرداد كامل المبلغ.",
+  "booking_cancel_refund_partial": "يحق لك استرداد 50% من المبلغ.",
+  "booking_cancel_refund_none": "لن يتم استرداد أي مبلغ.",
+  "booking_price_adjustment_label": "تعديل السعر",
+  "booking_price_new_total": "الإجمالي الجديد",
+  "booking_price_current_total": "الإجمالي الحالي",
+  "booking_schedule_changes": "تغييرات الجدول",
+  "review_leave_review_desc": "شارك تجربتك حول هذه المساحة.",
+  "recurring_booking_title": "حجز متكرر",
+  "recurring_booking_enable": "اجعل هذا الحجز متكرراً",
+  "recurring_booking_pattern_label": "نمط التكرار",
+  "recurring_booking_daily": "يومياً",
+  "recurring_booking_weekly": "أسبوعياً",
+  "recurring_booking_monthly": "شهرياً",
+  "recurring_booking_end_date": "تاريخ الانتهاء",
+  "recurring_booking_occurrences": "عدد المرات",
+  "recurring_booking_summary": "ملخص الحجوزات المتكررة",
+  "recurring_booking_instances_count": "إجمالي المرات:",
+  "recurring_booking_manage_series": "إدارة السلسلة بأكملها",
+  "recurring_booking_manage_instance": "إدارة هذه المرة فقط",
+  "recurring_booking_cancel_series_confirm": "هل أنت متأكد أنك تريد إلغاء سلسلة الحجوزات المتكررة بالكامل؟",
+  "recurring_booking_cancel_series_title": "إلغاء السلسلة المتكررة؟",
+  "recurring_booking_cancel_series_message": "سيؤدي هذا إلى إلغاء جميع المرات المتبقية في هذه السلسلة. لا يمكن التراجع عن هذا الإجراء.",
+  "recurring_booking_cancel_instance": "إلغاء هذه المرة",
+  "recurring_booking_and_more": "... و{count} أخرى.",
+  "recurring_instance_cancelled_toast": "تم إلغاء هذه المرة بنجاح.",
+  "recurring_instance_cancel_error": "فشل إلغاء هذه المرة.",
+  "booking_back_to_details": "← العودة إلى تفاصيل الحجز",
+  "booking_price_estimate_hint": "قم بملء تفاصيل الحجز لعرض تقدير السعر.",
+  "admin_spaces_title": "إدارة المساحات",
+  "admin_space_create_title": "إضافة مساحة جديدة",
+  "admin_space_edit_title": "تعديل المساحة",
+  "admin_space_form_code": "رمز المساحة",
+  "admin_space_form_branch": "الفرع",
+  "admin_space_form_name_en": "الاسم (إنجليزي)",
+  "admin_space_form_name_ar": "الاسم (عربي)",
+  "admin_space_form_desc_en": "الوصف (إنجليزي)",
+  "admin_space_form_desc_ar": "الوصف (عربي)",
+  "admin_space_form_type": "نوع المساحة",
+  "admin_space_form_capacity": "السعة",
+  "admin_space_form_pricing": "خيارات التسعير",
+  "admin_space_form_amenities": "المرافق",
+  "admin_delete_confirm": "هل أنت متأكد من رغبتك في حذف هذه المساحة؟",
+  "admin_delete_blocked_message": "لا يمكن حذف مساحة تحتوي على حجوزات نشطة.",
+  "admin_branches_title": "إدارة الفروع",
+  "admin_branch_create_title": "إنشاء فرع جديد",
+  "admin_branch_edit_title": "تعديل الفرع",
+  "admin_branch_form_code": "رمز الفرع",
+  "admin_branch_form_name_en": "الاسم (بالإنجليزي)",
+  "admin_branch_form_name_ar": "الاسم (بالعربي)",
+  "admin_branch_form_city_ar": "المدينة (بالعربي)",
+  "admin_branch_form_address_ar": "العنوان (بالعربي)",
+  "admin_branch_form_has_studio": "يوجد استوديو",
+  "admin_branch_form_has_studio_desc": "حدد إذا كان الفرع يحتوي على استوديو العقيق",
+  "admin_branch_hours_label": "ساعات العمل",
+  "admin_branch_form_timezone": "المنطقة الزمنية",
+  "admin_branch_form_phone": "رقم الهاتف",
+  "admin_branch_form_whatsapp": "رقم واتساب",
+  "admin_branch_form_email": "البريد الإلكتروني",
+  "admin_branch_form_description_en": "الوصف (بالإنجليزي)",
+  "admin_branch_form_description_ar": "الوصف (بالعربي)",
+  "admin_branch_form_latitude": "خط العرض",
+  "admin_branch_form_longitude": "خط الطول",
+  "admin_branch_contact_info": "معلومات التواصل",
+  "admin_branch_basic_info": "معلومات أساسية",
+  "admin_branch_location_info": "الموقع والمرافق",
+  "branch_updated_success": "تم تحديث الفرع بنجاح!",
+  "branch_created_success": "تم إنشاء الفرع بنجاح!",
+  "branch_save_error": "فشل حفظ معلومات الفرع.",
+  "day_sunday": "الأحد",
+  "day_monday": "الاثنين",
+  "day_tuesday": "الثلاثاء",
+  "day_wednesday": "الأربعاء",
+  "day_thursday": "الخميس",
+  "day_friday": "الجمعة",
+  "day_saturday": "السبت",
+  "branch_status_closed": "مغلق",
+  "branch_status_open": "مفتوح",
+  "common_cancel": "إلغاء",
+  "common_back": "رجوع",
+  "common_save": "حفظ التغييرات",
+  "common_create": "إنشاء",
+  "common_edit": "تعديل",
+  "common_saving": "جاري الحفظ...",
+  "common_yes": "نعم",
+  "common_no": "لا",
+  "common_error_loading": "فشل تحميل البيانات. يرجى المحاولة مرة أخرى.",
+  "common_error_title": "حدث خطأ ما",
+  "common_retry": "حاول مرة أخرى",
+  "common_actions": "الإجراءات",
+  "admin_branch_manage_desc": "إدارة مواقع الفروع وساعات العمل.",
+  "admin_branch_create_desc": "إضافة موقع فرع جديد إلى شبكة بيزنس هب.",
+  "admin_branch_edit_desc": "تحديث معلومات {name}",
+  "admin_branches_no_results": "لم يتم العثور على فروع.",
+  "admin_branches_add_cta": "إضافة فرع",
+  "admin_branch_delete_confirm": "هل أنت متأكد من حذف هذا الفرع؟",
+  "admin_branch_delete_warning": "هل أنت متأكد من رغبتك في حذف {name}؟ لا يمكن التراجع عن هذا الإجراء.",
+  "admin_branch_delete_blocked_message": "هذا الفرع يحتوي على مساحات مرتبطة به ولا يمكن حذفه.",
+  "branch_deleted_success": "تم حذف الفرع بنجاح!",
+  "branch_delete_error": "فشل حذف الفرع.",
+  "common_delete": "حذف",
+  "analytics_overview_title": "نظرة عامة على التحليلات",
+  "analytics_revenue_label": "إجمالي الإيرادات",
+  "analytics_bookings_label": "إجمالي الحجوزات",
+  "analytics_utilization_label": "معدل الإشغال",
+  "analytics_active_users_label": "المستخدمين النشطين",
+  "analytics_revenue_trends": "اتجاهات الإيرادات",
+  "analytics_utilization_trends": "اتجاهات الإشغال",
+  "analytics_revenue_breakdown": "تفصيل الإيرادات",
+  "analytics_utilization_by_branch": "الإشغال حسب الفرع",
+  "analytics_export_cta": "تصدير التقرير",
+  "analytics_export_csv": "تصدير كـ CSV",
+  "analytics_export_pdf": "تصدير كـ PDF",
+  "analytics_date_range": "النطاق الزمني",
+  "select_date_range_placeholder": "اختر النطاق الزمني",
+  "notification_center_title": "التنبيهات",
+  "notification_mark_read_all": "تحديد الكل كمقروء",
+  "notification_mark_read_cta": "تحديد كمقروء",
+  "notification_new_alert": "لديك تنبيهات جديدة",
+  "notification_empty": "لا توجد تنبيهات بعد",
+  "notification_view_all": "عرض جميع الحجوزات",
+  "notification_booking_confirmed": "تم تأكيد الحجز",
+  "notification_booking_reminder": "تذكير بموعد الحجز",
+  "notification_booking_cancelled": "تم إلغاء الحجز",
+  "notification_booking_modified": "تم تعديل الحجز",
+  "notification_preferences_title": "تفضيلات التنبيهات",
+  "notification_preferences_desc": "إدارة كيفية تلقي التنبيهات",
+  "notification_save_preferences": "حفظ التفضيلات",
+  "notification_email_label": "تنبيهات البريد الإلكتروني",
+  "notification_whatsapp_label": "تنبيهات واتساب",
+  "notification_push_label": "تنبيهات المتصفح",
+  "notification_reminder_label": "تذكيرات الحجز",
+  "notification_preferences_channels": "قنوات التنبيهات",
+  "notification_preferences_channels_desc": "اختر كيف تريد أن يتم إعلامك.",
+  "notification_email_desc": "تلقي التحديثات المهمة عبر البريد الإلكتروني.",
+  "notification_whatsapp_desc": "احصل على تنبيهات سريعة على الواتساب.",
+  "notification_push_desc": "تلقي إشعارات الدفع في المتصفح.",
+  "notification_preferences_events": "أحداث التنبيهات",
+  "notification_preferences_events_desc": "اختر الأحداث التي تريد إعلامك بها.",
+  "notification_reminder_desc": "احصل على تذكير بالحجوزات القادمة.",
+  "notification_promotions_label": "العروض والتخفيضات",
+  "notification_promotions_desc": "تلقي تحديثات حول العروض الترويجية والعروض الخاصة.",
+  "saving": "جاري الحفظ...",
+  "review_form_rating_label": "التقييم",
+  "review_form_comment_label": "مراجعتك",
+  "review_submit_cta": "إرسال المراجعة",
+  "review_list_title": "المراجعات",
+  "review_leave_review_cta": "اترك مراجعة",
+  "review_no_reviews": "لا توجد مراجعات بعد.",
+  "review_form_success": "تم إرسال المراجعة بنجاح!",
+  "review_form_error": "فشل في إرسال المراجعة.",
+  "review_form_comment_placeholder": "شارك تجربتك...",
+  "review_already_submitted": "لقد قمت بمراجعة هذا الحجز بالفعل.",
+  "review_average_rating_label": "متوسط التقييم",
+  "review_based_on": "بناءً على {count} مراجعات",
+  "common_not_found_title": "الصفحة غير موجودة",
+  "common_not_found_description": "عذراً، لم نتمكن من العثور على الصفحة التي تبحث عنها. ربما تم نقلها أو حذفها أو لم تكن موجودة أصلاً.",
+  "common_return_home": "العودة إلى الرئيسية",
+  "pagination_previous": "السابق",
+  "pagination_page": "صفحة",
+  "pagination_of": "من",
+  "pagination_next": "التالي",
+  "error_loading_data": "خطأ في تحميل البيانات",
+  "book_now": "احجز الآن",
+  "workspaces_type_private_office": "مكتب خاص",
+  "workspaces_type_shared_desk": "مكتب مشترك",
+  "workspaces_type_hot_desk": "مكتب مرن",
+  "workspaces_type_dedicated_desk": "مكتب مخصص",
+  "workspaces_type_conference_hall": "قاعة مؤتمرات",
+  "workspaces_type_coworking_area": "مساحة عمل مشتركة",
+  "statusActive": "نشط",
+  "statusInactive": "غير نشط",
+  "cancel": "إلغاء",
+  "save": "حفظ",
+  "statusHelper": "الحالة",
+  "dashboard_welcome": "مرحباً بك في لوحة التحكم",
+  "actions": "الإجراءات",
+  "admin_subscriptions_title": "إدارة الاشتراكات",
+  "admin_subscriptions_desc": "عرض وإدارة جميع اشتراكات العملاء.",
+  "admin_subscriptions_search_placeholder": "البحث بالاسم أو البريد الإلكتروني...",
+  "admin_subscriptions_filter_status": "تصفية حسب الحالة",
+  "admin_subscriptions_filter_all_statuses": "جميع الحالات",
+  "admin_subscriptions_filter_plan": "تصفية حسب الخطة",
+  "admin_subscriptions_filter_all_plans": "جميع الخطط",
+  "admin_subscriptions_col_user": "المستخدم",
+  "admin_subscriptions_col_email": "البريد الإلكتروني",
+  "admin_subscriptions_col_plan": "الخطة",
+  "admin_subscriptions_col_status": "الحالة",
+  "admin_subscriptions_col_start_date": "تاريخ البدء",
+  "admin_subscriptions_col_renewal_date": "تاريخ التجديد",
+  "admin_subscriptions_col_price": "السعر الشهري",
+  "admin_subscriptions_view_details": "عرض التفاصيل",
+  "admin_subscriptions_cancel_cta": "إلغاء الاشتراك",
+  "admin_subscriptions_no_results": "لا توجد اشتراكات.",
+  "admin_subscription_details_title": "تفاصيل الاشتراك",
+  "admin_subscription_details_desc": "معلومات الاشتراك الكاملة لهذا العميل.",
+  "admin_subscription_plan_label": "الخطة",
+  "start_date": "تاريخ البدء",
+  "yes": "نعم",
+  "no": "لا",
+  "admin_subscription_user_section": "معلومات العميل",
+  "admin_subscription_start_date": "تاريخ البدء",
+  "admin_subscription_renewal_date": "تاريخ التجديد",
+  "admin_subscription_end_date": "تاريخ الانتهاء",
+  "admin_subscription_monthly_price": "السعر الشهري",
+  "subscription_plan_office_monthly": "مكتب شهري",
+  "subscription_plan_shared_desk_monthly": "مكتب مشترك شهري",
+  "subscription_plan_shared_desk_daily": "مكتب مشترك يومي",
+  "subscription_plan_BASIC_TENANT": "مستأجر أساسي",
+  "subscription_plan_PREMIUM_TENANT": "مستأجر مميز",
+  "subscription_plan_undefined": "خطة غير محددة",
+  "additional_services_management": "إدارة الخدمات الإضافية",
+  "additional_services_management_description": "إدارة حجوزات الخدمات والكتالوج وتعيينات الفروع.",
+  "bookings_today": "حجوزات اليوم",
+  "pending_bookings": "الحجوزات المعلقة",
+  "revenue_this_month": "إيرادات هذا الشهر",
+  "confirmed_this_month": "المؤكدة هذا الشهر",
+  "top_service": "أعلى خدمة",
+  "requires_attention": "يتطلب الانتباه",
+  "no_data": "لا توجد بيانات",
+  "summary": "الملخص",
+  "bookings": "الحجوزات",
+  "catalog": "الكتالوج",
+  "branch_assignments": "تعيينات الفروع",
+  "update_booking_status": "تحديث حالة الحجز",
+  "update_booking_status_description": "اختر الحالة الجديدة لهذا الحجز.",
+  "new_status": "الحالة الجديدة",
+  "select_status": "اختر الحالة...",
+  "enter_cancellation_reason": "أدخل سبب الإلغاء...",
+  "service_booking_details": "تفاصيل حجز الخدمة",
+  "booking_id": "رقم الحجز",
+  "booking_date": "تاريخ الحجز",
+  "price_at_booking": "السعر عند الحجز",
+  "total_amount": "المبلغ الإجمالي",
+  "cancellation_reason": "سبب الإلغاء",
+  "search_by_name_or_id": "البحث بالاسم أو الرقم...",
+  "no_bookings_found": "لا توجد حجوزات.",
+  "showing_page_of_total": "صفحة {page} من {total} ({count} نتيجة)",
+  "all_statuses": "جميع الحالات",
+  "all_types": "جميع الأنواع",
+  "amount": "المبلغ",
+  "branch": "الفرع",
+  "date": "التاريخ",
+  "id": "الرقم",
+  "inactive": "غير نشط",
+  "name": "الاسم",
+  "next": "التالي",
+  "previous": "السابق",
+  "price": "السعر",
+  "quantity": "الكمية",
+  "service": "الخدمة",
+  "service_type": "نوع الخدمة",
+  "status": "الحالة",
+  "type": "النوع",
+  "user": "المستخدم",
+  "active": "نشط",
+  "pending": "معلق",
+  "confirmed": "مؤكد",
+  "completed": "مكتمل",
+  "cancelled": "ملغي",
+  "printing": "طباعة",
+  "storage": "تخزين",
+  "mailbox": "صندوق البريد",
+  "studio": "استوديو",
+  "add_service": "إضافة خدمة",
+  "no_services_found": "لا توجد خدمات.",
+  "showing": "عرض {start}–{end} من {total}",
+  "assigned_branches": "الفروع المعينة",
+  "pending_bookings_count": "{count} حجز معلق",
+  "no_branches": "لا توجد فروع",
+  "name_en": "الاسم (إنجليزي)",
+  "name_ar": "الاسم (عربي)",
+  "base_price": "السعر الأساسي",
+  "pricing_unit": "وحدة التسعير",
+  "description_en": "الوصف (إنجليزي)",
+  "description_ar": "الوصف (عربي)",
+  "enter_service_name": "أدخل اسم الخدمة (إنجليزي)",
+  "enter_service_name_ar": "أدخل اسم الخدمة (عربي)",
+  "enter_pricing_unit": "مثال: لكل صفحة، لكل شهر",
+  "enter_description": "أدخل الوصف...",
+  "enter_description_ar": "أدخل الوصف بالعربية...",
+  "create_service": "إنشاء خدمة",
+  "create_service_description": "أدخل التفاصيل لإنشاء خدمة إضافية جديدة.",
+  "edit_service": "تعديل الخدمة",
+  "edit_service_description": "تحديث تفاصيل هذه الخدمة.",
+  "deactivate_service_warning": "تعطيل الخدمة",
+  "deactivate_service_warning_description": "سيؤدي هذا الإجراء إلى تعطيل الخدمة وجعلها غير متاحة للحجوزات الجديدة.",
+  "this_service_has_bookings": "هذه الخدمة لديها {count} حجز نشط.",
+  "confirmed_bookings_count": "{count} حجز مؤكد",
+  "existing_bookings_unaffected": "لن تتأثر الحجوزات الموجودة.",
+  "confirm_deactivate_service": "هل أنت متأكد من تعطيل هذه الخدمة؟",
+  "common_deactivating": "جاري التعطيل...",
+  "assign_branch": "تعيين فرع",
+  "assign_service_to_branch": "تعيين الخدمة إلى فرع",
+  "assigned_branches_label": "الفروع المعينة",
+  "all_branches_assigned": "جميع الفروع معينة.",
+  "currently_assigned_branches": "الفروع المعينة حالياً",
+  "select_branch_to_assign_service": "اختر فرعاً لتعيين الخدمة إليه",
+  "remove_branch_assignment": "إزالة تعيين الفرع",
+  "confirm_remove_branch_assignment": "هل أنت متأكد من إزالة تعيين هذا الفرع؟",
+  "common_assign": "تعيين",
+  "common_assigning": "جاري التعيين...",
+  "common_remove": "إزالة",
+  "common_removing": "جاري الإزالة...",
+  "common_close": "إغلاق",
+  "common_confirm": "تأكيد",
+  "common_update": "تحديث",
+  "booking_status_updated_successfully": "تم تحديث حالة الحجز بنجاح",
+  "failed_to_update_booking_status": "فشل تحديث حالة الحجز",
+  "service_created_successfully": "تم إنشاء الخدمة بنجاح",
+  "service_updated_successfully": "تم تحديث الخدمة بنجاح",
+  "service_status_updated_successfully": "تم تحديث حالة الخدمة بنجاح",
+  "service_assigned_to_branch": "تم تعيين الخدمة إلى الفرع بنجاح",
+  "service_removed_from_branch": "تم إزالة الخدمة من الفرع بنجاح",
+  "failed_to_create_service": "فشل إنشاء الخدمة",
+  "failed_to_update_service": "فشل تحديث الخدمة",
+  "failed_to_update_service_status": "فشل تحديث حالة الخدمة",
+  "failed_to_assign_service": "فشل تعيين الخدمة إلى الفرع",
+  "failed_to_remove_service": "فشل إزالة الخدمة من الفرع",
+  "space_bookings": "حجوزات المساحات",
+  "space_bookings_description": "إدارة ومراجعة جميع طلبات حجز مساحات العمل المشترك.",
+  "no_bookings_match_filters": "لم يتم العثور على حجوزات تطابق الفلاتر المحددة.",
+  "search_by_name_or_code": "البحث باسم العميل أو رمز التأكيد",
+  "sort_by": "ترتيب حسب",
+  "sort_order": "الترتيب",
+  "ascending": "تصاعدي",
+  "descending": "تنازلي",
+  "per_page": "لكل صفحة",
+  "date_time": "التاريخ / الوقت",
+  "client": "العميل",
+  "space": "المساحة",
+  "created_date": "تاريخ الإنشاء",
+  "confirmation_code": "رمز التأكيد",
+  "all_branches": "جميع الفروع",
+  "all_spaces": "جميع المساحات",
+  "approve_booking": "الموافقة على الحجز",
+  "approve_booking_confirmation": "هل أنت متأكد من الموافقة على الحجز {code}؟",
+  "yes_approve": "نعم، موافقة",
+  "cancel_booking": "إلغاء الحجز",
+  "cancel_booking_description": "لا يمكن التراجع عن هذا الإجراء. يرجى تقديم سبب الإلغاء.",
+  "issue_full_refund": "إصدار استرداد كامل",
+  "yes_cancel": "نعم، إلغاء",
+  "booking_details": "تفاصيل الحجز",
+  "booking_details_description": "المعلومات الكاملة لهذا الحجز.",
+  "booking_information": "معلومات الحجز",
+  "client_information": "معلومات العميل",
+  "space_information": "معلومات المساحة",
+  "payment_information": "معلومات الدفع",
+  "cancellation_details": "تفاصيل الإلغاء",
+  "attendees": "عدد الحضور",
+  "user_id": "معرف المستخدم",
+  "pricing_tier": "مستوى التسعير",
+  "base_amount": "المبلغ الأساسي",
+  "discount_amount": "مبلغ الخصم",
+  "final_amount": "المبلغ النهائي",
+  "payment_method": "طريقة الدفع",
+  "refund_issued": "تم إصدار الاسترداد",
+  "close": "إغلاق",
+  "adminSpaceBookings": {
+    "space_bookings": "حجوزات المساحات",
+    "space_bookings_description": "إدارة ومراقبة جميع حجوزات المساحات عبر الفروع",
+    "actions": "الإجراءات",
+    "all_branches": "جميع الفروع",
+    "all_spaces": "جميع المساحات",
+    "all_statuses": "جميع الحالات",
+    "amount": "المبلغ",
+    "ascending": "تصاعدي",
+    "booking_date": "تاريخ الحجز",
+    "cancelled": "ملغاة",
+    "client": "العميل",
+    "created_date": "تاريخ الإنشاء",
+    "descending": "تنازلي",
+    "no_bookings_match_filters": "لا توجد حجوزات تطابق الفلاتر",
+    "per_page": "لكل صفحة",
+    "reset": "إعادة تعيين",
+    "search_by_name_or_code": "البحث بالاسم أو الرمز",
+    "sort_by": "الترتيب حسب",
+    "sort_order": "ترتيب الطلب",
+    "approve_booking": "اعتماد الحجز",
+    "cancel": "إلغاء",
+    "yes_approve": "نعم، اعتماد",
+    "cancel_booking": "إلغاء الحجز",
+    "cancel_booking_description": "هل أنت متأكد من أنك تريد إلغاء هذا الحجز؟",
+    "enter_cancellation_reason": "أدخل سبب الإلغاء",
+    "go_back": "العودة",
+    "issue_full_refund": "إصدار استرداد كامل",
+    "yes_cancel": "نعم، إلغاء",
+    "booking_details": "تفاصيل الحجز",
+    "booking_details_description": "المعلومات الكاملة لهذا الحجز.",
+    "booking_information": "معلومات الحجز",
+    "additional_services": "الخدمات الإضافية",
+    "attendees": "عدد الحضور",
+    "base_amount": "المبلغ الأساسي",
+    "branch": "الفرع",
+    "cancellation_details": "تفاصيل الإلغاء",
+    "cancellation_reason": "سبب الإلغاء",
+    "client_information": "معلومات العميل",
+    "close": "إغلاق",
+    "completed": "مكتملة",
+    "confirmation_code": "رمز التأكيد",
+    "confirmed": "مؤكدة",
+    "date_time": "التاريخ/الوقت",
+    "discount_amount": "مبلغ الخصم",
+    "final_amount": "المبلغ النهائي",
+    "name": "الاسم",
+    "no": "لا",
+    "payment_information": "معلومات الدفع",
+    "payment_method": "طريقة الدفع",
+    "pending": "قيد الانتظار",
+    "pricing_tier": "مستوى التسعير",
+    "refund_issued": "تم إصدار الاسترداد",
+    "space": "المساحة",
+    "space_information": "معلومات المساحة",
+    "status": "الحالة",
+    "user_id": "معرف المستخدم",
+    "yes": "نعم",
+    "showing": "عرض {from}-{to} من {total}",
+    "approve_booking_confirmation": "هل أنت متأكد من أنك تريد اعتماد الحجز {code}؟",
+    "pending_bookings": "الحجوزات المعلقة",
+    "bookings_today": "حجوزات اليوم",
+    "confirmed_this_month": "المؤكدة هذا الشهر",
+    "revenue_this_month": "إيرادات هذا الشهر",
+    "previous": "السابق",
+    "next": "التالي"
+  },
+  "admin_reviews_title": "مراجعات الحجوزات",
+  "admin_reviews_subtitle": "عرض وإدارة جميع مراجعات العملاء",
+  "error_loading_reviews": "فشل تحميل المراجعات",
+  "retry": "إعادة المحاولة",
+  "showing_items": "عرض {from} إلى {to} من {total} مراجعة",
+  "items_per_page": "عناصر في الصفحة:",
+  "page_x_of_y": "صفحة {current} من {total}",
+  "reports": {
+    "title": "التقارير",
+    "page_title": "تقارير الإدارة",
+    "filter": "التصفية",
+    "date_range": "النطاق الزمني",
+    "from_date": "من تاريخ",
+    "to_date": "إلى تاريخ",
+    "branch": "الفرع",
+    "all_branches": "جميع الفروع",
+    "space": "المساحة",
+    "all_spaces": "جميع المساحات",
+    "granularity": "الدقة الزمنية",
+    "daily": "يومي",
+    "weekly": "أسبوعي",
+    "monthly": "شهري",
+    "apply_filters": "تطبيق الفلاتر",
+    "clear_filters": "مسح الفلاتر",
+    "export": "تصدير",
+    "export_csv": "تصدير كـ CSV",
+    "export_pdf": "تصدير كـ PDF",
+    "loading": "جاري تحميل بيانات التقرير...",
+    "error_loading": "فشل تحميل بيانات التقرير",
+    "empty_state": "لا توجد بيانات متاحة للفلاتر المحددة",
+    "date_range_error": "لا يمكن أن يتجاوز النطاق الزمني سنتين (730 يوم)"
+  },
+  "reports_statistics": {
+    "title": "إحصائيات الحجوزات",
+    "subtitle": "نظرة عامة على مؤشرات الحجوزات والأداء",
+    "kpi_total_bookings": "إجمالي الحجوزات",
+    "kpi_total_revenue": "إجمالي الإيرادات",
+    "kpi_avg_revenue": "متوسط الإيراد لكل حجز",
+    "kpi_avg_duration": "متوسط المدة (ساعة)",
+    "kpi_cancellation_rate": "معدل الإلغاء",
+    "kpi_unique_users": "المستخدمون الفريدون",
+    "kpi_avg_bookings_user": "متوسط الحجوزات لكل مستخدم",
+    "breakdown_by_status": "التفصيل حسب الحالة",
+    "breakdown_by_pricing_tier": "التفصيل حسب فئة التسعير",
+    "breakdown_by_space_type": "التفصيل حسب نوع المساحة",
+    "col_status": "الحالة",
+    "col_count": "العدد",
+    "col_revenue": "الإيرادات",
+    "col_avg_duration": "متوسط المدة",
+    "col_pricing_tier": "فئة التسعير",
+    "col_space_type": "نوع المساحة",
+    "status_pending": "قيد الانتظار",
+    "status_confirmed": "مؤكد",
+    "status_completed": "مكتمل",
+    "status_cancelled": "ملغي",
+    "pricing_tier_hourly": "بالساعة",
+    "pricing_tier_daily": "يومي",
+    "pricing_tier_weekly": "أسبوعي",
+    "pricing_tier_monthly": "شهري",
+    "empty_state": "لا توجد بيانات حجوزات متاحة للفلاتر المحددة"
+  },
+  "reports_utilization": {
+    "title": "استغلال المساحات",
+    "subtitle": "تحليل أداء المساحات وكفاءتها",
+    "kpi_total_spaces": "إجمالي المساحات",
+    "kpi_total_bookings": "إجمالي الحجوزات",
+    "kpi_total_revenue": "إجمالي الإيرادات",
+    "kpi_avg_utilization": "متوسط معدل الاستغلال",
+    "kpi_max_utilization": "أعلى معدل استغلال",
+    "kpi_min_utilization": "أدنى معدل استغلال",
+    "col_space": "المساحة",
+    "col_branch": "الفرع",
+    "col_type": "النوع",
+    "col_utilization": "الاستغلال",
+    "col_hours_booked": "ساعات محجوزة",
+    "col_revenue": "الإيرادات",
+    "col_avg_revenue": "متوسط الإيراد/حجز",
+    "col_avg_attendees": "متوسط الحضور",
+    "archived": "مؤرشف",
+    "unavailable_tooltip": "معدل الاستغلال غير متوفر - لم يتم تكوين السعة أو ساعات التشغيل لهذه المساحة",
+    "top_performers": "أعلى 5 مساحات استغلالاً",
+    "underutilized": "أدنى 5 مساحات استغلالاً",
+    "summary_by_type": "ملخص حسب نوع المساحة",
+    "col_avg_duration": "متوسط المدة",
+    "empty_state": "لا توجد بيانات استغلال مساحات متاحة للفلاتر المحددة"
+  },
+  "reports_branch_performance": {
+    "title": "أداء الفروع",
+    "subtitle": "مقارنة مؤشرات الفروع جنباً إلى جنب",
+    "kpi_total_branches": "إجمالي الفروع",
+    "kpi_total_bookings": "إجمالي الحجوزات",
+    "kpi_total_revenue": "إجمالي الإيرادات",
+    "col_branch": "الفرع",
+    "col_city": "المدينة",
+    "col_bookings": "الحجوزات",
+    "col_revenue": "الإيرادات (ريال)",
+    "col_avg_revenue": "متوسط الإيراد/حجز",
+    "col_avg_utilization": "متوسط الاستغلال %",
+    "col_cancellation_rate": "معدل الإلغاء %",
+    "col_avg_duration": "متوسط المدة",
+    "col_unique_users": "المستخدمون الفريدون",
+    "col_bookings_user": "حجوزات/مستخدم",
+    "top_by_revenue": "الأعلى إيراداتاً",
+    "top_by_utilization": "الأعلى استغلالاً",
+    "top_by_bookings": "الأكثر حجوزاً",
+    "empty_state": "لا توجد بيانات أداء فروع متاحة للفلاتر المحددة"
+  },
+  "reports_trends": {
+    "title": "تحليل الاتجاهات",
+    "subtitle": "تصور مسار الحجوزات والإيرادات عبر الزمن",
+    "kpi_total_bookings": "إجمالي الحجوزات",
+    "kpi_total_revenue": "إجمالي الإيرادات",
+    "kpi_avg_bookings_day": "متوسط الحجوزات/يوم",
+    "kpi_avg_revenue_day": "متوسط الإيرادات/يوم",
+    "kpi_booking_growth": "معدل نمو الحجوزات",
+    "kpi_revenue_growth": "معدل نمو الإيرادات",
+    "kpi_avg_cancellation": "متوسط معدل الإلغاء",
+    "peak_period": "فترة الذروة",
+    "lowest_period": "أدنى فترة",
+    "breakdown_by_status": "التفصيل حسب الحالة",
+    "breakdown_by_space_type": "التفصيل حسب نوع المساحة",
+    "col_date": "التاريخ",
+    "col_status": "الحالة",
+    "col_space_type": "نوع المساحة",
+    "col_bookings": "الحجوزات",
+    "col_revenue": "الإيرادات",
+    "col_trend": "الاتجاه",
+    "trend_up": "تصاعدي",
+    "trend_down": "تنازلي",
+    "trend_stable": "مستقر",
+    "suggest_monthly": "للنطاقات الزمنية التي تزيد عن 90 يوم، الدقة الزمنية الشهرية توفر رؤى أفضل",
+    "growth_na": "غير متوفر",
+    "empty_state": "لا توجد بيانات اتجاهات متاحة للنطاق الزمني المحدد"
+  },
+  "reports_user_behavior": {
+    "title": "تحليل سلوك المستخدمين",
+    "subtitle": "تحليل تفاعل المستخدمين وأنماطهم",
+    "kpi_total_users": "إجمالي المستخدمين",
+    "kpi_new_users": "المستخدمون الجدد",
+    "kpi_returning_users": "المستخدمون العائدون",
+    "kpi_avg_bookings_user": "متوسط الحجوزات/مستخدم",
+    "kpi_avg_revenue_user": "متوسط الإيرادات/مستخدم (ريال)",
+    "tenant_metrics": "مقاييس المستأجرين",
+    "kpi_tenant_users": "مستخدمو الاشتراك",
+    "kpi_tenant_user_pct": "نسبة مستخدمي الاشتراك %",
+    "kpi_avg_bookings_tenant": "متوسط حجوزات/مشترك",
+    "kpi_tenant_booking_pct": "نسبة حجوزات المشتركين %",
+    "kpi_tenant_revenue": "إيرادات المشتركين",
+    "kpi_tenant_revenue_pct": "نسبة إيرادات المشتركين %",
+    "top_users_bookings": "أعلى 5 حجوزاً",
+    "top_users_revenue": "أعلى 5 إيراداتاً",
+    "col_name": "الاسم",
+    "col_email": "البريد الإلكتروني",
+    "col_bookings": "الحجوزات",
+    "col_revenue": "الإيرادات (ريال)",
+    "summary_title": "ملخص الاستخدام",
+    "most_booked_space_type": "أكثر نوع مساحة حجزاً",
+    "most_used_pricing_tier": "أكثر فئة تسعير استخداماً",
+    "empty_state": "لا توجد بيانات نشاط مستخدمين متاحة للفلاتر المحددة"
+  },
+  "reports_reviews": {
+    "title": "مراجعات الحجوزات",
+    "subtitle": "تحليل ملاحظات العملاء وتقييماتهم",
+    "kpi_total_reviews": "إجمالي المراجعات",
+    "kpi_avg_rating": "متوسط التقييم",
+    "aggregate_by_space": "التقييمات حسب المساحة",
+    "reviews_list": "المراجعات الفردية",
+    "col_user": "المستخدم",
+    "col_space": "المساحة",
+    "col_branch": "الفرع",
+    "col_rating": "التقييم",
+    "col_comment": "التعليق",
+    "col_date": "التاريخ",
+    "filter_by_space": "تصفية حسب المساحة",
+    "filter_by_rating": "تصفية حسب التقييم",
+    "min_rating": "أدنى تقييم",
+    "max_rating": "أعلى تقييم",
+    "filter_by_user": "تصفية حسب المستخدم",
+    "user_id": "معرف المستخدم",
+    "rating_distribution": "توزيع التقييمات",
+    "stars": "{count} نجوم",
+    "no_comment": "لا يوجد تعليق",
+    "export": "تصدير",
+    "empty_state": "لا توجد مراجعات تطابق الفلاتر المحددة"
+  }
+}

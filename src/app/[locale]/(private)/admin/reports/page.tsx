@@ -1,0 +1,9 @@
+import { redirect } from "next/navigation";
+
+export default function ReportsPage({
+  params,
+}: {
+  params: { locale: string };
+}) {
+  redirect(`/${params.locale}/admin/reports/statistics`);
+}

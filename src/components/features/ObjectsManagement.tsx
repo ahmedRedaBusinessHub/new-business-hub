@@ -1,0 +1,635 @@
+"use client";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Button } from "@/components/ui/Button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/Table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/AlertDialog";
+import { Badge } from "@/components/ui/Badge";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  Search,
+  Eye,
+  Copy,
+  ChevronRight,
+} from "lucide-react";
+import { DynamicIcon } from "@/lib/icon-map";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from "@/components/ui/Pagination";
+import { Select } from "@/components/ui/Select";
+import { ObjectForm } from "./ObjectForm";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Dialog";
+import DynamicView from "../shared/DynamicView";
+import { Input } from "@/components/ui/Input";
+import { toast } from "sonner";
+import { useI18n } from "@/hooks/useI18n";
+
+export interface ObjectItem {
+  id: number;
+  name: string;
+  namespace: string;
+  type: number;
+  icon: string | null;
+  parent_id: number | null;
+  description: string | null;
+  order_no: number | null;
+  status: number;
+  organization_id: number;
+  created_at: string | null;
+  parent?: ObjectItem | null;
+  [key: string]: any;
+}
+
+export function ObjectsManagement() {
+  const { t } = useI18n("admin");
+  const [objects, setObjects] = useState<ObjectItem[]>([]);
+
+  const TYPE_LABELS: Record<number, string> = {
+    1: t("objects.menu"),
+    2: t("objects.module"),
+    3: t("objects.permission"),
+    4: t("objects.page"),
+    5: t("objects.action"),
+  };
+  const [allObjects, setAllObjects] = useState<ObjectItem[]>([]); // For parent dropdown
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [editingObject, setEditingObject] = useState<ObjectItem | null>(null);
+  const [viewingObject, setViewingObject] = useState<ObjectItem | null>(null);
+  const [deletingObjectId, setDeletingObjectId] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setCurrentPage(1);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const isFetchingRef = useRef(false);
+  const lastFetchParamsRef = useRef<string>("");
+
+  const fetchObjects = useCallback(async () => {
+    const params = new URLSearchParams({
+      page: currentPage.toString(),
+      limit: pageSize.toString(),
+      ...(debouncedSearch && { search: debouncedSearch }),
+    });
+    const paramsString = params.toString();
+
+    if (isFetchingRef.current && lastFetchParamsRef.current === paramsString) {
+      return;
+    }
+
+    isFetchingRef.current = true;
+    lastFetchParamsRef.current = paramsString;
+
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/objects?${paramsString}`);
+      if (!response.ok) {
+        throw new Error(t("objects.failedToLoad"));
+      }
+      const data = await response.json();
+      const objectsData = Array.isArray(data.data.data) ? data.data.data : [];
+      console.log("🚀 ~ ObjectsManagement ~ objectsData:", data);
+      setObjects(objectsData);
+      setTotal(data.data.total || 0);
+      setTotalPages(Math.ceil(data.data.total / data.data.limit) || 0);
+    } catch (error: any) {
+      console.error("Error fetching objects:", error);
+      toast.error(t("objects.failedToLoad"));
+      setObjects([]);
+      setTotal(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+      isFetchingRef.current = false;
+    }
+  }, [currentPage, pageSize, debouncedSearch]);
+
+  const allObjectsFetchedRef = useRef(false);
+
+  // Fetch all objects for parent dropdown (only once)
+  const fetchAllObjects = useCallback(async () => {
+    if (allObjectsFetchedRef.current) return;
+
+    try {
+      allObjectsFetchedRef.current = true;
+      const response = await fetch(`/api/objects?limit=1000`);
+      if (!response.ok) {
+        throw new Error(t("objects.failedToLoad"));
+      }
+      const data = await response.json();
+      console.log("🚀 ~ ObjectsManagement ~ data:", data);
+      const objectsData = data?.data?.data || [];
+      setAllObjects(objectsData);
+    } catch (error: any) {
+      console.error("Error fetching all objects:", error);
+      allObjectsFetchedRef.current = false; // Reset on error to allow retry
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchObjects();
+    fetchAllObjects();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, debouncedSearch]);
+
+  const handleCreate = async (
+    objectData: Omit<ObjectItem, "id" | "created_at" | "updated_at" | "parent">,
+  ) => {
+    try {
+      const response = await fetch("/api/objects", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(objectData),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || t("objects.failedToCreate"));
+      }
+
+      toast.success(t("objects.objectCreated"));
+      setIsFormOpen(false);
+      fetchObjects();
+      fetchAllObjects();
+    } catch (error: any) {
+      toast.error(error.message || t("objects.failedToCreate"));
+    }
+  };
+
+  const handleUpdate = async (
+    objectData: Omit<ObjectItem, "id" | "created_at" | "updated_at" | "parent">,
+  ) => {
+    if (!editingObject) return;
+
+    try {
+      const response = await fetch(`/api/objects/${editingObject.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(objectData),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || t("objects.failedToUpdate"));
+      }
+
+      toast.success(t("objects.objectUpdated"));
+      setEditingObject(null);
+      setIsFormOpen(false);
+      fetchObjects();
+      fetchAllObjects();
+    } catch (error: any) {
+      toast.error(error.message || t("objects.failedToUpdate"));
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await fetch(`/api/objects/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || t("objects.failedToDelete"));
+      }
+
+      toast.success(t("objects.objectDeleted"));
+      setDeletingObjectId(null);
+      fetchObjects();
+      fetchAllObjects();
+    } catch (error: any) {
+      toast.error(error.message || t("objects.failedToDelete"));
+    }
+  };
+
+  const handleEdit = (object: ObjectItem) => {
+    setEditingObject(object);
+    setIsFormOpen(true);
+  };
+
+  const handleView = (object: ObjectItem) => {
+    setViewingObject(object);
+    setIsViewOpen(true);
+  };
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setEditingObject(null);
+  };
+
+  const handleCloseView = () => {
+    setIsViewOpen(false);
+    setViewingObject(null);
+  };
+
+  const copyNamespace = (namespace: string) => {
+    navigator.clipboard.writeText(namespace);
+    toast.success(t("objects.namespaceCopied"));
+  };
+
+  const getTypeLabel = (type: number) => TYPE_LABELS[type] || `Type ${type}`;
+
+  const getParentName = (parentId: number | null) => {
+    if (!parentId) return "-";
+    const parent = allObjects.find((o) => o.id === parentId);
+    return parent?.name || `ID: ${parentId}`;
+  };
+
+  return (
+    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2>{t("objects.title")}</h2>
+          <p className="text-muted-foreground">{t("objects.subtitle")}</p>
+        </div>
+        <Button onClick={() => setIsFormOpen(true)}>
+          <Plus className="mr-2 size-4" />
+          {t("objects.addObject")}
+        </Button>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder={t("objects.searchObjects")}
+            className="pl-8"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <Select
+          error={undefined}
+          value={pageSize.toString()}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value));
+            setCurrentPage(1);
+          }}
+          className="w-32"
+        >
+          <option value="10">10 {t("table.itemsPerPage")}</option>
+          <option value="20">20 {t("table.itemsPerPage")}</option>
+          <option value="50">50 {t("table.itemsPerPage")}</option>
+          <option value="100">100 {t("table.itemsPerPage")}</option>
+        </Select>
+      </div>
+
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t("common.name")}</TableHead>
+              <TableHead>{t("objects.namespace")}</TableHead>
+              <TableHead>{t("objects.type")}</TableHead>
+              <TableHead>{t("objects.parent")}</TableHead>
+              <TableHead>{t("objects.orderNo")}</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
+              <TableHead className="text-right">
+                {t("common.actions")}
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={7} className="h-24 text-center">
+                  {t("common.loading")}
+                </TableCell>
+              </TableRow>
+            ) : objects.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="h-24 text-center">
+                  {t("common.noData")}
+                </TableCell>
+              </TableRow>
+            ) : (
+              objects.map((object) => (
+                <TableRow key={object.id}>
+                  <TableCell className="font-medium">
+                    <div className="flex items-center gap-2">
+                      {object.icon && (
+                        <DynamicIcon
+                          name={object.icon}
+                          className="text-muted-foreground"
+                          size={18}
+                        />
+                      )}
+                      {object.name}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <code className="text-xs bg-muted px-2 py-1 rounded">
+                        {object.namespace}
+                      </code>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={() => copyNamespace(object.namespace)}
+                        title={t("objects.copyNamespace")}
+                      >
+                        <Copy className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{getTypeLabel(object.type)}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    {object.parent_id ? (
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <ChevronRight className="h-3 w-3" />
+                        {getParentName(object.parent_id)}
+                      </div>
+                    ) : (
+                      "-"
+                    )}
+                  </TableCell>
+                  <TableCell>{object.order_no ?? "-"}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={object.status === 1 ? "default" : "secondary"}
+                    >
+                      {object.status === 1
+                        ? t("common.active")
+                        : t("common.inactive")}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleView(object)}
+                        title={t("objects.viewObjectDetails")}
+                      >
+                        <Eye className="size-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleEdit(object)}
+                        title={t("objects.editObjectTooltip")}
+                      >
+                        <Pencil className="size-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setDeletingObjectId(object.id)}
+                        title={t("objects.deleteObjectTooltip")}
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      {totalPages > 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (currentPage > 1) setCurrentPage(currentPage - 1);
+                }}
+                className={
+                  currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                }
+              />
+            </PaginationItem>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+              if (
+                page === 1 ||
+                page === totalPages ||
+                (page >= currentPage - 1 && page <= currentPage + 1)
+              ) {
+                return (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentPage(page);
+                      }}
+                      isActive={currentPage === page}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                );
+              } else if (page === currentPage - 2 || page === currentPage + 2) {
+                return (
+                  <PaginationItem key={page}>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                );
+              }
+              return null;
+            })}
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                }}
+                className={
+                  currentPage === totalPages
+                    ? "pointer-events-none opacity-50"
+                    : ""
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
+
+      <div className="text-sm text-muted-foreground">
+        {t("table.showing")}{" "}
+        {objects.length > 0 ? (currentPage - 1) * pageSize + 1 : 0}{" "}
+        {t("table.of")} {Math.min(currentPage * pageSize, total)}{" "}
+        {t("table.of")} {total} {t("table.results")}
+      </div>
+
+      <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
+        <DialogContent className="max-w-2xl sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingObject
+                ? t("objects.editObject")
+                : t("objects.createNewObject")}
+            </DialogTitle>
+          </DialogHeader>
+          <ObjectForm
+            object={editingObject}
+            allObjects={allObjects}
+            onSubmit={editingObject ? handleUpdate : handleCreate}
+            onCancel={handleCloseForm}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {viewingObject && (
+        <DynamicView
+          data={viewingObject}
+          open={isViewOpen}
+          onOpenChange={handleCloseView}
+          title={t("objects.objectDetails")}
+          header={{
+            type: "simple",
+            title: (data: any) => data.name,
+            subtitle: (data: any) => data.namespace,
+            badges: [
+              {
+                field: "status",
+                map: {
+                  1: { label: t("common.active"), variant: "default" },
+                  0: { label: t("common.inactive"), variant: "secondary" },
+                },
+              },
+            ],
+          }}
+          tabs={[
+            {
+              id: "details",
+              label: t("objects.details"),
+              gridCols: 2,
+              fields: [
+                {
+                  name: "name",
+                  label: t("common.name"),
+                  type: "text",
+                  colSpan: 12,
+                },
+                {
+                  name: "namespace",
+                  label: t("objects.namespace"),
+                  type: "text",
+                  colSpan: 12,
+                },
+                {
+                  name: "type",
+                  label: t("objects.type"),
+                  type: "text",
+                  render: (value: any) => getTypeLabel(value),
+                },
+                { name: "icon", label: t("objects.icon"), type: "text" },
+                {
+                  name: "parent_id",
+                  label: t("objects.parent"),
+                  type: "text",
+                  render: (value: any) => getParentName(value),
+                },
+                { name: "order_no", label: t("objects.orderNo"), type: "text" },
+                {
+                  name: "description",
+                  label: t("common.description"),
+                  type: "text",
+                  colSpan: 12,
+                },
+                {
+                  name: "status",
+                  label: t("common.status"),
+                  type: "badge",
+                  badgeMap: {
+                    1: { label: t("common.active"), variant: "default" },
+                    0: { label: t("common.inactive"), variant: "secondary" },
+                  },
+                },
+                {
+                  name: "created_at",
+                  label: t("common.createdAt"),
+                  type: "datetime",
+                },
+                {
+                  name: "updated_at",
+                  label: t("common.updatedAt"),
+                  type: "datetime",
+                },
+              ],
+            },
+          ]}
+          maxWidth="2xl"
+        />
+      )}
+
+      <AlertDialog
+        open={!!deletingObjectId}
+        onOpenChange={(open) => !open && setDeletingObjectId(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("common.areYouSure")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("common.thisActionCannotBeUndone")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deletingObjectId && handleDelete(deletingObjectId)}
+            >
+              {t("common.delete")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}
