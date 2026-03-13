@@ -83,7 +83,7 @@ export function UserProjectForm({ userProject, projectId, onSubmit, onCancel }: 
       (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
       z.number().int().nullable().optional()
     ),
-    files: z.any().optional(),
+    files: z.unknown().optional(),
   }), [t]);
 
   useEffect(() => {
@@ -144,7 +144,7 @@ export function UserProjectForm({ userProject, projectId, onSubmit, onCancel }: 
       }
       setDeletedFileIds((prev) => [...prev, fileId]);
       toast.success("File deleted successfully");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error deleting file:", error);
       toast.error(error.message || "Failed to delete file");
     }

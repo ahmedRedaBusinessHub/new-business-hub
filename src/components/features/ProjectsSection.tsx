@@ -1,6 +1,14 @@
 import { motion } from "motion/react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { ExternalLink, Facebook, Twitter, Linkedin, Instagram, Youtube, Globe } from "lucide-react";
+import {
+  ExternalLink,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Instagram,
+  Youtube,
+  Globe,
+} from "lucide-react";
 import { Badge } from "../ui/Badge";
 import { useI18n } from "@/hooks/useI18n";
 import Link from "next/link";
@@ -48,14 +56,15 @@ export default function ProjectsSection({ limit = 6 }: ProjectsSectionProps) {
   useEffect(() => {
     async function fetchProjects() {
       try {
-
-        const response = await fetch(`/api/public/projects-by-type?type=1&limit=${limit}`);
+        const response = await fetch(
+          `/api/public/projects-by-type?type=1&limit=${limit}`,
+        );
         if (!response.ok) {
           throw new Error(`Failed to fetch projects: ${response.status}`);
         }
 
         const data = await response.json();
-        setProjects(data.data || []);
+        setProjects(data.data.data || []);
       } catch (error) {
         console.error("Error fetching projects:", error);
       } finally {
@@ -88,9 +97,7 @@ export default function ProjectsSection({ limit = 6 }: ProjectsSectionProps) {
 
   return (
     <section id="work" className="py-32 bg-white relative overflow-hidden">
-
-
-      <div className="container mx-auto px-6 relative z-10" >
+      <div className="container mx-auto px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -113,7 +120,7 @@ export default function ProjectsSection({ limit = 6 }: ProjectsSectionProps) {
           </h2>
           <p className="text-[#262626]/70 max-w-2xl mx-auto">
             {t(
-              "A collection of successful projects that we helped develop and launch"
+              "A collection of successful projects that we helped develop and launch",
             )}
           </p>
         </motion.div>
@@ -126,22 +133,35 @@ export default function ProjectsSection({ limit = 6 }: ProjectsSectionProps) {
             const image = getProjectImage(project);
 
             // Parse social media
-            const socialMedia = typeof project.social_media === 'string'
-              ? JSON.parse(project.social_media)
-              : project.social_media || {};
+            const socialMedia =
+              typeof project.social_media === "string"
+                ? JSON.parse(project.social_media)
+                : project.social_media || {};
 
             const hasMainLink = !!project.link;
             const hasSocialLinks = Object.keys(socialMedia).length > 0;
 
-            const SocialIcon = ({ platform, className }: { platform: string, className?: string }) => {
+            const SocialIcon = ({
+              platform,
+              className,
+            }: {
+              platform: string;
+              className?: string;
+            }) => {
               switch (platform.toLowerCase()) {
-                case 'facebook': return <Facebook className={className} />;
-                case 'twitter':
-                case 'x': return <Twitter className={className} />;
-                case 'linkedin': return <Linkedin className={className} />;
-                case 'instagram': return <Instagram className={className} />;
-                case 'youtube': return <Youtube className={className} />;
-                default: return <Globe className={className} />;
+                case "facebook":
+                  return <Facebook className={className} />;
+                case "twitter":
+                case "x":
+                  return <Twitter className={className} />;
+                case "linkedin":
+                  return <Linkedin className={className} />;
+                case "instagram":
+                  return <Instagram className={className} />;
+                case "youtube":
+                  return <Youtube className={className} />;
+                default:
+                  return <Globe className={className} />;
               }
             };
 
@@ -172,7 +192,11 @@ export default function ProjectsSection({ limit = 6 }: ProjectsSectionProps) {
                     >
                       {/* Main Link */}
                       {hasMainLink && (
-                        <Link href={project.link!} target="_blank" rel="noopener noreferrer">
+                        <Link
+                          href={project.link!}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           <motion.div
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
@@ -192,25 +216,30 @@ export default function ProjectsSection({ limit = 6 }: ProjectsSectionProps) {
                           whileInView={{ opacity: 1, y: 0 }}
                           className="flex items-center gap-3"
                         >
-                          {Object.entries(socialMedia).map(([platform, url], i) => (
-                            <Link
-                              key={platform}
-                              href={url as string}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                whileHover={{ scale: 1.2, y: -2 }}
-                                transition={{ delay: 0.1 + (i * 0.05) }}
-                                className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30 transition-colors"
-                                title={platform}
+                          {Object.entries(socialMedia).map(
+                            ([platform, url], i) => (
+                              <Link
+                                key={platform}
+                                href={url as string}
+                                target="_blank"
+                                rel="noopener noreferrer"
                               >
-                                <SocialIcon platform={platform} className="w-5 h-5 text-white" />
-                              </motion.div>
-                            </Link>
-                          ))}
+                                <motion.div
+                                  initial={{ scale: 0 }}
+                                  animate={{ scale: 1 }}
+                                  whileHover={{ scale: 1.2, y: -2 }}
+                                  transition={{ delay: 0.1 + i * 0.05 }}
+                                  className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30 transition-colors"
+                                  title={platform}
+                                >
+                                  <SocialIcon
+                                    platform={platform}
+                                    className="w-5 h-5 text-white"
+                                  />
+                                </motion.div>
+                              </Link>
+                            ),
+                          )}
                         </motion.div>
                       )}
                     </div>
@@ -231,14 +260,10 @@ export default function ProjectsSection({ limit = 6 }: ProjectsSectionProps) {
 
                   {/* Content */}
                   <div className="p-6">
-
                     <h3 className="mb-3 text-[#262626] group-hover:bg-gradient-to-r group-hover:from-[#0D5BDC] group-hover:to-[#340F87] group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
                       {title}
                     </h3>
-                    <p className="text-[#262626]/70 mb-4">
-                      {description}
-                    </p>
-
+                    <p className="text-[#262626]/70 mb-4">{description}</p>
                     {/* Category Tags */}
                     {project.categories && project.categories.length > 0 && (
                       <div className="flex flex-wrap gap-2 mb-3">
@@ -252,7 +277,8 @@ export default function ProjectsSection({ limit = 6 }: ProjectsSectionProps) {
                           </Badge>
                         ))}
                       </div>
-                    )}                  </div>
+                    )}{" "}
+                  </div>
 
                   {/* Bottom accent line */}
                   <div
@@ -269,20 +295,22 @@ export default function ProjectsSection({ limit = 6 }: ProjectsSectionProps) {
           })}
         </div>
       </div>
-      {limit <= 6 && <div className="text-center pt-20   "  >
-        <Link href={"/projects"}>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-block px-4 py-2 rounded-full bg-gradient-to-r from-[#0D5BDC]/10 to-[#340F87]/10 border border-[#0D5BDC]/20 mb-4"
-          >
-            <span className="bg-gradient-to-r from-[#0D5BDC] to-[#340F87] bg-clip-text text-transparent">
-              {t("hero_cta_discover")}
-            </span>
-          </motion.div>
-        </Link>
-      </div>}
+      {limit <= 6 && (
+        <div className="text-center pt-20   ">
+          <Link href={"/projects"}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="inline-block px-4 py-2 rounded-full bg-gradient-to-r from-[#0D5BDC]/10 to-[#340F87]/10 border border-[#0D5BDC]/20 mb-4"
+            >
+              <span className="bg-gradient-to-r from-[#0D5BDC] to-[#340F87] bg-clip-text text-transparent">
+                {t("hero_cta_discover")}
+              </span>
+            </motion.div>
+          </Link>
+        </div>
+      )}
     </section>
   );
 }

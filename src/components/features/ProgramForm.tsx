@@ -1,7 +1,7 @@
 import * as z from "zod";
 import { useState, useEffect, useRef } from "react";
 import type { Program } from "./ProgramsManagement";
-import DynamicForm from "../shared/DynamicForm";
+import DynamicForm, { type FormData } from "../shared/DynamicForm";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { ImageUploader } from "@/components/ui/ImageUploader";
@@ -29,10 +29,10 @@ const baseFormSchema = z.object({
   promo_video: z.string().nullable().optional(),
   promo_image: z.string().nullable().optional(),
   status: z.number().int().min(0).max(1),
-  mainImage: z.any().optional(),
-  imageIds: z.any().optional(),
-  document_ar: z.any().optional(),
-  document_en: z.any().optional(),
+  mainImage: z.unknown().optional(),
+  imageIds: z.unknown().optional(),
+  document_ar: z.unknown().optional(),
+  document_en: z.unknown().optional(),
   price: z.string().nullable().optional(),
 });
 
@@ -50,10 +50,10 @@ const formFieldSchema = z.object({
   promo_video: z.union([z.string().url("Invalid URL"), z.literal("")]).optional(),
   promo_image: z.union([z.string().url("Invalid URL"), z.literal("")]).optional(),
   status: z.coerce.number().int().min(0).max(1),
-  mainImage: z.any().optional(),
-  imageIds: z.any().optional(),
-  document_ar: z.any().optional(),
-  document_en: z.any().optional(),
+  mainImage: z.unknown().optional(),
+  imageIds: z.unknown().optional(),
+  document_ar: z.unknown().optional(),
+  document_en: z.unknown().optional(),
   price: z.string().optional(),
 });
 
@@ -151,7 +151,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
       toast.success("Document deleted successfully");
     } catch (error: any) {
       console.error('Error deleting document:', error);
-      toast.error(error.message || "Failed to delete document");
+      toast.error(error instanceof Error ? error.message : "Failed to delete document");
     }
   };
 
@@ -186,7 +186,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
       toast.success("Image deleted successfully");
     } catch (error: any) {
       console.error('Error deleting image:', error);
-      toast.error(error.message || "Failed to delete image");
+      toast.error(error instanceof Error ? error.message : "Failed to delete image");
     }
   };
 
@@ -207,7 +207,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
 
         const statusesConfig = await staticListsCache.getByNamespace('program.statuses');
         setProgramStatuses(statusesConfig);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching static lists:', error);
         toast.error('Failed to load program types and subtypes');
         staticListsFetchedRef.current = false; // Reset on error to allow retry
@@ -262,17 +262,17 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
     }
   }, [program]);
 
-  const handleSubmit = async (data: Record<string, any>) => {
+  const handleSubmit = async (data: FormData) => {
     try {
-      const dataWithJsonFields: Record<string, any> = {
+      const dataWithJsonFields: Record<string, unknown> = {
         name_ar: data.name_ar ?? "",
         name_en: data.name_en ?? "",
         detail_ar: data.detail_ar ?? "",
         detail_en: data.detail_en ?? "",
         // Convert datetime-local format to ISO-8601
-        from_datetime: data.from_datetime ? new Date(data.from_datetime).toISOString() : null,
-        to_datetime: data.to_datetime ? new Date(data.to_datetime).toISOString() : null,
-        last_registration_date: data.last_registration_date ? new Date(data.last_registration_date).toISOString() : null,
+        from_datetime: data.from_datetime ? new Date(data.from_datetime as string).toISOString() : null,
+        to_datetime: data.to_datetime ? new Date(data.to_datetime as string).toISOString() : null,
+        last_registration_date: data.last_registration_date ? new Date(data.last_registration_date as string).toISOString() : null,
         promo_video: data.promo_video || null,
         promo_image: data.promo_image || null,
         status: data.status !== undefined && data.status !== null ? data.status : 1,
@@ -280,14 +280,14 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
       };
 
       if (data.type !== undefined && data.type !== null && data.type !== "") {
-        const typeValue = typeof data.type === 'string' ? Number(data.type) : data.type;
+        const typeValue = typeof data.type === 'string' ? Number(data.type) : (data.type as any);
         dataWithJsonFields.type = isNaN(typeValue) ? null : typeValue;
       } else {
         dataWithJsonFields.type = null;
       }
 
       if (data.subtype !== undefined && data.subtype !== null && data.subtype !== "") {
-        const subtypeValue = typeof data.subtype === 'string' ? Number(data.subtype) : data.subtype;
+        const subtypeValue = typeof data.subtype === 'string' ? Number(data.subtype) : (data.subtype as any);
         dataWithJsonFields.subtype = isNaN(subtypeValue) ? null : subtypeValue;
       } else {
         dataWithJsonFields.subtype = null;
@@ -312,7 +312,7 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
       let validated;
       try {
         validated = formSchema.parse(dataWithJsonFields);
-      } catch (parseError: any) {
+      } catch (parseError) {
         throw parseError;
       }
 
@@ -335,12 +335,12 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
         promo_image: validated.promo_image || null,
         status: validated.status,
         price: validated.price || null,
-        mainImage: validated.mainImage,
+        mainImage: validated.mainImage as File[] | undefined,
         imageIds: imageFiles,
         document_ar: documentArFiles,
         document_en: documentEnFiles,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Form validation error:", error);
       throw error;
     }
@@ -1024,11 +1024,11 @@ export function ProgramForm({ program, onSubmit, onCancel }: ProgramFormProps) {
 
               try {
                 form.requestSubmit();
-              } catch (error) {
+              } catch (error: any) {
                 console.warn('requestSubmit failed, manually collecting form values', error);
 
                 const formData = new FormData(form);
-                const formValues: Record<string, any> = {};
+                const formValues: FormData = {};
 
                 formData.forEach((value, key) => {
                   formValues[key] = value;

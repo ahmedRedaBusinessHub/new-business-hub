@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiGet, createApiResponse, handleApiError } from "@/lib/api";
+import type { UserProject } from "@/types/entities";
 
 export async function GET(
   request: NextRequest,
@@ -21,12 +22,12 @@ export async function GET(
     }
 
     const data = await res.json();
-    let allData = Array.isArray(data.data) ? data.data : [];
+    let allData: UserProject[] = Array.isArray(data.data?.data) ? data.data.data : Array.isArray(data.data) ? data.data : [];
 
     // Apply search filter
     if (search) {
       const query = search.toLowerCase();
-      allData = allData.filter((userProject: any) => {
+      allData = allData.filter((userProject: UserProject) => {
         const userName = `${userProject.users_user_project_user_idTousers?.first_name || ""} ${userProject.users_user_project_user_idTousers?.last_name || ""}`.toLowerCase();
         const userEmail = (userProject.users_user_project_user_idTousers?.email || "").toLowerCase();
         const companyName = (userProject.company_name || "").toLowerCase();
@@ -48,7 +49,7 @@ export async function GET(
       limit,
       totalPages: Math.ceil(total / limit),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch user projects");
   }
 }

@@ -1,4 +1,5 @@
 "use client";
+import type { DataRow } from "@/types/components/management";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Badge } from "@/components/ui/Badge";
 import {
@@ -35,7 +36,7 @@ interface UserProgramsProps {
 export function UserPrograms({ userId }: UserProgramsProps) {
   const { language } = useI18n();
   const [loading, setLoading] = useState(true);
-  const [userPrograms, setUserPrograms] = useState<any[]>([]);
+  const [userPrograms, setUserPrograms] = useState<DataRow[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,7 +45,7 @@ export function UserPrograms({ userId }: UserProgramsProps) {
   const [totalPages, setTotalPages] = useState(0);
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [viewingUserProgram, setViewingUserProgram] = useState<any | null>(null);
-  const [statuses, setStatuses] = useState<any[]>([]);
+  const [statuses, setStatuses] = useState<DataRow[]>([]);
   const statusesFetchedRef = useRef(false);
   const fetchingProgramsRef = useRef(false);
   const lastFetchedParamsRef = useRef<string>("");
@@ -110,7 +111,7 @@ export function UserPrograms({ userId }: UserProgramsProps) {
         setTotal(0);
         setTotalPages(0);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching user programs:", error);
       setUserPrograms([]);
       setTotal(0);

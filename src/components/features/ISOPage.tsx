@@ -1,4 +1,5 @@
 "use client";
+import type { DataRow } from "@/types/components/management";
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
@@ -19,7 +20,6 @@ import {
   Send,
   Building,
   User,
-  Mail,
   Phone,
   Briefcase,
   Hash,
@@ -49,8 +49,8 @@ export default function ISOPage() {
     fetch('/api/public/iso-companies')
       .then(res => res.json())
       .then(data => {
-        if (data?.data) {
-          setCertificates(data.data);
+        if (data?.data?.data) {
+          setCertificates(data.data.data);
         }
       })
       .catch(err => console.error(err));
@@ -420,7 +420,7 @@ export default function ISOPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
             {certificates.map((cert, index) => (
               <motion.div
-                key={cert.id || index}
+                key={String(cert.id || index)}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

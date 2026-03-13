@@ -1,17 +1,18 @@
 import { NextIntlClientProvider } from "next-intl";
-
 import { Suspense } from "react";
 import { locales } from "@/types/locales";
 import "./globals.css";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
-import { somar } from "@/assets/fonts"; // Adjust the import path as needed
+import { somar } from "@/assets/fonts";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
-import { AuthSession } from "@/types/auth";
 import { getMessages } from "next-intl/server";
 import { createGenerateMetadata } from "@/lib/geo";
+import { RootLayoutProps } from "@/types/components/layout";
 
 export const generateMetadata = createGenerateMetadata("home");
+
+import { WebVitals } from "@/components/web-vitals";
 
 // This function tells Next.js which locales to statically generate
 export async function generateStaticParams() {
@@ -24,8 +25,8 @@ export async function generateStaticParams() {
 function LoadingFallback() {
   return <div>Loading...</div>;
 }
-export default async function RootLayout({ children, params }: any) {
-  const session: AuthSession | any = await auth();
+export default async function RootLayout({ children, params }: RootLayoutProps) {
+  const session = await auth();
   // Validate that the incoming `locale` parameter is valid
   const { locale } = await params;
   const messages = await getMessages({ locale });
@@ -41,6 +42,7 @@ export default async function RootLayout({ children, params }: any) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body>
+        <WebVitals />
         <div
           className="min-h-screen transition-colors duration-300"
           style={{ backgroundColor: "var(--theme-bg-primary)" }}

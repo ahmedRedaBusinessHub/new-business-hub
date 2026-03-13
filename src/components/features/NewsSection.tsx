@@ -49,7 +49,7 @@ export default function NewsSection() {
         if (response.ok) {
           const data = await response.json();
           // Ensure we take up to 3 items
-          const items = Array.isArray(data.data) ? data.data : [];
+          const items = Array.isArray(data.data?.data) ? data.data.data : [];
           setNews(items.slice(0, 3));
         }
       } catch (error) {

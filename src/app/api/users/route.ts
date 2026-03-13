@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiGet, apiPost, createApiResponse, handleApiError } from "@/lib/api";
+import type { ApiUser } from "@/types/api/users";
+
+interface UserWithMobile extends ApiUser {
+  mobile?: string
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -8,7 +13,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "10");
     const search = searchParams.get("search") || "";
 
-    const res = await apiGet("/users", {
+    const res = await apiGet("/users?limit=1000", {
       requireAuth: true,
     });
 
@@ -17,12 +22,12 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await res.json();
-    let allData = Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [];
+    let allData: UserWithMobile[] = Array.isArray(data.data?.data) ? data.data.data : Array.isArray(data.data) ? data.data : [];
 
     // Apply search filter
     if (search) {
       const query = search.toLowerCase();
-      allData = allData.filter((user: any) => {
+      allData = allData.filter((user: UserWithMobile) => {
         const firstName = (user.first_name || "").toLowerCase();
         const lastName = (user.last_name || "").toLowerCase();
         const email = (user.email || "").toLowerCase();
@@ -55,7 +60,7 @@ export async function GET(request: NextRequest) {
       limit,
       totalPages: Math.ceil(total / limit),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch users");
   }
 }
@@ -65,7 +70,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const res = await apiPost("/users", body, { requireAuth: true });
     return await createApiResponse(res, { successStatus: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to create user");
   }
 }

@@ -1,4 +1,5 @@
 "use client";
+import type { DataRow } from "@/types/components/management";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Badge } from "@/components/ui/Badge";
 import {
@@ -35,7 +36,7 @@ interface UserContactsProps {
 
 export function UserContacts({ userId }: UserContactsProps) {
   const [loading, setLoading] = useState(true);
-  const [contacts, setContacts] = useState<any[]>([]);
+  const [contacts, setContacts] = useState<DataRow[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -212,7 +213,7 @@ export function UserContacts({ userId }: UserContactsProps) {
 
 // Component to display contact with its interactions
 function ContactWithInteractions({ contact }: { contact: any }) {
-  const [interactions, setInteractions] = useState<any[]>([]);
+  const [interactions, setInteractions] = useState<DataRow[]>([]);
   const [loading, setLoading] = useState(false);
   const fetchingRef = useRef(false);
   const lastFetchedContactIdRef = useRef<number | null>(null);

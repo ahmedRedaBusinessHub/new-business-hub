@@ -1,34 +1,54 @@
 "use client";
-// ui/Rating.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-export const Rating = React.forwardRef<HTMLInputElement, any>(
-  ({ label, error, helperText, ...props }, ref) => {
+interface RatingProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: { message: string };
+  helperText?: string;
+  readOnly?: boolean;
+}
+
+export const Rating = React.forwardRef<HTMLInputElement, RatingProps>(
+  ({ label, error, helperText, readOnly, ...props }, ref) => {
     const [value, setValue] = useState(props.value || 0);
+
+    // Sync value if props.value changes externally (e.g., in readOnly mode)
+    useEffect(() => {
+      if (props.value !== undefined) {
+        setValue(props.value);
+      }
+    }, [props.value]);
+
     return (
       <div>
         {label && <label className="block">{label}</label>}
-        <div className="flex space-x-2">
+        <div className="flex space-x-1">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
               type="button"
               key={star}
-              className={`text-2xl ${
-                value >= star ? "text-yellow-400" : "text-gray-300"
-              }`}
+              disabled={readOnly}
+              className={`text-2xl ${Number(value) >= star ? "text-yellow-400" : "text-border"
+                } ${readOnly ? "cursor-default" : "cursor-pointer"}`}
               onClick={() => {
-                setValue(star);
-                props.onChange({ target: { value: star } });
+                if (!readOnly) {
+                  setValue(star);
+                  if (props.onChange) {
+                    props.onChange({ target: { value: star } } as any);
+                  }
+                }
               }}
             >
               ★
             </button>
           ))}
-          <input type="hidden" ref={ref} {...props} value={value} />
+          {!readOnly && <input type="hidden" ref={ref} {...props} value={value} />}
         </div>
-        {helperText && <div className="text-gray-400">{helperText}</div>}
-        {error && <div className="text-red-500">{error.message}</div>}
+        {helperText && !readOnly && <div className="text-muted-foreground">{helperText}</div>}
+        {error && !readOnly && <div className="text-destructive font-medium">{error.message}</div>}
       </div>
     );
   }
 );
+
+Rating.displayName = "Rating";

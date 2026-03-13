@@ -69,6 +69,16 @@ export async function fetchWithErrorHandling(
 
   if (!response.ok) {
     handleApiError(response, errorMessage);
+
+    // Try to parse the error response to throw a more meaningful error
+    let errorData;
+    try {
+      errorData = await response.json();
+    } catch {
+      errorData = { message: errorMessage || `HTTP error ${response.status}` };
+    }
+
+    throw new Error(errorData.message || errorMessage || `HTTP error ${response.status}`);
   }
 
   return response;

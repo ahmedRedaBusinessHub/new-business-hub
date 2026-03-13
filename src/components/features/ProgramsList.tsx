@@ -31,22 +31,24 @@ export interface Program {
 
 interface ProgramsListProps {
     initialData?: {
-        data: Program[];
-        total: number;
+        data: {
+            data: Program[];
+            total: number;
+        };
     };
 }
 
 export function ProgramsList({ initialData }: ProgramsListProps) {
     const { language: locale, t } = useI18n();
     const language = (typeof locale === 'string' ? locale : locale?.[0]) || 'ar';
-    const [programs, setPrograms] = useState<Program[]>(initialData?.data || []);
+    const [programs, setPrograms] = useState<Program[]>(initialData?.data?.data || []);
     const [programTypes, setProgramTypes] = useState<StaticListOption[]>([]);
     const [selectedType, setSelectedType] = useState<number | null>(null);
     const [loading, setLoading] = useState(!initialData);
     const [loadingMore, setLoadingMore] = useState(false);
     const [page, setPage] = useState(1);
     const limit = 9; // Grid 3x3
-    const [hasMore, setHasMore] = useState(initialData ? initialData.data.length < initialData.total : true);
+    const [hasMore, setHasMore] = useState(initialData ? (initialData.data?.data?.length ?? 0) < (initialData.data?.total ?? 0) : true);
 
     const fetchPrograms = async (pageNum: number, isLoadMore: boolean = false, typeId: number | null = selectedType) => {
         try {
@@ -64,8 +66,10 @@ export function ProgramsList({ initialData }: ProgramsListProps) {
             const res = await fetch(url);
             const responseData = await res.json();
 
-            const newPrograms = responseData.data || [];
-            const total = responseData.total || 0;
+            // Backend response is wrapped by TransformResponseInterceptor:
+            // { statusCode, data: { data: [...programs...], total, page, limit } }
+            const newPrograms = responseData.data?.data || [];
+            const total = responseData.data?.total || 0;
 
             if (isLoadMore) {
                 setPrograms((prev) => [...prev, ...newPrograms]);
@@ -94,8 +98,10 @@ export function ProgramsList({ initialData }: ProgramsListProps) {
     const getTypes = async () => {
         const res = await fetch(`/api/public/static-lists?namespace=program.types`);
         const responseData = await res.json();
-        // Since we filter by namespace, data should contain one static list record
-        const staticList = responseData.data?.[0];
+        // Backend response is wrapped by TransformResponseInterceptor:
+        // { statusCode, data: { data: [...staticLists...], total } }
+        // Since we filter by namespace, data.data should contain one static list record
+        const staticList = responseData.data?.data?.[0];
         if (staticList && staticList.config) {
             setProgramTypes(Array.isArray(staticList.config) ? staticList.config : []);
         } else {

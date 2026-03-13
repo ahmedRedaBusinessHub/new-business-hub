@@ -2,10 +2,14 @@ import { forwardRef, InputHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "./Label";
 
+interface FieldError {
+  message?: string
+}
+
 export interface RangeProps extends InputHTMLAttributes<HTMLInputElement> {
-  error?: any;
+  error?: FieldError;
   label?: string;
-  value?: any;
+  value?: string | number;
   helperText?: string;
 }
 

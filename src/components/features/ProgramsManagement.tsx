@@ -38,7 +38,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import DynamicView, { type ViewTab } from "../shared/DynamicView";
+import DynamicView from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { useI18n } from "@/hooks/useI18n";
@@ -83,6 +83,7 @@ export interface Program {
   image_ids?: number[];
   created_at: string | null;
   updated_at: string | null;
+  [key: string]: any;
 }
 
 export function ProgramsManagement() {
@@ -120,7 +121,7 @@ export function ProgramsManagement() {
 
         const statusesConfig = await staticListsCache.getByNamespace('program.statuses');
         setProgramStatuses(statusesConfig);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching static lists:', error);
         staticListsFetchedRef.current = false; // Reset on error to allow retry
       }
@@ -628,8 +629,8 @@ export function ProgramsManagement() {
                 { name: "name_en", label: "Name (EN)", type: "text", colSpan: 12 },
                 { name: "detail_ar", label: "Detail (AR)", type: "text", colSpan: 12 },
                 { name: "detail_en", label: "Detail (EN)", type: "text", colSpan: 12 },
-                { name: "type", label: "Type", type: "text", render: (value: number | null) => getTypeName(value) },
-                { name: "subtype", label: "Subtype", type: "text", render: (value: number | null) => getSubtypeName(value) },
+                { name: "type", label: "Type", type: "text", render: (value: any) => getTypeName(value) },
+                { name: "subtype", label: "Subtype", type: "text", render: (value: any) => getSubtypeName(value) },
                 { name: "from_datetime", label: "From Date", type: "datetime" },
                 { name: "to_datetime", label: "To Date", type: "datetime" },
                 { name: "last_registration_date", label: "Last Registration Date", type: "datetime" },
@@ -639,7 +640,7 @@ export function ProgramsManagement() {
                   name: "status",
                   label: "Status",
                   type: "text",
-                  render: (value: number | null) => getStatusName(value),
+                  render: (value: any) => getStatusName(value),
                 },
                 { name: "created_at", label: "Created At", type: "datetime" },
                 { name: "updated_at", label: "Updated At", type: "datetime" },
@@ -648,7 +649,7 @@ export function ProgramsManagement() {
             {
               id: "values",
               label: "Values",
-              customContent: (data: Program) => {
+              customContent: (data: any) => {
                 const values = typeof data.values === 'string' ? JSON.parse(data.values || '[]') : (data.values || []);
                 if (!Array.isArray(values) || values.length === 0) {
                   return <p className="text-muted-foreground">No values defined</p>;
@@ -673,7 +674,7 @@ export function ProgramsManagement() {
             {
               id: "progress",
               label: "Progress Steps",
-              customContent: (data: Program) => {
+              customContent: (data: any) => {
                 const steps = typeof data.progress_steps === 'string' ? JSON.parse(data.progress_steps || '[]') : (data.progress_steps || []);
                 if (!Array.isArray(steps) || steps.length === 0) {
                   return <p className="text-muted-foreground">No progress steps defined</p>;
@@ -698,7 +699,7 @@ export function ProgramsManagement() {
             {
               id: "app-req",
               label: "App Requirements",
-              customContent: (data: Program) => {
+              customContent: (data: any) => {
                 const reqs = typeof data.application_requirements === 'string' ? JSON.parse(data.application_requirements || '[]') : (data.application_requirements || []);
                 if (!Array.isArray(reqs) || reqs.length === 0) {
                   return <p className="text-muted-foreground">No application requirements defined</p>;
@@ -723,7 +724,7 @@ export function ProgramsManagement() {
             {
               id: "doc-req",
               label: "Doc Requirements",
-              customContent: (data: Program) => {
+              customContent: (data: any) => {
                 const reqs = typeof data.documents_requirements === 'string' ? JSON.parse(data.documents_requirements || '[]') : (data.documents_requirements || []);
                 if (!Array.isArray(reqs) || reqs.length === 0) {
                   return <p className="text-muted-foreground">No document requirements defined</p>;
@@ -748,7 +749,7 @@ export function ProgramsManagement() {
             {
               id: "focus-areas",
               label: "Focus Areas",
-              customContent: (data: Program) => {
+              customContent: (data: any) => {
                 const areas = typeof data.focusAreas === 'string' ? JSON.parse(data.focusAreas || '[]') : (data.focusAreas || []);
                 if (!Array.isArray(areas) || areas.length === 0) {
                   return <p className="text-muted-foreground">No focus areas defined</p>;
@@ -775,7 +776,7 @@ export function ProgramsManagement() {
             {
               id: "documents",
               label: "Documents",
-              customContent: (data: Program) => {
+              customContent: (data: any) => {
                 const hasDocAr = data.document_ar_url;
                 const hasDocEn = data.document_en_url;
                 if (!hasDocAr && !hasDocEn) {
@@ -820,7 +821,7 @@ export function ProgramsManagement() {
             {
               id: "images",
               label: "Images",
-              customContent: (data: Program) => {
+              customContent: (data: any) => {
                 const hasMainImage = data.main_image_url;
                 const hasImages = data.image_urls && data.image_urls.length > 0;
                 if (!hasMainImage && !hasImages) {
@@ -844,7 +845,7 @@ export function ProgramsManagement() {
                       <div>
                         <p className="text-sm font-medium mb-2">Gallery Images</p>
                         <div className="grid grid-cols-3 gap-4">
-                          {data.image_urls!.filter(url => url != null).map((url, index) => (
+                          {data.image_urls!.filter((url: string) => url != null).map((url: string, index: number) => (
                             <img
                               key={index}
                               src={url.startsWith('http') || url.startsWith('/api/public/file')
@@ -864,7 +865,7 @@ export function ProgramsManagement() {
             {
               id: "user-programs",
               label: "User Programs",
-              customContent: (data: Program) => {
+              customContent: (data: any) => {
                 return <ProgramUserPrograms programId={data.id} />;
               },
             },

@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { apiPost, createApiResponse, handleApiError } from "@/lib/api";
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     const session = await auth();
     
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     });
     
     return await createApiResponse(res);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to check verification status");
   }
 }

@@ -1,4 +1,5 @@
 "use client";
+import type { DataRow } from "@/types/components/management";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Badge } from "@/components/ui/Badge";
 import {
@@ -49,7 +50,7 @@ interface UserRolesProps {
 
 export function UserRoles({ userId, organizationId }: UserRolesProps) {
   const [loading, setLoading] = useState(true);
-  const [userRoles, setUserRoles] = useState<any[]>([]);
+  const [userRoles, setUserRoles] = useState<DataRow[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -149,7 +150,7 @@ export function UserRoles({ userId, organizationId }: UserRolesProps) {
   const openAddDialog = useCallback(async () => {
     const roles = await fetchAvailableRoles();
     const assignedIds = new Set(userRoles.map((ur) => ur.role_id ?? ur.roles?.id));
-    setAvailableRoles(roles.filter((r) => !assignedIds.has(r.id)));
+    setAvailableRoles(roles.filter((r: any) => !assignedIds.has(r.id)));
     setAddRoleId("");
     setIsAddOpen(true);
   }, [fetchAvailableRoles, userRoles]);

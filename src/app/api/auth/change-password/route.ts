@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     );
     
     return await createApiResponse(res);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to change password");
   }
 }

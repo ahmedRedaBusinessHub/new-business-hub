@@ -3,15 +3,7 @@
 import MyProgramsList from "@/components/features/MyProgramsList";
 import { useI18n } from "@/hooks/useI18n";
 import { motion } from "motion/react";
-import {
-    Rocket,
-    Target,
-    BookOpen,
-    Trophy,
-    Sparkles,
-    GraduationCap,
-    TrendingUp
-} from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 export default function MyProgramsPage() {
     const { t } = useI18n();

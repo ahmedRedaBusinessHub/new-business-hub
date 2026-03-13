@@ -1,4 +1,5 @@
 "use client";
+import type { DataRow } from "@/types/components/management";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Badge } from "@/components/ui/Badge";
 import {
@@ -29,7 +30,7 @@ interface UserResetPasswordTokensProps {
 
 export function UserResetPasswordTokens({ userId }: UserResetPasswordTokensProps) {
   const [loading, setLoading] = useState(true);
-  const [resetPasswordTokens, setResetPasswordTokens] = useState<any[]>([]);
+  const [resetPasswordTokens, setResetPasswordTokens] = useState<DataRow[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);

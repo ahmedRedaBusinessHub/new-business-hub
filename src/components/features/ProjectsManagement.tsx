@@ -38,7 +38,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import DynamicView, { type ViewTab } from "../shared/DynamicView";
+import DynamicView from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { useI18n } from "@/hooks/useI18n";
@@ -67,6 +67,7 @@ export interface Project {
   file_ids?: number[]; // Additional file IDs
   created_at: string | null;
   updated_at: string | null;
+  [key: string]: any;
 }
 
 export function ProjectsManagement() {
@@ -293,11 +294,11 @@ export function ProjectsManagement() {
       });
 
       if (!response.ok) {
-        throw new Error(t("entities.news.failedToUploadImage"));
+        throw new Error(t("entities.projects.failedToUploadImage"));
       }
     } catch (error: any) {
       console.error("Error uploading image:", error);
-      toast.error(t("entities.news.failedToUploadImage"));
+      toast.error(t("entities.projects.failedToUploadImage"));
     }
   };
 
@@ -539,10 +540,10 @@ export function ProjectsManagement() {
           title={t("entities.projects.details")}
           header={{
             type: "avatar",
-            title: (data: Project) => data.title_ar || data.title_en || "Project",
-            subtitle: (data: Project) => data.detail_ar || data.detail_en || "",
+            title: (data: any) => data.title_ar || data.title_en || "Project",
+            subtitle: (data: any) => data.detail_ar || data.detail_en || "",
             imageIdField: "main_image_id",
-            avatarFallback: (data: Project) =>
+            avatarFallback: (data: any) =>
               data.title_ar?.[0] || data.title_en?.[0] || "P",
             badges: [
               {
@@ -570,7 +571,7 @@ export function ProjectsManagement() {
                   label: "Main Image",
                   type: "custom",
                   colSpan: 12,
-                  render: (value: string) => {
+                  render: (value: any) => {
                     if (!value) {
                       return <p className="text-sm text-muted-foreground">No main image</p>;
                     }
@@ -594,7 +595,7 @@ export function ProjectsManagement() {
                   name: "type",
                   label: "Type",
                   type: "custom",
-                  render: (value: number) => {
+                  render: (value: any) => {
                     if (!value) return "-";
                     return <TypeName typeId={value} />;
                   },
@@ -604,13 +605,13 @@ export function ProjectsManagement() {
                   name: "status",
                   label: "Status",
                   type: "text",
-                  render: (value: number | null) => getStatusName(value),
+                  render: (value: any) => getStatusName(value),
                 },
                 {
                   name: "category_ids",
                   label: "Categories",
                   type: "custom",
-                  render: (value: number[]) => {
+                  render: (value: any) => {
                     if (!Array.isArray(value) || value.length === 0) return "-";
                     return <CategoryNames categoryIds={value} />;
                   },
@@ -663,13 +664,13 @@ export function ProjectsManagement() {
                   name: "image_urls",
                   label: "Additional Images",
                   type: "custom",
-                  render: (value: string[]) => {
+                  render: (value: any) => {
                     if (!value || value.length === 0) {
                       return <p className="text-sm text-muted-foreground">No additional images</p>;
                     }
                     return (
                       <div className="grid grid-cols-3 gap-4">
-                        {value.filter(url => url != null).map((url, index) => (
+                        {value.filter((url: string) => url != null).map((url: string, index: number) => (
                           <img
                             key={index}
                             src={url.startsWith('http') || url.startsWith('/api/public/file')
@@ -694,13 +695,13 @@ export function ProjectsManagement() {
                   name: "file_urls",
                   label: "Additional Files",
                   type: "custom",
-                  render: (value: string[]) => {
+                  render: (value: any) => {
                     if (!value || value.length === 0) {
                       return <p className="text-sm text-muted-foreground">No additional files</p>;
                     }
                     return (
                       <div className="space-y-2">
-                        {value.filter(url => url != null).map((url, index) => {
+                        {value.filter((url: string) => url != null).map((url: string, index: number) => {
                           const fileName = url.split('/').pop() || `File ${index + 1}`;
                           const fileUrl = url.startsWith('http') || url.startsWith('/api/public/file')
                             ? url
@@ -728,7 +729,7 @@ export function ProjectsManagement() {
             // {
             //   id: "user-projects",
             //   label: "User Projects",
-            //   customContent: (data: Project) => {
+            //   customContent: (data: any) => {
             //     return <ProjectUserProjects projectId={data.id} />;
             //   },
             // },

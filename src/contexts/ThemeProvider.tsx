@@ -13,9 +13,10 @@ import { Toaster } from "sonner";
 
 import ThemeSelector from "@/components/features/ThemeSelector";
 // import CustomCursor from "@/components/features/CustomCursor";
+import { queryClient } from "@/lib/query-client";
 
 import { useI18n } from "@/hooks/useI18n";
-const queryClient = new QueryClient();
+
 export type ThemeColor = "default" | "ocean" | "sunset" | "forest" | "purple";
 export type ThemeMode = "light" | "dark";
 export type Language = "ar" | "en";
@@ -31,24 +32,27 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children, ...props }: { children: ReactNode }) {
   const [theme, setTheme] = useState<ThemeColor>("default");
-  const [mode, setMode] = useState<ThemeMode>("light");
+  const [mode, setMode] = useState<ThemeMode>(() => {
+    // Lazy initialization - read from localStorage on mount
+    if (typeof window !== "undefined") {
+      const savedMode = localStorage.getItem("theme-mode") as ThemeMode;
+      return savedMode || "light";
+    }
+    return "light";
+  });
   const { language } = useI18n();
   const [mounted, setMounted] = useState(false);
 
+  // Note: This pattern is necessary for Next.js SSR hydration
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- Intentional one-time mount effect
   useEffect(() => {
-    // Load from localStorage
-    const savedMode = localStorage.getItem("theme-mode") as ThemeMode;
-    if (savedMode) {
-      setMode(savedMode);
-    }
     setMounted(true);
   }, []);
 
   useEffect(() => {
     // Apply theme class to document
-    document.documentElement.className = `theme-${theme} ${mode} ${
-      language === "ar" ? "rtl" : "ltr"
-    }`;
+    document.documentElement.className = `theme-${theme} ${mode} ${language === "ar" ? "rtl" : "ltr"
+      }`;
     document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
     document.documentElement.lang = `${language}`;
     localStorage.setItem("theme-mode", mode);

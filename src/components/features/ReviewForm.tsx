@@ -24,7 +24,7 @@ export function ReviewForm({ review, onSubmit, onCancel }: ReviewFormProps) {
     job_title_ar: z.string().optional(),
     job_title_en: z.string().optional(),
     status: z.coerce.number().int().min(0).max(1),
-    profileImage: z.any().optional(),
+    profileImage: z.unknown().optional(),
   }), [t]);
 
   // Use image_url from review data instead of fetching
@@ -55,9 +55,9 @@ export function ReviewForm({ review, onSubmit, onCancel }: ReviewFormProps) {
         job_title_en: validated.job_title_en || null,
         status: validated.status,
         organization_id: review?.organization_id || 1,
-        profileImage: validated.profileImage,
+        profileImage: validated.profileImage as File[] | undefined,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Form validation error:", error);
       throw error;
     }

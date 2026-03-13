@@ -41,13 +41,15 @@ export const VideoUploader: React.FC<VideoUploaderProps> = ({
     return new Promise((resolve) => {
       const video = document.createElement("video");
       const reader = new FileReader();
-      reader.onload = (e: any) => {
-        video.src = e.target?.result as string;
-        video.onloadedmetadata = () => {
-          const minutes = Math.floor(video.duration / 60);
-          const seconds = Math.floor(video.duration % 60);
-          resolve(`${minutes}:${seconds.toString().padStart(2, "0")}`);
-        };
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        if (e.target?.result && typeof e.target.result === 'string') {
+          video.src = e.target.result;
+          video.onloadedmetadata = () => {
+            const minutes = Math.floor(video.duration / 60);
+            const seconds = Math.floor(video.duration % 60);
+            resolve(`${minutes}:${seconds.toString().padStart(2, "0")}`);
+          };
+        }
       };
       reader.readAsDataURL(file);
     });

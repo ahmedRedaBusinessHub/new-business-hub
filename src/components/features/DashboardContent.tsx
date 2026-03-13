@@ -23,6 +23,11 @@ import { useTranslations } from "next-intl";
 export function DashboardContent() {
   const t = useTranslations("dashboard");
   const { stats, recentUsers, isLoading } = useDashboardStats();
+  console.log(
+    "🚀 ~ DashboardContent ~  stats, recentUsers:",
+    stats,
+    recentUsers,
+  );
 
   const statCards = [
     {
@@ -70,26 +75,10 @@ export function DashboardContent() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>{t("overview.title")}</CardTitle>
-            <CardDescription>
-              {t("overview.description")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pl-2">
-            <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-              {t("overview.chartPlaceholder")}
-            </div>
-          </CardContent>
-        </Card>
-
         <Card className="col-span-3">
           <CardHeader>
             <CardTitle>{t("recentUsers.title")}</CardTitle>
-            <CardDescription>
-              {t("recentUsers.description")}
-            </CardDescription>
+            <CardDescription>{t("recentUsers.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-8">
@@ -132,25 +121,6 @@ export function DashboardContent() {
                 </div>
               )}
             </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("pendingApplications")}</CardTitle>
-            <Badge variant="outline">{stats.pendingApplicationsCount}</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.pendingApplicationsCount}</div>
-            <p className="text-xs text-muted-foreground">
-              {t("pendingAppsCard.requireReview")}
-            </p>
-            <Button className="w-full mt-4" variant="outline" size="sm">
-              {t("pendingAppsCard.viewAll")}
-              <ArrowUpRight className="ml-2 size-4" />
-            </Button>
           </CardContent>
         </Card>
       </div>

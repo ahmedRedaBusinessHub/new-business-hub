@@ -21,15 +21,6 @@ import {
 } from "@/components/ui/AlertDialog";
 import { Badge } from "@/components/ui/Badge";
 import { Plus, Pencil, Trash2, Search, Eye } from "lucide-react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-  PaginationEllipsis,
-} from "@/components/ui/Pagination";
 import { Select } from "@/components/ui/Select";
 import { ReviewForm } from "./ReviewForm";
 import {
@@ -38,7 +29,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import DynamicView, { type ViewTab, type ViewHeader } from "../shared/DynamicView";
+import DynamicView, { type ViewHeader } from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { useI18n } from "@/hooks/useI18n";
@@ -56,6 +47,7 @@ export interface Review {
   image_url?: string | null; // Image URL from API response
   created_at: string | null;
   updated_at: string | null;
+  [key: string]: any;
 }
 
 export function ReviewsManagement() {
@@ -397,10 +389,10 @@ export function ReviewsManagement() {
           title={t("entities.reviews.details")}
           header={{
             type: "avatar",
-            title: (data: Review) => data.name_ar || data.name_en || "Review",
-            subtitle: (data: Review) => data.job_title_ar || data.job_title_en || "",
+            title: (data: any) => data.name_ar || data.name_en || "Review",
+            subtitle: (data: any) => data.job_title_ar || data.job_title_en || "",
             imageIdField: "image_id",
-            avatarFallback: (data: Review) => 
+            avatarFallback: (data: any) =>
               data.name_ar?.[0] || data.name_en?.[0] || "R",
             badges: [
               {

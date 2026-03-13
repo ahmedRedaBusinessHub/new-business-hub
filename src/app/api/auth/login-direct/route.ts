@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { LoginDto, LoginResponse } from "@/types/auth";
-import { apiPost, createApiResponse, handleApiError } from "@/lib/api";
+import { LoginDto, LoginResponse } from "@/types/api/auth";
+import { apiPost, handleApiError } from "@/lib/api";
 
 /**
  * Direct login API route that bypasses NextAuth's error handling
@@ -47,13 +47,13 @@ export async function POST(request: NextRequest) {
 
     // Parse response
     const text = await res.text();
-    let data: LoginResponse | any = {};
-    
+    let data: LoginResponse | unknown = {};
+
     try {
       if (text) {
-        data = JSON.parse(text);
+        data = JSON.parse(text) as LoginResponse;
       }
-    } catch (e) {
+    } catch (_e) {
       // If parsing fails, return the text as message
       return NextResponse.json(
         {
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
 
     // Return the response as-is (including errors with Arabic text)
     return NextResponse.json(data, { status: res.status });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to process login request");
   }
 }

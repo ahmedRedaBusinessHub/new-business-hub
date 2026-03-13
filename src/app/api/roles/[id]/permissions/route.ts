@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiGet, apiPost, apiDelete, createApiResponse, handleApiError } from "@/lib/api";
+import type { Permission, RolePermission } from "@/types/entities";
 
 // Get all permissions for a role
 export async function GET(
@@ -18,7 +19,7 @@ export async function GET(
     }
 
     // Get all permissions (fetch with high limit to get all, or fetch all pages)
-    let allPermissions: any[] = [];
+    let allPermissions: Record<string, unknown>[] = [];
     let currentPage = 1;
     const pageLimit = 1000; // High limit to get all permissions
     
@@ -32,9 +33,8 @@ export async function GET(
       }
 
       const permissionsData = await permissionsRes.json();
-      const pagePermissions = Array.isArray(permissionsData.data) 
-        ? permissionsData.data 
-        : Array.isArray(permissionsData) 
+      const pagePermissions = Array.isArray(permissionsData.data?.data) 
+        ? permissionsData.data.data        : Array.isArray(permissionsData) 
         ? permissionsData 
         : [];
       
@@ -62,21 +62,20 @@ export async function GET(
       
       if (rolePermissionsRes.ok) {
         const rolePermissionsData = await rolePermissionsRes.json();
-        const rolePermissions = Array.isArray(rolePermissionsData.data)
-          ? rolePermissionsData.data
-          : Array.isArray(rolePermissionsData)
+        const rolePermissions: RolePermission[] = Array.isArray(rolePermissionsData.data?.data)
+          ? rolePermissionsData.data.data          : Array.isArray(rolePermissionsData)
           ? rolePermissionsData
           : [];
         assignedPermissionIds = rolePermissions
-          .map((rp: any) => rp.permission_id)
-          .filter((id: any) => id != null);
+          .map((rp: RolePermission) => rp.permission_id)
+          .filter((id: number | undefined): id is number => id != null);
       }
     } catch (error) {
       console.warn("Could not fetch role permissions:", error);
     }
 
     // Get all objects to group permissions (fetch with high limit to get all)
-    let objects: any[] = [];
+    let objects: Record<string, unknown>[] = [];
     currentPage = 1; // Reuse the same variable
     
     while (true) {
@@ -89,9 +88,8 @@ export async function GET(
       }
 
       const objectsData = await objectsRes.json();
-      const pageObjects = Array.isArray(objectsData.data)
-        ? objectsData.data
-        : Array.isArray(objectsData)
+      const pageObjects = Array.isArray(objectsData.data?.data)
+        ? objectsData.data.data        : Array.isArray(objectsData)
         ? objectsData
         : [];
       
@@ -110,15 +108,15 @@ export async function GET(
     }
 
     // Group permissions by object - only show permissions that exist in the database
-    const permissionsByObject = objects.map((obj) => {
+    const permissionsByObject = objects.map((obj: Record<string, unknown>) => {
       // Get all permissions for this object from the database
       const objectPermissions = allPermissions
-        .filter((p: any) => p.object_id === obj.id)
-        .map((p: any) => ({
+        .filter((p: Record<string, unknown>) => p.object_id === obj.id)
+        .map((p: Record<string, unknown>) => ({
           ...p,
-          assigned: assignedPermissionIds.includes(p.id),
+          assigned: typeof p.id === 'number' && assignedPermissionIds.includes(p.id),
         }));
-      
+
       return {
         ...obj,
         permissions: objectPermissions,
@@ -129,7 +127,7 @@ export async function GET(
       data: permissionsByObject,
       assignedPermissionIds,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch role permissions");
   }
 }
@@ -160,7 +158,7 @@ export async function POST(
       { requireAuth: true }
     );
     return await createApiResponse(res, { successStatus: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to assign permission to role");
   }
 }
@@ -195,9 +193,8 @@ export async function DELETE(
 
       if (rolePermissionsRes.ok) {
         const rolePermissionsData = await rolePermissionsRes.json();
-        const rolePermissions = Array.isArray(rolePermissionsData.data)
-          ? rolePermissionsData.data
-          : Array.isArray(rolePermissionsData)
+        const rolePermissions = Array.isArray(rolePermissionsData.data?.data)
+          ? rolePermissionsData.data.data          : Array.isArray(rolePermissionsData)
           ? rolePermissionsData
           : [];
         
@@ -220,7 +217,7 @@ export async function DELETE(
       requireAuth: true,
     });
     return await createApiResponse(res);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to unassign permission from role");
   }
 }

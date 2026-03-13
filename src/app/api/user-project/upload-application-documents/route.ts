@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(data, { status: response.status });
     }
     return NextResponse.json(data, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to upload application documents");
   }
 }

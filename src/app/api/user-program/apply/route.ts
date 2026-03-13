@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { apiPost, createApiResponse, handleApiError } from "@/lib/api";
 
 /**
@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const res = await apiPost("/user-program/apply", body, { requireAuth: true });
     return await createApiResponse(res, { successStatus: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to apply to program");
   }
 }

@@ -19,7 +19,7 @@ async function Programs() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    "itemListElement": initialData?.data?.map((program: any, index: number) => ({
+    "itemListElement": initialData?.data?.data?.map((program: { id: number; name_en?: string; name_ar?: string; detail_en?: string; detail_ar?: string; from_datetime?: string; to_datetime?: string; main_image_url?: string }, index: number) => ({
       "@type": "ListItem",
       "position": index + 1,
       "item": {

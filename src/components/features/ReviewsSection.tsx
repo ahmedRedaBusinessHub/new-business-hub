@@ -26,7 +26,7 @@ export default function ReviewsSection() {
         const res = await fetch("/api/public/reviews?limit=4");
         if (res.ok) {
           const data = await res.json();
-          setReviews(data.data || []);
+          setReviews(data.data.data || []);
         }
       } catch (error) {
         console.error("Failed to fetch reviews:", error);
@@ -135,7 +135,10 @@ export default function ReviewsSection() {
           {reviews.map((review, index) => {
             const name = getLocalized(review.name_ar, review.name_en);
             const comment = getLocalized(review.comment_ar, review.comment_en);
-            const position = getLocalized(review.job_title_ar, review.job_title_en);
+            const position = getLocalized(
+              review.job_title_ar,
+              review.job_title_en,
+            );
 
             return (
               <motion.div
@@ -200,13 +203,10 @@ export default function ReviewsSection() {
                   <div className="flex items-center gap-4">
                     <Avatar
                       className="w-14 h-14 sm:w-16 sm:h-16 ring-2 ring-offset-2"
-                    // ringColor="var(--theme-accent)"
-                    // ringOffsetColo="var(--theme-bg-secondary)"
+                      // ringColor="var(--theme-accent)"
+                      // ringOffsetColo="var(--theme-bg-secondary)"
                     >
-                      <AvatarImage
-                        src={review.image_url}
-                        alt={name}
-                      />
+                      <AvatarImage src={review.image_url} alt={name} />
                       <AvatarFallback
                         className="text-white"
                         style={{

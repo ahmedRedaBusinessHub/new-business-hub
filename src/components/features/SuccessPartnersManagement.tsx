@@ -53,6 +53,7 @@ export interface SuccessPartner {
   organization_id: number;
   created_at: string | null;
   updated_at: string | null;
+  [key: string]: any;
 }
 
 export function SuccessPartnersManagement() {
@@ -452,10 +453,10 @@ export function SuccessPartnersManagement() {
           title={t("entities.successPartners.details")}
           header={{
             type: "avatar",
-            title: (data: SuccessPartner) => data.name_ar || "Success Partner",
-            subtitle: (data: SuccessPartner) => data.name_en || "",
+            title: (data: any) => data.name_ar || "Success Partner",
+            subtitle: (data: any) => data.name_en || "",
             imageIdField: "image_id",
-            avatarFallback: (data: SuccessPartner) => 
+            avatarFallback: (data: any) =>
               data.name_ar?.[0] || data.name_en?.[0] || "S",
             badges: [
               {

@@ -21,15 +21,6 @@ import {
 } from "@/components/ui/AlertDialog";
 import { Badge } from "@/components/ui/Badge";
 import { Plus, Pencil, Trash2, Search, Eye } from "lucide-react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-  PaginationEllipsis,
-} from "@/components/ui/Pagination";
 import { Select } from "@/components/ui/Select";
 import { NewsletterSubscriptionForm } from "./NewsletterSubscriptionForm";
 import {
@@ -38,7 +29,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import DynamicView, { type ViewTab } from "../shared/DynamicView";
+import DynamicView from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { useI18n } from "@/hooks/useI18n";
@@ -51,6 +42,7 @@ export interface NewsletterSubscription {
   organization_id: number;
   created_at: string | null;
   updated_at: string | null;
+  [key: string]: any;
 }
 
 export function NewsletterSubscriptionsManagement() {

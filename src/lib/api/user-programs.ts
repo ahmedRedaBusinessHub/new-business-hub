@@ -6,11 +6,11 @@ export async function getMyApplications() {
     return apiGet(`${ENDPOINT}/my-applications`, { requireAuth: true });
 }
 
-export async function apply(data: any) {
+export async function apply(data: unknown) {
     return apiPost(`${ENDPOINT}/apply`, data, { requireAuth: true });
 }
 
-export async function uploadApplicationDocuments(formData: FormData) {
+export async function uploadApplicationDocuments(_formData: FormData) {
     // Note: handling FormData with node-fetch or native fetch in specific ways might be needed
     // But apiPost stringifies body by default.
     // We might need a custom handling for FormData in api.ts or here.

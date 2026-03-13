@@ -142,7 +142,7 @@ export function UserManagement() {
       setUsers(usersData);
       setTotal(data.total || 0);
       setTotalPages(data.totalPages || 0);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching users:", error);
       toast.error(t("users.failedToLoad"));
       setUsers([]);
@@ -196,7 +196,7 @@ export function UserManagement() {
       // Check for errors in response body (even if response.ok is true)
       if (!response.ok || (responseData.statusCode && responseData.statusCode >= 400)) {
         let errorMessage = t("users.failedToCreate");
-        let fieldErrors: Record<string, string> = {};
+        const fieldErrors: Record<string, string> = {};
         
         // Use the already parsed responseData instead of parsing again
         const errorData = responseData;
@@ -263,7 +263,7 @@ export function UserManagement() {
       toast.success(t("users.userCreated"));
       setIsFormOpen(false);
       fetchUsers();
-    } catch (error: any) {
+    } catch (error) {
       // Only log to console if there are no field-specific errors (field errors are handled by DynamicForm)
       // Field-specific errors are expected and handled gracefully, so we don't need to log them
       if (!error.fieldErrors || Object.keys(error.fieldErrors).length === 0) {
@@ -343,7 +343,7 @@ export function UserManagement() {
       // Check for errors in response body (even if response.ok is true)
       if (!response.ok || (responseData.statusCode && responseData.statusCode >= 400)) {
         let errorMessage = t("users.failedToUpdate");
-        let fieldErrors: Record<string, string> = {};
+        const fieldErrors: Record<string, string> = {};
         
         // Use the already parsed responseData instead of parsing again
         const errorData = responseData;
@@ -406,7 +406,7 @@ export function UserManagement() {
       setEditingUser(null);
       setIsFormOpen(false);
       fetchUsers();
-    } catch (error: any) {
+    } catch (error) {
       // Only log to console if there are no field-specific errors (field errors are handled by DynamicForm)
       // Field-specific errors are expected and handled gracefully, so we don't need to log them
       if (!error.fieldErrors || Object.keys(error.fieldErrors).length === 0) {
@@ -435,7 +435,7 @@ export function UserManagement() {
       }
 
       return await response.json();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error uploading image:", error);
       toast.error("User updated but image upload failed");
     }
@@ -455,7 +455,7 @@ export function UserManagement() {
       toast.success(t("users.userDeleted"));
       setDeletingUserId(null);
       fetchUsers();
-    } catch (error: any) {
+    } catch (error) {
       toast.error(error.message || t("users.failedToDelete"));
     }
   };

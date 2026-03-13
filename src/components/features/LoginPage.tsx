@@ -106,7 +106,7 @@ export default function LoginPage() {
         ...credentials,
       });
 
-      console.log('res',  res);
+      console.log('res', res);
 
       if (res?.error) {
         // Helper function to extract and parse 2FA error
@@ -140,7 +140,7 @@ export default function LoginPage() {
                 if (parsed.type === "2FA_REQUIRED" || parsed.actions) {
                   return parsed;
                 }
-              } catch (parseErr) {
+              } catch (_parseErr) {
                 // Continue to next pattern
               }
             }
@@ -161,7 +161,7 @@ export default function LoginPage() {
                 if (parsed.type === "2FA_REQUIRED" || parsed.actions) {
                   return parsed;
                 }
-              } catch (parseErr) {
+              } catch (_parseErr) {
                 // Continue to next pattern
               }
             }
@@ -175,8 +175,8 @@ export default function LoginPage() {
           const actionsStr = typeof actions === 'string'
             ? actions
             : Array.isArray(actions)
-            ? actions.join('')
-            : '';
+              ? actions.join('')
+              : '';
 
           // Check for email in actions: 'sent_email' | 'already_sent_email'
           if (actionsStr.includes("email")) {
@@ -271,7 +271,7 @@ export default function LoginPage() {
                   setIsLoading(false);
                   return;
                 }
-              } catch (parseErr) {
+              } catch (_parseErr) {
                 // Extracted is not JSON, continue with regular error handling
               }
             }
@@ -307,7 +307,7 @@ export default function LoginPage() {
                     setIsLoading(false);
                     return;
                   }
-                } catch (parseErr) {
+                } catch (_parseErr) {
                   // Extracted is not JSON, continue with regular error handling
                 }
               }
@@ -352,7 +352,7 @@ export default function LoginPage() {
                     return;
                   }
                 }
-              } catch (parseErr) {
+              } catch (_parseErr) {
                 // Not JSON, continue
               }
             } else if (typeof res.error.cause === "string") {
@@ -385,7 +385,7 @@ export default function LoginPage() {
                     return;
                   }
                 }
-              } catch (parseErr) {
+              } catch (_parseErr) {
                 // Not JSON, continue
               }
             } else if (res.error.cause?.message) {
@@ -420,7 +420,7 @@ export default function LoginPage() {
                     return;
                   }
                 }
-              } catch (parseErr) {
+              } catch (_parseErr) {
                 // Not JSON, continue
               }
             }
@@ -732,19 +732,18 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setLoginMode("email")}
-                    className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-                      loginMode === "email"
+                    className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${loginMode === "email"
                         ? "text-white"
                         : "text-gray-600"
-                    }`}
+                      }`}
                     style={
                       loginMode === "email"
                         ? {
-                            backgroundImage: `linear-gradient(to right, var(--theme-gradient-start), var(--theme-gradient-mid))`,
-                          }
+                          backgroundImage: `linear-gradient(to right, var(--theme-gradient-start), var(--theme-gradient-mid))`,
+                        }
                         : {
-                            color: "var(--theme-text-secondary)",
-                          }
+                          color: "var(--theme-text-secondary)",
+                        }
                     }
                   >
                     {t("form.mode.email") || "Email / Username"}
@@ -752,19 +751,18 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setLoginMode("mobile")}
-                    className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-                      loginMode === "mobile"
+                    className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${loginMode === "mobile"
                         ? "text-white"
                         : "text-gray-600"
-                    }`}
+                      }`}
                     style={
                       loginMode === "mobile"
                         ? {
-                            backgroundImage: `linear-gradient(to right, var(--theme-gradient-start), var(--theme-gradient-mid))`,
-                          }
+                          backgroundImage: `linear-gradient(to right, var(--theme-gradient-start), var(--theme-gradient-mid))`,
+                        }
                         : {
-                            color: "var(--theme-text-secondary)",
-                          }
+                          color: "var(--theme-text-secondary)",
+                        }
                     }
                   >
                     {t("form.mode.mobile") || "Mobile"}

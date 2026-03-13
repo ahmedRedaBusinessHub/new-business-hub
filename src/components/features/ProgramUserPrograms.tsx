@@ -1,4 +1,5 @@
 "use client";
+import type { DataRow } from "@/types/components/management";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import {
@@ -75,7 +76,7 @@ export function ProgramUserPrograms({ programId }: ProgramUserProgramsProps) {
       try {
         const statusesConfig = await staticListsCache.getByNamespace('user_program.statuses');
         setStatuses(statusesConfig);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching statuses:", error);
       }
     };
@@ -209,8 +210,8 @@ export function ProgramUserPrograms({ programId }: ProgramUserProgramsProps) {
       files.forEach((file, index) => {
         formData.append("files", file);
         // Append file name if provided, otherwise use original filename without extension
-        const fileName = fileNames && fileNames[index] 
-          ? fileNames[index] 
+        const fileName = fileNames && fileNames[index]
+          ? fileNames[index]
           : file.name.split('.')[0] || file.name;
         formData.append("fileNames", fileName);
       });
@@ -378,7 +379,7 @@ export function ProgramUserPrograms({ programId }: ProgramUserProgramsProps) {
                   <TableCell>{getStatusName(userProgram.status)}</TableCell>
                   <TableCell>{userProgram.fund_needed ? `$${userProgram.fund_needed}` : "-"}</TableCell>
                   <TableCell>
-                    {userProgram.created_at 
+                    {userProgram.created_at
                       ? new Date(userProgram.created_at).toLocaleDateString()
                       : "-"}
                   </TableCell>
@@ -506,18 +507,18 @@ export function ProgramUserPrograms({ programId }: ProgramUserProgramsProps) {
               label: "Details",
               gridCols: 2,
               fields: [
-                { 
-                  name: "user", 
-                  label: "User", 
-                  type: "text", 
+                {
+                  name: "user",
+                  label: "User",
+                  type: "text",
                   render: (value: any, data: any) => {
                     return getUserName(data);
                   }
                 },
-                { 
-                  name: "email", 
-                  label: "Email", 
-                  type: "text", 
+                {
+                  name: "email",
+                  label: "Email",
+                  type: "text",
                   render: (value: any, data: any) => {
                     return getUserEmail(data);
                   }
@@ -526,13 +527,13 @@ export function ProgramUserPrograms({ programId }: ProgramUserProgramsProps) {
                 { name: "project_name", label: "Project Name", type: "text" },
                 { name: "project_description", label: "Project Description", type: "text", colSpan: 12 },
                 { name: "team_size", label: "Team Size", type: "text" },
-                { name: "fund_needed", label: "Fund Needed", type: "text", render: (value: number | null) => value ? `$${value}` : "-" },
+                { name: "fund_needed", label: "Fund Needed", type: "text", render: (value: any) => value ? `$${value}` : "-" },
                 { name: "why_applying", label: "Why Applying", type: "text", colSpan: 12 },
-                { 
-                  name: "status", 
-                  label: "Status", 
-                  type: "text", 
-                  render: (value: number | null) => getStatusName(value) 
+                {
+                  name: "status",
+                  label: "Status",
+                  type: "text",
+                  render: (value: any) => getStatusName(value)
                 },
                 { name: "created_at", label: "Created At", type: "datetime" },
                 { name: "updated_at", label: "Updated At", type: "datetime" },
@@ -550,19 +551,19 @@ export function ProgramUserPrograms({ programId }: ProgramUserProgramsProps) {
                   <div className="space-y-2">
                     {documents.map((doc) => {
                       // Construct file URL from file_url if available
-                      const fileUrl = doc.file_url 
-                        ? (doc.file_url.startsWith('http') || doc.file_url.startsWith('/api/public/file') 
-                            ? doc.file_url 
-                            : `/api/public/file?file_url=${encodeURIComponent(doc.file_url)}`)
+                      const fileUrl = doc.file_url
+                        ? (doc.file_url.startsWith('http') || doc.file_url.startsWith('/api/public/file')
+                          ? doc.file_url
+                          : `/api/public/file?file_url=${encodeURIComponent(doc.file_url)}`)
                         : null;
-                      
+
                       return (
                         <div key={doc.file_id} className="flex items-center gap-2 p-3 border rounded-lg bg-muted/50">
                           {fileUrl ? (
                             <>
-                              <a 
-                                href={fileUrl} 
-                                target="_blank" 
+                              <a
+                                href={fileUrl}
+                                target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-sm hover:underline text-primary flex-1"
                               >

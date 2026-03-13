@@ -54,13 +54,13 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
     detail_ar: z.string().optional(),
     detail_en: z.string().optional(),
     type: z.union([z.string(), z.number()]).optional(),
-    category_ids: z.any().optional(),
+    category_ids: z.unknown().optional(),
     link: z.union([z.string().url(t("entities.projects.linkPlaceholder")), z.literal("")]).optional(),
-    social_media: z.any().optional(),
+    social_media: z.unknown().optional(),
     status: z.coerce.number().int().min(0).max(1),
-    mainImage: z.any().optional(),
-    imageIds: z.any().optional(),
-    fileIds: z.any().optional(),
+    mainImage: z.unknown().optional(),
+    imageIds: z.unknown().optional(),
+    fileIds: z.unknown().optional(),
   }), [t]);
 
   const handleDeleteImage = async (url: string, imageId?: number) => {
@@ -196,7 +196,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
 
         const statusesConfig = await staticListsCache.getByNamespace('project.statuses');
         setProjectStatuses(statusesConfig || []);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching static lists:', error);
         toast.error('Failed to load project types and categories');
         staticListsFetchedRef.current = false;
@@ -298,11 +298,11 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
         social_media: currentSocialMedia,
         status: validated.status,
         organization_id: project?.organization_id || 1,
-        mainImage: validated.mainImage,
+        mainImage: validated.mainImage as File[] | undefined,
         imageIds: imageFiles,
         fileIds: fileFiles,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Form validation error:", error);
       throw error;
     }
@@ -316,6 +316,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
   };
 
   const formConfig = useMemo((): FormField[] => [
+
     {
       name: "title_ar",
       label: t("entities.projects.titleAr"),
@@ -430,9 +431,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
           detail_ar: project?.detail_ar || "",
           detail_en: project?.detail_en || "",
           type: project?.type != null ? project.type.toString() : "",
-          category_ids: project?.category_ids || [],
           link: project?.link || "",
-          social_media: project?.social_media ? (typeof project.social_media === 'string' ? JSON.parse(project.social_media) : project.social_media) : {},
           status: project?.status?.toString() || "1",
           mainImage: undefined,
         }}
@@ -627,7 +626,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
 
               try {
                 form.requestSubmit();
-              } catch (error) {
+              } catch (error: any) {
                 console.warn('requestSubmit failed, manually collecting form values', error);
 
                 const formData = new FormData(form);

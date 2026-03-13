@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiGet, createApiResponse, handleApiError } from "@/lib/api";
+import type { Contact } from "@/types/entities";
 
 export async function GET(
   request: NextRequest,
@@ -21,12 +22,12 @@ export async function GET(
     }
 
     const data = await res.json();
-    let allData = Array.isArray(data.data) ? data.data : [];
+    let allData: Contact[] = Array.isArray(data.data?.data) ? data.data.data : Array.isArray(data.data) ? data.data : [];
 
     // Apply search filter
     if (search) {
       const query = search.toLowerCase();
-      allData = allData.filter((contact: any) => {
+      allData = allData.filter((contact: Contact) => {
         const name = (contact.name || "").toLowerCase();
         const email = (contact.email || "").toLowerCase();
         const phone = (contact.phone || "").toLowerCase();
@@ -55,7 +56,7 @@ export async function GET(
       limit,
       totalPages: Math.ceil(total / limit),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch user contacts");
   }
 }

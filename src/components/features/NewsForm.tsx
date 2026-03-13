@@ -34,10 +34,10 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
     title_en: z.string().optional(),
     detail_ar: z.string().optional(),
     detail_en: z.string().optional(),
-    social_media: z.any().optional(),
+    social_media: z.unknown().optional(),
     status: z.coerce.number().int().min(0).max(1),
-    mainImage: z.any().optional(),
-    imageIds: z.any().optional(),
+    mainImage: z.unknown().optional(),
+    imageIds: z.unknown().optional(),
   }), [t]);
 
   const handleDeleteImage = async (url: string, imageId?: number) => {
@@ -139,10 +139,10 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
         social_media: currentSocialMedia,
         status: validated.status,
         organization_id: news?.organization_id || 1,
-        mainImage: validated.mainImage,
+        mainImage: validated.mainImage as File[] | undefined,
         imageIds: imageFiles,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Form validation error:", error);
       throw error;
     }
@@ -355,7 +355,7 @@ export function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
 
               try {
                 form.requestSubmit();
-              } catch (error) {
+              } catch (error: any) {
                 console.warn('requestSubmit failed, manually collecting form values', error);
 
                 const formData = new FormData(form);

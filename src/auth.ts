@@ -10,8 +10,9 @@ async function getUserFromToken(accessToken: string, identifier: string) {
     const meRes = await apiGet("/auth/me", { accessToken });
     if (meRes.ok) {
       const userData = await meRes.json();
-      const user = userData.data || userData.user || userData;
-      const role = user.role?.toString?.()?.toLowerCase?.() || "client";
+      // Handle potential doubly-nested "data" structure (NestJS common response pattern)
+      const user = userData?.data?.data || userData?.data || userData?.user || userData;
+      const role = user?.role?.toString?.()?.toLowerCase?.() || "client";
       return {
         id: user.id?.toString() || user.userId?.toString() || identifier,
         name: user.name || user.firstName || user.username || identifier,
@@ -120,11 +121,14 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
           // Check if response is successful (200 or 201)
           const isSuccess = res.status === 200 || res.status === 201;
 
+          // Extract nested data if the response has a 'data' wrapper
+          const responseData = (data as any).data || data;
+
           // Handle 2FA scenarios - check if response has 'actions' field (2FA enabled)
           // Backend returns: { message: string, actions: string, retry_after?: Date }
           // where actions is: 'sent_email' | 'sent_sms' | 'already_sent_email' | 'already_sent_sms'
-          if (isSuccess && "actions" in data && !("access_token" in data)) {
-            const twoFAResponse = data as Login2FAResponse;
+          if (isSuccess && "actions" in responseData && !("access_token" in responseData)) {
+            const twoFAResponse = responseData as Login2FAResponse;
             // 2FA is enabled - OTP sent or already sent
             // Create a custom error with the 2FA data in both message and cause
             const twoFAData = JSON.stringify({
@@ -145,8 +149,8 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
           }
 
           // Handle successful login (2FA disabled) - status 200 or 201 with access_token
-          if (isSuccess && "access_token" in data) {
-            const successResponse = data as LoginSuccessResponse;
+          if (isSuccess && "access_token" in responseData) {
+            const successResponse = responseData as LoginSuccessResponse;
             return await getUserFromToken(successResponse.access_token, identifier);
           }
 
@@ -287,7 +291,6 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
   // Error handling
   events: {
     async signIn({ user }: any) {
-      console.log("user", user);
       // Log successful sign-ins
       console.log("User signed in:", user?.email || user?.id);
     },

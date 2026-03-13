@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RegisterDto, RegisterResponse } from "@/types/auth";
+import { RegisterDto } from "@/types/auth";
 import { apiPost, createApiResponse, handleApiError } from "@/lib/api";
 
 export async function POST(request: NextRequest) {
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
 
     const res = await apiPost("/auth/register", requestBody);
     return await createApiResponse(res);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to register user");
   }
 }

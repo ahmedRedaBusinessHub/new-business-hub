@@ -14,8 +14,8 @@ const formSchema = z.object({
   title_ar: z.string().min(2, "Arabic title must be at least 2 characters"),
   title_en: z.string().optional(),
   status: z.coerce.number().int().min(0).max(1),
-  mainImage: z.any().optional(),
-  imageIds: z.any().optional(),
+  mainImage: z.unknown().optional(),
+  imageIds: z.unknown().optional(),
 });
 
 interface GalleryFormProps {
@@ -92,10 +92,10 @@ export function GalleryForm({ gallery, onSubmit, onCancel }: GalleryFormProps) {
         image_ids: gallery?.image_ids || [],
         status: validated.status,
         organization_id: gallery?.organization_id || 1,
-        mainImage: validated.mainImage,
+        mainImage: validated.mainImage as File[] | undefined,
         imageIds: imageFiles.length > 0 ? imageFiles : undefined,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Form validation error:", error);
       throw error;
     } finally {
@@ -249,7 +249,7 @@ export function GalleryForm({ gallery, onSubmit, onCancel }: GalleryFormProps) {
               // Try to trigger form submission using requestSubmit
               try {
                 form.requestSubmit();
-              } catch (error) {
+              } catch (error: any) {
                 console.warn('requestSubmit failed, manually collecting form values', error);
 
                 // Manually collect form values

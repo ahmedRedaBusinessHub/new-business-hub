@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { apiGet, createApiResponse, handleApiError } from "@/lib/api";
 
 export async function GET(request: NextRequest) {
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     });
 
     return await createApiResponse(res);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch navigation");
   }
 }

@@ -5,7 +5,13 @@ import DynamicForm from "../shared/DynamicForm";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  namespace: z.string().min(2, "Namespace must be at least 2 characters").regex(/^[a-z0-9._-]+$/, "Namespace must be lowercase with dots, dashes, or underscores only"),
+  namespace: z
+    .string()
+    .min(2, "Namespace must be at least 2 characters")
+    .regex(
+      /^[a-z0-9._-]+$/,
+      "Namespace must be lowercase with dots, dashes, or underscores only",
+    ),
   type: z.coerce.number().int().min(1, "Type is required"),
   icon: z.string().optional().nullable(),
   parent_id: z.coerce.number().int().optional().nullable(),
@@ -17,17 +23,24 @@ const formSchema = z.object({
 interface ObjectFormProps {
   object: ObjectItem | null;
   allObjects: ObjectItem[];
-  onSubmit: (data: Omit<ObjectItem, "id" | "created_at" | "updated_at" | "parent">) => void;
+  onSubmit: (
+    data: Omit<ObjectItem, "id" | "created_at" | "updated_at" | "parent">,
+  ) => void;
   onCancel: () => void;
 }
 
-export function ObjectForm({ object, allObjects, onSubmit, onCancel }: ObjectFormProps) {
+export function ObjectForm({
+  object,
+  allObjects,
+  onSubmit,
+  onCancel,
+}: ObjectFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Filter out the current object from parent options (to prevent self-reference)
   const parentOptions = allObjects
-    .filter(o => o.id !== object?.id)
-    .map(o => ({
+    .filter((o) => o.id !== object?.id)
+    .map((o) => ({
       value: o.id.toString(),
       label: `${o.name} (${o.namespace})`,
     }));
@@ -75,21 +88,31 @@ export function ObjectForm({ object, allObjects, onSubmit, onCancel }: ObjectFor
           placeholder: "e.g., admin.users, admin.settings",
           validation: formSchema.shape.namespace,
           required: true,
-          helperText: "Unique identifier (lowercase, dots, dashes, underscores)",
+          helperText:
+            "Unique identifier (lowercase, dots, dashes, underscores)",
           options: [
-
             { value: "all", label: "all" },
+            { value: "dashboard", label: "dashboard" },
+            { value: "users", label: "users" },
             { value: "news", label: "news" },
-
+            {
+              value: "newsletter-subscriptions",
+              label: "newsletter-subscriptions",
+            },
             { value: "programs", label: "programs" },
             { value: "projects", label: "projects" },
             { value: "reviews", label: "reviews" },
-            { value: "dashboard", label: "dashboard" },
-            { value: "users", label: "users" },
-            { value: "newsletter-subscriptions", label: "newsletter-subscriptions" },
             { value: "iso-companies", label: "iso-companies" },
             { value: "success-partners", label: "success-partners" },
             { value: "contacts", label: "contacts" },
+
+            { value: "branches", label: "branches" },
+            { value: "coworking-spaces", label: "coworking-spaces" },
+            { value: "bookings", label: "bookings" },
+            { value: "additional-services", label: "additional-services" },
+            { value: "service-bookings", label: "service-bookings" },
+            { value: "booking-reviews", label: "booking-reviews" },
+
             { value: "roles", label: "roles" },
             { value: "objects", label: "objects" },
             { value: "galleries", label: "galleries" },
@@ -98,8 +121,7 @@ export function ObjectForm({ object, allObjects, onSubmit, onCancel }: ObjectFor
             { value: "cache-management", label: "cache-management" },
             { value: "permissions", label: "permissions" },
             { value: "role-permissions", label: "role-permissions" },
-            { value: "user-roles", label: "user-roles" }
-
+            { value: "user-roles", label: "user-roles" },
           ],
         },
 

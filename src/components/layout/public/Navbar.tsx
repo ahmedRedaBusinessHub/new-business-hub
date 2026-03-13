@@ -1,6 +1,17 @@
 "use client";
 import { Button } from "@/components/ui/Button";
-import { Globe, Menu, X, ChevronDown, Phone, Mail, User, LogOut, LayoutGrid } from "lucide-react";
+import {
+  Globe,
+  Menu,
+  X,
+  ChevronDown,
+  Phone,
+  Mail,
+  User,
+  LogOut,
+  LayoutGrid,
+  Calendar,
+} from "lucide-react";
 import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import Logo from "../../features/Logo";
 import { useState, useEffect } from "react";
@@ -27,6 +38,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { signOut } from "next-auth/react";
 import { ProfileMenu } from "@/components/features/ProfileMenu";
+import { NotificationCenter } from "@/components/layout/notification-center";
 
 interface NavbarProps { }
 
@@ -74,7 +86,7 @@ export default function Navbar({ }: NavbarProps) {
       labelKey: "nav_services",
       href: pathname == `/${language}` ? "#services" : "/#services",
     },
-    { labelKey: "nav_workspaces", href: "/workspaces" },
+    { labelKey: "nav_workspaces", href: "/spaces" },
     { labelKey: "nav_getISO", href: "/iso" },
     { labelKey: "nav_follow", href: "/follow-us" },
   ];
@@ -236,7 +248,7 @@ export default function Navbar({ }: NavbarProps) {
                     size="icon"
                     onClick={() => {
                       router.push(
-                        getTargetPath(language == "ar" ? "en" : "ar")
+                        getTargetPath(language == "ar" ? "en" : "ar"),
                       );
                     }}
                     className="rounded-full hover:bg-white/20 dark:hover:bg-white/10 relative overflow-hidden group"
@@ -259,134 +271,135 @@ export default function Navbar({ }: NavbarProps) {
                 </motion.div>
 
                 {/* User Menu - Conditional Rendering */}
-                {user && user.role?.toString?.()?.toLowerCase() === USER_ROLE ? (
+                {user &&
+                  user.role?.toString?.()?.toLowerCase() === USER_ROLE ? (
                   // Show avatar with dropdown for user role only
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="hidden sm:inline-flex items-center gap-2 px-3 py-2 h-auto hover:bg-white/20 dark:hover:bg-white/10 transition-all duration-300 rounded-xl"
-                        style={{
-                          color: isScrolled
-                            ? "var(--theme-text-primary)"
-                            : "white",
-                        }}
-                      >
-                        <Avatar className="size-8">
-                          <AvatarImage
-                            src={user.image || user.avatar}
-                            alt={user.name || user.email}
-                          />
-                          <AvatarFallback
-                            className="text-xs"
-                            style={{
-                              backgroundColor: isScrolled
-                                ? "var(--theme-primary)"
-                                : "rgba(255, 255, 255, 0.2)",
-                              color: isScrolled ? "white" : "white",
-                            }}
-                          >
-                            {user.name
-                              ? user.name
-                                .split(" ")
-                                .map((n: string) => n[0])
-                                .join("")
-                                .toUpperCase()
-                                .slice(0, 2)
-                              : user.email
-                                ? user.email[0].toUpperCase()
-                                : "U"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="hidden md:block text-sm font-medium">
-                          {user.name || user.email?.split("@")[0] || "User"}
-                        </span>
-                        <ChevronDown
-                          className="w-4 h-4 hidden md:block"
+                  <div className="flex items-center gap-2">
+                    <NotificationCenter />
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="hidden sm:inline-flex items-center gap-2 px-3 py-2 h-auto hover:bg-white/20 dark:hover:bg-white/10 transition-all duration-300 rounded-xl"
                           style={{
                             color: isScrolled
                               ? "var(--theme-text-primary)"
                               : "white",
                           }}
-                        />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      align="end"
-                      className="w-56"
-                      style={{
-                        backgroundColor: "var(--theme-bg-primary)",
-                        borderColor: "var(--theme-border)",
-                      }}
-                    >
-                      <DropdownMenuLabel className="font-normal">
-                        <div className="flex flex-col space-y-1">
-                          <p className="text-sm font-medium">
-                            {user.name || "User"}
-                          </p>
-                          <p
-                            className="text-xs"
-                            style={{ color: "var(--theme-text-secondary)" }}
-                          >
-                            {user.email}
-                          </p>
-                        </div>
-                      </DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={() => router.push("/my-programs")}
-                        className="cursor-pointer"
-                      >
-                        <LayoutGrid className="mr-2 h-4 w-4" />
-                        <span>{language === "ar" ? "برامجي" : "My Programs"}</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => router.push("/profile")}
-                        className="cursor-pointer"
-                      >
-                        <User className="mr-2 h-4 w-4" />
-                        <span>{language === "ar" ? "الملف الشخصي" : "Profile"}</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={async () => {
-                          await signOut({ redirect: false });
-                          router.push("/");
+                        >
+                          <Avatar className="size-8">
+                            <AvatarImage
+                              src={
+                                (user.image || user.avatar || undefined) as
+                                | string
+                                | undefined
+                              }
+                              alt={user.name || user.email || undefined}
+                            />
+                            <AvatarFallback
+                              className="text-xs"
+                              style={{
+                                backgroundColor: isScrolled
+                                  ? "var(--theme-primary)"
+                                  : "rgba(255, 255, 255, 0.2)",
+                                color: isScrolled ? "white" : "white",
+                              }}
+                            >
+                              {user.name
+                                ? user.name
+                                  .split(" ")
+                                  .map((n: string) => n[0])
+                                  .join("")
+                                  .toUpperCase()
+                                  .slice(0, 2)
+                                : user.email
+                                  ? user.email[0].toUpperCase()
+                                  : "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="hidden md:block text-sm font-medium">
+                            {user.name || user.email?.split("@")[0] || "User"}
+                          </span>
+                          <ChevronDown
+                            className="w-4 h-4 hidden md:block"
+                            style={{
+                              color: isScrolled
+                                ? "var(--theme-text-primary)"
+                                : "white",
+                            }}
+                          />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        className="w-56"
+                        style={{
+                          backgroundColor: "var(--theme-bg-primary)",
+                          borderColor: "var(--theme-border)",
                         }}
-                        className="cursor-pointer text-red-600 focus:text-red-600"
                       >
-                        <LogOut className="mr-2 h-4 w-4" />
-                        <span>
-                          {language === "ar" ? "تسجيل الخروج" : "Sign out"}
-                        </span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                        <DropdownMenuLabel className="font-normal">
+                          <div className="flex flex-col space-y-1">
+                            <p className="text-sm font-medium">
+                              {user.name || "User"}
+                            </p>
+                            <p
+                              className="text-xs"
+                              style={{ color: "var(--theme-text-secondary)" }}
+                            >
+                              {user.email}
+                            </p>
+                          </div>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => router.push("/my-programs")}
+                          className="cursor-pointer"
+                        >
+                          <LayoutGrid className="mr-2 h-4 w-4" />
+                          <span>
+                            {language === "ar" ? "برامجي" : "My Programs"}
+                          </span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => router.push("/bookings")}
+                          className="cursor-pointer"
+                        >
+                          <Calendar className="mr-2 h-4 w-4" />
+                          <span>
+                            {language === "ar" ? "حجوزاتي" : "My Bookings"}
+                          </span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => router.push("/profile")}
+                          className="cursor-pointer"
+                        >
+                          <User className="mr-2 h-4 w-4" />
+                          <span>
+                            {language === "ar" ? "الملف الشخصي" : "Profile"}
+                          </span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={async () => {
+                            await signOut({ redirect: false });
+                            router.push("/");
+                          }}
+                          className="cursor-pointer text-red-600 focus:text-red-600"
+                        >
+                          <LogOut className="mr-2 h-4 w-4" />
+                          <span>
+                            {language === "ar" ? "تسجيل الخروج" : "Sign out"}
+                          </span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 ) : user && user.role ? (
-                  <ProfileMenu />
-                  // Show Control button for all other roles (admin, operation, data-entry, client, store, guest, etc.)
-                  // <Button
-                  //   onClick={() => {
-                  //     router.push("/admin");
-                  //   }}
-                  //   variant="outline"
-                  //   className="hidden sm:inline-flex gap-2 px-5 py-2.5 text-sm font-medium transition-all duration-300 relative overflow-hidden group"
-                  //   style={{
-                  //     borderWidth: "2px",
-                  //     borderColor: isScrolled
-                  //       ? "var(--theme-primary)"
-                  //       : "rgba(255, 255, 255, 0.9)",
-                  //     color: isScrolled ? "var(--theme-primary)" : "white",
-                  //     backgroundColor: isScrolled
-                  //       ? "transparent"
-                  //       : "rgba(255, 255, 255, 0.1)",
-                  //     fontSize: "14px",
-                  //   }}
-                  // >
-                  //   <span className="relative z-10">
-                  //     {language === "ar" ? "لوحة التحكم" : "Control"}
-                  //   </span>
-                  // </Button>
+                  <div className="flex items-center gap-2">
+                    <NotificationCenter />
+                    <ProfileMenu />
+                  </div>
                 ) : (
                   // Show Login button when no user
                   <Button
@@ -412,7 +425,6 @@ export default function Navbar({ }: NavbarProps) {
                     </span>
                   </Button>
                 )}
-
 
                 {/* Mobile Menu Button */}
                 <Button
@@ -533,11 +545,15 @@ export default function Navbar({ }: NavbarProps) {
                       </motion.li>
                     ))}
                     {/* User Menu for Mobile */}
-                    {user && user.role?.toString?.()?.toLowerCase() === USER_ROLE ? (
+                    {user &&
+                      user.role?.toString?.()?.toLowerCase() === USER_ROLE ? (
                       // Show avatar, profile, sign out for user role only
                       <>
                         <motion.li
-                          initial={{ opacity: 0, x: language === "ar" ? 20 : -20 }}
+                          initial={{
+                            opacity: 0,
+                            x: language === "ar" ? 20 : -20,
+                          }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: menuItems.length * 0.1 }}
                           className="flex items-center gap-3 px-5 py-4 rounded-xl"
@@ -548,8 +564,12 @@ export default function Navbar({ }: NavbarProps) {
                         >
                           <Avatar className="size-10">
                             <AvatarImage
-                              src={user.image || user.avatar}
-                              alt={user.name || user.email}
+                              src={
+                                (user.image || user.avatar || undefined) as
+                                | string
+                                | undefined
+                              }
+                              alt={user.name || user.email || undefined}
                             />
                             <AvatarFallback
                               className="text-sm"
@@ -586,7 +606,10 @@ export default function Navbar({ }: NavbarProps) {
                           </div>
                         </motion.li>
                         <motion.li
-                          initial={{ opacity: 0, x: language === "ar" ? 20 : -20 }}
+                          initial={{
+                            opacity: 0,
+                            x: language === "ar" ? 20 : -20,
+                          }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: (menuItems.length + 1) * 0.1 }}
                         >
@@ -609,12 +632,50 @@ export default function Navbar({ }: NavbarProps) {
                           >
                             <div className="flex items-center gap-2">
                               <User className="w-4 h-4" />
-                              <span>{language === "ar" ? "الملف الشخصي" : "Profile"}</span>
+                              <span>
+                                {language === "ar" ? "الملف الشخصي" : "Profile"}
+                              </span>
                             </div>
                           </Link>
                         </motion.li>
                         <motion.li
-                          initial={{ opacity: 0, x: language === "ar" ? 20 : -20 }}
+                          initial={{
+                            opacity: 0,
+                            x: language === "ar" ? 20 : -20,
+                          }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: (menuItems.length + 1.5) * 0.1 }}
+                        >
+                          <Link
+                            href="/bookings"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="block px-5 py-3 rounded-xl transition-all duration-300 text-sm font-medium"
+                            style={{
+                              color: "var(--theme-text-primary)",
+                              backgroundColor: "transparent",
+                            }}
+                            onMouseEnter={(e: any) => {
+                              e.currentTarget.style.backgroundImage = `linear-gradient(135deg, 
+                                color-mix(in srgb, var(--theme-primary) 10%, transparent), 
+                                color-mix(in srgb, var(--theme-accent) 10%, transparent))`;
+                            }}
+                            onMouseLeave={(e: any) => {
+                              e.currentTarget.style.backgroundImage = "none";
+                            }}
+                          >
+                            <div className="flex items-center gap-2">
+                              <Calendar className="w-4 h-4" />
+                              <span>
+                                {language === "ar" ? "حجوزاتي" : "My Bookings"}
+                              </span>
+                            </div>
+                          </Link>
+                        </motion.li>
+                        <motion.li
+                          initial={{
+                            opacity: 0,
+                            x: language === "ar" ? 20 : -20,
+                          }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: (menuItems.length + 2) * 0.1 }}
                         >
@@ -631,13 +692,16 @@ export default function Navbar({ }: NavbarProps) {
                                 "color-mix(in srgb, red 10%, transparent)";
                             }}
                             onMouseLeave={(e: any) => {
-                              e.currentTarget.style.backgroundColor = "transparent";
+                              e.currentTarget.style.backgroundColor =
+                                "transparent";
                             }}
                           >
                             <div className="flex items-center gap-2">
                               <LogOut className="w-4 h-4" />
                               <span>
-                                {language === "ar" ? "تسجيل الخروج" : "Sign out"}
+                                {language === "ar"
+                                  ? "تسجيل الخروج"
+                                  : "Sign out"}
                               </span>
                             </div>
                           </button>
@@ -646,7 +710,10 @@ export default function Navbar({ }: NavbarProps) {
                     ) : user && user.role ? (
                       // Show Control button for all other roles
                       <motion.li
-                        initial={{ opacity: 0, x: language === "ar" ? 20 : -20 }}
+                        initial={{
+                          opacity: 0,
+                          x: language === "ar" ? 20 : -20,
+                        }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: menuItems.length * 0.1 }}
                       >
@@ -682,7 +749,10 @@ export default function Navbar({ }: NavbarProps) {
                     ) : (
                       // Show Login button when no user
                       <motion.li
-                        initial={{ opacity: 0, x: language === "ar" ? 20 : -20 }}
+                        initial={{
+                          opacity: 0,
+                          x: language === "ar" ? 20 : -20,
+                        }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: menuItems.length * 0.1 }}
                       >

@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
 
     const data = await res.json();
     return NextResponse.json(data);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch projects by type");
   }
 }

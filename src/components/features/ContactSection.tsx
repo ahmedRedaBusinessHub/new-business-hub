@@ -306,7 +306,7 @@ export default function ContactSection() {
                     onChange={(e) =>
                       setFormData({ ...formData, inquiryType: e.target.value })
                     }
-                    error={null}
+                    error={undefined}
                     className="glassmorphism border-white/20 appearance-none"
 
                   >

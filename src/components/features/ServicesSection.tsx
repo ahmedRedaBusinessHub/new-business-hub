@@ -11,7 +11,7 @@ export default function ServicesSection({}: ServicesSectionProps) {
     {
       title: t("Business Accelerators"),
       description: t(
-        "Intensive programs to accelerate your projects growth and professional development"
+        "Intensive programs to accelerate your projects growth and professional development",
       ),
       icon: Rocket,
       gradient: "from-[#0D5BDC] to-[#4587F4]",
@@ -20,7 +20,7 @@ export default function ServicesSection({}: ServicesSectionProps) {
     {
       title: t("Business Incubation"),
       description: t(
-        "We provide a supportive environment to incubate your project from idea to implementation"
+        "We provide a supportive environment to incubate your project from idea to implementation",
       ),
       icon: Building2,
       gradient: "from-[#340F87] to-[#0E3F9F]",
@@ -29,7 +29,7 @@ export default function ServicesSection({}: ServicesSectionProps) {
     {
       title: t("ISO Certifications"),
       description: t(
-        "We help you obtain internationally recognized ISO certifications"
+        "We help you obtain internationally recognized ISO certifications",
       ),
       icon: Award,
       gradient: "from-[#00B0F0] to-[#007D9B]",
@@ -38,11 +38,11 @@ export default function ServicesSection({}: ServicesSectionProps) {
     {
       title: t("Workspaces"),
       description: t(
-        "Shared workspaces equipped with the latest technologies and facilities"
+        "Shared workspaces equipped with the latest technologies and facilities",
       ),
       icon: Briefcase,
       gradient: "from-[#00717D] to-[#005671]",
-      href: "/workspaces",
+      href: "/spaces",
     },
   ];
 

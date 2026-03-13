@@ -9,25 +9,6 @@ import {
 } from "@/lib/api";
 
 /**
- * Special route handlers that don't follow standard CRUD pattern
- */
-const SPECIAL_ROUTES: Record<
-  string,
-  (request: NextRequest, id?: string) => Promise<NextResponse>
-> = {
-  "user-access-tokens": async (request: NextRequest) => {
-    // This route doesn't have a backend controller, returns empty array
-    if (request.method === "GET") {
-      return NextResponse.json({ data: [] }, { status: 200 });
-    }
-    return NextResponse.json(
-      { statusCode: 405, message: "Method not allowed" },
-      { status: 405 }
-    );
-  },
-};
-
-/**
  * Base CRUD handler for standard REST operations
  */
 export async function handleCrudRequest(
@@ -37,11 +18,6 @@ export async function handleCrudRequest(
   action?: string
 ): Promise<NextResponse> {
   const method = request.method;
-
-  // Handle special routes that don't follow standard CRUD pattern
-  if (SPECIAL_ROUTES[resource]) {
-    return SPECIAL_ROUTES[resource](request, id);
-  }
 
   try {
     switch (method) {
@@ -92,7 +68,7 @@ export async function handleCrudRequest(
           { status: 405 }
         );
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     const errorMessage = getErrorMessage(method, resource, id, action);
     return handleApiError(error, errorMessage);
   }
@@ -237,7 +213,7 @@ async function handleUpload(
     }
 
     return NextResponse.json(data, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to upload file");
   }
 }

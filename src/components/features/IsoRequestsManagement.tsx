@@ -49,6 +49,7 @@ export interface IsoRequest {
     message: string | null;
     status: number;
     created_at: string | null;
+    [key: string]: any;
 }
 
 export function IsoRequestsManagement() {
@@ -356,9 +357,9 @@ export function IsoRequestsManagement() {
                     title={t("entities.isoRequests.viewDetails")}
                     header={{
                         type: "avatar",
-                        title: (data: IsoRequest) => data.company_name || data.name || t("entities.isoRequests.viewDetails"),
-                        subtitle: (data: IsoRequest) => data.certificate_type || "",
-                        avatarFallback: (data: IsoRequest) =>
+                        title: (data: any) => data.company_name || data.name || t("entities.isoRequests.viewDetails"),
+                        subtitle: (data: any) => data.certificate_type || "",
+                        avatarFallback: (data: any) =>
                             data.company_name?.[0] || data.name?.[0] || "R",
                         badges: [
                             {

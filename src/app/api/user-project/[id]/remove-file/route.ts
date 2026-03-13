@@ -24,7 +24,7 @@ export async function DELETE(
     );
 
     return await createApiResponse(res);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to remove file");
   }
 }

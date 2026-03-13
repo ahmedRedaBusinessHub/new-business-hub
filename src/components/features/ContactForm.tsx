@@ -27,7 +27,6 @@ interface ContactFormProps {
 
 export function ContactForm({ contact, onSubmit, onCancel }: ContactFormProps) {
   const { t, language } = useI18n("admin");
-  const isEdit = !!contact;
   const [users, setUsers] = useState<User[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [contactTypes, setContactTypes] = useState<ContactTypeConfig[]>([]);

@@ -31,7 +31,7 @@ export async function getGeoData(): Promise<GeoMetadata> {
       region,
       city,
     };
-  } catch (error) {
+  } catch {
     return {
       country: "SA", // Fallback to Saudi Arabia
     };
@@ -140,7 +140,7 @@ export const middleEastConfig = {
 export const createGenerateMetadata =
   (pagename: string, path: string = "") =>
     async ({ params }: LayoutProps): Promise<Metadata> => {
-      const { locale }: any = await params;
+      const { locale } = await params;
       const t = await getTranslations({
         locale,
         namespace: `metadata.${pagename}`,

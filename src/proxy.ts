@@ -1,11 +1,11 @@
 import NextAuth from "next-auth";
 import { authConfig } from "./auth.config";
 import { defaultLocale, locales } from "./types/locales";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 const authMiddleware = NextAuth(authConfig).auth;
 
-export async function proxy(req: any) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Get the current locale from the URL if it exists
@@ -23,17 +23,17 @@ export async function proxy(req: any) {
 
   if (pathnameHasLocale) {
     // URL has a valid locale
-    const authResponse = await authMiddleware(req);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const authResponse = await authMiddleware(req as any);
 
     if (authResponse) {
       // If cookies API is not available, try to append a Set-Cookie header to the response.
       try {
         const res = authResponse as unknown as Response;
-        const cookieValue = `NEXT_LOCALE=${currentLocale}; Path=/; Max-Age=${
-          365 * 24 * 60 * 60
-        }; HttpOnly; SameSite=Lax`;
+        const cookieValue = `NEXT_LOCALE=${currentLocale}; Path=/; Max-Age=${365 * 24 * 60 * 60
+          }; HttpOnly; SameSite=Lax`;
         const newHeaders = new Headers(
-          res.headers instanceof Headers ? res.headers : (res as any).headers
+          res.headers instanceof Headers ? res.headers : new Headers()
         );
         newHeaders.append("Set-Cookie", cookieValue);
         return new Response(res.body, {
@@ -41,7 +41,7 @@ export async function proxy(req: any) {
           statusText: res.statusText,
           headers: newHeaders,
         });
-      } catch (e: any) {
+      } catch (e: unknown) {
         console.log("Could not append Set-Cookie header to authResponse:", e);
       }
 

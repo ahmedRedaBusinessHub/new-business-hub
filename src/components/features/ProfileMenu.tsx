@@ -113,7 +113,7 @@ export function ProfileMenu() {
 
       // Redirect to home page
       router.push("/");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Logout error:", error);
       // Still try to sign out locally even if API call fails
       await signOut({
@@ -339,7 +339,7 @@ export function ProfileMenu() {
                   ) : (
                     <Sun className="size-4 text-muted-foreground" />
                   )}
-                  <Switch checked={darkMode} onCheckedChange={setDarkMode} />
+                  <Switch checked={darkMode} onChange={(e: any) => setDarkMode(e.target.checked)} />
                 </div>
               </div>
             </div>
@@ -361,7 +361,7 @@ export function ProfileMenu() {
                   </div>
                   <Switch
                     checked={emailNotifications}
-                    onCheckedChange={setEmailNotifications}
+                    onChange={(e: any) => setEmailNotifications(e.target.checked)}
                   />
                 </div>
 
@@ -374,7 +374,7 @@ export function ProfileMenu() {
                   </div>
                   <Switch
                     checked={pushNotifications}
-                    onCheckedChange={setPushNotifications}
+                    onChange={(e: any) => setPushNotifications(e.target.checked)}
                   />
                 </div>
               </div>

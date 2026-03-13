@@ -57,10 +57,10 @@ export interface ProgramData {
     last_registration_date?: string;
     type?: number;
     subtype?: number;
-    values?: any[];
-    progress_steps?: any[];
-    application_requirements?: any[];
-    documents_requirements?: any[];
+    values?: unknown[];
+    progress_steps?: unknown[];
+    application_requirements?: unknown[];
+    documents_requirements?: unknown[];
     promo_image?: string;
     promo_video?: string;
     status?: number;

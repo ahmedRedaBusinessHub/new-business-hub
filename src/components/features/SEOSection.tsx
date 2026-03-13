@@ -1,6 +1,5 @@
 import { motion } from "motion/react";
 import { Hash, TrendingUp, Search, BarChart3 } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { useI18n } from "@/hooks/useI18n";
 
 export default function SEOSection() {

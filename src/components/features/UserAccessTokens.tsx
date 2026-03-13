@@ -1,4 +1,5 @@
 "use client";
+import type { DataRow } from "@/types/components/management";
 import { useState, useEffect, useCallback, useRef } from "react";
 import {
   Table,
@@ -28,7 +29,7 @@ interface UserAccessTokensProps {
 
 export function UserAccessTokens({ userId }: UserAccessTokensProps) {
   const [loading, setLoading] = useState(true);
-  const [accessTokens, setAccessTokens] = useState<any[]>([]);
+  const [accessTokens, setAccessTokens] = useState<DataRow[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);

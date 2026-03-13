@@ -53,6 +53,7 @@ export interface StaticList {
   organization_id: number;
   created_at: string | null;
   updated_at: string | null;
+  [key: string]: any;
 }
 
 export function StaticListsManagement() {
@@ -433,8 +434,8 @@ export function StaticListsManagement() {
           title={t("entities.staticLists.details")}
           header={{
             type: "simple",
-            title: (data: StaticList) => data.name,
-            subtitle: (data: StaticList) => data.namespace,
+            title: (data: any) => data.name,
+            subtitle: (data: any) => data.namespace,
             badges: [
               {
                 field: "status",
@@ -470,9 +471,9 @@ export function StaticListsManagement() {
             {
               id: "config",
               label: "Configuration",
-              customContent: (data: StaticList) => {
+              customContent: (data: any) => {
                 const config = data.config;
-                
+
                 if (!config) {
                   return <p className="text-muted-foreground text-sm">No configuration data</p>;
                 }

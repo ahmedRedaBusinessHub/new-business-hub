@@ -28,7 +28,9 @@ export default function GallerySection({ limit = 6 }: GallerySectionProps) {
   const { t, language } = useI18n();
   const [galleries, setGalleries] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedGallery, setSelectedGallery] = useState<GalleryItem | null>(null);
+  const [selectedGallery, setSelectedGallery] = useState<GalleryItem | null>(
+    null,
+  );
   const [activeImage, setActiveImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -43,7 +45,7 @@ export default function GallerySection({ limit = 6 }: GallerySectionProps) {
         const res = await fetch(`/api/public/galleries?limit=${limit}`);
         if (res.ok) {
           const data = await res.json();
-          setGalleries(data.data || []);
+          setGalleries(data.data.data || []);
         }
       } catch (error) {
         console.error("Failed to fetch galleries:", error);
@@ -124,8 +126,11 @@ export default function GallerySection({ limit = 6 }: GallerySectionProps) {
                 onClick={() => setSelectedGallery(item)}
                 // className={`relative overflow-hidden rounded-3xl group cursor-pointer ${(index === 0 || index === 5) && galleries.length >= 6 ? "md:col-span-2 lg:col-span-1" : ""
                 //   } ${index === 1 && galleries.length >= 6 ? "lg:row-span-2" : "aspect-square"}`}
-                className={`relative overflow-hidden rounded-3xl group cursor-pointer ${index === 0 || index === 5 ? "md:col-span-2 lg:col-span-1" : ""
-                  } ${index === 1 ? "lg:row-span-2" : "aspect-square"}`}
+                className={`relative overflow-hidden rounded-3xl group cursor-pointer ${
+                  index === 0 || index === 5
+                    ? "md:col-span-2 lg:col-span-1"
+                    : ""
+                } ${index === 1 ? "lg:row-span-2" : "aspect-square"}`}
               >
                 <div className="relative w-full h-full">
                   <ImageWithFallback
@@ -185,31 +190,39 @@ export default function GallerySection({ limit = 6 }: GallerySectionProps) {
             );
           })}
         </div>
-        {limit <= 6 && <div className="text-center pt-20 ">
-          <Link href={"/gallery"}>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className=" inline-block px-4 py-2 rounded-full bg-gradient-to-r from-[#0D5BDC]/10 to-[#340F87]/10 border border-[#0D5BDC]/20 mb-4"
-            >
-              <span className="bg-gradient-to-r from-[#0D5BDC] to-[#340F87] bg-clip-text text-transparent">
-                {t("hero_cta_discover")}
-              </span>
-            </motion.div>
-          </Link>
-        </div>}
+        {limit <= 6 && (
+          <div className="text-center pt-20 ">
+            <Link href={"/gallery"}>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                className=" inline-block px-4 py-2 rounded-full bg-gradient-to-r from-[#0D5BDC]/10 to-[#340F87]/10 border border-[#0D5BDC]/20 mb-4"
+              >
+                <span className="bg-gradient-to-r from-[#0D5BDC] to-[#340F87] bg-clip-text text-transparent">
+                  {t("hero_cta_discover")}
+                </span>
+              </motion.div>
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Gallery Modal */}
-      <Dialog open={!!selectedGallery} onOpenChange={(open) => !open && setSelectedGallery(null)}>
+      <Dialog
+        open={!!selectedGallery}
+        onOpenChange={(open) => !open && setSelectedGallery(null)}
+      >
         <DialogContent className="max-w-5xl h-[95vh] flex flex-col p-0 overflow-hidden bg-white/95 backdrop-blur-xl border-none">
           {selectedGallery && (
             <>
               <div className="p-6 pb-2 shrink-0 border-b border-gray-100 flex justify-between items-start">
                 <div>
                   <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-[#0D5BDC] to-[#340F87] bg-clip-text text-transparent">
-                    {getLocalized(selectedGallery.title_ar, selectedGallery.title_en)}
+                    {getLocalized(
+                      selectedGallery.title_ar,
+                      selectedGallery.title_en,
+                    )}
                   </DialogTitle>
                   <DialogDescription>
                     {/* Optional description if available */}
@@ -236,46 +249,51 @@ export default function GallerySection({ limit = 6 }: GallerySectionProps) {
                 </div>
 
                 {/* Thumbnails Grid */}
-                {selectedGallery.image_urls && selectedGallery.image_urls.length > 0 && (
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-semibold text-gray-800 border-l-4 border-[#0D5BDC] pl-3">
-                      {t("More Images")}
-                    </h3>
-                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
-                      {/* Include Main Image in thumbnails too? Optional, but good practice if user wants to go back */}
-                      <div
-                        onClick={() => setActiveImage(selectedGallery.main_image_url)}
-                        className={`relative aspect-square rounded-xl overflow-hidden cursor-pointer transition-all duration-300 ${activeImage === selectedGallery.main_image_url
-                          ? "ring-4 ring-[#0D5BDC] scale-95 opacity-100 shadow-xl"
-                          : "hover:scale-105 hover:shadow-lg opacity-70 hover:opacity-100"
-                          }`}
-                      >
-                        <ImageWithFallback
-                          src={selectedGallery.main_image_url}
-                          alt="Main Thumbnail"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-
-                      {selectedGallery.image_urls.map((imgUrl, i) => (
+                {selectedGallery.image_urls &&
+                  selectedGallery.image_urls.length > 0 && (
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-semibold text-gray-800 border-l-4 border-[#0D5BDC] pl-3">
+                        {t("More Images")}
+                      </h3>
+                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+                        {/* Include Main Image in thumbnails too? Optional, but good practice if user wants to go back */}
                         <div
-                          key={i}
-                          onClick={() => setActiveImage(imgUrl)}
-                          className={`relative aspect-square rounded-xl overflow-hidden cursor-pointer transition-all duration-300 ${activeImage === imgUrl
-                            ? "ring-4 ring-[#0D5BDC] scale-95 opacity-100 shadow-xl"
-                            : "hover:scale-105 hover:shadow-lg opacity-70 hover:opacity-100"
-                            }`}
+                          onClick={() =>
+                            setActiveImage(selectedGallery.main_image_url)
+                          }
+                          className={`relative aspect-square rounded-xl overflow-hidden cursor-pointer transition-all duration-300 ${
+                            activeImage === selectedGallery.main_image_url
+                              ? "ring-4 ring-[#0D5BDC] scale-95 opacity-100 shadow-xl"
+                              : "hover:scale-105 hover:shadow-lg opacity-70 hover:opacity-100"
+                          }`}
                         >
                           <ImageWithFallback
-                            src={imgUrl}
-                            alt={`Gallery Image ${i + 1}`}
+                            src={selectedGallery.main_image_url}
+                            alt="Main Thumbnail"
                             className="w-full h-full object-cover"
                           />
                         </div>
-                      ))}
+
+                        {selectedGallery.image_urls.map((imgUrl, i) => (
+                          <div
+                            key={i}
+                            onClick={() => setActiveImage(imgUrl)}
+                            className={`relative aspect-square rounded-xl overflow-hidden cursor-pointer transition-all duration-300 ${
+                              activeImage === imgUrl
+                                ? "ring-4 ring-[#0D5BDC] scale-95 opacity-100 shadow-xl"
+                                : "hover:scale-105 hover:shadow-lg opacity-70 hover:opacity-100"
+                            }`}
+                          >
+                            <ImageWithFallback
+                              src={imgUrl}
+                              alt={`Gallery Image ${i + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
             </>
           )}

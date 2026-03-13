@@ -1,5 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
+import type { DataRow, StatusOption, DocumentUpload } from "@/types/components/management";
+import type { ViewData } from "@/components/shared/DynamicView";
 import { Button } from "@/components/ui/Button";
 import {
   Table,
@@ -55,7 +57,7 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [editingUserProject, setEditingUserProject] = useState<UserProject | null>(null);
-  const [viewingUserProject, setViewingUserProject] = useState<any | null>(null);
+  const [viewingUserProject, setViewingUserProject] = useState<ViewData | null>(null);
   const [deletingUserProjectId, setDeletingUserProjectId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -73,7 +75,7 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
       try {
         const statusesConfig = await staticListsCache.getByNamespace("user_project.statuses");
         setStatuses(statusesConfig || []);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching statuses:", error);
       }
     };
@@ -123,7 +125,7 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
     if (projectId) fetchUserProjects();
   }, [projectId, currentPage, pageSize, debouncedSearch, fetchUserProjects]);
 
-  const handleCreate = async (payload: Omit<UserProject, "id" | "project_id" | "created_at" | "updated_at" | "organization_id" | "upload_documents"> & { files?: File[]; fileNames?: string[]; upload_documents?: any[] }) => {
+  const handleCreate = async (payload: Omit<UserProject, "id" | "project_id" | "created_at" | "updated_at" | "organization_id" | "upload_documents"> & { files?: File[]; fileNames?: string[]; upload_documents?: DocumentUpload[] }) => {
     try {
       const { files, fileNames, upload_documents, ...rest } = payload;
       const response = await fetch("/api/user-project", {
@@ -133,7 +135,7 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
       });
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || t("entities.userProjects.failedToCreate"));
+        throw new Error(error instanceof Error ? error.message : String(error) || t("entities.userProjects.failedToCreate"));
       }
       const responseData = await response.json();
       const userProjectId = responseData.id ?? responseData.data?.id;
@@ -150,11 +152,11 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
       setIsFormOpen(false);
       fetchUserProjects();
     } catch (error: any) {
-      toast.error(error.message || t("entities.userProjects.failedToCreate"));
+      toast.error(error instanceof Error ? error.message : String(error) || t("entities.userProjects.failedToCreate"));
     }
   };
 
-  const handleUpdate = async (payload: Omit<UserProject, "id" | "project_id" | "created_at" | "updated_at" | "organization_id" | "upload_documents"> & { files?: File[]; fileNames?: string[]; upload_documents?: any[] }) => {
+  const handleUpdate = async (payload: Omit<UserProject, "id" | "project_id" | "created_at" | "updated_at" | "organization_id" | "upload_documents"> & { files?: File[]; fileNames?: string[]; upload_documents?: DocumentUpload[] }) => {
     if (!editingUserProject) return;
     try {
       const { files, fileNames, upload_documents, ...rest } = payload;
@@ -165,7 +167,7 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
       });
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || t("entities.userProjects.failedToUpdate"));
+        throw new Error(error instanceof Error ? error.message : String(error) || t("entities.userProjects.failedToUpdate"));
       }
       if (files && Array.isArray(files) && files.length > 0) {
         const formData = new FormData();
@@ -181,7 +183,7 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
       setIsFormOpen(false);
       fetchUserProjects();
     } catch (error: any) {
-      toast.error(error.message || t("entities.userProjects.failedToUpdate"));
+      toast.error(error instanceof Error ? error.message : String(error) || t("entities.userProjects.failedToUpdate"));
     }
   };
 
@@ -190,13 +192,13 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
       const response = await fetch(`/api/user-project/${id}`, { method: "DELETE" });
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || t("entities.userProjects.failedToDelete"));
+        throw new Error(error instanceof Error ? error.message : String(error) || t("entities.userProjects.failedToDelete"));
       }
       toast.success(t("entities.userProjects.deleted"));
       setDeletingUserProjectId(null);
       fetchUserProjects();
     } catch (error: any) {
-      toast.error(error.message || t("entities.userProjects.failedToDelete"));
+      toast.error(error instanceof Error ? error.message : String(error) || t("entities.userProjects.failedToDelete"));
     }
   };
 
@@ -228,7 +230,7 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
     return status ? getLocalizedLabel(status.name_en, status.name_ar, language) : String(statusId);
   };
 
-  const getDocuments = (userProject: any): Array<{ name: string; file_id: number; file_url?: string }> => {
+  const getDocuments = (userProject: any): DocumentUpload[] => {
     if (!userProject?.upload_documents || !Array.isArray(userProject.upload_documents)) return [];
     return userProject.upload_documents
       .filter((doc: any) => doc?.file_id)
@@ -370,9 +372,9 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
                 { name: "project_name", label: t("entities.userProjects.projectName"), type: "text" },
                 { name: "project_description", label: t("entities.userProjects.projectDescription"), type: "text", colSpan: 12 },
                 { name: "team_size", label: t("entities.userProjects.teamSize"), type: "text" },
-                { name: "fund_needed", label: t("entities.userProjects.fundNeeded"), type: "text", render: (v: number | null) => (v != null ? `$${v}` : "-") },
+                { name: "fund_needed", label: t("entities.userProjects.fundNeeded"), type: "text", render: (v: any) => (v != null ? `$${v}` : "-") },
                 { name: "why_applying", label: t("entities.userProjects.whyApplying"), type: "text", colSpan: 12 },
-                { name: "status", label: t("common.status"), type: "text", render: (v: number | null) => getStatusName(v) },
+                { name: "status", label: t("common.status"), type: "text", render: (v: any) => getStatusName(v) },
                 { name: "created_at", label: t("common.createdAt"), type: "datetime" },
                 { name: "updated_at", label: t("common.updatedAt"), type: "datetime" },
               ],
@@ -380,7 +382,7 @@ export function ProjectUserProjects({ projectId }: ProjectUserProjectsProps) {
             {
               id: "documents",
               label: t("entities.userProjects.uploadDocuments"),
-              customContent: (data: any) => {
+              customContent: (data: ViewData) => {
                 const documents = getDocuments(data);
                 if (documents.length === 0) return <p className="text-muted-foreground">{t("entities.userProjects.noDocuments")}</p>;
                 return (

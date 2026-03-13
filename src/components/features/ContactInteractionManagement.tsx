@@ -51,6 +51,7 @@ export interface ContactInteraction {
   file_ids?: number[];
   created_at: string | null;
   updated_at: string | null;
+  [key: string]: any;
 }
 
 interface ContactInteractionManagementProps {
@@ -111,7 +112,7 @@ export function ContactInteractionManagement({ contactId }: ContactInteractionMa
     }
   }, [contactId]);
 
-  const handleCreate = async (interactionData: Omit<ContactInteraction, "id" | "created_at" | "updated_at"> & { files?: File[] }) => {
+  const handleCreate = async (interactionData: Omit<ContactInteraction, "id" | "contact_id" | "created_at" | "updated_at"> & { files?: File[] }) => {
     try {
       const { files, ...payload } = interactionData;
       const response = await fetch("/api/contact-interaction", {
@@ -143,7 +144,7 @@ export function ContactInteractionManagement({ contactId }: ContactInteractionMa
     }
   };
 
-  const handleUpdate = async (interactionData: Omit<ContactInteraction, "id" | "created_at" | "updated_at"> & { files?: File[] }) => {
+  const handleUpdate = async (interactionData: Omit<ContactInteraction, "id" | "contact_id" | "created_at" | "updated_at"> & { files?: File[] }) => {
     if (!editingInteraction) return;
 
     try {
@@ -284,7 +285,7 @@ export function ContactInteractionManagement({ contactId }: ContactInteractionMa
                     {interaction.details || "-"}
                   </TableCell>
                   <TableCell>
-                    {interaction.created_at 
+                    {interaction.created_at
                       ? new Date(interaction.created_at).toLocaleDateString()
                       : "-"}
                   </TableCell>
@@ -351,7 +352,7 @@ export function ContactInteractionManagement({ contactId }: ContactInteractionMa
               label: "Details",
               gridCols: 2,
               fields: [
-                { name: "type", label: "Type", type: "text", render: (value: number | null) => getInteractionTypeName(value) },
+                { name: "type", label: "Type", type: "text", render: (value: any) => getInteractionTypeName(value as number | null) },
                 { name: "subject", label: "Subject", type: "text" },
                 { name: "details", label: "Details", type: "text", colSpan: 12 },
                 { name: "created_at", label: "Created At", type: "datetime" },
@@ -361,24 +362,24 @@ export function ContactInteractionManagement({ contactId }: ContactInteractionMa
             {
               id: "files",
               label: "Files",
-              customContent: (data: ContactInteraction) => {
+              customContent: (data: any) => {
                 const hasFiles = data.file_urls && data.file_urls.length > 0;
                 if (!hasFiles) {
                   return <p className="text-muted-foreground">No files uploaded</p>;
                 }
                 return (
                   <div className="space-y-2">
-                    {data.file_urls!.map((url, index) => {
+                    {data.file_urls!.map((url: string, index: number) => {
                       const fileName = url.split('/').pop() || `File ${index + 1}`;
-                      const fileUrl = url.startsWith('http') || url.startsWith('/api/public/file') 
-                        ? url 
+                      const fileUrl = url.startsWith('http') || url.startsWith('/api/public/file')
+                        ? url
                         : `/api/public/file?file_url=${encodeURIComponent(url)}`;
-                      
+
                       return (
                         <div key={index} className="flex items-center gap-2 p-3 border rounded-lg bg-muted/50">
-                          <a 
-                            href={fileUrl} 
-                            target="_blank" 
+                          <a
+                            href={fileUrl}
+                            target="_blank"
                             rel="noopener noreferrer"
                             className="text-sm hover:underline text-primary flex-1"
                           >

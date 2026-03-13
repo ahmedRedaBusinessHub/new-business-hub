@@ -37,8 +37,8 @@ export default function OTPVerification({
   onBack,
   onSuccess,
   loginCredentials,
-}: OTPVerificationProps) {
-  const { t, language } = useI18n("login");
+  }: OTPVerificationProps) {
+  const { t } = useI18n("login");
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);

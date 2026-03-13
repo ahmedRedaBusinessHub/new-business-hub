@@ -26,12 +26,15 @@ export type ViewFieldType =
   | "image"
   | "avatar";
 
+// Generic type for view data - can be extended in specific implementations
+export type ViewData = Record<string, unknown>;
+
 export type ViewField = {
   name: string;
   label: string;
   type?: ViewFieldType;
-  format?: (value: any, data: any) => React.ReactNode;
-  render?: (value: any, data: any) => React.ReactNode;
+  format?: (value: unknown, data: ViewData) => React.ReactNode;
+  render?: (value: unknown, data: ViewData) => React.ReactNode;
   colSpan?: number; // For grid layout (1-12)
   hideWhenEmpty?: boolean;
   badgeVariant?: "default" | "secondary" | "destructive" | "outline";
@@ -39,18 +42,18 @@ export type ViewField = {
   dateFormat?: "date" | "datetime" | "time";
   imageUrlField?: string; // Field name that contains the image URL
   imageIdField?: string; // Field name that contains the image ID (for fetching)
-  fetchImageUrl?: (data: any) => Promise<string | null>; // Custom function to fetch image
-  avatarFallback?: (data: any) => string; // Function to generate avatar fallback text
+  fetchImageUrl?: (data: ViewData) => Promise<string | null>; // Custom function to fetch image
+  avatarFallback?: (data: ViewData) => string; // Function to generate avatar fallback text
 };
 
 export type ViewHeader = {
   type: "avatar" | "image" | "simple";
-  title: (data: any) => string;
-  subtitle?: (data: any) => string;
-  imageUrl?: string | ((data: any) => string | null);
+  title: (data: ViewData) => string;
+  subtitle?: (data: ViewData) => string;
+  imageUrl?: string | ((data: ViewData) => string | null);
   imageIdField?: string;
-  fetchImageUrl?: (data: any) => Promise<string | null>;
-  avatarFallback?: (data: any) => string;
+  fetchImageUrl?: (data: ViewData) => Promise<string | null>;
+  avatarFallback?: (data: ViewData) => string;
   badges?: Array<{
     field: string;
     variant?: "default" | "secondary" | "destructive" | "outline";
@@ -63,12 +66,12 @@ export type ViewTab = {
   id: string;
   label: string;
   fields?: ViewField[];
-  customContent?: React.ReactNode | ((data: any) => React.ReactNode);
+  customContent?: React.ReactNode | ((data: ViewData) => React.ReactNode);
   gridCols?: number; // Number of columns in grid (default: 2)
 };
 
 export interface DynamicViewProps {
-  data: any | null;
+  data: ViewData | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
@@ -131,13 +134,14 @@ export const DynamicView: React.FC<DynamicViewProps> = ({
           // Try using image_url or main_image_url from data if available (no need to fetch)
           const imageUrlField = data.main_image_url ? 'main_image_url' : (data.image_url ? 'image_url' : null);
           if (imageUrlField) {
-            const imageUrl = data[imageUrlField];
+            const rawImageUrl = data[imageUrlField];
+            const imageUrlStr = typeof rawImageUrl === "string" ? rawImageUrl : String(rawImageUrl);
             // If image_url is already a full URL, use it directly
             // If it's a file path, prepend the public file endpoint
-            if (imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('/api/public/file'))) {
-              setImageUrl(imageUrl);
-            } else if (imageUrl) {
-              setImageUrl(`/api/public/file?file_url=${encodeURIComponent(imageUrl)}`);
+            if (imageUrlStr && (imageUrlStr.startsWith('http') || imageUrlStr.startsWith('/api/public/file'))) {
+              setImageUrl(imageUrlStr);
+            } else if (imageUrlStr) {
+              setImageUrl(`/api/public/file?file_url=${encodeURIComponent(imageUrlStr)}`);
             }
             return;
           }
@@ -198,7 +202,7 @@ export const DynamicView: React.FC<DynamicViewProps> = ({
     }
   };
 
-  const formatValue = (field: ViewField, value: any): React.ReactNode => {
+  const formatValue = (field: ViewField, value: unknown): React.ReactNode => {
     // Custom render function takes priority - call it even if value is undefined
     if (field.render) {
       return field.render(value, data);
@@ -217,17 +221,18 @@ export const DynamicView: React.FC<DynamicViewProps> = ({
     switch (field.type) {
       case "date":
       case "datetime":
-        return formatDate(value, field.dateFormat || (field.type === "datetime" ? "datetime" : "date"));
-      
+        return formatDate(typeof value === "string" ? value : String(value), field.dateFormat || (field.type === "datetime" ? "datetime" : "date"));
+
       case "number":
-        return typeof value === "number" ? value.toLocaleString() : value;
-      
+        return typeof value === "number" ? value.toLocaleString() : String(value);
+
       case "boolean":
         return value ? "Yes" : "No";
-      
-      case "badge":
-        if (field.badgeMap && field.badgeMap[value]) {
-          const badgeConfig = field.badgeMap[value];
+
+      case "badge": {
+        const valueKey = typeof value === "string" || typeof value === "number" ? value : String(value);
+        if (field.badgeMap && field.badgeMap[valueKey]) {
+          const badgeConfig = field.badgeMap[valueKey];
           return (
             <Badge variant={badgeConfig.variant || field.badgeVariant || "default"}>
               {badgeConfig.label}
@@ -239,10 +244,11 @@ export const DynamicView: React.FC<DynamicViewProps> = ({
             {String(value)}
           </Badge>
         );
-      
-      case "image":
-        const imgUrl = field.imageUrlField
-          ? data[field.imageUrlField]
+      }
+
+      case "image": {
+        const imgUrl = field.imageUrlField && typeof data[field.imageUrlField] === "string"
+          ? data[field.imageUrlField] as string
           : field.imageIdField && imageUrl
           ? imageUrl
           : null;
@@ -251,10 +257,11 @@ export const DynamicView: React.FC<DynamicViewProps> = ({
         ) : (
           "-"
         );
-      
-      case "avatar":
-        const avatarUrl = field.imageUrlField
-          ? data[field.imageUrlField]
+      }
+
+      case "avatar": {
+        const avatarUrl = field.imageUrlField && typeof data[field.imageUrlField] === "string"
+          ? data[field.imageUrlField] as string
           : field.imageIdField && imageUrl
           ? imageUrl
           : null;
@@ -265,12 +272,13 @@ export const DynamicView: React.FC<DynamicViewProps> = ({
             <AvatarFallback>{fallback}</AvatarFallback>
           </Avatar>
         );
-      
+      }
+
       case "custom":
         // For custom type, if there's a render function, it should have been called already
-        // Otherwise, just return the value as-is
-        return value;
-      
+        // Otherwise, just return the value as-is - need to ensure it's a valid ReactNode
+        return typeof value === "object" && value !== null ? JSON.stringify(value) : String(value);
+
       default:
         return String(value);
     }
@@ -331,8 +339,9 @@ export const DynamicView: React.FC<DynamicViewProps> = ({
           <div className="flex gap-2 mt-2">
             {header.badges.map((badgeConfig, index) => {
               const value = data[badgeConfig.field];
-              if (badgeConfig.map && badgeConfig.map[value]) {
-                const badge = badgeConfig.map[value];
+              const valueKey = typeof value === "string" || typeof value === "number" ? value : String(value);
+              if (badgeConfig.map && badgeConfig.map[valueKey]) {
+                const badge = badgeConfig.map[valueKey];
                 return (
                   <Badge key={index} variant={badge.variant || badgeConfig.variant || "default"}>
                     {badge.label}

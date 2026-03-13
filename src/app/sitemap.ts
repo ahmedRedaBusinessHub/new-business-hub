@@ -7,10 +7,12 @@ const locales = `${process.env.NEXT_PUBLIC_LOCALES}`.split(",");
 // Fetch all programs for sitemap
 async function getAllPrograms() {
   try {
-    const res = await apiGet('/public/programs?limit=1000', { requireAuth: false });
+    const res = await apiGet("/public/programs?limit=1000", {
+      requireAuth: false,
+    });
     if (!res.ok) return [];
     const data = await res.json();
-    return data.data || [];
+    return data.data.data || [];
   } catch (error) {
     console.error("Failed to fetch programs for sitemap", error);
     return [];
@@ -34,7 +36,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/incubation",
     "/iso",
     "/team",
-    "/workspaces",
+    "/spaces",
     "/privacy",
     "/terms",
     "/refund",
@@ -53,10 +55,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           locales.map((l) => [
             l,
             `${process.env.NEXT_PUBLIC_DOMAIN}/${l}${route}`,
-          ])
+          ]),
         ),
       },
-    }))
+    })),
   );
 
   // 3. Add dynamic routes (Programs)
@@ -64,7 +66,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const programEntries = programs.flatMap((program: any) =>
     locales.map((locale) => ({
       url: `${process.env.NEXT_PUBLIC_DOMAIN}/${locale}/programs/${program.id}`,
-      lastModified: new Date(program.updated_at || program.created_at || new Date()),
+      lastModified: new Date(
+        program.updated_at || program.created_at || new Date(),
+      ),
       changeFrequency: "weekly" as const,
       priority: 0.7,
       alternates: {
@@ -72,10 +76,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           locales.map((l) => [
             l,
             `${process.env.NEXT_PUBLIC_DOMAIN}/${l}/programs/${program.id}`,
-          ])
+          ]),
         ),
       },
-    }))
+    })),
   );
 
   // 4. Combine all entries

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiGet, apiPost, createApiResponse, handleApiError } from "@/lib/api";
+import type { News } from "@/types/entities";
 
 export async function GET(request: NextRequest) {
   try {
@@ -8,7 +9,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "10");
     const search = searchParams.get("search") || "";
 
-    const res = await apiGet("/news", {
+    const res = await apiGet("/news?limit=1000", {
       requireAuth: true,
     });
 
@@ -17,12 +18,12 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await res.json();
-    let allData = Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [];
+    let allData: News[] = Array.isArray(data.data?.data) ? data.data.data : Array.isArray(data.data) ? data.data : [];
 
     // Apply search filter
     if (search) {
       const query = search.toLowerCase();
-      allData = allData.filter((item: any) => {
+      allData = allData.filter((item: News) => {
         const titleAr = (item.title_ar || "").toLowerCase();
         const titleEn = (item.title_en || "").toLowerCase();
         const detailAr = (item.detail_ar || "").toLowerCase();
@@ -44,7 +45,7 @@ export async function GET(request: NextRequest) {
       limit,
       totalPages: Math.ceil(total / limit),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch news");
   }
 }
@@ -54,7 +55,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const res = await apiPost("/news", body, { requireAuth: true });
     return await createApiResponse(res, { successStatus: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to create news");
   }
 }

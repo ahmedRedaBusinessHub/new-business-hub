@@ -6,7 +6,6 @@ import {
   Users,
   TrendingUp,
   BookOpen,
-  Award,
 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";

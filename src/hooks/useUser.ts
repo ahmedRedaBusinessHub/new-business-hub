@@ -1,10 +1,10 @@
 "use client";
-import { AuthSession } from "@/types/auth";
+import { User } from "@/types/auth";
 import { useSession } from "next-auth/react";
 
 export function useUser() {
   const { data: session, status } = useSession();
-  const user = session?.user as AuthSession | undefined | any;
+  const user = session?.user as User | undefined;
 
-  return { user, status };
+  return { user, status, session };
 }

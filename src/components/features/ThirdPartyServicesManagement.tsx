@@ -53,6 +53,7 @@ interface ThirdPartyServicesManagementProps {
 }
 
 export function ThirdPartyServicesManagement({ thirdPartyId }: ThirdPartyServicesManagementProps) {
+  const { t } = useI18n();
   const [services, setServices] = useState<ThirdPartyService[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -70,7 +71,7 @@ export function ThirdPartyServicesManagement({ thirdPartyId }: ThirdPartyService
       }
       const data = await response.json();
       setServices(data.data || data);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching services:", error);
       toast.error(t("entities.thirdPartyServices.failedToLoad"));
     } finally {
@@ -84,7 +85,7 @@ export function ThirdPartyServicesManagement({ thirdPartyId }: ThirdPartyService
     }
   }, [thirdPartyId]);
 
-  const handleCreate = async (serviceData: Omit<ThirdPartyService, "id" | "created_at" | "updated_at" | "config" | "image_url"> & { profileImage?: File[] }) => {
+  const handleCreate = async (serviceData: Omit<ThirdPartyService, "id" | "created_at" | "updated_at" | "third_party_id" | "config" | "image_url"> & { profileImage?: File[] }) => {
     try {
       const { profileImage, ...payload } = serviceData;
       const response = await fetch("/api/third-party-services", {
@@ -114,12 +115,12 @@ export function ThirdPartyServicesManagement({ thirdPartyId }: ThirdPartyService
       toast.success("Service created successfully!");
       setIsFormOpen(false);
       fetchServices();
-    } catch (error: any) {
+    } catch (error) {
       toast.error(error.message || "Failed to create service");
     }
   };
 
-  const handleUpdate = async (serviceData: Omit<ThirdPartyService, "id" | "created_at" | "updated_at" | "config" | "image_url"> & { profileImage?: File[] }) => {
+  const handleUpdate = async (serviceData: Omit<ThirdPartyService, "id" | "created_at" | "updated_at" | "third_party_id" | "config" | "image_url"> & { profileImage?: File[] }) => {
     if (!editingService) return;
 
     try {
@@ -149,7 +150,7 @@ export function ThirdPartyServicesManagement({ thirdPartyId }: ThirdPartyService
       setEditingService(null);
       setIsFormOpen(false);
       fetchServices();
-    } catch (error: any) {
+    } catch (error) {
       toast.error(error.message || "Failed to update service");
     }
   };
@@ -168,7 +169,7 @@ export function ThirdPartyServicesManagement({ thirdPartyId }: ThirdPartyService
       if (!response.ok) {
         throw new Error("Failed to upload image");
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error uploading image:", error);
       toast.error("Failed to upload image");
     }
@@ -188,7 +189,7 @@ export function ThirdPartyServicesManagement({ thirdPartyId }: ThirdPartyService
       toast.success("Service deleted successfully!");
       setDeletingServiceId(null);
       fetchServices();
-    } catch (error: any) {
+    } catch (error) {
       toast.error(error.message || "Failed to delete service");
     }
   };

@@ -23,7 +23,6 @@ interface StaticListFormProps {
 }
 
 export function StaticListForm({ staticList, onSubmit, onCancel }: StaticListFormProps) {
-  const isEdit = !!staticList;
   const [configJson, setConfigJson] = useState<string>("");
   const [configError, setConfigError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -28,7 +28,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
-  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const handlePlayPause = () => {
     if (videoRef.current) {
@@ -60,10 +59,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
       videoRef.current?.requestFullscreen();
-      setIsFullscreen(true);
     } else {
       document.exitFullscreen();
-      setIsFullscreen(false);
     }
   };
 

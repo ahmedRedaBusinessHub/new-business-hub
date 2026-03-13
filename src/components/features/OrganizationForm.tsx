@@ -27,7 +27,7 @@ export function OrganizationForm({ organization, onSubmit, onCancel }: Organizat
       z.number().int().nullable().optional()
     ),
     status: z.coerce.number().int().min(0).max(1),
-    profileImage: z.any().optional(),
+    profileImage: z.unknown().optional(),
   }), [t]);
 
   // Use image_url from organization data instead of fetching
@@ -43,7 +43,7 @@ export function OrganizationForm({ organization, onSubmit, onCancel }: Organizat
     }
   }, [organization]);
 
-  const handleSubmit = async (data: Record<string, any>) => {
+  const handleSubmit = async (data: any) => {
     try {
       const validated = formSchema.parse(data);
 
@@ -55,9 +55,9 @@ export function OrganizationForm({ organization, onSubmit, onCancel }: Organizat
         mobile: validated.mobile || null,
         category_id: validated.category_id ?? null,
         status: validated.status,
-        profileImage: validated.profileImage,
+        profileImage: validated.profileImage as File[] | undefined,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Form validation error:", error);
       throw error;
     }

@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 
         const res = await apiGet(`/public/galleries?${query.toString()}`);
         return await createApiResponse(res);
-    } catch (error: any) {
+    } catch (error: unknown) {
         return handleApiError(error, "Failed to fetch galleries");
     }
 }

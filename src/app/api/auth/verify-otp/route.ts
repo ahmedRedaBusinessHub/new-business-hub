@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { VerifyOtpDto, VerifyOtpResponse } from "@/types/auth";
+import { VerifyOTPDto } from "@/types/api/auth";
 import { apiPost, createApiResponse, handleApiError } from "@/lib/api";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { identifier, otp, type, channel, country_code } = body as VerifyOtpDto;
+    const { identifier, otp, type, channel, country_code } = body as VerifyOTPDto;
 
     if (!identifier || !otp || !type || !channel) {
       return NextResponse.json(
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const requestBody: VerifyOtpDto = {
+    const requestBody: VerifyOTPDto = {
       identifier,
       otp,
       type,
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     const res = await apiPost("/auth/verify-otp", requestBody);
     return await createApiResponse(res);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to verify OTP");
   }
 }

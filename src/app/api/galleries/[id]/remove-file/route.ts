@@ -40,7 +40,7 @@ export async function DELETE(
     }
 
     return NextResponse.json(data, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to remove file");
   }
 }

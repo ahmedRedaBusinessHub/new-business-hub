@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Program, CreateProgramDto } from "@/types/api/programs";
 import { apiGet, apiPost, createApiResponse, handleApiError } from "@/lib/api";
 
 export async function GET(request: NextRequest) {
@@ -8,7 +9,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "10");
     const search = searchParams.get("search") || "";
 
-    const res = await apiGet("/programs", {
+    const res = await apiGet("/programs?limit=1000", {
       requireAuth: true,
     });
 
@@ -17,12 +18,12 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await res.json();
-    let allData = Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [];
+    let allData: Program[] = Array.isArray(data.data?.data) ? data.data.data : Array.isArray(data.data) ? data.data : [];
 
     // Apply search filter
     if (search) {
       const query = search.toLowerCase();
-      allData = allData.filter((item: any) => {
+      allData = allData.filter((item: Program) => {
         const nameAr = (item.name_ar || "").toLowerCase();
         const nameEn = (item.name_en || "").toLowerCase();
         const detailAr = (item.detail_ar || "").toLowerCase();
@@ -44,17 +45,17 @@ export async function GET(request: NextRequest) {
       limit,
       totalPages: Math.ceil(total / limit),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch programs");
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json() as CreateProgramDto;
     const res = await apiPost("/programs", body, { requireAuth: true });
     return await createApiResponse(res, { successStatus: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to create program");
   }
 }

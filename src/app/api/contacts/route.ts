@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiGet, apiPost, createApiResponse, handleApiError } from "@/lib/api";
+import type { Contact } from "@/types/entities";
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,12 +18,12 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await res.json();
-    let allData = Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [];
+    let allData: Contact[] = Array.isArray(data.data?.data) ? data.data.data : Array.isArray(data.data) ? data.data : [];
 
     // Apply search filter
     if (search) {
       const query = search.toLowerCase();
-      allData = allData.filter((contact: any) => {
+      allData = allData.filter((contact: Contact) => {
         const name = (contact.name || "").toLowerCase();
         const email = (contact.email || "").toLowerCase();
         const phone = (contact.phone || "").toLowerCase();
@@ -47,7 +48,7 @@ export async function GET(request: NextRequest) {
       limit,
       totalPages: Math.ceil(total / limit),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch contacts");
   }
 }
@@ -57,7 +58,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const res = await apiPost("/contacts", body, { requireAuth: true });
     return await createApiResponse(res, { successStatus: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to create contact");
   }
 }

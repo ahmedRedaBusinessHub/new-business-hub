@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { apiPost, createApiResponse } from "@/lib/api";
+import { apiPost } from "@/lib/api";
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     const session = await auth();
     
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       accessToken: session.accessToken,
     });
 
-    let data: any = {};
+    let data: unknown = {};
     try {
       if (res.ok) {
         data = await res.json();
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
         // Try to parse error response, but don't fail if it fails
         try {
           data = await res.json();
-        } catch (e) {
+        } catch {
           console.warn("Failed to parse logout API error response");
         }
       }
@@ -44,11 +44,11 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         message: "Logged out successfully",
-        ...data,
+        ...(typeof data === 'object' && data !== null ? data : {}),
       },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Logout error:", error);
     // Still return success to allow local logout even if API call fails
     return NextResponse.json(

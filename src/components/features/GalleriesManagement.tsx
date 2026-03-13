@@ -55,6 +55,7 @@ export interface Gallery {
   organization_id: number;
   created_at: string | null;
   updated_at: string | null;
+  [key: string]: any;
 }
 
 export function GalleriesManagement() {
@@ -494,10 +495,10 @@ export function GalleriesManagement() {
           title="Gallery Details"
           header={{
             type: "avatar",
-            title: (data: Gallery) => data.title_ar || "Gallery",
-            subtitle: (data: Gallery) => data.title_en || "",
+            title: (data: any) => data.title_ar || "Gallery",
+            subtitle: (data: any) => data.title_en || "",
             imageIdField: "main_image_id",
-            avatarFallback: (data: Gallery) => 
+            avatarFallback: (data: any) =>
               data.title_ar?.[0] || data.title_en?.[0] || "G",
             badges: [
               {
@@ -533,10 +534,10 @@ export function GalleriesManagement() {
             {
               id: "images",
               label: "Images",
-              customContent: (data: Gallery) => {
+              customContent: (data: any) => {
                 const mainImageUrl = data.main_image_url;
                 const imageUrls = data.image_urls || [];
-                
+
                 return (
                   <div className="space-y-6">
                     {mainImageUrl && (
@@ -544,8 +545,8 @@ export function GalleriesManagement() {
                         <h4 className="text-sm font-medium mb-2">Main Image</h4>
                         <div className="border rounded-lg overflow-hidden w-fit">
                           <img
-                            src={mainImageUrl.startsWith('http') || mainImageUrl.startsWith('/api/public/file') 
-                              ? mainImageUrl 
+                            src={mainImageUrl.startsWith('http') || mainImageUrl.startsWith('/api/public/file')
+                              ? mainImageUrl
                               : `/api/public/file?file_url=${encodeURIComponent(mainImageUrl)}`}
                             alt="Main"
                             className="max-w-xs max-h-48 object-cover"
@@ -553,16 +554,16 @@ export function GalleriesManagement() {
                         </div>
                       </div>
                     )}
-                    
+
                     {imageUrls.length > 0 && (
                       <div>
                         <h4 className="text-sm font-medium mb-2">Gallery Images ({imageUrls.length})</h4>
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                          {imageUrls.map((url, index) => (
+                          {imageUrls.map((url: string, index: number) => (
                             <div key={index} className="border rounded-lg overflow-hidden">
                               <img
-                                src={url.startsWith('http') || url.startsWith('/api/public/file') 
-                                  ? url 
+                                src={url.startsWith('http') || url.startsWith('/api/public/file')
+                                  ? url
                                   : `/api/public/file?file_url=${encodeURIComponent(url)}`}
                                 alt={`Gallery ${index + 1}`}
                                 className="w-full h-32 object-cover"
@@ -572,7 +573,7 @@ export function GalleriesManagement() {
                         </div>
                       </div>
                     )}
-                    
+
                     {!mainImageUrl && imageUrls.length === 0 && (
                       <p className="text-muted-foreground text-sm">No images uploaded</p>
                     )}

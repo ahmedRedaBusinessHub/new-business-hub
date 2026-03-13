@@ -7,10 +7,14 @@ import React, { useState, useRef } from "react";
 import { motion } from "motion/react";
 import { Upload, X, File as FileIcon, Image as ImageIcon } from "lucide-react";
 
+interface FieldError {
+  message?: string
+}
+
 interface FileProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   required?: boolean;
-  error?: any;
+  error?: FieldError;
   helperText?: string;
   multiple?: boolean;
   accept?: string; // e.g., "image/*" or ".pdf,.doc"
@@ -98,11 +102,13 @@ export const File = forwardRef<HTMLInputElement, FileProps>(
 
     // Merge refs
     const setRefs = (element: HTMLInputElement | null) => {
-      (hiddenInputRef as any).current = element;
+      if (hiddenInputRef) {
+        hiddenInputRef.current = element;
+      }
       if (typeof ref === "function") {
         ref(element);
-      } else if (ref) {
-        (ref as any).current = element;
+      } else if (ref && typeof ref === "object") {
+        (ref as React.MutableRefObject<HTMLInputElement | null>).current = element;
       }
     };
 

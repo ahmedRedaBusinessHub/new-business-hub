@@ -1,4 +1,5 @@
 "use client";
+import type { DataRow } from "@/types/components/management";
 import { useState, useEffect, useCallback } from "react";
 import { Badge } from "@/components/ui/Badge";
 import {
@@ -21,8 +22,8 @@ interface UserProjectsProps {
 export function UserProjects({ userId }: UserProjectsProps) {
   const { language } = useI18n();
   const [loading, setLoading] = useState(true);
-  const [userProjects, setUserProjects] = useState<any[]>([]);
-  const [statuses, setStatuses] = useState<any[]>([]);
+  const [userProjects, setUserProjects] = useState<DataRow[]>([]);
+  const [statuses, setStatuses] = useState<DataRow[]>([]);
 
   useEffect(() => {
     const fetchStatuses = async () => {

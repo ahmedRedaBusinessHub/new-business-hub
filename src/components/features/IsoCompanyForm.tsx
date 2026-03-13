@@ -29,7 +29,7 @@ export function IsoCompanyForm({ company, onSubmit, onCancel }: IsoCompanyFormPr
     certificate_name_en: z.string().optional(),
     notes: z.string().optional(),
     status: z.coerce.number().int().min(0).max(1),
-    mainImage: z.any().optional(),
+    mainImage: z.unknown().optional(),
   }), [t]);
 
   // Use image_url from company data
@@ -45,7 +45,7 @@ export function IsoCompanyForm({ company, onSubmit, onCancel }: IsoCompanyFormPr
     }
   }, [company]);
 
-  const handleSubmit = async (data: Record<string, any>) => {
+  const handleSubmit = async (data: any) => {
     try {
       const validated = formSchema.parse(data);
 
@@ -64,9 +64,9 @@ export function IsoCompanyForm({ company, onSubmit, onCancel }: IsoCompanyFormPr
         image_id: company?.image_id || null,
         status: validated.status,
         organization_id: company?.organization_id || 1,
-        mainImage: validated.mainImage,
+        mainImage: validated.mainImage as File[] | undefined,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Form validation error:", error);
       throw error;
     }

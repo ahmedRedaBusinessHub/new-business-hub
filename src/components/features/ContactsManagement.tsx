@@ -39,7 +39,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import DynamicView, { type ViewTab } from "../shared/DynamicView";
+import DynamicView from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { useI18n } from "@/hooks/useI18n";
@@ -64,6 +64,7 @@ export interface Contact {
   organization_id: number;
   created_at: string | null;
   updated_at: string | null;
+  [key: string]: any;
 }
 
 export function ContactsManagement() {
@@ -87,7 +88,7 @@ export function ContactsManagement() {
   // Fetch contact types from static_lists cache (only once)
   useEffect(() => {
     if (contactTypesFetchedRef.current) return;
-    
+
     const fetchContactTypes = async () => {
       try {
         contactTypesFetchedRef.current = true;
@@ -457,7 +458,7 @@ export function ContactsManagement() {
                 { name: "name", label: "Name", type: "text" },
                 { name: "email", label: "Email", type: "text" },
                 { name: "phone", label: "Phone", type: "text" },
-                { name: "contact_type", label: "Type", type: "text", render: (value: number | null) => getContactTypeName(value) },
+                { name: "contact_type", label: "Type", type: "text", render: (value: any) => getContactTypeName(value as number | null) },
                 { name: "notes", label: "Notes", type: "text", colSpan: 12 },
               ],
             },

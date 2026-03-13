@@ -16,7 +16,7 @@ async function getProgram(id: string) {
 }
 
 // Generate metadata for SEO and GEO
-export async function generateMetadata({ params }: any): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ id: string; locale: string }> }): Promise<Metadata> {
   const { id, locale } = await params;
   const program = await getProgram(id);
 
@@ -54,7 +54,7 @@ export async function generateStaticParams() {
     const res = await apiGet('/public/programs?limit=100', { requireAuth: false });
     if (!res.ok) return [];
     const data = await res.json();
-    return data.data.map((program: any) => ({
+    return data.data.data.map((program: { id: number }) => ({
       id: program.id.toString(),
     }));
   } catch (e) {
@@ -63,7 +63,7 @@ export async function generateStaticParams() {
   }
 }
 
-export default async function Program({ params }: any) {
+export default async function Program({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const program = await getProgram(id);
 

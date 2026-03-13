@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { apiGet, apiPatch, apiDelete, createApiResponse, handleApiError } from "@/lib/api";
 
 export async function GET(
@@ -11,7 +11,7 @@ export async function GET(
       requireAuth: true,
     });
     return await createApiResponse(res);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch role");
   }
 }
@@ -27,7 +27,7 @@ export async function PATCH(
       requireAuth: true,
     });
     return await createApiResponse(res);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to update role");
   }
 }
@@ -42,7 +42,7 @@ export async function DELETE(
       requireAuth: true,
     });
     return await createApiResponse(res);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to delete role");
   }
 }

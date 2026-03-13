@@ -20,7 +20,7 @@ export function SuccessPartnerForm({ partner, onSubmit, onCancel }: SuccessPartn
     name_ar: z.string().min(2, t("entities.successPartners.nameArPlaceholder")),
     name_en: z.string().optional(),
     status: z.coerce.number().int().min(0).max(1),
-    mainImage: z.any().optional(),
+    mainImage: z.unknown().optional(),
   }), [t]);
 
   // Use image_url from partner data
@@ -46,9 +46,9 @@ export function SuccessPartnerForm({ partner, onSubmit, onCancel }: SuccessPartn
         image_id: partner?.image_id || null,
         status: validated.status,
         organization_id: partner?.organization_id || 1,
-        mainImage: validated.mainImage,
+        mainImage: validated.mainImage as File[] | undefined,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Form validation error:", error);
       throw error;
     }

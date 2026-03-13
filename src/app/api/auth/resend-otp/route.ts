@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 
     const res = await apiPost("/auth/resend-otp", requestBody);
     return await createApiResponse(res);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to resend OTP");
   }
 }

@@ -1,4 +1,5 @@
 "use client";
+import type { DataRow } from "@/types/components/management";
 import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/Badge";
 import {
@@ -177,7 +178,7 @@ export function UserRelatedData({ userId }: UserRelatedDataProps) {
 
 // Component to display contact with its interactions
 function ContactWithInteractions({ contact }: { contact: any }) {
-  const [interactions, setInteractions] = useState<any[]>([]);
+  const [interactions, setInteractions] = useState<DataRow[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

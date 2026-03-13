@@ -16,7 +16,7 @@ import {
   SidebarRail,
 } from "@/components/ui/Sidebar";
 import { useI18n } from "@/hooks/useI18n";
-import { Settings, Loader2 } from "lucide-react";
+import { Settings, Loader2, BarChart3 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DynamicIcon } from "@/lib/icon-map";
@@ -59,8 +59,9 @@ export function AppSidebar() {
         }
 
         const result = await response.json();
-        if (result.status === 1 && result.data) {
-          setNavigation(result.data);
+        console.log("🚀 ~ fetchNavigation ~ result:", result);
+        if (result.data?.status === 1 && result.data?.data) {
+          setNavigation(result.data.data);
         }
       } catch (error) {
         console.error("Error fetching navigation:", error);
@@ -167,6 +168,26 @@ export function AppSidebar() {
                 </SidebarGroupContent>
               </SidebarGroup>
             )}
+
+            <SidebarGroup>
+              <SidebarGroupLabel>{t("nav_reports")}</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive("/admin/reports")}
+                      tooltip={t("nav_reports")}
+                    >
+                      <Link href="/admin/reports/statistics">
+                        <BarChart3 className="size-4" />
+                        <span>{t("nav_reports")}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
           </>
         )}
       </SidebarContent>

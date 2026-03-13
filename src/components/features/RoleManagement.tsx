@@ -54,6 +54,7 @@ export interface Role {
   organization_id: number;
   created_at: string | null;
   updated_at: string | null;
+  [key: string]: any;
 }
 
 export function RoleManagement() {
@@ -86,7 +87,7 @@ export function RoleManagement() {
 
   const isFetchingRef = useRef(false);
   const lastFetchParamsRef = useRef<string>("");
-  
+
   const fetchRoles = useCallback(async () => {
     const params = new URLSearchParams({
       page: currentPage.toString(),
@@ -94,20 +95,20 @@ export function RoleManagement() {
       ...(debouncedSearch && { search: debouncedSearch }),
     });
     const paramsString = params.toString();
-    
+
     if (isFetchingRef.current && lastFetchParamsRef.current === paramsString) {
       return;
     }
-    
+
     isFetchingRef.current = true;
     lastFetchParamsRef.current = paramsString;
-    
+
     try {
       setLoading(true);
       setIsForbiddenError(false);
 
       const response = await fetch(`/api/roles?${paramsString}`);
-      
+
       if (isForbidden(response)) {
         setIsForbiddenError(true);
         handleApiError(response, t("roles.failedToLoad"));
@@ -121,7 +122,7 @@ export function RoleManagement() {
         handleApiError(response, t("roles.failedToLoad"));
         throw new Error(t("roles.failedToLoad"));
       }
-      
+
       const data = await response.json();
       const rolesData = Array.isArray(data.data) ? data.data : [];
       setRoles(rolesData);
@@ -159,7 +160,7 @@ export function RoleManagement() {
       let responseData: any;
       try {
         responseData = await response.json();
-      } catch (parseError) {
+      } catch (parseError: any) {
         if (!response.ok) {
           throw new Error(`Failed to parse error response: ${response.status} ${response.statusText}`);
         }
@@ -173,22 +174,22 @@ export function RoleManagement() {
 
       if (!response.ok || (responseData.statusCode && responseData.statusCode >= 400)) {
         let errorMessage = t("roles.failedToCreate");
-        let fieldErrors: Record<string, string> = {};
-        
+        const fieldErrors: Record<string, string> = {};
+
         const errorData = responseData;
         errorMessage = errorData.message || errorData.error || errorMessage;
-        
+
         if (errorData.message && typeof errorData.message === "string") {
           const errorMsg = errorData.message;
           const errorMsgLower = errorMsg.toLowerCase();
-          
+
           if (errorMsgLower.includes("unique constraint failed on the fields: (`namespace`)") ||
-              (errorMsgLower.includes("namespace") && errorMsgLower.includes("unique"))) {
+            (errorMsgLower.includes("namespace") && errorMsgLower.includes("unique"))) {
             fieldErrors.namespace = errorData.message;
             errorMessage = t("roles.namespaceExists");
           }
         }
-        
+
         handleApiError(response, errorMessage);
         const error = new Error(errorData.message || errorMessage) as any;
         error.fieldErrors = fieldErrors;
@@ -232,7 +233,7 @@ export function RoleManagement() {
       let responseData: any;
       try {
         responseData = await response.json();
-      } catch (parseError) {
+      } catch (parseError: any) {
         if (!response.ok) {
           throw new Error(`Failed to parse error response: ${response.status} ${response.statusText}`);
         }
@@ -246,22 +247,22 @@ export function RoleManagement() {
 
       if (!response.ok || (responseData.statusCode && responseData.statusCode >= 400)) {
         let errorMessage = t("roles.failedToUpdate");
-        let fieldErrors: Record<string, string> = {};
-        
+        const fieldErrors: Record<string, string> = {};
+
         const errorData = responseData;
         errorMessage = errorData.message || errorData.error || errorMessage;
-        
+
         if (errorData.message && typeof errorData.message === "string") {
           const errorMsg = errorData.message;
           const errorMsgLower = errorMsg.toLowerCase();
-          
+
           if (errorMsgLower.includes("unique constraint failed on the fields: (`namespace`)") ||
-              (errorMsgLower.includes("namespace") && errorMsgLower.includes("unique"))) {
+            (errorMsgLower.includes("namespace") && errorMsgLower.includes("unique"))) {
             fieldErrors.namespace = errorData.message;
             errorMessage = t("roles.namespaceExists");
           }
         }
-        
+
         handleApiError(response, errorMessage);
         const errorObj = new Error(errorData.message || errorMessage) as any;
         errorObj.fieldErrors = fieldErrors;
@@ -332,10 +333,9 @@ export function RoleManagement() {
   };
 
   const viewHeader: ViewHeader = {
-    type: "icon",
-    title: (data: Role) => data.name,
-    subtitle: (data: Role) => data.namespace,
-    icon: Shield,
+    type: "simple",
+    title: (data: any) => data.name,
+    subtitle: (data: any) => data.namespace,
     badges: [
       {
         field: "status",
@@ -449,58 +449,58 @@ export function RoleManagement() {
                   </TableCell>
                 </TableRow>
               ) : (
-              roles.map((role) => (
-                <TableRow key={role.id}>
-                  <TableCell className="font-medium">{role.name}</TableCell>
-                  <TableCell>
-                    <code className="rounded bg-muted px-2 py-1 text-sm">
-                      {role.namespace}
-                    </code>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        role.status === 1
-                          ? "default"
-                          : "secondary"
-                      }
-                    >
-                      {role.status === 1 ? t("common.active") : t("common.inactive")}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleView(role)}
-                        title={t("roles.viewRoleDetails")}
+                roles.map((role) => (
+                  <TableRow key={role.id}>
+                    <TableCell className="font-medium">{role.name}</TableCell>
+                    <TableCell>
+                      <code className="rounded bg-muted px-2 py-1 text-sm">
+                        {role.namespace}
+                      </code>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          role.status === 1
+                            ? "default"
+                            : "secondary"
+                        }
                       >
-                        <Eye className="size-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleEdit(role)}
-                        title={t("roles.editRoleTooltip")}
-                      >
-                        <Pencil className="size-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setDeletingRoleId(role.id)}
-                        title={t("roles.deleteRoleTooltip")}
-                      >
-                        <Trash2 className="size-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+                        {role.status === 1 ? t("common.active") : t("common.inactive")}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleView(role)}
+                          title={t("roles.viewRoleDetails")}
+                        >
+                          <Eye className="size-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEdit(role)}
+                          title={t("roles.editRoleTooltip")}
+                        >
+                          <Pencil className="size-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setDeletingRoleId(role.id)}
+                          title={t("roles.deleteRoleTooltip")}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </div>
       )}
 

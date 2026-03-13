@@ -13,7 +13,7 @@ const formSchema = z.object({
     (val) => (val === "" || val === null || val === undefined ? undefined : Number(val)),
     z.number().int().positive().optional()
   ),
-  profileImage: z.any().optional(),
+  profileImage: z.unknown().optional(),
 });
 
 interface ThirdPartyServiceFormProps {
@@ -42,16 +42,17 @@ export function ThirdPartyServiceForm({ service, thirdPartyId, onSubmit, onCance
     }
   }, [service]);
 
-  const handleSubmit = async (data: Record<string, any>) => {
+  const handleSubmit = async (data: Record<string, unknown>) => {
     try {
       const validated = formSchema.parse(data);
-      
+
       onSubmit({
         name: validated.name,
         namespace: validated.namespace,
         service_url: validated.service_url || null,
         status: validated.status,
         order_no: validated.order_no ?? null,
+        organization_id: service?.organization_id || 1,
         profileImage: validated.profileImage,
       });
     } catch (error) {

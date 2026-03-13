@@ -100,7 +100,7 @@ export const TagInput: React.FC<TagInputProps> = ({
         ref={inputRef}
         type="text"
         value={inputValue}
-        onChange={(e: any) => setInputValue(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
         onPaste={handlePaste}
         onFocus={() => setIsFocused(true)}

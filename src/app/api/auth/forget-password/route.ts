@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       requireAuth: false,
     });
     return await createApiResponse(res);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to process forget password request");
   }
 }

@@ -2,8 +2,12 @@ import { forwardRef, InputHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "./Label";
 
+interface FieldError {
+  message?: string
+}
+
 export interface ColorProps extends InputHTMLAttributes<HTMLInputElement> {
-  error?: any;
+  error?: FieldError;
   label?: string;
   helperText?: string;
 }

@@ -3,7 +3,7 @@
  * Provides caching for static lists to avoid excessive API calls
  */
 
-interface StaticListConfig {
+export interface StaticListConfig {
   id: number;
   name_en: string;
   name_ar: string;
@@ -42,7 +42,7 @@ class StaticListsCache {
       }
 
       const result = await response.json();
-      const dataList = Array.isArray(result.data) ? result.data : [];
+      const dataList = Array.isArray(result.data?.data) ? result.data.data : [];
 
       let config: StaticListConfig[] = [];
       if (dataList.length > 0 && dataList[0].config) {

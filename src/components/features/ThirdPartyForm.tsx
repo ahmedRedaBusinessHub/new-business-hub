@@ -25,7 +25,7 @@ export function ThirdPartyForm({ thirdParty, onSubmit, onCancel }: ThirdPartyFor
       (val) => (val === "" || val === null || val === undefined ? undefined : Number(val)),
       z.number().int().positive().optional()
     ),
-    profileImage: z.any().optional(),
+    profileImage: z.unknown().optional(),
   }), [t]);
 
   // Use image_url from thirdParty data instead of fetching

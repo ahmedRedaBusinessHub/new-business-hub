@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiGet, apiPost, createApiResponse, handleApiError } from "@/lib/api";
+import type { Organization } from "@/types/entities";
 
 export async function GET(request: NextRequest) {
   try {
@@ -8,7 +9,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "10");
     const search = searchParams.get("search") || "";
 
-    const res = await apiGet("/organizations", {
+    const res = await apiGet("/organizations?limit=1000", {
       requireAuth: true,
     });
 
@@ -17,12 +18,12 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await res.json();
-    let allData = Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [];
+    let allData: Organization[] = Array.isArray(data.data?.data) ? data.data.data : Array.isArray(data.data) ? data.data : [];
 
     // Apply search filter
     if (search) {
       const query = search.toLowerCase();
-      allData = allData.filter((org: any) => {
+      allData = allData.filter((org: Organization) => {
         const name = (org.name || "").toLowerCase();
         const namespace = (org.namespace || "").toLowerCase();
         const email = (org.email || "").toLowerCase();
@@ -43,7 +44,7 @@ export async function GET(request: NextRequest) {
       limit,
       totalPages: Math.ceil(total / limit),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch organizations");
   }
 }
@@ -53,7 +54,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const res = await apiPost("/organizations", body, { requireAuth: true });
     return await createApiResponse(res, { successStatus: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to create organization");
   }
 }

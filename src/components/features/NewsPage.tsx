@@ -15,15 +15,6 @@ import {
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
 import { Input } from "../ui/Input";
-import {
-    Pagination,
-    PaginationContent,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-    PaginationEllipsis,
-} from "@/components/ui/Pagination";
 import { useI18n } from "@/hooks/useI18n";
 import Link from "next/link";
 import { ImageWithFallback } from "@/components/figma/ImageWithFallback";
@@ -74,14 +65,14 @@ export default function NewsPage() {
             if (response.ok) {
                 const data = await response.json();
                 console.log("🚀 ~ fetchNews ~ data:", data)
-                const newItems = Array.isArray(data.data) ? data.data : [];
+                const newItems = Array.isArray(data.data?.data) ? data.data.data : [];
 
                 setNews(prev => pagination.page === 1 ? newItems : [...prev, ...newItems]);
 
                 setPagination((prev) => ({
                     ...prev,
-                    total: data.total || 0,
-                    totalPages: data.totalPages || 0,
+                    total: data.data?.total || 0,
+                    totalPages: data.data?.totalPages || 0,
                 }));
             }
         } catch (error) {
@@ -99,7 +90,7 @@ export default function NewsPage() {
             setPagination(prev => ({ ...prev, page: 1 }));
         }, 300);
         return () => clearTimeout(timer);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
     }, [searchQuery]);
 
     useEffect(() => {

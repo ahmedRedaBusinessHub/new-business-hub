@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiGet, getApiUrl, handleApiError } from "@/lib/api";
+import { getApiUrl, handleApiError } from "@/lib/api";
 
 /**
  * Proxy route for /public/file endpoint
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
         "Cache-Control": "public, max-age=31536000, immutable",
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch file");
   }
 }

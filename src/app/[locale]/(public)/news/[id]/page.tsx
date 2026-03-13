@@ -15,7 +15,7 @@ async function fetchNewsById(id: string) {
 }
 
 // Generate metadata for SEO and GEO
-export async function generateMetadata({ params }: any) {
+export async function generateMetadata({ params }: { params: Promise<{ id: string; locale: string }> }) {
   const { id, locale } = await params;
   const newsItem = await fetchNewsById(id);
 
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: any) {
   // GEO-specific title and description
   const geoTitle = title;
 
-  let finalTitle = isRTL
+  const finalTitle = isRTL
     ? `${geoTitle} | ${process.env.NEXT_PUBLIC_SITE_NAME_AR || "بيزنس هب"}`
     : `${geoTitle} | ${process.env.NEXT_PUBLIC_SITE_NAME_EN || "Business Hub"}`;
 

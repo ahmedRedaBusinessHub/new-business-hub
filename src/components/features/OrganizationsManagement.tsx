@@ -38,7 +38,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import DynamicView, { type ViewTab } from "../shared/DynamicView";
+import DynamicView from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { useI18n } from "@/hooks/useI18n";
@@ -54,8 +54,8 @@ export interface Organization {
   status: number;
   organization_id: number | null;
   image_url?: string | null; // Image URL from API response
-  created_at: string | null;
   updated_at: string | null;
+  [key: string]: any;
 }
 
 export function OrganizationsManagement() {
@@ -131,7 +131,7 @@ export function OrganizationsManagement() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, pageSize, debouncedSearch]);
 
-  const handleCreate = async (organizationData: Omit<Organization, "id" | "created_at" | "updated_at" | "image_url"> & { profileImage?: File[] }) => {
+  const handleCreate = async (organizationData: Omit<Organization, "id" | "created_at" | "updated_at" | "image_url" | "organization_id"> & { profileImage?: File[] }) => {
     try {
       const { profileImage, ...payload } = organizationData;
       const response = await fetch("/api/organizations", {
@@ -166,7 +166,7 @@ export function OrganizationsManagement() {
     }
   };
 
-  const handleUpdate = async (organizationData: Omit<Organization, "id" | "created_at" | "updated_at" | "image_url"> & { profileImage?: File[] }) => {
+  const handleUpdate = async (organizationData: Omit<Organization, "id" | "created_at" | "updated_at" | "image_url" | "organization_id"> & { profileImage?: File[] }) => {
     if (!editingOrganization) return;
 
     try {
@@ -460,10 +460,10 @@ export function OrganizationsManagement() {
           title={t("entities.organizations.details")}
           header={{
             type: "avatar",
-            title: (data: Organization) => data.name || "Organization",
-            subtitle: (data: Organization) => data.email || data.namespace || "",
+            title: (data: any) => data.name || "Organization",
+            subtitle: (data: any) => data.email || data.namespace || "",
             imageIdField: "image_id",
-            avatarFallback: (data: Organization) => 
+            avatarFallback: (data: any) =>
               data.name?.[0] || "O",
             badges: [
               {
@@ -488,7 +488,7 @@ export function OrganizationsManagement() {
                   name: "mobile",
                   label: "Mobile",
                   type: "text",
-                  format: (value: string | null, data: Organization) =>
+                  format: (value: any, data: any) =>
                     data.country_code && value ? `${data.country_code} ${value}` : value || "-",
                 },
                 { name: "country_code", label: "Country Code", type: "text" },

@@ -10,12 +10,13 @@ import {
   flexRender,
   ColumnDef,
   SortingState,
+  Table,
 } from "@tanstack/react-table";
 
 // Types for server response
-interface DataTableResponse {
-  data: any[];
-  columns: ColumnDef<any>[];
+interface DataTableResponse<T> {
+  data: T[];
+  columns: ColumnDef<T>[];
   total: number;
   page: number;
   pageSize: number;
@@ -29,19 +30,28 @@ interface PaginationParams {
   search?: string;
 }
 
+interface ColumnVisibilityDropdownProps<T> {
+  table: Table<T>;
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
+}
+
 // Status Badge Component
-const StatusBadge = ({ status }: any) => {
-  const statusStyles: any = {
+interface StatusBadgeProps {
+  status: string;
+}
+
+const StatusBadge = ({ status }: StatusBadgeProps) => {
+  const statusStyles: Record<string, string> = {
     Active: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
     Inactive: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200",
-    Pending:
-      "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
+    Pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
   };
+  const style = statusStyles[status] || statusStyles.Active;
+  
   return (
     <span
-      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-        statusStyles[status] || statusStyles.Active
-      }`}
+      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${style}`}
     >
       {status}
     </span>
@@ -49,11 +59,11 @@ const StatusBadge = ({ status }: any) => {
 };
 
 // Column Visibility Dropdown Component
-const ColumnVisibilityDropdown = ({ table, isOpen, setIsOpen }: any) => {
+function ColumnVisibilityDropdown<T>({ table, isOpen, setIsOpen }: ColumnVisibilityDropdownProps<T>) {
   if (!isOpen) return null;
   return (
     <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-10">
-      {table.getAllLeafColumns().map((column: any) => (
+      {table.getAllLeafColumns().map((column) => (
         <label
           key={column.id}
           className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
@@ -69,7 +79,7 @@ const ColumnVisibilityDropdown = ({ table, isOpen, setIsOpen }: any) => {
       ))}
     </div>
   );
-};
+}
 
 // Loading Skeleton
 const TableSkeleton = () => (
@@ -85,39 +95,39 @@ const TableSkeleton = () => (
 
 // Main DataTable Component
 interface DataTableProps {
-  apiEndpoint: string; // e.g., "/api/users"
+  apiEndpoint: string;
   pageSize?: number;
   enableSearch?: boolean;
   enableColumnVisibility?: boolean;
 }
 
-export function DataTable({
+export function DataTable<T = unknown>({
   apiEndpoint,
   pageSize = 10,
   enableSearch = true,
   enableColumnVisibility = true,
 }: DataTableProps) {
-  const [data, setData] = useState<any[]>([]);
-  const [columns, setColumns] = useState<ColumnDef<any>[]>([]);
+  const [data, setData] = useState<T[]>([]);
+  const [columns, setColumns] = useState<ColumnDef<T>[]>([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] = useState({});
+  const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({});
   const [globalFilter, setGlobalFilter] = useState("");
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [columnVisibilityOpen, setColumnVisibilityOpen] = useState(false);
-
+  
   // Fetch data from server
   const fetchData = useCallback(
     async (pageIndex: number, pageSize: number, sort?: SortingState) => {
       try {
         setLoading(true);
         const params = new URLSearchParams({
-          page: (pageIndex + 1).toString(), // Server typically expects 1-based indexing
+          page: (pageIndex + 1).toString(),
           pageSize: pageSize.toString(),
           ...(globalFilter && { search: globalFilter }),
           ...(sort &&
@@ -133,7 +143,7 @@ export function DataTable({
           throw new Error("Failed to fetch data");
         }
 
-        const result: DataTableResponse = await response.json();
+        const result: DataTableResponse<T> = await response.json();
 
         setData(result.data);
         setColumns(result.columns);
@@ -158,7 +168,7 @@ export function DataTable({
   // Debounced search
   useEffect(() => {
     const timer = setTimeout(() => {
-      setPagination({ ...pagination, pageIndex: 0 }); // Reset to first page on search
+      setPagination({ ...pagination, pageIndex: 0 });
       fetchData(0, pagination.pageSize, sorting);
     }, 300);
 
@@ -166,7 +176,7 @@ export function DataTable({
   }, [globalFilter, sorting, pagination.pageSize]);
 
   // Create table instance
-  const table = useReactTable({
+  const table = useReactTable<T>({
     data,
     columns,
     state: {
@@ -183,7 +193,7 @@ export function DataTable({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    manualPagination: true, // Important: tells table that pagination is handled by server
+    manualPagination: true,
     pageCount: totalPages,
   });
 

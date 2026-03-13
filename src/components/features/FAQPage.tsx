@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import {
-  HelpCircle,
   Plus,
   Minus,
   Search,

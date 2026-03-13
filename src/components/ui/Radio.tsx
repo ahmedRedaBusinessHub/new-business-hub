@@ -2,15 +2,22 @@ import { forwardRef, InputHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "./Label";
 
+export interface RadioOption {
+  label: string;
+  value: string;
+}
+
 export interface RadioProps extends InputHTMLAttributes<HTMLInputElement> {
-  error?: any;
+  error?: Error | { message?: string } | string;
   label?: string;
-  options?: { label: string; value: string }[];
+  options?: RadioOption[];
   helperText?: string;
 }
 
 const Radio = forwardRef<HTMLInputElement, RadioProps>(
   ({ className, error, label, options, helperText, ...props }, ref) => {
+    const errorMessage = typeof error === 'string' ? error : error?.message;
+
     return (
       <div className="flex flex-col">
         <div className="space-y-3">
@@ -19,7 +26,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
             {props.required && <span className="ml-1 text-red-600">*</span>}
           </span>
 
-          {options?.map((option: any) => (
+          {options?.map((option) => (
             <Label key={option.value} className="flex items-center space-x-3">
               <input
                 ref={ref}
@@ -38,7 +45,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
         {error && (
           <p className="mt-1 text-sm text-red-600 flex items-center space-x-1">
             <span>⚠</span>
-            <span>{error?.message as string}</span>
+            <span>{errorMessage}</span>
           </p>
         )}
 

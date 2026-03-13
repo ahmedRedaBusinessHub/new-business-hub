@@ -13,7 +13,6 @@ interface SwiperProps {
 
 export const Swiper: React.FC<SwiperProps> = ({
   children,
-  slides = 1,
   autoplay = false,
   autoplayDelay = 5000,
   loop = false,

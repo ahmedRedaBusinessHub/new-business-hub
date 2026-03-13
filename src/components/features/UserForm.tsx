@@ -25,7 +25,7 @@ const createFormSchema = (isEdit: boolean, t: (key: string) => string) => z.obje
   ),
   national_id: z.string().optional(),
   status: z.coerce.number().int().min(0).max(1),
-  profileImage: z.any().optional(),
+  profileImage: z.unknown().optional(),
 });
 
 interface UserFormProps {

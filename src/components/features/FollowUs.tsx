@@ -23,12 +23,11 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useTranslations } from "next-intl";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useI18n } from "@/hooks/useI18n";
 
 export default function FollowUsPage() {
-  const { t, language } = useI18n();
+  const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [isSubscribing, setIsSubscribing] = useState(false);
   const router = useRouter();

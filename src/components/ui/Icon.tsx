@@ -100,8 +100,8 @@ function isLucideIcon(props: IconProps): props is LucideIconProps {
 function getHeroIcon(
   name: string,
   style: "outline" | "solid" | "mini" = "outline"
-) {
-  let iconSet: any;
+): React.ComponentType<React.SVGProps<SVGSVGElement>> | undefined {
+  let iconSet: typeof HeroIconsOutline | typeof HeroIconsSolid | typeof HeroIconsMini;
 
   switch (style) {
     case "solid":
@@ -114,7 +114,7 @@ function getHeroIcon(
       iconSet = HeroIconsOutline;
   }
 
-  return iconSet[name as keyof typeof iconSet];
+  return iconSet[name as keyof typeof iconSet] as React.ComponentType<React.SVGProps<SVGSVGElement>> | undefined;
 }
 
 // ============================================================================
@@ -132,7 +132,7 @@ export const Icon = React.forwardRef<SVGSVGElement, IconProps>((props, ref) => {
       style = "outline",
       strokeWidth = 1.5,
       ...heroProps
-    }: any = restProps;
+    } = restProps;
     const HeroComponent = getHeroIcon(name as string, style);
 
     if (!HeroComponent) {
@@ -140,6 +140,7 @@ export const Icon = React.forwardRef<SVGSVGElement, IconProps>((props, ref) => {
       return null;
     }
 
+    // eslint-disable-next-line react-hooks/purity -- Dynamic component lookup is intentional for icon library
     return (
       <HeroComponent
         ref={ref}
@@ -154,7 +155,7 @@ export const Icon = React.forwardRef<SVGSVGElement, IconProps>((props, ref) => {
     const { name, strokeWidth = 2, ...lucideProps } = restProps;
     // Lucide exports may not align perfectly with the union type at runtime, so do a safe lookup
     const LucideComponent = (
-      LucideIcons as unknown as Record<string, React.ComponentType<any>>
+      LucideIcons as unknown as Record<string, React.ComponentType<LucideProps>>
     )[name as string];
 
     if (!LucideComponent) {
@@ -162,12 +163,13 @@ export const Icon = React.forwardRef<SVGSVGElement, IconProps>((props, ref) => {
       return null;
     }
 
+    // eslint-disable-next-line react-hooks/purity -- Dynamic component lookup is intentional for icon library
     return (
       <LucideComponent
         ref={ref}
         className={iconClasses}
         strokeWidth={strokeWidth}
-        {...(lucideProps as any)}
+        {...lucideProps}
       />
     );
   }

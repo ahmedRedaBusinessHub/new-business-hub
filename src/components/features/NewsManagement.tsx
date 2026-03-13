@@ -38,7 +38,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import DynamicView, { type ViewTab } from "../shared/DynamicView";
+import DynamicView from "../shared/DynamicView";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { useI18n } from "@/hooks/useI18n";
@@ -56,8 +56,8 @@ export interface News {
   main_image_url?: string | null;
   image_ids?: number[];
   image_urls?: string[];
-  created_at: string | null;
   updated_at: string | null;
+  [key: string]: any;
 }
 
 export function NewsManagement() {
@@ -169,7 +169,7 @@ export function NewsManagement() {
       setIsFormOpen(false);
       fetchNews();
     } catch (error: any) {
-        toast.error(error.message || t("entities.news.failedToCreate"));
+      toast.error(error.message || t("entities.news.failedToCreate"));
     }
   };
 
@@ -209,7 +209,7 @@ export function NewsManagement() {
       setIsFormOpen(false);
       fetchNews();
     } catch (error: any) {
-        toast.error(error.message || t("entities.news.failedToUpdate"));
+      toast.error(error.message || t("entities.news.failedToUpdate"));
     }
   };
 
@@ -490,10 +490,10 @@ export function NewsManagement() {
           title={t("entities.news.details")}
           header={{
             type: "avatar",
-            title: (data: News) => data.title_ar || data.title_en || "News",
-            subtitle: (data: News) => data.detail_ar || data.detail_en || "",
+            title: (data: any) => data.title_ar || data.title_en || "News",
+            subtitle: (data: any) => data.detail_ar || data.detail_en || "",
             imageIdField: "main_image_id",
-            avatarFallback: (data: News) => 
+            avatarFallback: (data: any) =>
               data.title_ar?.[0] || data.title_en?.[0] || "N",
             badges: [
               {
@@ -531,9 +531,9 @@ export function NewsManagement() {
             {
               id: "social",
               label: "Social Media",
-              customContent: (data: News) => {
-                const socialMedia = typeof data.social_media === 'string' 
-                  ? JSON.parse(data.social_media || '{}') 
+              customContent: (data: any) => {
+                const socialMedia = typeof data.social_media === 'string'
+                  ? JSON.parse(data.social_media || '{}')
                   : (data.social_media || {});
                 const platforms = Object.entries(socialMedia).filter(([_, url]) => url);
                 if (platforms.length === 0) {
@@ -544,9 +544,9 @@ export function NewsManagement() {
                     {platforms.map(([platform, url]) => (
                       <div key={platform} className="flex items-center gap-3 p-3 border rounded-lg bg-muted/50">
                         <span className="capitalize font-medium w-24">{platform}:</span>
-                        <a 
-                          href={url as string} 
-                          target="_blank" 
+                        <a
+                          href={url as string}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="text-primary hover:underline truncate"
                         >
@@ -561,7 +561,7 @@ export function NewsManagement() {
             {
               id: "images",
               label: "Images",
-              customContent: (data: News) => {
+              customContent: (data: any) => {
                 const hasMainImage = data.main_image_url;
                 const hasImages = data.image_urls && data.image_urls.length > 0;
                 if (!hasMainImage && !hasImages) {
@@ -573,8 +573,8 @@ export function NewsManagement() {
                       <div>
                         <p className="text-sm font-medium mb-2">Main Image</p>
                         <img
-                          src={data.main_image_url!.startsWith('http') || data.main_image_url!.startsWith('/api/public/file') 
-                            ? data.main_image_url! 
+                          src={data.main_image_url!.startsWith('http') || data.main_image_url!.startsWith('/api/public/file')
+                            ? data.main_image_url!
                             : `/api/public/file?file_url=${encodeURIComponent(data.main_image_url!)}`}
                           alt="Main"
                           className="max-w-xs h-auto rounded-lg border"
@@ -585,11 +585,11 @@ export function NewsManagement() {
                       <div>
                         <p className="text-sm font-medium mb-2">Gallery Images</p>
                         <div className="grid grid-cols-3 gap-4">
-                          {data.image_urls!.filter(url => url != null).map((url, index) => (
+                          {data.image_urls!.filter((url: string) => url != null).map((url: string, index: number) => (
                             <img
                               key={index}
-                              src={url.startsWith('http') || url.startsWith('/api/public/file') 
-                                ? url 
+                              src={url.startsWith('http') || url.startsWith('/api/public/file')
+                                ? url
                                 : `/api/public/file?file_url=${encodeURIComponent(url)}`}
                               alt={`Image ${index + 1}`}
                               className="w-full h-32 object-cover rounded-lg border"

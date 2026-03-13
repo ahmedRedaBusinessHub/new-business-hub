@@ -1,4 +1,5 @@
 "use client";
+import type { DataRow } from "@/types/components/management";
 import { useState, useEffect, useRef } from "react";
 import {
   motion,
@@ -46,7 +47,7 @@ import { useI18n } from "@/hooks/useI18n";
 import { useParams, useRouter } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
 import { type Program } from "./ProgramsManagement";
-import { staticListsCache } from "@/lib/staticListsCache";
+import { staticListsCache, type StaticListConfig } from "@/lib/staticListsCache";
 import { getLocalizedLabel } from "@/lib/localizedLabel";
 import { Loader2 } from "lucide-react";
 
@@ -106,8 +107,8 @@ export default function ProgramViewPage({ initialData }: ProgramViewPageProps) {
 
   const [program, setProgram] = useState<Program | null>(initialData || null);
   const [loading, setLoading] = useState(!initialData);
-  const [programTypes, setProgramTypes] = useState<any[]>([]);
-  const [programSubtypes, setProgramSubtypes] = useState<any[]>([]);
+  const [programTypes, setProgramTypes] = useState<StaticListConfig[]>([]);
+  const [programSubtypes, setProgramSubtypes] = useState<StaticListConfig[]>([]);
 
   // Fetch static lists
   useEffect(() => {
@@ -173,7 +174,7 @@ export default function ProgramViewPage({ initialData }: ProgramViewPageProps) {
       { gradient: "from-[#10B981] to-[#059669]", accent: "#10B981" },
       { gradient: "from-[#F59E0B] to-[#D97706]", accent: "#F59E0B" },
     ];
-    return themes[id % themes.length];
+    return themes[(id ?? 0) % themes.length];
   };
 
   if (loading) {
@@ -272,10 +273,11 @@ export default function ProgramViewPage({ initialData }: ProgramViewPageProps) {
       );
 
 
-    } catch (error: any) {
-      console.log("Error submitting application:", error.message);
+    } catch (error) {
+      const errMsg = error instanceof Error ? error.message : undefined;
+      console.log("Error submitting application:", errMsg);
       toast.error(
-        error.message ? error.message : language === "ar"
+        errMsg ? errMsg : language === "ar"
           ? "حدث خطأ أثناء تقديم الطلب. يرجى المحاولة مرة أخرى"
           : "Failed to submit application. Please try again."
       );

@@ -11,7 +11,6 @@ import {
 import { useI18n } from "@/hooks/useI18n";
 import Im2 from "@/assets/images/WhatsApp Image 2025-11-09 at 08.40.26.jpeg";
 
-import Im from "@/assets/images/WhatsApp Image 2025-11-09 at 08.40.27.jpeg";
 export default function CEOSection() {
   const { language, t } = useI18n();
   const ceoData = {

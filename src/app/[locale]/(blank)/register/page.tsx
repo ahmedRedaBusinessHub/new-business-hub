@@ -8,6 +8,6 @@ interface RegisterProps {
   searchParams?: { [key: string]: string | string[] | undefined };
 }
 
-export default function Register({ params, searchParams }: RegisterProps) {
+export default function Register() {
   return <RegisterPage />;
 }

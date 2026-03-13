@@ -3,7 +3,7 @@
 // Example Usage: Complete DynamicForm with All Field Types
 // ============================================================================
 
-import DynamicForm from "@/components/shared/DynamicForm";
+import DynamicForm, { FormData } from "@/components/shared/DynamicForm";
 import { z } from "zod";
 
 // ============================================================================
@@ -49,7 +49,7 @@ export const SimpleContactForm = () => {
     },
   ];
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: FormData) => {
     console.log("Contact form data:", data);
     // API call here
   };
@@ -73,7 +73,7 @@ export const AdvancedProfileForm = () => {
       name: "personalInfo",
       label: "Personal Information",
       type: "section" as const,
-      validation: z.any(),
+      validation: z.unknown(),
       collapsible: true,
       defaultOpen: true,
       fields: [
@@ -143,7 +143,7 @@ export const AdvancedProfileForm = () => {
       name: "addressInfo",
       label: "Address Information",
       type: "section" as const,
-      validation: z.any(),
+      validation: z.unknown(),
       collapsible: true,
       defaultOpen: false,
       fields: [
@@ -200,7 +200,7 @@ export const AdvancedProfileForm = () => {
       name: "professionalInfo",
       label: "Professional Details",
       type: "section" as const,
-      validation: z.any(),
+      validation: z.unknown(),
       fields: [
         {
           name: "occupation",
@@ -246,7 +246,7 @@ export const AdvancedProfileForm = () => {
       name: "preferences",
       label: "Preferences & Settings",
       type: "section" as const,
-      validation: z.any(),
+      validation: z.unknown(),
       collapsible: true,
       fields: [
         {
@@ -298,13 +298,13 @@ export const AdvancedProfileForm = () => {
       name: "mediaSection",
       label: "Profile Media",
       type: "section" as const,
-      validation: z.any(),
+      validation: z.unknown(),
       fields: [
         {
           name: "profilePicture",
           label: "Profile Picture",
           type: "imageuploader" as const,
-          validation: z.any().optional(),
+          validation: z.unknown().optional(),
           colSize: { desktop: 6, tablet: 12, mobile: 12 },
           helperText: "Upload a profile picture (JPG, PNG)",
         },
@@ -314,7 +314,7 @@ export const AdvancedProfileForm = () => {
           type: "fileuploader" as const,
           accept: ".pdf,.doc,.docx",
           multiple: true,
-          validation: z.any().optional(),
+          validation: z.unknown().optional(),
           colSize: { desktop: 6, tablet: 12, mobile: 12 },
           helperText: "Upload resume, certificates, etc.",
         },
@@ -322,7 +322,7 @@ export const AdvancedProfileForm = () => {
     },
   ];
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: FormData) => {
     console.log("Advanced profile form data:", data);
     // API call here
   };
@@ -347,7 +347,7 @@ export const WizardForm = () => {
       name: "step1",
       label: "Step 1: Basic Info",
       type: "section" as const,
-      validation: z.any(),
+      validation: z.unknown(),
       fields: [
         {
           name: "companyName",
@@ -378,7 +378,7 @@ export const WizardForm = () => {
       name: "step2",
       label: "Step 2: Contact Details",
       type: "section" as const,
-      validation: z.any(),
+      validation: z.unknown(),
       fields: [
         {
           name: "contactEmail",
@@ -401,7 +401,7 @@ export const WizardForm = () => {
       name: "step3",
       label: "Step 3: Review & Submit",
       type: "section" as const,
-      validation: z.any(),
+      validation: z.unknown(),
       fields: [
         {
           name: "terms",
@@ -417,7 +417,7 @@ export const WizardForm = () => {
     },
   ];
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: FormData) => {
     console.log("Wizard form data:", data);
   };
 
@@ -441,7 +441,7 @@ export const TabbedForm = () => {
       name: "accountTab",
       label: "Account",
       type: "section" as const,
-      validation: z.any(),
+      validation: z.unknown(),
       fields: [
         {
           name: "username",
@@ -465,7 +465,7 @@ export const TabbedForm = () => {
       name: "profileTab",
       label: "Profile",
       type: "section" as const,
-      validation: z.any(),
+      validation: z.unknown(),
       fields: [
         {
           name: "displayName",
@@ -478,7 +478,7 @@ export const TabbedForm = () => {
           name: "avatar",
           label: "Avatar",
           type: "imageuploader" as const,
-          validation: z.any().optional(),
+          validation: z.unknown().optional(),
           colSize: { desktop: 12, tablet: 12, mobile: 12 },
         },
       ],
@@ -487,7 +487,7 @@ export const TabbedForm = () => {
       name: "settingsTab",
       label: "Settings",
       type: "section" as const,
-      validation: z.any(),
+      validation: z.unknown(),
       fields: [
         {
           name: "language",
@@ -505,7 +505,7 @@ export const TabbedForm = () => {
     },
   ];
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: FormData) => {
     console.log("Tabbed form data:", data);
   };
 
@@ -544,7 +544,7 @@ export const ConditionalForm = () => {
       validation: z.string().optional(),
       colSize: { desktop: 12, tablet: 12, mobile: 12 },
       dependsOn: "userType",
-      showWhen: (value) => value === "business",
+      showWhen: (value) => typeof value === "string" && value === "business",
     },
     // This field only shows if userType is "business"
     {
@@ -554,11 +554,11 @@ export const ConditionalForm = () => {
       validation: z.string().optional(),
       colSize: { desktop: 12, tablet: 12, mobile: 12 },
       dependsOn: "userType",
-      showWhen: (value) => value === "business",
+      showWhen: (value) => typeof value === "string" && value === "business",
     },
   ];
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: FormData) => {
     console.log("Conditional form data:", data);
   };
 

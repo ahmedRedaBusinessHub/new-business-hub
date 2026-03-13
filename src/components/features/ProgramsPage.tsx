@@ -74,8 +74,10 @@ const MagneticButton = ({ children, className, ...props }: any) => {
 
 interface ProgramsPageProps {
     initialData?: {
-        data: Program[];
-        total: number;
+        data: {
+            data: Program[];
+            total: number;
+        };
     };
 }
 

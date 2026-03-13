@@ -8,6 +8,6 @@ interface LoginPageProps {
   searchParams?: { [key: string]: string | string[] | undefined };
 }
 
-export default function Login({ params, searchParams }: LoginPageProps) {
+export default function Login() {
   return <LoginPage />;
 }

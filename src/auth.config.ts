@@ -30,7 +30,7 @@ export const authConfig = {
       const currentLocale = pathname.split("/")[1];
 
       // Define protected paths
-      const protectedPaths = ["admin", "client", "store", "data-entry"];
+      const protectedPaths = ["admin", "client", "store", "data-entry", "bookings", "account"];
       const isOnProtectedPath = protectedPaths.some((path) =>
         nextUrl.pathname.startsWith(`/${currentLocale}/${path}`)
       );
@@ -50,7 +50,18 @@ export const authConfig = {
             )
           );
         }
-        // Check role-based access here if needed
+
+        // Admin role check: only users with the "admin" role can access /admin/* routes
+        const isAdminRoute = nextUrl.pathname.startsWith(`/${currentLocale}/admin`);
+        if (isAdminRoute) {
+          const userRole = (auth as any)?.user?.role?.toString()?.toLowerCase();
+          if (userRole !== "admin") {
+            // Non-admin users are redirected to their role-appropriate path
+            const fallbackPath = userRole === "client" ? `/${currentLocale}/bookings?dbgrole=${userRole || 'none'}` : `/${currentLocale}?dbgrole=${userRole || 'none'}`;
+            return Response.redirect(new URL(fallbackPath, nextUrl));
+          }
+        }
+
         return true;
       }
 

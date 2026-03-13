@@ -1,4 +1,5 @@
 "use client";
+import type { DataRow } from "@/types/components/management";
 
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
@@ -25,7 +26,7 @@ export default function RelatedNews({ currentId }: RelatedNewsProps) {
                 const response = await fetch(`/api/public/news?limit=3`);
                 if (response.ok) {
                     const data = await response.json();
-                    const items = Array.isArray(data.data) ? data.data : [];
+                    const items = Array.isArray(data.data?.data) ? data.data.data : [];
 
                     const filtered = items
                         .filter((item: any) => item.id.toString() !== currentId)
@@ -43,7 +44,7 @@ export default function RelatedNews({ currentId }: RelatedNewsProps) {
 
                     setRelatedArticles(filtered);
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Failed to fetch related news", error);
             }
         };

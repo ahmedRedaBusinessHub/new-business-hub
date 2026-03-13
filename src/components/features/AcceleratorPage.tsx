@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from "react";
 import {
   motion,
   useScroll,
-  useTransform,
   useSpring,
   useInView,
 } from "motion/react";
@@ -18,11 +17,8 @@ import {
   Award,
   CheckCircle2,
   ArrowRight,
-  Star,
   Sparkles,
-  Clock,
   Building,
-  Lightbulb,
   Zap,
   Trophy,
   BarChart3,
@@ -36,7 +32,6 @@ import {
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { ImageWithFallback } from "@/components/figma/ImageWithFallback";
 import Link from "next/link";
 import { useI18n } from "@/hooks/useI18n";

@@ -8,9 +8,6 @@ interface ForgotPasswordProps {
   searchParams?: { [key: string]: string | string[] | undefined };
 }
 
-export default function ForgotPassword({
-  params,
-  searchParams,
-}: ForgotPasswordProps) {
+export default function ForgotPassword() {
   return <ForgotPasswordPage />;
 }

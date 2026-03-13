@@ -24,7 +24,7 @@ const formSchema = z.object({
   ),
   subject: z.string().optional(),
   details: z.string().optional(),
-  files: z.any().optional(),
+  files: z.unknown().optional(),
 });
 
 interface ContactInteractionFormProps {
@@ -94,15 +94,16 @@ export function ContactInteractionForm({ interaction, contactId, onSubmit, onCan
     }
   };
 
-  const handleSubmit = async (data: Record<string, any>) => {
+  const handleSubmit = async (data: any) => {
     try {
       const validated = formSchema.parse(data);
-      
+
       onSubmit({
         type: validated.type ?? null,
         subject: validated.subject || null,
         details: validated.details || null,
-        files: isEdit ? (fileFiles.length > 0 ? fileFiles : undefined) : validated.files,
+        organization_id: interaction?.organization_id || 1,
+        files: isEdit ? (fileFiles.length > 0 ? fileFiles : undefined) : (validated.files as File[] | undefined),
       });
     } catch (error) {
       console.error("Form validation error:", error);
@@ -151,7 +152,7 @@ export function ContactInteractionForm({ interaction, contactId, onSubmit, onCan
           ...(isEdit ? [] : [{
             name: "files",
             label: "Files",
-            type: "fileuploader",
+            type: "fileuploader" as const,
             validation: formSchema.shape.files,
             required: false,
             helperText: "Upload files (PDF, DOC, DOCX, Images - Max 10MB)",
@@ -179,16 +180,16 @@ export function ContactInteractionForm({ interaction, contactId, onSubmit, onCan
               .filter(url => url != null && !deletedFileUrls.includes(url))
               .map((url, index) => {
                 const fileName = url.split('/').pop() || `File ${index + 1}`;
-                const fileUrl = url.startsWith('http') || url.startsWith('/api/public/file') 
-                  ? url 
+                const fileUrl = url.startsWith('http') || url.startsWith('/api/public/file')
+                  ? url
                   : `/api/public/file?file_url=${encodeURIComponent(url)}`;
                 const fileId = interaction.file_ids?.[index];
-                
+
                 return (
                   <div key={index} className="flex items-center gap-2 p-2 border rounded-lg group hover:bg-muted/50 transition-colors">
-                    <a 
-                      href={fileUrl} 
-                      target="_blank" 
+                    <a
+                      href={fileUrl}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 text-sm hover:underline text-primary"
                     >
@@ -207,7 +208,7 @@ export function ContactInteractionForm({ interaction, contactId, onSubmit, onCan
                 );
               })}
           </div>
-          
+
           {deletedFileUrls.length > 0 && (
             <p className="text-xs text-muted-foreground">
               {deletedFileUrls.length} file(s) marked for deletion. Upload new files to replace them.

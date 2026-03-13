@@ -19,6 +19,12 @@ interface User {
   mobile: string;
 }
 
+interface UploadDocument {
+  id?: number;
+  name: string;
+  url?: string;
+}
+
 export interface UserProgram {
   id: number;
   user_id: number;
@@ -29,7 +35,7 @@ export interface UserProgram {
   team_size: number | null;
   fund_needed: number | null;
   why_applying: string | null;
-  upload_documents: any[];
+  upload_documents: UploadDocument[];
   status: number | null;
   organization_id: number;
   created_at: string | null;
@@ -57,7 +63,7 @@ const formSchema = z.object({
     (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
     z.number().int().nullable().optional()
   ),
-  files: z.any().optional(),
+  files: z.unknown().optional(),
 });
 
 interface UserProgramFormProps {
@@ -184,7 +190,7 @@ export function UserProgramForm({ userProgram, programId, onSubmit, onCancel }: 
     setFileFiles(updated);
   };
 
-  const handleSubmit = async (data: Record<string, any>) => {
+  const handleSubmit = async (data: Record<string, unknown>) => {
     try {
       const validated = formSchema.parse(data);
       
@@ -200,8 +206,8 @@ export function UserProgramForm({ userProgram, programId, onSubmit, onCancel }: 
         team_size: validated.team_size ?? null,
         fund_needed: validated.fund_needed ?? null,
         why_applying: validated.why_applying || null,
+        upload_documents: userProgram?.upload_documents || [],
         status: validated.status ?? null,
-        // Don't include upload_documents in the payload - it's handled separately via file upload
         files: filesToUpload,
         fileNames: fileNamesToUpload,
       });

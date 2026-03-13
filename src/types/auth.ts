@@ -5,16 +5,19 @@ export const USER_ROLE: UserRole = "user";
 
 export interface User {
   id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-  accessToken: string;
+  name?: string | null;
+  email?: string | null;
+  role?: UserRole;
+  image?: string | null;
+  avatar?: string | null;
+  bio?: string;
+  accessToken?: string;
 }
 
 export interface AuthSession {
   user: User;
   accessToken: string;
-  expires: number;
+  expires: string;
 }
 
 // OTP Types

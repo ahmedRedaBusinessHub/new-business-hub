@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiGet, apiPost, createApiResponse, handleApiError } from "@/lib/api";
+import type { ThirdParty } from "@/types/entities";
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,12 +18,12 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await res.json();
-    let allData = Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [];
+    let allData: ThirdParty[] = Array.isArray(data.data?.data) ? data.data.data : Array.isArray(data.data) ? data.data : [];
 
     // Apply search filter
     if (search) {
       const query = search.toLowerCase();
-      allData = allData.filter((item: any) => {
+      allData = allData.filter((item: ThirdParty) => {
         const name = (item.name || "").toLowerCase();
         const namespace = (item.namespace || "").toLowerCase();
         const website = (item.website || "").toLowerCase();
@@ -43,7 +44,7 @@ export async function GET(request: NextRequest) {
       limit,
       totalPages: Math.ceil(total / limit),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch third parties");
   }
 }
@@ -53,7 +54,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const res = await apiPost("/third-parties", body, { requireAuth: true });
     return await createApiResponse(res, { successStatus: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to create third party");
   }
 }

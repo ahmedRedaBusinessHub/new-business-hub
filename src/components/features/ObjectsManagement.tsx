@@ -20,7 +20,15 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/AlertDialog";
 import { Badge } from "@/components/ui/Badge";
-import { Plus, Pencil, Trash2, Search, Eye, Copy, ChevronRight } from "lucide-react";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  Search,
+  Eye,
+  Copy,
+  ChevronRight,
+} from "lucide-react";
 import { DynamicIcon } from "@/lib/icon-map";
 import {
   Pagination,
@@ -56,14 +64,14 @@ export interface ObjectItem {
   status: number;
   organization_id: number;
   created_at: string | null;
-  updated_at: string | null;
   parent?: ObjectItem | null;
+  [key: string]: any;
 }
 
 export function ObjectsManagement() {
   const { t } = useI18n("admin");
   const [objects, setObjects] = useState<ObjectItem[]>([]);
-  
+
   const TYPE_LABELS: Record<number, string> = {
     1: t("objects.menu"),
     2: t("objects.module"),
@@ -120,10 +128,11 @@ export function ObjectsManagement() {
         throw new Error(t("objects.failedToLoad"));
       }
       const data = await response.json();
-      const objectsData = Array.isArray(data.data) ? data.data : [];
+      const objectsData = Array.isArray(data.data.data) ? data.data.data : [];
+      console.log("🚀 ~ ObjectsManagement ~ objectsData:", data);
       setObjects(objectsData);
-      setTotal(data.total || 0);
-      setTotalPages(data.totalPages || 0);
+      setTotal(data.data.total || 0);
+      setTotalPages(Math.ceil(data.data.total / data.data.limit) || 0);
     } catch (error: any) {
       console.error("Error fetching objects:", error);
       toast.error(t("objects.failedToLoad"));
@@ -141,7 +150,7 @@ export function ObjectsManagement() {
   // Fetch all objects for parent dropdown (only once)
   const fetchAllObjects = useCallback(async () => {
     if (allObjectsFetchedRef.current) return;
-    
+
     try {
       allObjectsFetchedRef.current = true;
       const response = await fetch(`/api/objects?limit=1000`);
@@ -149,7 +158,8 @@ export function ObjectsManagement() {
         throw new Error(t("objects.failedToLoad"));
       }
       const data = await response.json();
-      const objectsData = Array.isArray(data.data) ? data.data : [];
+      console.log("🚀 ~ ObjectsManagement ~ data:", data);
+      const objectsData = data?.data?.data || [];
       setAllObjects(objectsData);
     } catch (error: any) {
       console.error("Error fetching all objects:", error);
@@ -163,7 +173,9 @@ export function ObjectsManagement() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, pageSize, debouncedSearch]);
 
-  const handleCreate = async (objectData: Omit<ObjectItem, "id" | "created_at" | "updated_at" | "parent">) => {
+  const handleCreate = async (
+    objectData: Omit<ObjectItem, "id" | "created_at" | "updated_at" | "parent">,
+  ) => {
     try {
       const response = await fetch("/api/objects", {
         method: "POST",
@@ -187,7 +199,9 @@ export function ObjectsManagement() {
     }
   };
 
-  const handleUpdate = async (objectData: Omit<ObjectItem, "id" | "created_at" | "updated_at" | "parent">) => {
+  const handleUpdate = async (
+    objectData: Omit<ObjectItem, "id" | "created_at" | "updated_at" | "parent">,
+  ) => {
     if (!editingObject) return;
 
     try {
@@ -263,7 +277,7 @@ export function ObjectsManagement() {
 
   const getParentName = (parentId: number | null) => {
     if (!parentId) return "-";
-    const parent = allObjects.find(o => o.id === parentId);
+    const parent = allObjects.find((o) => o.id === parentId);
     return parent?.name || `ID: ${parentId}`;
   };
 
@@ -272,9 +286,7 @@ export function ObjectsManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h2>{t("objects.title")}</h2>
-          <p className="text-muted-foreground">
-            {t("objects.subtitle")}
-          </p>
+          <p className="text-muted-foreground">{t("objects.subtitle")}</p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 size-4" />
@@ -319,7 +331,9 @@ export function ObjectsManagement() {
               <TableHead>{t("objects.parent")}</TableHead>
               <TableHead>{t("objects.orderNo")}</TableHead>
               <TableHead>{t("common.status")}</TableHead>
-              <TableHead className="text-right">{t("common.actions")}</TableHead>
+              <TableHead className="text-right">
+                {t("common.actions")}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -340,7 +354,13 @@ export function ObjectsManagement() {
                 <TableRow key={object.id}>
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-2">
-                      {object.icon && <DynamicIcon name={object.icon} className="text-muted-foreground" size={18} />}
+                      {object.icon && (
+                        <DynamicIcon
+                          name={object.icon}
+                          className="text-muted-foreground"
+                          size={18}
+                        />
+                      )}
                       {object.name}
                     </div>
                   </TableCell>
@@ -378,7 +398,9 @@ export function ObjectsManagement() {
                     <Badge
                       variant={object.status === 1 ? "default" : "secondary"}
                     >
-                      {object.status === 1 ? t("common.active") : t("common.inactive")}
+                      {object.status === 1
+                        ? t("common.active")
+                        : t("common.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -426,7 +448,9 @@ export function ObjectsManagement() {
                   e.preventDefault();
                   if (currentPage > 1) setCurrentPage(currentPage - 1);
                 }}
-                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                className={
+                  currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                }
               />
             </PaginationItem>
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
@@ -465,7 +489,11 @@ export function ObjectsManagement() {
                   e.preventDefault();
                   if (currentPage < totalPages) setCurrentPage(currentPage + 1);
                 }}
-                className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                className={
+                  currentPage === totalPages
+                    ? "pointer-events-none opacity-50"
+                    : ""
+                }
               />
             </PaginationItem>
           </PaginationContent>
@@ -473,15 +501,19 @@ export function ObjectsManagement() {
       )}
 
       <div className="text-sm text-muted-foreground">
-        {t("table.showing")} {objects.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} {t("table.of")}{" "}
-        {Math.min(currentPage * pageSize, total)} {t("table.of")} {total} {t("table.results")}
+        {t("table.showing")}{" "}
+        {objects.length > 0 ? (currentPage - 1) * pageSize + 1 : 0}{" "}
+        {t("table.of")} {Math.min(currentPage * pageSize, total)}{" "}
+        {t("table.of")} {total} {t("table.results")}
       </div>
 
       <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
         <DialogContent className="max-w-2xl sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingObject ? t("objects.editObject") : t("objects.createNewObject")}
+              {editingObject
+                ? t("objects.editObject")
+                : t("objects.createNewObject")}
             </DialogTitle>
           </DialogHeader>
           <ObjectForm
@@ -501,8 +533,8 @@ export function ObjectsManagement() {
           title={t("objects.objectDetails")}
           header={{
             type: "simple",
-            title: (data: ObjectItem) => data.name,
-            subtitle: (data: ObjectItem) => data.namespace,
+            title: (data: any) => data.name,
+            subtitle: (data: any) => data.namespace,
             badges: [
               {
                 field: "status",
@@ -519,23 +551,38 @@ export function ObjectsManagement() {
               label: t("objects.details"),
               gridCols: 2,
               fields: [
-                { name: "name", label: t("common.name"), type: "text", colSpan: 12 },
-                { name: "namespace", label: t("objects.namespace"), type: "text", colSpan: 12 },
-                { 
-                  name: "type", 
-                  label: t("objects.type"), 
+                {
+                  name: "name",
+                  label: t("common.name"),
                   type: "text",
-                  render: (value: number) => getTypeLabel(value),
+                  colSpan: 12,
+                },
+                {
+                  name: "namespace",
+                  label: t("objects.namespace"),
+                  type: "text",
+                  colSpan: 12,
+                },
+                {
+                  name: "type",
+                  label: t("objects.type"),
+                  type: "text",
+                  render: (value: any) => getTypeLabel(value),
                 },
                 { name: "icon", label: t("objects.icon"), type: "text" },
-                { 
-                  name: "parent_id", 
-                  label: t("objects.parent"), 
+                {
+                  name: "parent_id",
+                  label: t("objects.parent"),
                   type: "text",
-                  render: (value: number | null) => getParentName(value),
+                  render: (value: any) => getParentName(value),
                 },
                 { name: "order_no", label: t("objects.orderNo"), type: "text" },
-                { name: "description", label: t("common.description"), type: "text", colSpan: 12 },
+                {
+                  name: "description",
+                  label: t("common.description"),
+                  type: "text",
+                  colSpan: 12,
+                },
                 {
                   name: "status",
                   label: t("common.status"),
@@ -545,8 +592,16 @@ export function ObjectsManagement() {
                     0: { label: t("common.inactive"), variant: "secondary" },
                   },
                 },
-                { name: "created_at", label: t("common.createdAt"), type: "datetime" },
-                { name: "updated_at", label: t("common.updatedAt"), type: "datetime" },
+                {
+                  name: "created_at",
+                  label: t("common.createdAt"),
+                  type: "datetime",
+                },
+                {
+                  name: "updated_at",
+                  label: t("common.updatedAt"),
+                  type: "datetime",
+                },
               ],
             },
           ]}

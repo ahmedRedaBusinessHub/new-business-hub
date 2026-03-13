@@ -3,9 +3,13 @@ import { forwardRef, TextareaHTMLAttributes } from "react";
 import { cn } from "./utils";
 import { Label } from "./Label";
 
+interface FieldError {
+  message?: string
+}
+
 export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
-  error?: any;
+  error?: FieldError;
   helperText?: string;
 }
 

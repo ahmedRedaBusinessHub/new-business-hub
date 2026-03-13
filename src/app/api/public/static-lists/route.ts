@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
         });
 
         return await createApiResponse(res);
-    } catch (error: any) {
+    } catch (error: unknown) {
         return handleApiError(error, "Failed to fetch static list");
     }
 }

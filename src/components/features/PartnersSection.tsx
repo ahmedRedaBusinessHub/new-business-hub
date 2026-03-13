@@ -18,9 +18,9 @@ export default function PartnersSection({ }: PartnersSectionProps) {
         if (response.ok) {
           const data = await response.json();
           console.log("🚀 ~ fetchPartners ~ data:", data)
-          setPartners(data.data || []);
+          setPartners(data.data.data || []);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Failed to fetch partners:", error);
       } finally {
         setLoading(false);

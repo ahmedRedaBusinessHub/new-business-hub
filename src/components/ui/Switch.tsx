@@ -2,9 +2,13 @@
 
 import * as React from "react";
 
-import { cn } from "./utils";
+interface SwitchProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: { message: string };
+  helperText?: string;
+}
 
-export const Switch = React.forwardRef<HTMLInputElement, any>(
+export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
   ({ label, error, helperText, ...props }, ref) => (
     <div className="flex items-center space-x-2">
       <label className="flex items-center cursor-pointer">
@@ -19,3 +23,5 @@ export const Switch = React.forwardRef<HTMLInputElement, any>(
     </div>
   )
 );
+
+Switch.displayName = "Switch";

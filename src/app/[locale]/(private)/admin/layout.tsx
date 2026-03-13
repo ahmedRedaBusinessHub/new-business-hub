@@ -3,7 +3,7 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/Sidebar";
 import { AppSidebar } from "@/components/layout/admin/AppSidebar";
 import { Header } from "@/components/layout/admin/Header";
 
-export default function AdminLayout({ children }: any) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar />

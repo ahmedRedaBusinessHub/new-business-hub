@@ -1,6 +1,5 @@
 import { motion } from "motion/react";
 import { Target, Eye, CheckCircle2, Rocket } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { useI18n } from "@/hooks/useI18n";
 
 export default function MissionSection() {

@@ -3,20 +3,32 @@
 // ui/Tags.tsx
 import React, { useState } from "react";
 
-export const Tags = React.forwardRef<HTMLInputElement, any>(
+interface TagOption {
+  value: string;
+  label: string;
+}
+
+interface TagsProps {
+  label?: string;
+  error?: { message?: string };
+  helperText?: string;
+  options?: TagOption[];
+}
+
+export const Tags = React.forwardRef<HTMLInputElement, TagsProps>(
   ({ label, error, helperText, options = [], ...props }, ref) => {
-    const [selected, setSelected] = useState([]);
-    const handleSelect = (option: any) =>
-      setSelected((prev: any) =>
+    const [selected, setSelected] = useState<string[]>([]);
+    const handleSelect = (option: string) =>
+      setSelected((prev: string[]) =>
         prev.includes(option)
-          ? prev.filter((tag: any) => tag !== option)
+          ? prev.filter((tag: string) => tag !== option)
           : [...prev, option]
       );
     return (
       <div>
         {label && <label className="block">{label}</label>}
         <div className="flex flex-wrap gap-2">
-          {options.map((o: any) => (
+          {options.map((o: TagOption) => (
             <span
               key={o.value}
               className={`px-3 py-1 rounded cursor-pointer ${
@@ -37,3 +49,5 @@ export const Tags = React.forwardRef<HTMLInputElement, any>(
     );
   }
 );
+
+Tags.displayName = "Tags";

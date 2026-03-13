@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiGet, createApiResponse, handleApiError } from "@/lib/api";
+import type { UserRole } from "@/types/entities";
 
 export async function GET(
   request: NextRequest,
@@ -21,12 +22,12 @@ export async function GET(
     }
 
     const data = await res.json();
-    let allData = Array.isArray(data.data) ? data.data : [];
+    let allData: UserRole[] = Array.isArray(data.data?.data) ? data.data.data : Array.isArray(data.data) ? data.data : [];
 
     // Apply search filter
     if (search) {
       const query = search.toLowerCase();
-      allData = allData.filter((role: any) => {
+      allData = allData.filter((role: UserRole) => {
         const roleName = (role.roles?.name || role.role_name || "").toLowerCase();
         const status = role.deleted_at ? "inactive" : "active";
         return roleName.includes(query) || status.includes(query);
@@ -46,7 +47,7 @@ export async function GET(
       limit,
       totalPages: Math.ceil(total / limit),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch user roles");
   }
 }

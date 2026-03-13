@@ -62,6 +62,7 @@ export interface IsoCompany {
   certificate_code: string | null;
   certificate_name_ar: string | null;
   certificate_name_en: string | null;
+  [key: string]: any;
 }
 
 export function IsoCompaniesManagement() {
@@ -465,10 +466,10 @@ export function IsoCompaniesManagement() {
           title={t("entities.isoCompanies.details")}
           header={{
             type: "avatar",
-            title: (data: IsoCompany) => data.company_name || data.name || t("entities.isoCompanies.details"),
-            subtitle: (data: IsoCompany) => data.position || "",
+            title: (data: any) => data.company_name || data.name || t("entities.isoCompanies.details"),
+            subtitle: (data: any) => data.position || "",
             imageIdField: "image_id",
-            avatarFallback: (data: IsoCompany) =>
+            avatarFallback: (data: any) =>
               data.company_name?.[0] || data.name?.[0] || "I",
             badges: [
               {

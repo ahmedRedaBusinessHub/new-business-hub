@@ -53,6 +53,7 @@ export interface Setting {
   organization_id: number;
   created_at: string | null;
   updated_at: string | null;
+  [key: string]: any;
 }
 
 export function SettingsManagement() {

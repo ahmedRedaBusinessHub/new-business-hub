@@ -55,42 +55,51 @@ import {
 /*                               Types                                        */
 /* -------------------------------------------------------------------------- */
 
+export type FormFieldValue =
+  | string
+  | number
+  | boolean
+  | File
+  | File[]
+  | null
+  | undefined;
+
 export type FormField = {
   colSize?: { desktop?: number; tablet?: number; mobile?: number };
   name: string;
   label: string;
   type:
-  | "text"
-  | "email"
-  | "password"
-  | "number"
-  | "date"
-  | "datetime-local"
-  | "time"
-  | "week"
-  | "month"
-  | "url"
-  | "tel"
-  | "search"
-  | "textarea"
-  | "select"
-  | "checkbox"
-  | "radio"
-  | "switch"
-  | "toggle"
-  | "slider"
-  | "range"
-  | "color"
-  | "file"
-  | "fileuploader"
-  | "imageuploader"
-  | "tags"
-  | "calendar"
-  | "richtext"
-  | "map"
-  | "rating"
-  | "section"
-  | "hidden";
+    | "text"
+    | "email"
+    | "password"
+    | "number"
+    | "date"
+    | "datetime-local"
+    | "time"
+    | "week"
+    | "month"
+    | "url"
+    | "tel"
+    | "search"
+    | "textarea"
+    | "select"
+    | "checkbox"
+    | "radio"
+    | "switch"
+    | "toggle"
+    | "slider"
+    | "range"
+    | "color"
+    | "file"
+    | "fileuploader"
+    | "imageuploader"
+    | "tags"
+    | "calendar"
+    | "richtext"
+    | "map"
+    | "rating"
+    | "section"
+    | "hidden";
   placeholder?: string;
   options?: Array<{ value: string; label: string }>;
   validation: z.ZodTypeAny;
@@ -109,17 +118,19 @@ export type FormField = {
   collapsible?: boolean;
   defaultOpen?: boolean;
   dependsOn?: string;
-  showWhen?: (value: any) => boolean;
+  showWhen?: (value: FormFieldValue) => boolean;
   tooltip?: string;
 };
 
+export type FormData = Record<string, FormFieldValue>;
+
 export interface DynamicFormProps {
   config: FormField[];
-  onSubmit: (data: Record<string, any>) => Promise<void>;
+  onSubmit: (data: FormData) => Promise<void>;
   submitText?: string;
   onSuccess?: () => void;
   className?: string;
-  defaultValues?: Record<string, any>;
+  defaultValues?: FormData;
   layout?: "single" | "tabs" | "accordion" | "wizard";
   showProgress?: boolean;
   onError?: (error: Error & { fieldErrors?: Record<string, string> }) => void;
@@ -173,7 +184,7 @@ const FieldWrapper = React.memo(
       )}
       {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
-  )
+  ),
 );
 
 /* -------------------------------------------------------------------------- */
@@ -207,7 +218,10 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
     return build(config);
   }, [config]);
 
-  const validationSchema = useMemo(() => z.object(schemaObject), [schemaObject]);
+  const validationSchema = useMemo(
+    () => z.object(schemaObject),
+    [schemaObject],
+  );
 
   const {
     register,
@@ -226,10 +240,10 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
   const watchedValues = useWatch({ control });
 
   const mutation = useMutation({
-    mutationFn: async (data: Record<string, any>) => {
+    mutationFn: async (data: FormData) => {
       try {
         await onSubmit(data);
-      } catch (error: any) {
+      } catch (error) {
         // Re-throw error to ensure onError is called and onSuccess is NOT called
         throw error;
       }
@@ -252,7 +266,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
       // Set field-specific errors if provided
       if (e.fieldErrors) {
         Object.keys(e.fieldErrors).forEach((fieldName) => {
-          setError(fieldName as any, {
+          setError(fieldName, {
             type: "server",
             message: e.fieldErrors![fieldName],
           });
@@ -261,7 +275,11 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
 
       // Always show error message toast (user requested to show message)
       // Show the original API message if available, otherwise use the error message
-      const displayMessage = (e as any).originalMessage || e.message || "An error occurred. Please check the form for details.";
+      const errorWithMessage = e as Error & { originalMessage?: string };
+      const displayMessage =
+        errorWithMessage.originalMessage ||
+        e.message ||
+        "An error occurred. Please check the form for details.";
 
       if (onError) {
         onError(e);
@@ -319,7 +337,10 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
         case "textarea":
           return (
             <FieldWrapper {...wrapperProps}>
-              <Textarea {...register(field.name)} placeholder={field.placeholder} />
+              <Textarea
+                {...register(field.name)}
+                placeholder={field.placeholder}
+              />
             </FieldWrapper>
           );
 
@@ -332,7 +353,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                 render={({ field: controllerField }) => (
                   <Select
                     {...controllerField}
-                    error={error}
+                    error={error ? { message: error } : undefined}
                     value={controllerField.value ?? ""}
                     options={field.options}
                   >
@@ -352,10 +373,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                 name={field.name}
                 control={control}
                 render={({ field }) => (
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
+                  <Switch checked={field.value} onChange={field.onChange} />
                 )}
               />
             </FieldWrapper>
@@ -386,7 +404,10 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                 control={control}
                 render={({ field: controllerField }) => (
                   <ImageUploader
-                    accept={field.accept || ".jpg,.jpeg,.png,.gif,.webp,.avif,.bmp,.tiff"}
+                    accept={
+                      field.accept ||
+                      ".jpg,.jpeg,.png,.gif,.webp,.avif,.bmp,.tiff"
+                    }
                     multiple={field.multiple || false}
                     maxSize={field.maxSize || 5 * 1024 * 1024}
                     onChange={(files) => controllerField.onChange(files)}
@@ -429,23 +450,29 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
           return null;
       }
     },
-    [control, errors, register, watchedValues]
+    [control, errors, register, watchedValues],
   );
 
   const getColSpan = (field: FormField): string => {
-    const fullWidthTypes = ["textarea", "richtext", "imageuploader", "fileuploader", "map"];
+    const fullWidthTypes = [
+      "textarea",
+      "richtext",
+      "imageuploader",
+      "fileuploader",
+      "map",
+    ];
     if (fullWidthTypes.includes(field.type)) return "col-span-12";
     if (field.colSize?.desktop) return `col-span-${field.colSize.desktop}`;
     // Use sm: breakpoint (640px) for 2-column layout to work better with medium modals (max-w-4xl = 896px)
     return "col-span-12 sm:col-span-6";
   };
 
-  const handleFormSubmit = async (data: Record<string, any>) => {
+  const handleFormSubmit = async (data: FormData) => {
     try {
       // Use mutateAsync - if it throws, onError is called, onSuccess is NOT called
       // This ensures the modal stays open on error
       await mutation.mutateAsync(data);
-    } catch (error: any) {
+    } catch {
       // Error is already handled by mutation.onError
       // We catch here to prevent unhandled promise rejection
       // The form will NOT reset and modal will NOT close because:

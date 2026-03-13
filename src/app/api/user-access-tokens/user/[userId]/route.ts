@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiGet, createApiResponse, handleApiError } from "@/lib/api";
+import type { UserAccessToken } from "@/types/entities";
 
 export async function GET(
   request: NextRequest,
@@ -21,12 +22,12 @@ export async function GET(
     }
 
     const data = await res.json();
-    let allData = Array.isArray(data.data) ? data.data : [];
+    let allData: UserAccessToken[] = Array.isArray(data.data?.data) ? data.data.data : Array.isArray(data.data) ? data.data : [];
 
     // Apply search filter
     if (search) {
       const query = search.toLowerCase();
-      allData = allData.filter((token: any) => {
+      allData = allData.filter((token: UserAccessToken) => {
         const tokenStr = (token.app_token || "").toLowerCase();
         const expiresAt = token.auth_expire_at
           ? new Date(token.auth_expire_at).toLocaleString().toLowerCase()
@@ -52,7 +53,7 @@ export async function GET(
       limit,
       totalPages: Math.ceil(total / limit),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch user access tokens");
   }
 }

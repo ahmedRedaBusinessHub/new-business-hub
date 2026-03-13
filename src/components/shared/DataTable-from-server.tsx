@@ -12,10 +12,13 @@ import {
   SortingState,
 } from "@tanstack/react-table";
 
+// Generic type for table row data
+type TableRowData = Record<string, unknown>;
+
 // Types for server response
-interface DataTableResponse {
-  data: any[];
-  columns: ColumnDef<any>[];
+interface DataTableResponse<T = TableRowData> {
+  data: T[];
+  columns: ColumnDef<T>[];
   total: number;
   page: number;
   pageSize: number;
@@ -29,9 +32,13 @@ interface PaginationParams {
   search?: string;
 }
 
+interface StatusBadgeProps {
+  status: string;
+}
+
 // Status Badge Component
-const StatusBadge = ({ status }: any) => {
-  const statusStyles: any = {
+const StatusBadge = ({ status }: StatusBadgeProps) => {
+  const statusStyles: Record<string, string> = {
     Active:
       "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
     Inactive:
@@ -50,12 +57,18 @@ const StatusBadge = ({ status }: any) => {
   );
 };
 
+interface ColumnVisibilityDropdownProps<T> {
+  table: ReturnType<typeof useReactTable<T>>;
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+}
+
 // Column Visibility Dropdown Component
-const ColumnVisibilityDropdown = ({ table, isOpen, setIsOpen }: any) => {
+function ColumnVisibilityDropdown<T>({ table, isOpen, setIsOpen }: ColumnVisibilityDropdownProps<T>) {
   if (!isOpen) return null;
   return (
     <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-10">
-      {table.getAllLeafColumns().map((column: any) => (
+      {table.getAllLeafColumns().map((column) => (
         <label
           key={column.id}
           className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
@@ -71,7 +84,7 @@ const ColumnVisibilityDropdown = ({ table, isOpen, setIsOpen }: any) => {
       ))}
     </div>
   );
-};
+}
 
 // Loading Skeleton
 const TableSkeleton = () => (
@@ -99,8 +112,8 @@ export function DataTable({
   enableSearch = true,
   enableColumnVisibility = true,
 }: DataTableProps) {
-  const [data, setData] = useState<any[]>([]);
-  const [columns, setColumns] = useState<ColumnDef<any>[]>([]);
+  const [data, setData] = useState<TableRowData[]>([]);
+  const [columns, setColumns] = useState<ColumnDef<TableRowData>[]>([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -134,7 +147,7 @@ export function DataTable({
           throw new Error("Failed to fetch data");
         }
 
-        const result: DataTableResponse = await response.json();
+        const result: DataTableResponse<TableRowData> = await response.json();
 
         setData(result.data);
         setColumns(result.columns);

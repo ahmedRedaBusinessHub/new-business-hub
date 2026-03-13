@@ -17,11 +17,11 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const res = await apiPost("/auth/reset-password", body, {
+        const res = await apiPost("/auth/reset-password", { identifier, otp, newPassword }, {
             requireAuth: false,
         });
         return await createApiResponse(res);
-    } catch (error: any) {
+    } catch (error: unknown) {
         return handleApiError(error, "Failed to process reset password request");
     }
 }

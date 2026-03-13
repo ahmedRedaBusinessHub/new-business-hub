@@ -17,7 +17,7 @@ export async function GET(
     }
 
     const data = await res.json();
-    const list = Array.isArray(data.data) ? data.data : [];
+    const list = Array.isArray(data.data?.data) ? data.data.data : Array.isArray(data.data) ? data.data : [];
 
     return NextResponse.json({
       ...data,

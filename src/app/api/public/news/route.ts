@@ -1,48 +1,24 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { apiGet, createApiResponse, handleApiError } from "@/lib/api";
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
+    const page = searchParams.get("page") || "1";
+    const limit = searchParams.get("limit") || "10";
     const search = searchParams.get("search") || "";
 
-    const res = await apiGet("/public/news", {
-
-    });
-
-    if (!res.ok) {
-      return await createApiResponse(res);
-    }
-
-    const data = await res.json();
-    let allData = Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [];
-
-    // Apply search filter
+    const backendParams = new URLSearchParams();
+    backendParams.append("page", page);
+    backendParams.append("limit", limit);
     if (search) {
-      const query = search.toLowerCase();
-      allData = allData.filter((item: any) => {
-        const name = (item.title || "").toLowerCase();
-        const description = (item.content || "").toLowerCase();
-        return name.includes(query) || description.includes(query);
-      });
+      backendParams.append("search", search);
+      backendParams.append("search_by", "title_ar,title_en,detail_ar,detail_en");
     }
 
-    // Apply pagination
-    const total = allData.length;
-    const start = (page - 1) * limit;
-    const end = start + limit;
-    const paginatedData = allData.slice(start, end);
-
-    return NextResponse.json({
-      data: paginatedData,
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    });
-  } catch (error: any) {
+    const res = await apiGet(`/public/news?${backendParams.toString()}`);
+    return await createApiResponse(res);
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch news");
   }
 }

@@ -3,11 +3,11 @@ import { useParams } from "next/navigation";
 import { defaultLocale } from "@/types/locales";
 import { useTranslations } from "next-intl";
 
-export function useI18n(key?: any) {
+export function useI18n(key: string = "") {
   const params = useParams();
   const locale = params?.locale;
   const language = (Array.isArray(locale) ? locale[0] : locale) || defaultLocale;
-  const t = key ? useTranslations(key) : useTranslations();
+  const t = useTranslations(key || undefined);
 
   return { language, t };
 }

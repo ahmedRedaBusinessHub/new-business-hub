@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiGet, createApiResponse, handleApiError } from "@/lib/api";
+import type { ResetPasswordToken } from "@/types/entities";
 
 export async function GET(
   request: NextRequest,
@@ -21,16 +22,16 @@ export async function GET(
     }
 
     const data = await res.json();
-    let allData = Array.isArray(data.data) ? data.data : [];
+    let allData: ResetPasswordToken[] = Array.isArray(data.data?.data) ? data.data.data : Array.isArray(data.data) ? data.data : [];
 
     // Apply search filter
     if (search) {
       const query = search.toLowerCase();
-      allData = allData.filter((token: any) => {
-        const tokenStr = (token.token || "").toLowerCase();
-        const used = token.used ? "used" : "unused";
-        const expiresAt = token.expires_at
-          ? new Date(token.expires_at).toLocaleString().toLowerCase()
+      allData = allData.filter((token: ResetPasswordToken) => {
+        const tokenStr = (token.reset_token || "").toLowerCase();
+        const used = token.used_at ? "used" : "unused";
+        const expiresAt = token.expire_at
+          ? new Date(token.expire_at).toLocaleString().toLowerCase()
           : "";
         const createdAt = token.created_at
           ? new Date(token.created_at).toLocaleDateString().toLowerCase()
@@ -57,7 +58,7 @@ export async function GET(
       limit,
       totalPages: Math.ceil(total / limit),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch reset password tokens");
   }
 }

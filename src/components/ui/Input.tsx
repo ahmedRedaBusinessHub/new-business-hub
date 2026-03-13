@@ -1,10 +1,9 @@
 import { forwardRef, InputHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "./Label";
-import { Mail } from "lucide-react";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  error?: any;
+  error?: { message?: string };
   label?: string;
   helperText?: string;
 }

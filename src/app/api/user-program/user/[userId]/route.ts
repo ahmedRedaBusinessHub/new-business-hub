@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiGet, createApiResponse, handleApiError } from "@/lib/api";
+import type { UserProgram } from "@/types/entities";
 
 export async function GET(
   request: NextRequest,
@@ -21,13 +22,13 @@ export async function GET(
     }
 
     const data = await res.json();
-    let allData = Array.isArray(data.data) ? data.data : [];
+    let allData: UserProgram[] = Array.isArray(data.data?.data) ? data.data.data : Array.isArray(data.data) ? data.data : [];
 
     // Apply search filter
     if (search) {
       const query = search.toLowerCase();
-      allData = allData.filter((program: any) => {
-        const programName = (program.programs?.name || program.program_name || "").toLowerCase();
+      allData = allData.filter((program: UserProgram) => {
+        const programName = (program.programs?.name_en || program.programs?.name_ar || program.project_name || "").toLowerCase();
         const status = program.status === 1 ? "active" : "inactive";
         return programName.includes(query) || status.includes(query);
       });
@@ -46,7 +47,7 @@ export async function GET(
       limit,
       totalPages: Math.ceil(total / limit),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return handleApiError(error, "Failed to fetch user programs");
   }
 }

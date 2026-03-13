@@ -4,7 +4,16 @@ import { useEffect, useState } from "react";
 
 import { motion } from "motion/react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { ArrowUpRight, Building2, Facebook, Twitter, Linkedin, Instagram, Youtube, Globe } from "lucide-react";
+import {
+  ArrowUpRight,
+  Building2,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Instagram,
+  Youtube,
+  Globe,
+} from "lucide-react";
 import { Badge } from "../ui/Badge";
 
 import Link from "next/link";
@@ -42,13 +51,16 @@ export default function CompaniesSection({ limit = 6 }: CompaniesSectionProps) {
   useEffect(() => {
     async function fetchCompanies() {
       try {
-        const response = await fetch(`/api/public/projects-by-type?type=2&limit=${limit}`);
+        const response = await fetch(
+          `/api/public/projects-by-type?type=2&limit=${limit}`,
+        );
         if (!response.ok) {
           throw new Error(`Failed to fetch companies: ${response.status}`);
         }
 
         const data = await response.json();
-        setCompanies(data.data || []);
+        console.log("🚀 ~ fetchCompanies ~ data:", data);
+        setCompanies(data.data.data || []);
       } catch (error) {
         console.error("Error fetching companies:", error);
       } finally {
@@ -136,22 +148,35 @@ export default function CompaniesSection({ limit = 6 }: CompaniesSectionProps) {
             const image = getCompanyImage(company);
 
             // Parse social media
-            const socialMedia = typeof company.social_media === 'string'
-              ? JSON.parse(company.social_media)
-              : company.social_media || {};
+            const socialMedia =
+              typeof company.social_media === "string"
+                ? JSON.parse(company.social_media)
+                : company.social_media || {};
 
             const hasMainLink = !!company.link;
             const hasSocialLinks = Object.keys(socialMedia).length > 0;
 
-            const SocialIcon = ({ platform, className }: { platform: string, className?: string }) => {
+            const SocialIcon = ({
+              platform,
+              className,
+            }: {
+              platform: string;
+              className?: string;
+            }) => {
               switch (platform.toLowerCase()) {
-                case 'facebook': return <Facebook className={className} />;
-                case 'twitter':
-                case 'x': return <Twitter className={className} />;
-                case 'linkedin': return <Linkedin className={className} />;
-                case 'instagram': return <Instagram className={className} />;
-                case 'youtube': return <Youtube className={className} />;
-                default: return <Globe className={className} />;
+                case "facebook":
+                  return <Facebook className={className} />;
+                case "twitter":
+                case "x":
+                  return <Twitter className={className} />;
+                case "linkedin":
+                  return <Linkedin className={className} />;
+                case "instagram":
+                  return <Instagram className={className} />;
+                case "youtube":
+                  return <Youtube className={className} />;
+                default:
+                  return <Globe className={className} />;
               }
             };
 
@@ -222,7 +247,10 @@ export default function CompaniesSection({ limit = 6 }: CompaniesSectionProps) {
                             whileHover={{ scale: 1.1, y: -2 }}
                             title={platform}
                           >
-                            <SocialIcon platform={platform} className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                            <SocialIcon
+                              platform={platform}
+                              className="w-4 h-4 sm:w-5 sm:h-5 text-white"
+                            />
                           </motion.div>
                         </Link>
                       ))}
@@ -231,7 +259,11 @@ export default function CompaniesSection({ limit = 6 }: CompaniesSectionProps) {
 
                   {/* Arrow Icon / Main Link - Bottom End */}
                   {hasMainLink ? (
-                    <Link href={company.link!} target="_blank" rel="noopener noreferrer">
+                    <Link
+                      href={company.link!}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <motion.div
                         className="absolute bottom-4 sm:bottom-6 ltr:right-4 ltr:sm:right-6 rtl:left-4 rtl:sm:left-6 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center glassmorphism-dark opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 cursor-pointer"
                         whileHover={{ scale: 1.1, rotate: 45 }}
@@ -240,9 +272,7 @@ export default function CompaniesSection({ limit = 6 }: CompaniesSectionProps) {
                       </motion.div>
                     </Link>
                   ) : (
-                    <motion.div
-                      className="absolute bottom-4 sm:bottom-6 ltr:right-4 ltr:sm:right-6 rtl:left-4 rtl:sm:left-6 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center glassmorphism-dark opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none"
-                    >
+                    <motion.div className="absolute bottom-4 sm:bottom-6 ltr:right-4 ltr:sm:right-6 rtl:left-4 rtl:sm:left-6 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center glassmorphism-dark opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none">
                       <ArrowUpRight className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </motion.div>
                   )}
@@ -250,7 +280,6 @@ export default function CompaniesSection({ limit = 6 }: CompaniesSectionProps) {
 
                 {/* Content */}
                 <div className="p-6 sm:p-8">
-
                   <h3
                     className="mb-2 text-lg sm:text-xl"
                     style={{ color: "var(--theme-text-primary)" }}
@@ -304,20 +333,22 @@ export default function CompaniesSection({ limit = 6 }: CompaniesSectionProps) {
         </div>
       </div>
 
-      {limit <= 6 && <div className="text-center pt-20">
-        <Link href={"/projects"}>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-block px-4 py-2 rounded-full bg-gradient-to-r from-[#0D5BDC]/10 to-[#340F87]/10 border border-[#0D5BDC]/20 mb-4"
-          >
-            <span className="bg-gradient-to-r from-[#0D5BDC] to-[#340F87] bg-clip-text text-transparent">
-              {t("viewMore")}
-            </span>
-          </motion.div>
-        </Link>
-      </div>}
+      {limit <= 6 && (
+        <div className="text-center pt-20">
+          <Link href={"/projects"}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="inline-block px-4 py-2 rounded-full bg-gradient-to-r from-[#0D5BDC]/10 to-[#340F87]/10 border border-[#0D5BDC]/20 mb-4"
+            >
+              <span className="bg-gradient-to-r from-[#0D5BDC] to-[#340F87] bg-clip-text text-transparent">
+                {t("viewMore")}
+              </span>
+            </motion.div>
+          </Link>
+        </div>
+      )}
     </section>
   );
 }
